@@ -9,10 +9,15 @@ body {
   flex-direction: column;
   margin: 0;
   min-height: 100svh;
-  font-variation-settings: 'slnt' 0;
+  font-variation-settings: "slnt" 0;
+  font-family: var(--font-paragraph--family, var(--font-default-body));
 }
 
 :root {
+  /* Default body stack before theme inline variables load; theme settings still override via --font-paragraph--family */
+  --font-default-body:
+    "Lato", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
   --hover-lift-amount: 4px;
   --hover-scale-amount: 1.03;
   --hover-subtle-zoom-amount: 1.015;
@@ -28,7 +33,8 @@ body {
 html {
   /* Firefox */
   scrollbar-width: thin;
-  scrollbar-color: rgb(var(--color-foreground-rgb) / var(--opacity-40)) var(--color-background);
+  scrollbar-color: rgb(var(--color-foreground-rgb) / var(--opacity-40))
+    var(--color-background);
   scroll-behavior: smooth;
 }
 
@@ -138,7 +144,8 @@ select {
 .predictive-search-results__card--product,
 .predictive-search-results__card {
   position: relative;
-  transition: transform var(--hover-transition-duration) var(--hover-transition-timing),
+  transition:
+    transform var(--hover-transition-duration) var(--hover-transition-timing),
     box-shadow var(--hover-transition-duration) var(--hover-transition-timing);
   z-index: var(--layer-flat);
 }
@@ -205,7 +212,8 @@ select {
   .card-hover-effect-subtle-zoom .product-card__image,
   .card-hover-effect-subtle-zoom .resource-card__image {
     overflow: hidden;
-    transition: transform var(--hover-transition-duration) var(--hover-transition-timing);
+    transition: transform var(--hover-transition-duration)
+      var(--hover-transition-timing);
   }
 
   .predictive-search-results__card .card-gallery,
@@ -224,13 +232,34 @@ select {
   }
 
   .card-hover-effect-subtle-zoom .header .product-card:hover .card-gallery,
-  .card-hover-effect-subtle-zoom .header .collection-card:hover .collection-card__image,
-  .card-hover-effect-subtle-zoom .header .product-card:hover .product-card__image,
-  .card-hover-effect-subtle-zoom .header .resource-card:hover .resource-card__image,
-  .card-hover-effect-subtle-zoom .header-drawer .product-card:hover .card-gallery,
-  .card-hover-effect-subtle-zoom .header-drawer .collection-card:hover .collection-card__image,
-  .card-hover-effect-subtle-zoom .header-drawer .product-card:hover .product-card__image,
-  .card-hover-effect-subtle-zoom .header-drawer .resource-card:hover .resource-card__image {
+  .card-hover-effect-subtle-zoom
+    .header
+    .collection-card:hover
+    .collection-card__image,
+  .card-hover-effect-subtle-zoom
+    .header
+    .product-card:hover
+    .product-card__image,
+  .card-hover-effect-subtle-zoom
+    .header
+    .resource-card:hover
+    .resource-card__image,
+  .card-hover-effect-subtle-zoom
+    .header-drawer
+    .product-card:hover
+    .card-gallery,
+  .card-hover-effect-subtle-zoom
+    .header-drawer
+    .collection-card:hover
+    .collection-card__image,
+  .card-hover-effect-subtle-zoom
+    .header-drawer
+    .product-card:hover
+    .product-card__image,
+  .card-hover-effect-subtle-zoom
+    .header-drawer
+    .resource-card:hover
+    .resource-card__image {
     transform: none;
   }
 
@@ -308,11 +337,13 @@ p:empty {
     pointer-events: none;
   }
 
-  html:active-view-transition-type(page-navigation) main[data-page-transition-enabled='true'] {
+  html:active-view-transition-type(page-navigation)
+    main[data-page-transition-enabled="true"] {
     view-transition-name: main-content;
   }
 
-  html:active-view-transition-type(page-navigation) main[data-product-transition='true'][data-template*='product'] {
+  html:active-view-transition-type(page-navigation)
+    main[data-product-transition="true"][data-template*="product"] {
     view-transition-name: none;
   }
 
@@ -325,11 +356,11 @@ p:empty {
   }
 
   html:active-view-transition-type(product-image-transition) {
-    [data-view-transition-type='product-image-transition'] {
+    [data-view-transition-type="product-image-transition"] {
       view-transition-name: product-image-transition;
     }
 
-    [data-view-transition-type='product-details'] {
+    [data-view-transition-type="product-details"] {
       view-transition-name: product-details;
     }
   }
@@ -430,18 +461,22 @@ p:empty {
     calc(100% - var(--page-margin) * 2)
   );
   --full-page-grid-margin: minmax(var(--page-margin), 1fr);
-  --full-page-grid-with-margins: var(--full-page-grid-margin) var(--full-page-grid-central-column-width)
-    var(--full-page-grid-margin);
+  --full-page-grid-with-margins: var(--full-page-grid-margin)
+    var(--full-page-grid-central-column-width) var(--full-page-grid-margin);
 
   /* Utility variable gives the grid's first column width. Provides an offset width for components like carousels */
   --util-page-margin-offset: max(
     var(--page-margin),
-    calc((100% - min(var(--page-content-width), 100% - var(--page-margin) * 2)) / 2)
+    calc(
+      (100% - min(var(--page-content-width), 100% - var(--page-margin) * 2)) / 2
+    )
   );
 
   /* Offset for full-width sections to account for the page margin,
   used for Marquee — note that --util-page-margin-offset doesn't work here */
-  --full-page-margin-inline-offset: calc(((100vw - var(--full-page-grid-central-column-width)) / 2) * -1);
+  --full-page-margin-inline-offset: calc(
+    ((100vw - var(--full-page-grid-central-column-width)) / 2) * -1
+  );
 
   width: 100%;
 
@@ -451,7 +486,7 @@ p:empty {
   /* Set up the grid */
   display: grid;
   grid-template-columns: var(--full-page-grid-with-margins);
-  min-height: var(--section-min-height, 'auto');
+  min-height: var(--section-min-height, "auto");
 }
 
 /* Place all direct children in the center column by default */
@@ -469,7 +504,7 @@ p:empty {
 }
 
 .shopify-section:not(.header-section) .section-background {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   z-index: var(--layer-section-background);
@@ -528,7 +563,9 @@ p:empty {
 }
 
 .section-content-wrapper.section-content-wrapper {
-  min-height: calc(var(--section-min-height, 'auto') - var(--section-height-offset, 0px));
+  min-height: calc(
+    var(--section-min-height, "auto") - var(--section-height-offset, 0px)
+  );
   position: relative;
   width: 100%;
   height: 100%;
@@ -615,8 +652,11 @@ p:empty {
   .grid {
     display: grid;
     gap: 0;
-    grid-template-columns: var(--margin-4xl) repeat(var(--centered-column-number), minmax(0, 1fr)) var(--margin-4xl);
-    grid-template-areas: 'column-0 column-1 column-2 column-3 column-4 column-5 column-6 column-7 column-8 column-9 column-10 column-11 column-12 column-13';
+    grid-template-columns: var(--margin-4xl) repeat(
+        var(--centered-column-number),
+        minmax(0, 1fr)
+      ) var(--margin-4xl);
+    grid-template-areas: "column-0 column-1 column-2 column-3 column-4 column-5 column-6 column-7 column-8 column-9 column-10 column-11 column-12 column-13";
   }
 }
 
@@ -625,7 +665,13 @@ p:empty {
     grid-template-columns:
       1fr repeat(
         var(--centered-column-number),
-        minmax(0, calc((var(--page-width) - var(--page-margin) * 2) / var(--centered-column-number)))
+        minmax(
+          0,
+          calc(
+            (var(--page-width) - var(--page-margin) * 2) /
+              var(--centered-column-number)
+          )
+        )
       )
       1fr;
   }
@@ -783,11 +829,11 @@ p:empty {
   fill: currentColor;
 }
 
-[data-placeholder='true'] * {
+[data-placeholder="true"] * {
   cursor: default;
 }
 
-slideshow-component [data-placeholder='true'] * {
+slideshow-component [data-placeholder="true"] * {
   cursor: grab;
 }
 
@@ -796,7 +842,7 @@ body,
 .paragraph:not(.button),
 .paragraph > *,
 .text-block.paragraph :is(h1, h2, h3, h4, h5, h6) {
-  font-family: var(--font-paragraph--family);
+  font-family: var(--font-paragraph--family, var(--font-default-body));
   font-style: var(--font-paragraph--style);
   font-weight: var(--font-paragraph--weight);
   font-size: var(--font-paragraph--size);
@@ -971,7 +1017,8 @@ a {
   text-decoration-color: transparent;
   text-decoration-thickness: 0.075em;
   text-underline-offset: 0.125em;
-  transition: text-decoration-color var(--animation-speed) var(--animation-easing),
+  transition:
+    text-decoration-color var(--animation-speed) var(--animation-easing),
     color var(--animation-speed) var(--animation-easing);
 }
 
@@ -981,7 +1028,9 @@ a {
 
 /* Add underline to text using our paragraph styles only. */
 p:not(.h1, .h2, .h3, .h4, .h5, .h6) a:where(:not(.button, .button-secondary)),
-.rte :is(p, ul, ol, table):not(.h1, .h2, .h3, .h4, .h5, .h6) a:where(:not(.button, .button-secondary)) {
+.rte
+  :is(p, ul, ol, table):not(.h1, .h2, .h3, .h4, .h5, .h6)
+  a:where(:not(.button, .button-secondary)) {
   text-decoration-color: currentcolor;
 
   &:hover {
@@ -1014,7 +1063,9 @@ summary::-webkit-details-marker {
 }
 
 /* When header is transparent, pull the first main content section up to sit under the floating header */
-body:has(.header[transparent]) .content-for-layout > .shopify-section:first-child {
+body:has(.header[transparent])
+  .content-for-layout
+  > .shopify-section:first-child {
   margin-top: calc(var(--header-group-height) * -1);
 }
 
@@ -1064,10 +1115,11 @@ body:has(.header[transparent]) #header-group > *:not(.header-section) {
 }
 
 .product-grid__item {
-  border: var(--product-card-border-width) solid rgb(var(--color-border-rgb) / var(--product-card-border-opacity));
+  border: var(--product-card-border-width) solid
+    rgb(var(--color-border-rgb) / var(--product-card-border-opacity));
 }
 
-.product-grid--organic[product-grid-view='default'] .product-grid__item {
+.product-grid--organic[product-grid-view="default"] .product-grid__item {
   height: fit-content;
 }
 
@@ -1083,11 +1135,11 @@ body:has(.header[transparent]) #header-group > *:not(.header-section) {
   overflow: hidden;
 }
 
-[product-grid-view='zoom-out'] .product-grid__card {
+[product-grid-view="zoom-out"] .product-grid__card {
   row-gap: var(--padding-xs);
 }
 
-[product-grid-view='default'] {
+[product-grid-view="default"] {
   --product-grid-gap: 16px;
   --padding-block-start: 24px;
   --padding-block-end: 24px;
@@ -1095,11 +1147,11 @@ body:has(.header[transparent]) #header-group > *:not(.header-section) {
   --padding-inline-end: 0px;
 }
 
-[product-grid-view='default'] .product-grid__item {
+[product-grid-view="default"] .product-grid__item {
   padding-block: 0;
 }
 
-[product-grid-view='mobile-single'],
+[product-grid-view="mobile-single"],
 .product-grid-mobile--large {
   @media screen and (max-width: 749px) {
     grid-template-columns: 1fr;
@@ -1112,28 +1164,35 @@ body:has(.header[transparent]) #header-group > *:not(.header-section) {
   }
 }
 
-ul[product-grid-view='zoom-out'] .product-grid__card > * {
+ul[product-grid-view="zoom-out"] .product-grid__card > * {
   display: none;
 }
 
-ul[product-grid-view='zoom-out'] .product-grid__card .card-gallery {
+ul[product-grid-view="zoom-out"] .product-grid__card .card-gallery {
   display: block;
 }
 
-[product-grid-view='zoom-out']
+[product-grid-view="zoom-out"]
   .card-gallery
-  > :is(quick-add-component, .product-badges, slideshow-component > slideshow-controls) {
+  > :is(
+    quick-add-component,
+    .product-badges,
+    slideshow-component > slideshow-controls
+  ) {
   display: none;
 }
 
-ul[product-grid-view='zoom-out'] .card-gallery > img {
+ul[product-grid-view="zoom-out"] .card-gallery > img {
   display: block;
 }
 
-[product-grid-view='zoom-out'] {
+[product-grid-view="zoom-out"] {
   --product-grid-columns-desktop: repeat(
     10,
-    minmax(clamp(50px, calc(100% - 9 * var(--product-grid-gap)) / 10, 80px), 1fr)
+    minmax(
+      clamp(50px, calc(100% - 9 * var(--product-grid-gap)) / 10, 80px),
+      1fr
+    )
   );
 }
 
@@ -1212,7 +1271,8 @@ ul[product-grid-view='zoom-out'] .card-gallery > img {
 
 results-list[initialized] {
   .product-grid__item {
-    transition: opacity var(--animation-speed) var(--animation-easing),
+    transition:
+      opacity var(--animation-speed) var(--animation-easing),
       transform var(--animation-speed) var(--animation-easing);
 
     @starting-style {
@@ -1304,16 +1364,19 @@ results-list[initialized] {
 }
 
 .dialog-modal[open] {
-  animation: elementSlideInTop var(--animation-speed) var(--animation-easing) forwards;
+  animation: elementSlideInTop var(--animation-speed) var(--animation-easing)
+    forwards;
 
   &::backdrop {
-    animation: backdropFilter var(--animation-speed) var(--animation-easing) forwards;
+    animation: backdropFilter var(--animation-speed) var(--animation-easing)
+      forwards;
     transition: opacity var(--animation-speed) var(--animation-easing);
   }
 }
 
 .dialog-modal.dialog-closing {
-  animation: elementSlideOutTop var(--animation-speed) var(--animation-easing) forwards;
+  animation: elementSlideOutTop var(--animation-speed) var(--animation-easing)
+    forwards;
 
   &::backdrop {
     opacity: 0;
@@ -1337,7 +1400,8 @@ results-list[initialized] {
   --end-x: var(--custom-transform-to, 0px);
   --start-opacity: 1;
 
-  animation: var(--dialog-drawer-opening-animation) var(--animation-speed) var(--animation-easing) forwards;
+  animation: var(--dialog-drawer-opening-animation) var(--animation-speed)
+    var(--animation-easing) forwards;
 }
 
 .dialog-drawer[open].dialog-closing {
@@ -1346,7 +1410,8 @@ results-list[initialized] {
   --start-opacity: 1;
   --end-opacity: 1;
 
-  animation: var(--dialog-drawer-closing-animation) var(--animation-speed) var(--animation-easing);
+  animation: var(--dialog-drawer-closing-animation) var(--animation-speed)
+    var(--animation-easing);
 }
 
 .dialog-drawer--right[open] {
@@ -1360,7 +1425,8 @@ results-list[initialized] {
   --start-opacity: 1;
   --end-opacity: 1;
 
-  animation: var(--dialog-drawer-closing-animation) var(--animation-speed) var(--animation-easing);
+  animation: var(--dialog-drawer-closing-animation) var(--animation-speed)
+    var(--animation-easing);
 }
 
 /* Buttons */
@@ -1383,7 +1449,8 @@ button.shopify-payment-button__button--unbranded {
   font-size: var(--font-paragraph--size);
   line-height: var(--font-paragraph--line-height);
   margin-block: 0;
-  transition: color var(--animation-speed) var(--animation-easing),
+  transition:
+    color var(--animation-speed) var(--animation-easing),
     box-shadow var(--animation-speed) var(--animation-easing),
     background-color var(--animation-speed) var(--animation-easing);
   cursor: pointer;
@@ -1415,7 +1482,7 @@ button.shopify-payment-button__button--unbranded {
 }
 
 textarea,
-input:not([type='checkbox'], [type='radio']) {
+input:not([type="checkbox"], [type="radio"]) {
   background-color: var(--color-input-background);
   border-color: var(--color-input-border);
 }
@@ -1435,8 +1502,8 @@ input:not(:placeholder-shown)::placeholder {
   display: none;
 }
 
-.button[aria-disabled='true'],
-.button-secondary[aria-disabled='true'],
+.button[aria-disabled="true"],
+.button-secondary[aria-disabled="true"],
 .button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -1529,8 +1596,8 @@ button.shopify-payment-button__button--unbranded:hover:not([disabled]) {
   height: var(--icon-size-xs);
 }
 
-.show-more[data-expanded='true'] .show-more__label--more,
-.show-more[data-expanded='false'] .show-more__label--less {
+.show-more[data-expanded="true"] .show-more__label--more,
+.show-more[data-expanded="false"] .show-more__label--less {
   display: none;
 }
 
@@ -1541,13 +1608,17 @@ button.shopify-payment-button__button--unbranded:hover:not([disabled]) {
 
 shopify-accelerated-checkout,
 shopify-accelerated-checkout-cart {
-  --shopify-accelerated-checkout-button-border-radius: var(--style-border-radius-buttons-primary);
+  --shopify-accelerated-checkout-button-border-radius: var(
+    --style-border-radius-buttons-primary
+  );
   --shopify-accelerated-checkout-button-block-size: var(--height-buy-buttons);
 }
 
 .product-form-buttons:has(.add-to-cart-button.button-secondary)
   :is(shopify-accelerated-checkout, shopify-accelerated-checkout-cart) {
-  --shopify-accelerated-checkout-button-border-radius: var(--style-border-radius-buttons-secondary);
+  --shopify-accelerated-checkout-button-border-radius: var(
+    --style-border-radius-buttons-secondary
+  );
   --shopify-accelerated-checkout-button-block-size: var(--height-buy-buttons);
 }
 
@@ -1595,13 +1666,19 @@ summary .icon-plus :is(.horizontal, .vertical),
 
 details[open] > summary .icon-plus .horizontal,
 .details-open > summary .icon-plus .horizontal,
-.show-more:where([data-expanded='true']) .show-more__button .icon-plus .horizontal {
+.show-more:where([data-expanded="true"])
+  .show-more__button
+  .icon-plus
+  .horizontal {
   transform: rotate(90deg);
 }
 
 details[open] > summary .icon-plus .vertical,
 .details-open > summary .icon-plus .vertical,
-.show-more:where([data-expanded='true']) .show-more__button .icon-plus .vertical {
+.show-more:where([data-expanded="true"])
+  .show-more__button
+  .icon-plus
+  .vertical {
   transform: rotate(90deg);
   opacity: 0;
 }
@@ -1641,7 +1718,10 @@ media-gallery {
     /* arbitrary offset value based on average theme spacing and header height */
     --viewport-offset: 400px;
     --constrained-min-height: 300px;
-    --constrained-height: max(var(--constrained-min-height), calc(100vh - var(--viewport-offset)));
+    --constrained-height: max(
+      var(--constrained-min-height),
+      calc(100vh - var(--viewport-offset))
+    );
 
     margin-right: auto;
     margin-left: auto;
@@ -1657,7 +1737,9 @@ media-gallery:where(.media-gallery--grid) .media-gallery__grid {
   display: none;
 }
 
-media-gallery.media-gallery--grid .media-gallery__grid .product-media-container {
+media-gallery.media-gallery--grid
+  .media-gallery__grid
+  .product-media-container {
   /* Needed for safari to stretch to full grid height */
   height: 100%;
 }
@@ -1678,7 +1760,8 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container 
     --constrained-min-height: 500px;
   }
 
-  body:has(header-component[transparent]) .product-media-container.constrain-height {
+  body:has(header-component[transparent])
+    .product-media-container.constrain-height {
     --viewport-offset: 0px;
   }
 
@@ -1799,7 +1882,7 @@ zoom-dialog dialog {
   }
 
   .close-button:focus-visible::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: calc(-1 * var(--focus-outline-offset));
     border: var(--focus-outline-width) solid currentColor;
@@ -1809,7 +1892,8 @@ zoom-dialog dialog {
 }
 
 .dialog--closed .close-button {
-  animation: elementSlideOutBottom calc(var(--animation-speed) * 0.5) var(--animation-easing) forwards;
+  animation: elementSlideOutBottom calc(var(--animation-speed) * 0.5)
+    var(--animation-easing) forwards;
 }
 
 .dialog-thumbnails-list-container {
@@ -1821,7 +1905,9 @@ zoom-dialog dialog {
 }
 
 .dialog-thumbnails-list {
-  --active-thumbnail-border-color: rgb(var(--color-border-rgb) / var(--media-border-opacity));
+  --active-thumbnail-border-color: rgb(
+    var(--color-border-rgb) / var(--media-border-opacity)
+  );
 
   position: relative;
   display: inline-flex;
@@ -1833,12 +1919,14 @@ zoom-dialog dialog {
   padding: var(--padding-lg);
   margin-inline: auto;
   scrollbar-width: none;
-  animation: thumbnailsSlideInBottom calc(var(--animation-speed) * 0.75) var(--animation-easing) forwards;
+  animation: thumbnailsSlideInBottom calc(var(--animation-speed) * 0.75)
+    var(--animation-easing) forwards;
   animation-delay: calc(var(--animation-speed) * 1.5);
 }
 
 .dialog--closed .dialog-thumbnails-list {
-  animation: thumbnailsSlideOutBottom var(--animation-speed) var(--animation-easing) forwards;
+  animation: thumbnailsSlideOutBottom var(--animation-speed)
+    var(--animation-easing) forwards;
 }
 
 @media screen and (min-width: 750px) {
@@ -1849,12 +1937,14 @@ zoom-dialog dialog {
     right: 0;
     max-height: calc(100vh - 200px);
     overflow-y: auto;
-    animation: thumbnailsSlideInTop var(--spring-d220-b0-duration) var(--spring-d220-b0-easing) forwards;
+    animation: thumbnailsSlideInTop var(--spring-d220-b0-duration)
+      var(--spring-d220-b0-easing) forwards;
     animation-delay: calc(var(--spring-d220-b0-duration) * 0.5);
   }
 
   .dialog--closed .dialog-thumbnails-list {
-    animation: thumbnailsSlideOutTop var(--animation-speed) var(--animation-easing) forwards;
+    animation: thumbnailsSlideOutTop var(--animation-speed)
+      var(--animation-easing) forwards;
   }
 }
 
@@ -1872,7 +1962,7 @@ zoom-dialog dialog {
     aspect-ratio: var(--aspect-ratio);
   }
 
-  &:is([aria-selected='true']) {
+  &:is([aria-selected="true"]) {
     outline: var(--focus-outline-width) solid currentcolor;
     outline-offset: calc(var(--focus-outline-offset) / 2);
     border: var(--style-border-width) solid var(--active-thumbnail-border-color);
@@ -1880,10 +1970,12 @@ zoom-dialog dialog {
 }
 
 @supports (anchor-name: --test) {
-  .dialog-thumbnails-list:has(.dialog-thumbnails-list__thumbnail:is([aria-selected='true']))::after {
+  .dialog-thumbnails-list:has(
+      .dialog-thumbnails-list__thumbnail:is([aria-selected="true"])
+    )::after {
     --inset-offset: calc(var(--focus-outline-offset) / 2);
 
-    content: '';
+    content: "";
     position: absolute;
     inset: anchor(top) anchor(right) anchor(bottom) anchor(left);
     position-anchor: --selected-thumbnail;
@@ -1895,14 +1987,16 @@ zoom-dialog dialog {
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .dialog-thumbnails-list:has(.dialog-thumbnails-list__thumbnail:is([aria-selected='true']))::after {
+    .dialog-thumbnails-list:has(
+        .dialog-thumbnails-list__thumbnail:is([aria-selected="true"])
+      )::after {
       transition-property: inset;
       transition-duration: var(--spring-d180-b0-duration);
       transition-timing-function: var(--spring-d180-b0-easing);
     }
   }
 
-  .dialog-thumbnails-list__thumbnail:is([aria-selected='true']) {
+  .dialog-thumbnails-list__thumbnail:is([aria-selected="true"]) {
     outline: none;
     border: none;
     anchor-name: --selected-thumbnail;
@@ -1960,19 +2054,26 @@ Otherwise, it should be a block to rely on its own size */
   padding: inherit;
 }
 
-slideshow-slide .shopify-model-viewer-ui__controls-area.shopify-model-viewer-ui__controls-area {
+slideshow-slide
+  .shopify-model-viewer-ui__controls-area.shopify-model-viewer-ui__controls-area {
   bottom: var(--padding-sm);
   right: var(--padding-sm);
 }
 
-.dialog-zoomed-gallery .shopify-model-viewer-ui__controls-area.shopify-model-viewer-ui__controls-area {
+.dialog-zoomed-gallery
+  .shopify-model-viewer-ui__controls-area.shopify-model-viewer-ui__controls-area {
   /* Move the controls above the thumbnails. Need to calculate the height of the thumbnails list */
-  bottom: calc(var(--thumbnail-width) / var(--media-preview-ratio) + var(--padding-lg) * 2);
+  bottom: calc(
+    var(--thumbnail-width) / var(--media-preview-ratio) + var(--padding-lg) * 2
+  );
   right: var(--padding-lg);
 }
 
 @media screen and (max-width: 749px) {
-  slideshow-component:has(:not(.mobile\:hidden) :is(.slideshow-controls__dots, .slideshow-controls__counter))
+  slideshow-component:has(
+      :not(.mobile\:hidden)
+        :is(.slideshow-controls__dots, .slideshow-controls__counter)
+    )
     .shopify-model-viewer-ui__controls-area {
     /* Position the controls just above the counter */
     bottom: calc(var(--minimum-touch-target) + var(--padding-sm));
@@ -1980,13 +2081,17 @@ slideshow-slide .shopify-model-viewer-ui__controls-area.shopify-model-viewer-ui_
 }
 
 @media screen and (min-width: 750px) {
-  slideshow-component:has(:not(.desktop\:hidden) :is(.slideshow-controls__dots, .slideshow-controls__counter))
+  slideshow-component:has(
+      :not(.desktop\:hidden)
+        :is(.slideshow-controls__dots, .slideshow-controls__counter)
+    )
     .shopify-model-viewer-ui__controls-area {
     /* Position the controls just above the counter */
     bottom: calc(var(--minimum-touch-target) + var(--padding-sm));
   }
 
-  .dialog-zoomed-gallery .shopify-model-viewer-ui__controls-area.shopify-model-viewer-ui__controls-area {
+  .dialog-zoomed-gallery
+    .shopify-model-viewer-ui__controls-area.shopify-model-viewer-ui__controls-area {
     /* Move the controls up to match the padding on the thumbnails */
     bottom: var(--padding-lg);
 
@@ -2073,7 +2178,11 @@ deferred-media[data-media-loaded] img {
   }
 }
 
-deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__poster-button ~ video) {
+deferred-media[class]
+  :is(
+    .deferred-media__poster-button img,
+    .deferred-media__poster-button ~ video
+  ) {
   /* only apply this on the video block not product media */
   object-fit: cover;
   height: 100%;
@@ -2100,7 +2209,9 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
 
 /* Swatches */
 .swatch {
-  --color-border: rgb(var(--color-foreground-rgb) / var(--style-border-swatch-opacity));
+  --color-border: rgb(
+    var(--color-foreground-rgb) / var(--style-border-swatch-opacity)
+  );
   --min-width-unitless: 15.9999; /* want to avoid division by 0 */
   --min-height-unitless: 15.9999; /* want to avoid division by 0 */
   --min-height: 16px;
@@ -2113,8 +2224,12 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   --max-filter-size: 32px;
 
   /* From the settings */
-  --offset-swatch-width: calc(var(--variant-picker-swatch-width-unitless) - var(--min-width-unitless));
-  --offset-swatch-height: calc(var(--variant-picker-swatch-height-unitless) - var(--min-height-unitless));
+  --offset-swatch-width: calc(
+    var(--variant-picker-swatch-width-unitless) - var(--min-width-unitless)
+  );
+  --offset-swatch-height: calc(
+    var(--variant-picker-swatch-height-unitless) - var(--min-height-unitless)
+  );
 
   /**
     Offset values are obtained from the following formulas:
@@ -2132,23 +2247,31 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
     by some scaling factor.
   */
   --offset-scaled-width: calc(
-    var(--scaling-factor) * var(--offset-swatch-width) / var(--offset-swatch-height) * var(--offset-max-swatch-size)
+    var(--scaling-factor) * var(--offset-swatch-width) /
+      var(--offset-swatch-height) * var(--offset-max-swatch-size)
   );
   --offset-scaled-height: calc(
-    var(--scaling-factor) * var(--offset-swatch-height) / var(--offset-swatch-width) * var(--offset-max-swatch-size)
+    var(--scaling-factor) * var(--offset-swatch-height) /
+      var(--offset-swatch-width) * var(--offset-max-swatch-size)
   );
   --offset-max-swatch-size: calc(var(--max-swatch-size) - var(--min-width));
 
   /* width = min(m + sU, (m + s * W'/H' * M'), M) */
   --swatch-width: min(
-    calc(var(--min-width) + var(--scaling-factor) * var(--offset-swatch-width) * 1px),
+    calc(
+      var(--min-width) + var(--scaling-factor) * var(--offset-swatch-width) *
+        1px
+    ),
     calc(var(--min-width) + var(--offset-scaled-width)),
     var(--max-swatch-size)
   );
 
   /* height = min(m + sV, (m + s * H'/W' * M'), M) */
   --swatch-height: min(
-    calc(var(--min-height) + var(--scaling-factor) * var(--offset-swatch-height) * 1px),
+    calc(
+      var(--min-height) + var(--scaling-factor) * var(--offset-swatch-height) *
+        1px
+    ),
     calc(var(--min-height) + var(--offset-scaled-height)),
     var(--max-swatch-size)
   );
@@ -2157,7 +2280,8 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   background: var(--swatch-background);
   background-position: var(--swatch-focal-point, center);
   border-radius: var(--variant-picker-swatch-radius);
-  border: var(--style-border-swatch-width) var(--style-border-swatch-style) var(--color-border);
+  border: var(--style-border-swatch-width) var(--style-border-swatch-style)
+    var(--color-border);
   width: var(--swatch-width);
   height: var(--swatch-height);
 
@@ -2195,7 +2319,9 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   &.swatch--pill {
     --style-border-swatch-width: var(--variant-picker-border-width);
     --style-border-swatch-style: var(--variant-picker-border-style);
-    --color-border: rgb(var(--color-foreground-rgb) / var(--variant-picker-border-opacity));
+    --color-border: rgb(
+      var(--color-foreground-rgb) / var(--variant-picker-border-opacity)
+    );
   }
 
   &.swatch--variant-image {
@@ -2269,9 +2395,14 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   .variant-option__select-wrapper,
   .variant-option__button-label::before,
   .variant-option__button-label::after,
-  .variant-option__button-label:has([data-previous-checked='true'], [data-current-checked='true'])
+  .variant-option__button-label:has(
+      [data-previous-checked="true"],
+      [data-current-checked="true"]
+    )
     .variant-option__button-label__pill,
-  .variant-option__button-label:not(.variant-option__button-label--has-swatch) svg line:last-of-type {
+  .variant-option__button-label:not(.variant-option__button-label--has-swatch)
+    svg
+    line:last-of-type {
     transition-duration: var(--animation-speed);
     transition-timing-function: var(--animation-easing);
   }
@@ -2280,11 +2411,16 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
     transition-property: transform;
   }
 
-  .variant-option__button-label:not(.variant-option__button-label--has-swatch) svg line:last-of-type {
+  .variant-option__button-label:not(.variant-option__button-label--has-swatch)
+    svg
+    line:last-of-type {
     transition-property: clip-path;
   }
 
-  .variant-option__button-label:has([data-previous-checked='true'], [data-current-checked='true'])
+  .variant-option__button-label:has(
+      [data-previous-checked="true"],
+      [data-current-checked="true"]
+    )
     .variant-option__button-label__pill {
     transition-property: transform;
   }
@@ -2325,7 +2461,7 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   gap: 0;
 
   &:hover,
-  &:hover:has([aria-disabled='true']):has([data-option-available='false']) {
+  &:hover:has([aria-disabled="true"]):has([data-option-available="false"]) {
     background-color: var(--color-variant-hover-background);
     border-color: var(--color-variant-hover-border);
     color: var(--color-variant-hover-text);
@@ -2334,7 +2470,9 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   /* we need something like overflow-clip-margin to use the pseudoelement but it doesn't work in Safari */
 
   /* so instead use the layered background image trick */
-  &:not(.variant-option__button-label--has-swatch):has([data-option-available='false']) {
+  &:not(.variant-option__button-label--has-swatch):has(
+      [data-option-available="false"]
+    ) {
     border-width: 0;
   }
 
@@ -2342,11 +2480,14 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
 
   /* ::after is the unavailable variant border that clips in */
   &:not(.variant-option__button-label--has-swatch)::before,
-  &:has([data-option-available='false']):not(.variant-option__button-label--has-swatch)::after {
-    content: '';
+  &:has([data-option-available="false"]):not(
+      .variant-option__button-label--has-swatch
+    )::after {
+    content: "";
     position: absolute;
     inset: 0;
-    border: var(--options-border-width) solid var(--color-selected-variant-border);
+    border: var(--options-border-width) solid
+      var(--color-selected-variant-border);
     border-radius: inherit;
     pointer-events: none;
     z-index: 2;
@@ -2354,7 +2495,9 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
     clip-path: inset(var(--clip, 0 0 0 0));
   }
 
-  &:has([data-option-available='false']):not(.variant-option__button-label--has-swatch)::before {
+  &:has([data-option-available="false"]):not(
+      .variant-option__button-label--has-swatch
+    )::before {
     inset: 0;
   }
 
@@ -2365,20 +2508,24 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
     inset: calc(var(--options-border-width) * -1);
   }
 
-  &:has(:checked):not(.variant-option__button-label--has-swatch, :has([data-option-available='false']))::before {
+  &:has(:checked):not(
+      .variant-option__button-label--has-swatch,
+      :has([data-option-available="false"])
+    )::before {
     border-color: var(--color-selected-variant-border);
   }
 
   /* setting left/right accounts for variant buttons of different widths */
   &:not(:has(:checked)):has(~ label > :checked),
-  &:has(:checked):has(~ label > [data-previous-checked='true']) {
+  &:has(:checked):has(~ label > [data-previous-checked="true"]) {
     .variant-option__button-label__pill {
       right: 0;
       left: unset;
     }
   }
 
-  &:has([data-previous-checked='true']) ~ label:has([data-current-checked='true']),
+  &:has([data-previous-checked="true"])
+    ~ label:has([data-current-checked="true"]),
   &:has(:checked) ~ label {
     .variant-option__button-label__pill {
       left: 0;
@@ -2394,21 +2541,27 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
     --pill-offset: calc(-100% - 1px);
   }
 
-  &:has([data-current-checked='true']):first-of-type
+  &:has([data-current-checked="true"]):first-of-type
     ~ label:last-of-type:not(.variant-option__button-label--has-swatch),
-  &:not(:has(:checked)):has(~ label > :checked):not(.variant-option__button-label--has-swatch) {
+  &:not(:has(:checked)):has(~ label > :checked):not(
+      .variant-option__button-label--has-swatch
+    ) {
     --clip: 0 0 0 100%;
   }
 
-  &:not(:has([data-current-checked='true'])):first-of-type:has(~ label:last-of-type > :checked):not(
-      .variant-option__button-label--has-swatch
-    ),
+  &:not(:has([data-current-checked="true"])):first-of-type:has(
+      ~ label:last-of-type > :checked
+    ):not(.variant-option__button-label--has-swatch),
   &:has(:checked) ~ label:not(.variant-option__button-label--has-swatch) {
     --clip: 0 100% 0 0;
   }
 
-  &:has([data-previous-checked='true'], [data-current-checked='true']) .variant-option__button-label__pill {
-    width: max(var(--pill-width-current, 100%), var(--pill-width-previous, 100%));
+  &:has([data-previous-checked="true"], [data-current-checked="true"])
+    .variant-option__button-label__pill {
+    width: max(
+      var(--pill-width-current, 100%),
+      var(--pill-width-previous, 100%)
+    );
   }
 
   @media screen and (min-width: 750px) {
@@ -2420,13 +2573,14 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
 
 /* the more complex selector rules here produce the wrap around effect for first/last variants */
 .variant-option--buttons:has(:nth-of-type(3)) {
-  .variant-option__button-label:has([data-current-checked='true']):first-of-type ~ label:last-of-type {
+  .variant-option__button-label:has([data-current-checked="true"]):first-of-type
+    ~ label:last-of-type {
     --pill-offset: calc(100% + 1px);
   }
 
-  .variant-option__button-label:not(:has([data-current-checked='true'])):first-of-type:has(
-      ~ label:last-of-type > :checked
-    ) {
+  .variant-option__button-label:not(
+      :has([data-current-checked="true"])
+    ):first-of-type:has(~ label:last-of-type > :checked) {
     --pill-offset: calc(-100% - 1px);
   }
 }
@@ -2450,10 +2604,17 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
 }
 
 .variant-option--equal-width-buttons {
-  --variant-min-width: clamp(44px, calc(var(--variant-option-padding-inline) * 2 + var(--variant-ch)), 100%);
+  --variant-min-width: clamp(
+    44px,
+    calc(var(--variant-option-padding-inline) * 2 + var(--variant-ch)),
+    100%
+  );
 
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--variant-min-width), 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(var(--variant-min-width), 1fr)
+  );
 
   .variant-option__button-label {
     min-width: var(--variant-min-width);
@@ -2501,12 +2662,13 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   }
 }
 
-.variant-option__button-label:has([data-option-available='false']) {
+.variant-option__button-label:has([data-option-available="false"]) {
   color: rgb(var(--color-variant-text-rgb) / var(--opacity-60));
 }
 
 .variant-option__button-label--has-swatch:hover {
-  outline: var(--focus-outline-width) solid rgb(var(--color-foreground-rgb) / var(--opacity-35-55));
+  outline: var(--focus-outline-width) solid
+    rgb(var(--color-foreground-rgb) / var(--opacity-35-55));
   outline-offset: var(--focus-outline-offset);
 }
 
@@ -2529,7 +2691,7 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
 
   .variant-option__button-label--has-swatch:has(:checked)::after,
   .variant-option__button-label:has(:focus-visible) .swatch::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: calc(-1 * var(--focus-outline-offset));
     border: var(--focus-outline);
@@ -2539,7 +2701,9 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   }
 }
 
-.variant-option__button-label:has([data-option-available='false']):has(:checked) {
+.variant-option__button-label:has([data-option-available="false"]):has(
+    :checked
+  ) {
   background-color: inherit;
   color: rgb(var(--color-variant-text-rgb) / var(--opacity-60));
 }
@@ -2578,7 +2742,8 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   stroke: var(--variant-picker-stroke-color);
 }
 
-.variant-option__button-label:not(.variant-option__button-label--has-swatch) svg {
+.variant-option__button-label:not(.variant-option__button-label--has-swatch)
+  svg {
   stroke: var(--color-variant-border);
 
   line {
@@ -2646,12 +2811,12 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
 }
 
 /* Hide "Add" button when "Choose" button is shown */
-[data-quick-add-button='choose'] add-to-cart-component {
+[data-quick-add-button="choose"] add-to-cart-component {
   display: none;
 }
 
 /* Hide "Choose" button when "Add" button is shown */
-[data-quick-add-button='add'] .quick-add__button--choose {
+[data-quick-add-button="add"] .quick-add__button--choose {
   display: none;
 }
 
@@ -2668,7 +2833,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
   transition: transform var(--animation-speed) var(--animation-easing);
 }
 
-.drawer[data-open='true'] {
+.drawer[data-open="true"] {
   transform: translateX(0);
 }
 
@@ -2707,7 +2872,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
   position: relative;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -2743,7 +2908,10 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
 
 .spacing-style,
 .inherit-spacing {
-  padding-block: calc(var(--padding-block-start) + var(--section-top-offset, 0px)) var(--padding-block-end);
+  padding-block: calc(
+      var(--padding-block-start) + var(--section-top-offset, 0px)
+    )
+    var(--padding-block-end);
   padding-inline: var(--padding-inline-start) var(--padding-inline-end);
   margin-block: var(--margin-block-start) var(--margin-block-end);
   margin-inline: var(--margin-inline-start) var(--margin-inline-end);
@@ -2879,7 +3047,9 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
   flex-grow: 1;
   text-align: left;
   border-radius: var(--style-border-radius-inputs);
-  transition: box-shadow var(--animation-speed) ease, background-color var(--animation-speed) ease;
+  transition:
+    box-shadow var(--animation-speed) ease,
+    background-color var(--animation-speed) ease;
   padding: var(--input-padding);
   box-shadow: var(--input-box-shadow);
   background-color: var(--color-input-background);
@@ -2916,7 +3086,9 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
   margin-bottom: 0;
   pointer-events: none;
   position: absolute;
-  transition: top var(--animation-speed) ease, font-size var(--animation-speed) ease;
+  transition:
+    top var(--animation-speed) ease,
+    font-size var(--animation-speed) ease;
 }
 
 /* RTE styles */
@@ -2946,7 +3118,8 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
     margin-inline: 1.5em 2.3em;
     margin-block: 3.8em;
     padding-inline-start: 0.8em;
-    border-inline-start: 1.5px solid rgb(var(--color-foreground-rgb) / var(--opacity-25));
+    border-inline-start: 1.5px solid
+      rgb(var(--color-foreground-rgb) / var(--opacity-25));
     font-style: italic;
     font-weight: 500;
   }
@@ -2969,7 +3142,8 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
   }
 
   tr:has(td) {
-    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-10));
+    border-bottom: 1px solid
+      rgb(var(--color-foreground-rgb) / var(--opacity-10));
   }
 
   th,
@@ -3075,8 +3249,8 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
 }
 
 /* Radio buttons and checkboxes - shared base styles */
-:where(input[type='radio']),
-:where(input[type='checkbox']) {
+:where(input[type="radio"]),
+:where(input[type="checkbox"]) {
   width: var(--checkbox-size);
   height: var(--checkbox-size);
   aspect-ratio: 1;
@@ -3092,19 +3266,21 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
 }
 
 /* Radio buttons */
-input[type='radio'] {
+input[type="radio"] {
   border-radius: var(--style-border-radius-50);
   background: transparent;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
-:where(input[type='radio']):checked {
+:where(input[type="radio"]):checked {
   border-color: var(--color-foreground);
   background: var(--color-background);
 }
 
-:where(input[type='radio']):checked::after {
-  content: '';
+:where(input[type="radio"]):checked::after {
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -3116,44 +3292,46 @@ input[type='radio'] {
   transition: background 0.2s ease;
 }
 
-:where(input[type='radio']):disabled {
+:where(input[type="radio"]):disabled {
   border-color: var(--input-disabled-border-color);
   background-color: var(--input-disabled-background-color);
   cursor: not-allowed;
 }
 
-:where(input[type='radio']):disabled:checked::after {
+:where(input[type="radio"]):disabled:checked::after {
   background: var(--input-disabled-background-color);
 }
 
-:where(input[type='radio']):not(:disabled):hover {
+:where(input[type="radio"]):not(:disabled):hover {
   border-color: rgb(var(--color-foreground-rgb) / var(--opacity-40-60));
   background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
 }
 
-:where(input[type='radio']):not(:disabled):hover:checked {
+:where(input[type="radio"]):not(:disabled):hover:checked {
   border-color: var(--color-foreground);
   background-color: var(--color-background);
 }
 
-:where(input[type='radio']):not(:disabled):hover:checked::after {
+:where(input[type="radio"]):not(:disabled):hover:checked::after {
   background: rgb(var(--color-foreground-rgb) / var(--opacity-85));
 }
 
 /* Checkboxes */
-:where(input[type='checkbox']) {
+:where(input[type="checkbox"]) {
   border-radius: var(--checkbox-border-radius);
   background-color: var(--color-background);
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
-:where(input[type='checkbox']):checked {
+:where(input[type="checkbox"]):checked {
   background-color: var(--color-foreground);
   border-color: var(--color-foreground);
 }
 
-:where(input[type='checkbox']):checked::after {
-  content: '';
+:where(input[type="checkbox"]):checked::after {
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -3167,61 +3345,61 @@ input[type='radio'] {
   mask-position: center;
 }
 
-:where(input[type='checkbox']):not(:disabled):hover {
+:where(input[type="checkbox"]):not(:disabled):hover {
   border-color: rgb(var(--color-foreground-rgb) / var(--opacity-40-60));
   background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
 }
 
-:where(input[type='checkbox']):not(:disabled):hover:checked {
+:where(input[type="checkbox"]):not(:disabled):hover:checked {
   border-color: var(--color-foreground);
   background-color: rgb(var(--color-foreground-rgb) / var(--opacity-85));
 }
 
-:where(input[type='checkbox']):disabled {
+:where(input[type="checkbox"]):disabled {
   background-color: var(--input-disabled-background-color);
   border-color: var(--input-disabled-border-color);
   cursor: not-allowed;
 }
 
-:where(input[type='checkbox']):disabled:checked::after {
+:where(input[type="checkbox"]):disabled:checked::after {
   background-color: var(--input-disabled-text-color);
 }
 
 /* Shared styles for radio buttons and checkboxes */
-:where(input[type='radio']) + label,
-:where(input[type='checkbox']) + label {
+:where(input[type="radio"]) + label,
+:where(input[type="checkbox"]) + label {
   display: inline;
   vertical-align: middle;
   cursor: pointer;
 }
 
-:where(input[type='radio']):disabled + label,
-:where(input[type='checkbox']):disabled + label {
+:where(input[type="radio"]):disabled + label,
+:where(input[type="checkbox"]):disabled + label {
   color: var(--input-disabled-text-color);
   cursor: not-allowed;
 }
 
 /* Flexbox for labels wrapping radio buttons or checkboxes */
-label:has(input[type='radio']),
-label:has(input[type='checkbox']) {
+label:has(input[type="radio"]),
+label:has(input[type="checkbox"]) {
   display: inline-flex;
   align-items: center;
   gap: var(--padding-2xs);
   cursor: pointer;
 }
 
-label:has(input[type='radio']:disabled),
-label:has(input[type='checkbox']:disabled) {
+label:has(input[type="radio"]:disabled),
+label:has(input[type="checkbox"]:disabled) {
   cursor: not-allowed;
 }
 
 /* Override for swatch labels to maintain block display */
-.variant-option__button-label--has-swatch:has(input[type='radio']) {
+.variant-option__button-label--has-swatch:has(input[type="radio"]) {
   display: block;
 }
 
 /* Add to cart button */
-.button[id^='BuyButtons-ProductSubmitButton-'] {
+.button[id^="BuyButtons-ProductSubmitButton-"] {
   position: relative;
   overflow: hidden;
 }
@@ -3308,7 +3486,8 @@ label:has(input[type='checkbox']:disabled) {
   }
 }
 
-.product-form-buttons:has(.add-to-cart-button.button-secondary) .quantity-selector {
+.product-form-buttons:has(.add-to-cart-button.button-secondary)
+  .quantity-selector {
   border-radius: var(--style-border-radius-buttons-secondary);
 }
 
@@ -3367,32 +3546,36 @@ label:has(input[type='checkbox']:disabled) {
   transform: scale(0.9);
 }
 
-.quantity-selector input[type='number'] {
+.quantity-selector input[type="number"] {
   margin: 0;
   text-align: center;
   border: none;
   appearance: none;
-  max-width: calc(var(--quantity-selector-width) - var(--minimum-touch-target) * 2);
+  max-width: calc(
+    var(--quantity-selector-width) - var(--minimum-touch-target) * 2
+  );
   border-radius: var(--style-border-radius-buttons);
   color: var(--color-input-text);
   background-color: transparent;
 }
 
 /* Chrome, Safari, Edge, Opera */
-.quantity-selector input[type='number']::-webkit-inner-spin-button,
-.quantity-selector input[type='number']::-webkit-outer-spin-button {
+.quantity-selector input[type="number"]::-webkit-inner-spin-button,
+.quantity-selector input[type="number"]::-webkit-outer-spin-button {
   appearance: none;
 }
 
 /* Firefox */
-.quantity-selector input[type='number'] {
+.quantity-selector input[type="number"] {
   appearance: textfield;
 }
 
 /* Pills (used in facets and predictive search) */
 
 .pills__pill {
-  --pills-pill-background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5-15));
+  --pills-pill-background-color: rgb(
+    var(--color-foreground-rgb) / var(--opacity-5-15)
+  );
 
   color: var(--color-foreground);
   display: flex;
@@ -3407,7 +3590,9 @@ label:has(input[type='checkbox']:disabled) {
   transition: background-color var(--animation-speed) var(--animation-easing);
 
   &:hover {
-    --pills-pill-background-color: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
+    --pills-pill-background-color: rgb(
+      var(--color-foreground-rgb) / var(--opacity-10-25)
+    );
   }
 
   @media screen and (max-width: 749px) {
@@ -3459,7 +3644,8 @@ fly-to-cart {
   translate: var(--start-x, 0) var(--start-y, 0);
   transform: translate(-50%, -50%);
   animation-name: travel-x, travel-y, travel-scale;
-  animation-timing-function: var(--x-timing), var(--y-timing), var(--scale-timing);
+  animation-timing-function:
+    var(--x-timing), var(--y-timing), var(--scale-timing);
   animation-duration: 0.6s;
   animation-composition: accumulate;
   animation-fill-mode: both;
@@ -3533,7 +3719,13 @@ fly-to-cart.fly-to-cart--sticky {
     grid-template-columns:
       1fr repeat(
         var(--centered-column-number),
-        minmax(0, calc((var(--page-width) - var(--page-margin) * 2) / var(--centered-column-number)))
+        minmax(
+          0,
+          calc(
+            (var(--page-width) - var(--page-margin) * 2) /
+              var(--centered-column-number)
+          )
+        )
       )
       1fr;
   }
@@ -3550,27 +3742,41 @@ fly-to-cart.fly-to-cart--sticky {
     grid-template-columns:
       minmax(var(--page-margin), 1fr) repeat(
         var(--centered-column-number),
-        minmax(0, calc((var(--page-width) - var(--page-margin) * 2) / var(--centered-column-number)))
+        minmax(
+          0,
+          calc(
+            (var(--page-width) - var(--page-margin) * 2) /
+              var(--centered-column-number)
+          )
+        )
       )
       minmax(var(--page-margin), 1fr);
   }
 }
 
-.collection-wrapper:has(.facets--vertical) .facets-block-wrapper--vertical:not(.hidden) ~ .main-collection-grid {
+.collection-wrapper:has(.facets--vertical)
+  .facets-block-wrapper--vertical:not(.hidden)
+  ~ .main-collection-grid {
   @media screen and (min-width: 750px) {
-    grid-column: var(--facets-vertical-col-width) / var(--full-width-column-number);
+    grid-column: var(--facets-vertical-col-width) /
+      var(--full-width-column-number);
   }
 }
 
-.collection-wrapper:has(.facets-block-wrapper--vertical:not(#filters-drawer)):has(.collection-wrapper--full-width) {
+.collection-wrapper:has(
+    .facets-block-wrapper--vertical:not(#filters-drawer)
+  ):has(.collection-wrapper--full-width) {
   @media screen and (min-width: 750px) {
     grid-column: 1 / -1;
-    grid-template-columns: 0fr repeat(var(--centered-column-number), minmax(0, 1fr)) 0fr;
+    grid-template-columns: 0fr repeat(
+        var(--centered-column-number),
+        minmax(0, 1fr)
+      ) 0fr;
   }
 }
 
 :is(.collection-wrapper--full-width, .collection-wrapper--full-width-on-mobile)
-  [product-grid-view='default']
+  [product-grid-view="default"]
   .product-grid__card {
   @media screen and (max-width: 749px) {
     padding-inline-start: max(var(--padding-xs), var(--padding-inline-start));
@@ -3579,7 +3785,7 @@ fly-to-cart.fly-to-cart--sticky {
 }
 
 :is(.collection-wrapper--full-width, .collection-wrapper--full-width-on-mobile)
-  [product-grid-view='mobile-single']
+  [product-grid-view="mobile-single"]
   .product-grid__card {
   @media screen and (max-width: 749px) {
     padding-inline-start: max(var(--padding-xs), var(--padding-inline-start));
@@ -3591,8 +3797,12 @@ fly-to-cart.fly-to-cart--sticky {
 :is(.collection-wrapper--full-width) .card-gallery,
 :is(.collection-wrapper--full-width-on-mobile) .card-gallery {
   @media screen and (max-width: 749px) {
-    margin-inline-start: calc(-1 * max(var(--padding-xs), var(--padding-inline-start)));
-    margin-inline-end: calc(-1 * max(var(--padding-xs), var(--padding-inline-end)));
+    margin-inline-start: calc(
+      -1 * max(var(--padding-xs), var(--padding-inline-start))
+    );
+    margin-inline-end: calc(
+      -1 * max(var(--padding-xs), var(--padding-inline-end))
+    );
   }
 }
 
@@ -3612,7 +3822,8 @@ fly-to-cart.fly-to-cart--sticky {
   }
 }
 
-.collection-wrapper:has(.product-grid-mobile--large) .facets-mobile-wrapper.facets-controls-wrapper {
+.collection-wrapper:has(.product-grid-mobile--large)
+  .facets-mobile-wrapper.facets-controls-wrapper {
   @media screen and (max-width: 749px) {
     display: none;
   }
@@ -3879,7 +4090,7 @@ fly-to-cart.fly-to-cart--sticky {
 }
 
 .top-shadow::before {
-  content: '';
+  content: "";
   box-shadow: 0 0 10px var(--color-shadow);
   position: absolute;
   z-index: var(--layer-lowest);
@@ -3894,7 +4105,7 @@ fly-to-cart.fly-to-cart--sticky {
 }
 
 .bottom-shadow::before {
-  content: '';
+  content: "";
   box-shadow: 0 0 10px var(--color-shadow);
   position: absolute;
   z-index: var(--layer-lowest);
@@ -3943,7 +4154,9 @@ slideshow-component.slideshow--content-below-media slideshow-slide {
   display: grid;
 }
 
-.slideshow--content-below-media slideshow-slide :is(.slide__image-container, .slide__content) {
+.slideshow--content-below-media
+  slideshow-slide
+  :is(.slide__image-container, .slide__content) {
   position: static;
 }
 
@@ -4021,7 +4234,7 @@ slideshow-slides {
   }
 }
 
-slideshow-component[disabled='true'] slideshow-slides {
+slideshow-component[disabled="true"] slideshow-slides {
   overflow: hidden;
 }
 
@@ -4053,11 +4266,11 @@ slideshow-slide {
   overflow: hidden;
 
   slideshow-component[actioned] &,
-  &[aria-hidden='false'] {
+  &[aria-hidden="false"] {
     content-visibility: visible;
   }
 
-  slideshow-component slideshow-slide:not([aria-hidden='false']) {
+  slideshow-component slideshow-slide:not([aria-hidden="false"]) {
     content-visibility: hidden;
   }
 
@@ -4066,7 +4279,7 @@ slideshow-slide {
   }
 
   /* Make inactive slides appear clickable */
-  &[aria-hidden='true'] {
+  &[aria-hidden="true"] {
     cursor: pointer;
   }
 }
@@ -4083,8 +4296,8 @@ slideshow-slide.product-media-container--tallest {
   /* Media gallery has a peeking slide on the right side always, and on the left side when the current slide is the last one */
   .media-gallery--hint
     :is(
-      slideshow-slide:has(+ slideshow-slide[aria-hidden='false']:last-of-type),
-      slideshow-slide[aria-hidden='false'] + slideshow-slide
+      slideshow-slide:has(+ slideshow-slide[aria-hidden="false"]:last-of-type),
+      slideshow-slide[aria-hidden="false"] + slideshow-slide
     ) {
     content-visibility: auto;
 
@@ -4101,8 +4314,8 @@ slideshow-slide.product-media-container--tallest {
  */
 :is(.resource-list__carousel, .card-gallery)
   :is(
-    slideshow-slide:has(+ slideshow-slide[aria-hidden='false']),
-    slideshow-slide[aria-hidden='false'] + slideshow-slide
+    slideshow-slide:has(+ slideshow-slide[aria-hidden="false"]),
+    slideshow-slide[aria-hidden="false"] + slideshow-slide
   ) {
   content-visibility: auto;
 
@@ -4115,16 +4328,19 @@ slideshow-slide.product-media-container--tallest {
  * Be specific about HTML children structure to avoid targeting nested slideshows.
  * Ensure that the content is 'visible' while scrolling instead of 'auto' to avoid issues in Safari.
  */
-slideshow-component:is([dragging], [transitioning], :hover) > slideshow-container > slideshow-slides > slideshow-slide {
+slideshow-component:is([dragging], [transitioning], :hover)
+  > slideshow-container
+  > slideshow-slides
+  > slideshow-slide {
   content-visibility: visible;
 }
 
-slideshow-slides[gutters*='start'] {
+slideshow-slides[gutters*="start"] {
   padding-inline-start: var(--gutter-slide-width, 0);
   scroll-padding-inline-start: var(--gutter-slide-width, 0);
 }
 
-slideshow-slides[gutters*='end'] {
+slideshow-slides[gutters*="end"] {
   padding-inline-end: var(--gutter-slide-width, 0);
 }
 
@@ -4150,24 +4366,25 @@ slideshow-container {
 }
 
 @media screen and (min-width: 750px) {
-  .media-gallery--carousel slideshow-component:has(slideshow-controls[thumbnails]) {
-    &:has(slideshow-controls[pagination-position='right']) {
+  .media-gallery--carousel
+    slideshow-component:has(slideshow-controls[thumbnails]) {
+    &:has(slideshow-controls[pagination-position="right"]) {
       display: grid;
       grid-template:
-        'container controls' auto
-        'arrows controls' min-content
+        "container controls" auto
+        "arrows controls" min-content
         / 1fr auto;
     }
 
-    &:has(slideshow-controls[pagination-position='left']) {
+    &:has(slideshow-controls[pagination-position="left"]) {
       display: grid;
       grid-template:
-        'controls container' auto
-        'controls arrows' min-content
+        "controls container" auto
+        "controls arrows" min-content
         / auto 1fr;
     }
 
-    slideshow-controls[pagination-position='left'] {
+    slideshow-controls[pagination-position="left"] {
       order: -1;
     }
   }
@@ -4213,17 +4430,17 @@ slideshow-arrows {
   mix-blend-mode: difference;
   align-items: flex-end;
 
-  &[position='left'] {
+  &[position="left"] {
     justify-content: flex-start;
     padding-inline: var(--padding-xs);
   }
 
-  &[position='right'] {
+  &[position="right"] {
     justify-content: flex-end;
     padding-inline: var(--padding-xs);
   }
 
-  &[position='center'] {
+  &[position="center"] {
     justify-content: space-between;
     align-items: center;
   }
@@ -4234,7 +4451,7 @@ slideshow-arrows:has(.slideshow-control--shape-circle) {
   mix-blend-mode: normal;
 }
 
-slideshow-component[disabled='true'] slideshow-arrows {
+slideshow-component[disabled="true"] slideshow-arrows {
   display: none;
 }
 
@@ -4266,11 +4483,14 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
 }
 
 :not(.media-gallery--carousel)
-  > :is(slideshow-component:hover, slideshow-component:focus-within):not(:has(slideshow-controls:hover))
+  > :is(slideshow-component:hover, slideshow-component:focus-within):not(
+    :has(slideshow-controls:hover)
+  )
   > slideshow-container
   > slideshow-arrows
   .slideshow-control {
-  animation: arrowsSlideIn var(--animation-speed) var(--animation-easing) forwards;
+  animation: arrowsSlideIn var(--animation-speed) var(--animation-easing)
+    forwards;
 }
 
 @keyframes arrowsSlideIn {
@@ -4340,8 +4560,14 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
 
 .resource-list {
   --resource-list-mobile-gap-max: 9999px;
-  --resource-list-column-gap: min(var(--resource-list-column-gap-desktop), var(--resource-list-mobile-gap-max));
-  --resource-list-row-gap: min(var(--resource-list-row-gap-desktop), var(--resource-list-mobile-gap-max));
+  --resource-list-column-gap: min(
+    var(--resource-list-column-gap-desktop),
+    var(--resource-list-mobile-gap-max)
+  );
+  --resource-list-row-gap: min(
+    var(--resource-list-row-gap-desktop),
+    var(--resource-list-mobile-gap-max)
+  );
 
   width: 100%;
 
@@ -4387,7 +4613,11 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
       --resource-list-columns-per-row: 5;
     }
 
-    &:has(.resource-list__item:first-child:nth-last-child(n + 7):nth-last-child(-n + 8)) {
+    &:has(
+      .resource-list__item:first-child:nth-last-child(n + 7):nth-last-child(
+          -n + 8
+        )
+    ) {
       --resource-list-columns-per-row: 4;
     }
 
@@ -4436,17 +4666,28 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
 
 @container resource-list-carousel (max-width: 749px) {
   .resource-list__carousel .resource-list__slide {
-    --slide-width: clamp(150px, var(--mobile-card-size, 60cqw), var(--slide-width-max));
+    --slide-width: clamp(
+      150px,
+      var(--mobile-card-size, 60cqw),
+      var(--slide-width-max)
+    );
   }
 }
 
 @container resource-list-carousel (min-width: 750px) {
   .resource-list__carousel .resource-list__slide {
     --section-slide-width: calc(
-      (100% - (var(--resource-list-column-gap) * (var(--column-count) - 1)) - var(--peek-next-slide-size)) /
+      (
+          100% - (var(--resource-list-column-gap) * (var(--column-count) - 1)) -
+            var(--peek-next-slide-size)
+        ) /
         var(--column-count)
     );
-    --fallback-slide-width: clamp(150px, var(--mobile-card-size, 60cqw), var(--slide-width-max));
+    --fallback-slide-width: clamp(
+      150px,
+      var(--mobile-card-size, 60cqw),
+      var(--slide-width-max)
+    );
     --slide-width: var(--section-slide-width, var(--fallback-slide-width));
   }
 }
@@ -4493,7 +4734,8 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
 }
 
 /* Container styles */
-.section-content-wrapper.section-content-wrapper:where(.layout-panel-flex) .group-block--fill {
+.section-content-wrapper.section-content-wrapper:where(.layout-panel-flex)
+  .group-block--fill {
   flex: 1;
 }
 
@@ -4541,7 +4783,8 @@ accordion-custom {
       overflow-y: clip;
       opacity: 0;
       interpolate-size: allow-keywords;
-      transition: content-visibility var(--animation-speed-slow) allow-discrete,
+      transition:
+        content-visibility var(--animation-speed-slow) allow-discrete,
         padding-block var(--animation-speed-slow) var(--animation-easing),
         opacity var(--animation-speed-slow) var(--animation-easing),
         block-size var(--animation-speed-slow) var(--animation-easing);
@@ -4580,13 +4823,13 @@ accordion-custom {
   }
 }
 
-accordion-custom[data-disable-on-mobile='true'] summary {
+accordion-custom[data-disable-on-mobile="true"] summary {
   @media screen and (max-width: 749px) {
     cursor: auto;
   }
 }
 
-accordion-custom[data-disable-on-desktop='true'] summary {
+accordion-custom[data-disable-on-desktop="true"] summary {
   @media screen and (min-width: 750px) {
     cursor: auto;
   }
@@ -4648,11 +4891,13 @@ text-component {
 }
 
 .transition-transform {
-  transition: transform var(--animation-speed-medium) var(--animation-timing-bounce);
+  transition: transform var(--animation-speed-medium)
+    var(--animation-timing-bounce);
 }
 
 .transition-border-color {
-  transition: border-color var(--animation-speed-medium) var(--animation-timing-hover);
+  transition: border-color var(--animation-speed-medium)
+    var(--animation-timing-hover);
 }
 
 /* Global scrollbar styles */
@@ -4685,7 +4930,9 @@ text-component {
 }
 
 /* Product card title truncation - applied only to zoom-out view */
-[product-grid-view='zoom-out'] :is(.product-card, .product-grid__card) :is(h4, .h4) {
+[product-grid-view="zoom-out"]
+  :is(.product-card, .product-grid__card)
+  :is(h4, .h4) {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -4711,7 +4958,8 @@ text-component {
 .predictive-search-results__card:hover {
   position: relative;
   z-index: var(--layer-raised);
-  transition: transform var(--hover-transition-duration) var(--hover-transition-timing),
+  transition:
+    transform var(--hover-transition-duration) var(--hover-transition-timing),
     box-shadow var(--hover-transition-duration) var(--hover-transition-timing);
 }
 
@@ -4782,7 +5030,7 @@ text-component {
   }
 }
 
-product-recommendations:has([data-has-recommendations='false']) {
+product-recommendations:has([data-has-recommendations="false"]) {
   display: none;
 }
 
@@ -4823,7 +5071,8 @@ product-recommendations:has([data-has-recommendations='false']) {
   animation-duration: var(--animation-speed);
   animation-timing-function: var(--animation-easing);
   animation-fill-mode: forwards;
-  transition: width var(--animation-speed) var(--animation-easing),
+  transition:
+    width var(--animation-speed) var(--animation-easing),
     opacity var(--animation-speed) var(--animation-easing);
 }
 
@@ -4846,8 +5095,8 @@ product-recommendations:has([data-has-recommendations='false']) {
   height: 32px;
 }
 
-[data-added='true'] .add-to-cart-text,
-[data-added='true'] .add-to-cart__added {
+[data-added="true"] .add-to-cart-text,
+[data-added="true"] .add-to-cart__added {
   animation-name: atc-slide;
 }
 
@@ -4883,11 +5132,11 @@ product-recommendations:has([data-has-recommendations='false']) {
   }
 }
 
-.add-to-cart-button[data-added='true'] .checkmark-burst {
+.add-to-cart-button[data-added="true"] .checkmark-burst {
   opacity: 1;
 }
 
-.add-to-cart-button[data-added='true'] {
+.add-to-cart-button[data-added="true"] {
   .check {
     opacity: 1;
     scale: 1;
@@ -4917,7 +5166,7 @@ product-recommendations:has([data-has-recommendations='false']) {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .add-to-cart-button[data-added='true'] {
+  .add-to-cart-button[data-added="true"] {
     .check {
       transition-property: opacity, scale, filter;
       transition-duration: calc(calc(var(--check-speed) * 1s));
@@ -4928,28 +5177,41 @@ product-recommendations:has([data-has-recommendations='false']) {
     .tick {
       transition-property: scale;
       transition-duration: calc((calc(var(--tick-speed) * 1s)));
-      transition-delay: calc(((var(--base-delay) + (var(--check-speed) * (var(--step-delay) * 1.1))) * 1s));
+      transition-delay: calc(
+        (
+          (
+              var(--base-delay) +
+                (var(--check-speed) * (var(--step-delay) * 1.1))
+            ) *
+            1s
+        )
+      );
       transition-timing-function: ease-out;
     }
 
     .ring {
       transition-property: opacity, scale;
       transition-duration: calc((calc(var(--ring-speed) * 1s)));
-      transition-delay: calc(((var(--base-delay) + (var(--check-speed) * var(--step-delay))) * 1s));
+      transition-delay: calc(
+        ((var(--base-delay) + (var(--check-speed) * var(--step-delay))) * 1s)
+      );
       transition-timing-function: var(--ease-out-quad);
     }
 
     .line {
       transition-property: stroke-dashoffset;
       transition-duration: calc((calc(var(--burst-speed) * 1s)));
-      transition-delay: calc(((var(--base-delay) + (var(--check-speed) * var(--step-delay))) * 1s));
+      transition-delay: calc(
+        ((var(--base-delay) + (var(--check-speed) * var(--step-delay))) * 1s)
+      );
       transition-timing-function: var(--ease-out-cubic);
     }
   }
 
   .add-to-cart-text {
     transition-property: clip-path, opacity, filter, translate;
-    transition-duration: calc((var(--text-speed) * 0.6s)), calc((var(--text-speed) * 1s));
+    transition-duration:
+      calc((var(--text-speed) * 0.6s)), calc((var(--text-speed) * 1s));
     transition-timing-function: ease-out;
   }
 }

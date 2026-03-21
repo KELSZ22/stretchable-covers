@@ -1,0 +1,15 @@
+---
+description: Shopify theme project context and cross-cutting conventions
+alwaysApply: true
+---
+
+# Shopify theme (this repo)
+
+- This is a **Shopify** theme: Liquid sections/snippets, JSON templates, `config/settings_schema.json`, and `assets/` for CSS/JS.
+- Keep changes **minimal and scoped**; match existing naming, patterns, and spacing in touched files.
+- **Custom file naming**: always prefix filenames with `custom-` when creating new files or code in this project (e.g. `custom-faq.liquid`, `custom-banner.js`, `custom-hero.css`).
+- **Preserve section `schema` stability**: do not rename section files, `type` identifiers in JSON templates, or block `type` strings unless the user explicitly wants a breaking migration. Merchant and theme-editor data depend on these.
+- **`templates/*.json`** are often updated by the theme editor; avoid reordering or reshaping `sections` / `order` unless required for the task.
+- Prefer **Theme Check–friendly Liquid** (valid tags/filters, no undefined drops); run Theme Check when making substantial Liquid changes.
+- **Metafields**: always guard access (`blank` / presence); use the correct accessor for the metafield type; provide sensible fallbacks for storefront output.
+- Reuse **existing snippets, CSS variables, and JS components** before introducing parallel abstractions.

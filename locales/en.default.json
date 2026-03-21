@@ -110,10 +110,10 @@
   },
   "blocks": {
     "contact_form": {
-      "name": "Name",
-      "email": "Email",
+      "name": "Full Name",
+      "email": "Email Address",
       "phone": "Phone",
-      "comment": "Comment",
+      "comment": "Message",
       "post_success": "Thanks for contacting us. We'll get back to you as soon as possible.",
       "error_heading": "Please adjust the following:"
     },
