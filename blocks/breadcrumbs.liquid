@@ -1,0 +1,176 @@
+{%- liquid
+  assign block_settings = block.settings
+  assign alignment = block_settings.alignment
+  assign show_divider = block_settings.show_divider
+  assign separator = block_settings.separator | default: '>'
+-%}
+
+<div
+  class="breadcrumbs-block spacing-style{% if block_settings.inherit_color_scheme == false %} color-{{ block_settings.color_scheme }}{% endif %}"
+  style="{% render 'spacing-padding', settings: block_settings %}"
+  {{ block.shopify_attributes }}
+>
+  {% render 'breadcrumbs',
+    alignment: alignment,
+    show_divider: show_divider,
+    separator: separator,
+    class: 'breadcrumbs-block__nav'
+  %}
+</div>
+
+{% stylesheet %}
+  .breadcrumbs-block {
+    width: 100%;
+  }
+
+  .breadcrumbs .breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .breadcrumbs--center .breadcrumbs__list {
+    justify-content: center;
+  }
+
+  .breadcrumbs--left .breadcrumbs__list {
+    justify-content: flex-start;
+  }
+
+  .breadcrumbs__item {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .breadcrumbs__link {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .breadcrumbs__link:hover {
+    text-decoration: underline;
+  }
+
+  .breadcrumbs__current {
+    opacity: 0.7;
+  }
+
+  .breadcrumbs__separator {
+    color: #000;
+    user-select: none;
+  }
+
+  .breadcrumbs--divider .breadcrumbs__divider {
+    width: 100%;
+    height: 2px;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(to right, var(--color-foreground, currentColor) 0%, var(--color-border, currentColor) 100%);
+    opacity: 0.2;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "tag": null,
+  "class": "breadcrumbs-block-wrapper",
+  "settings": [
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "t:settings.alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:options.left"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show divider line above",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator character",
+      "default": ">"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "t:settings.inherit_color_scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumbs",
+      "category": "Navigation"
+    }
+  ]
+}
+{% endschema %}

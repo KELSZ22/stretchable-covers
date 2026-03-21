@@ -1,0 +1,122 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Title",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "policies_iAQQwF": {
+      "type": "policies",
+      "blocks": {
+        "policy_item_MV6rwX": {
+          "type": "policy_item",
+          "settings": {
+            "heading": "",
+            "content": "<p><strong>ALL SALES ARE FINAL </strong>unless there is an error in production. Since all orders are printed individually - they are customized to each client. Please be sure of your order(s) before submitting the final artwork. If you have questions, please contact us prior to placing your order and we will be happy to work with you.</p>"
+          }
+        },
+        "policy_item_Tny6m6": {
+          "type": "policy_item",
+          "settings": {
+            "heading": "ARTWORK SPECIFICATIONS:",
+            "content": "<p><em>If your program is not listed below, please contact us so we can find a way to use your files.</em></p>"
+          }
+        },
+        "policy_item_FUCL7z": {
+          "type": "policy_item",
+          "settings": {
+            "heading": "WE HAVE AVAILABLE:",
+            "content": "<ul><li>CorelDrawAdobe</li><li>Illustrator Adobe </li><li>Acrobat (for PDF files)</li></ul><p>There are many other programs available to open/read your files. However, since they are not specifically graphic programs, we  cannot build separations from them. Use of these non-graphic programs may be subject to additional conversion charges. <strong>PLEASE BE SURE TO CONVERT ALL FONTS TO ARTWORK</strong> or include your fonts for us to utilize.</p>"
+          }
+        },
+        "policy_item_YgCqD9": {
+          "type": "policy_item",
+          "settings": {
+            "heading": "VECTOR files vs. RASTER files:",
+            "content": "<p>Vector files allow us to manipulate the art by use of nodes (or points) which can be moved within the graphic (edges can be straightened, lines smoothed, etc).</p><p>Vector File Extensions we like to see: </p><ul><li>.CDR</li><li>.AI</li><li>.EPS</li><li>.PDF</li></ul><p>Raster images (no nodes and cannot be manipulated) need to be saved at 600 DPI (dots per inch) or above. The higher the resolution (quality), the better the prints on our products.<br/><br/>Raster File Extensions we can accept:</p><ul><li>.JPG</li><li>.GIF</li><li>.PSD</li><li>.TIF</li><li>.SVG</li><li>.BMP</li></ul><p>In most cases artwork “to size” is not necessary. Our graphics department can re-size your logo or imprint to fit our printable areas. ** NOTE: You must give us the diameter of the item we are covering to be sure the artwork fits correctly.<br/><br/><strong>The first 15 minutes of artwork are free (that is the average time it takes to size artwork that has been prepared correctly).   If additional artwork is required, we charge $100 per hour, charged in intervals of 15 minutes.</strong></p>"
+          }
+        },
+        "policy_item_PXRwwy": {
+          "type": "policy_item",
+          "settings": {
+            "heading": "PLEASE KEEP IN MIND",
+            "content": "<p>We cannot color match using sublimation printing. If you need a color matched as closely as possible to something else (like a uniform or upholstery), you may be asked to supply an actual sample that will be returned with your order. We will attempt to match colors as closely as we can. You may also supply us with color codes such as PMS, RGB or CMYK and we will do our best to match those colors for you. We print in RGB colors so this is our preferred color.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "policy_item_MV6rwX",
+        "policy_item_Tny6m6",
+        "policy_item_FUCL7z",
+        "policy_item_YgCqD9",
+        "policy_item_PXRwwy"
+      ],
+      "name": "Policies",
+      "settings": {
+        "title": "Return Policy",
+        "show_updated_date": true,
+        "color_scheme": "",
+        "section_width": "page-width",
+        "mobile_width": "full-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32
+      }
+    }
+  },
+  "order": [
+    "main",
+    "policies_iAQQwF"
+  ]
+}

@@ -1,0 +1,109 @@
+{%- comment -%}
+  Renders breadcrumb navigation. Builds trail from template context.
+  Accepts:
+  - alignment: 'left' | 'center'
+  - show_divider: boolean
+  - separator: string (default '>')
+  - class: optional extra class for wrapper
+{%- endcomment -%}
+
+{%- liquid
+  assign alignment = alignment | default: 'left'
+  assign show_divider = show_divider | default: false
+  assign crumb_separator = separator | default: '>'
+  assign breadcrumb_class = class | default: ''
+-%}
+
+{%- case template.name -%}
+  {%- when 'collection' -%}
+    {%- assign show_breadcrumbs = true -%}
+  {%- when 'product' -%}
+    {%- assign show_breadcrumbs = true -%}
+  {%- when 'page' -%}
+    {%- assign show_breadcrumbs = true -%}
+  {%- when 'blog' -%}
+    {%- assign show_breadcrumbs = true -%}
+  {%- when 'article' -%}
+    {%- assign show_breadcrumbs = true -%}
+  {%- when 'search' -%}
+    {%- assign show_breadcrumbs = true -%}
+  {%- when 'cart' -%}
+    {%- assign show_breadcrumbs = true -%}
+  {%- when 'list-collections' -%}
+    {%- assign show_breadcrumbs = true -%}
+  {%- else -%}
+    {%- assign show_breadcrumbs = false -%}
+{%- endcase -%}
+
+{%- if show_breadcrumbs -%}
+  <nav class="breadcrumbs breadcrumbs--{{ alignment }} {% if show_divider %}breadcrumbs--divider{% endif %} {{ breadcrumb_class }}" aria-label="Breadcrumb">
+    {%- if show_divider -%}
+      <div class="breadcrumbs__divider" aria-hidden="true"></div>
+    {%- endif -%}
+    <ol class="breadcrumbs__list">
+      <li class="breadcrumbs__item">
+        <a href="{{ routes.root_url }}" class="breadcrumbs__link">Home</a>
+      </li>
+
+      {%- case template.name -%}
+        {%- when 'collection' -%}
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+          <li class="breadcrumbs__item">
+            <span class="breadcrumbs__current" aria-current="page">{{ collection.title | escape }}</span>
+          </li>
+
+        {%- when 'product' -%}
+          {%- if product.collections.first != blank -%}
+            <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+            <li class="breadcrumbs__item">
+              <a href="{{ product.collections.first.url }}" class="breadcrumbs__link">{{ product.collections.first.title | escape }}</a>
+            </li>
+          {%- endif -%}
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+          <li class="breadcrumbs__item">
+            <span class="breadcrumbs__current" aria-current="page">{{ product.title | escape }}</span>
+          </li>
+
+        {%- when 'page' -%}
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+          <li class="breadcrumbs__item">
+            <span class="breadcrumbs__current" aria-current="page">{{ page.title | escape }}</span>
+          </li>
+
+        {%- when 'blog' -%}
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+          <li class="breadcrumbs__item">
+            <span class="breadcrumbs__current" aria-current="page">{{ blog.title | escape }}</span>
+          </li>
+
+        {%- when 'article' -%}
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+          <li class="breadcrumbs__item">
+            <a href="{{ blog.url }}" class="breadcrumbs__link">{{ blog.title | escape }}</a>
+          </li>
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+          <li class="breadcrumbs__item">
+            <span class="breadcrumbs__current" aria-current="page">{{ article.title | escape }}</span>
+          </li>
+
+        {%- when 'search' -%}
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+          <li class="breadcrumbs__item">
+            <span class="breadcrumbs__current" aria-current="page">Search results</span>
+          </li>
+
+        {%- when 'cart' -%}
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+          <li class="breadcrumbs__item">
+            <span class="breadcrumbs__current" aria-current="page">Cart</span>
+          </li>
+
+        {%- when 'list-collections' -%}
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ crumb_separator }}</li>
+          <li class="breadcrumbs__item">
+            <span class="breadcrumbs__current" aria-current="page">Collections</span>
+          </li>
+      {%- endcase -%}
+    </ol>
+  </nav>
+{%- endif -%}

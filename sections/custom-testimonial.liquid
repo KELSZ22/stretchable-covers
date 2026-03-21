@@ -1,0 +1,166 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+{%- style -%}
+  .testimonial-section {
+    padding: 80px 20px;
+    background-color: #fcfcfc;
+  }
+  .testimonial-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 50px;
+  }
+  .testimonial-header {
+    flex: 1 1 350px;
+  }
+  .testimonial-header h2 {
+    font-size: 2.5rem;
+    line-height: 1.1;
+    margin: 15px 0;
+    color: #222;
+  }
+  .testimonial-wrapper {
+    flex: 2 1 600px;
+    position: relative;
+    min-width: 0;
+  }
+  .swiper { width: 100%; padding-bottom: 50px !important; }
+  .testimonial-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .testimonial-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+  }
+  .testimonial-content { padding: 30px; flex-grow: 1; }
+  .quote-icon { font-size: 45px; color: #1a365d; margin-bottom: 10px; opacity: 0.8; }
+  .testimonial-text { font-style: italic; color: #333; line-height: 1.6; margin-bottom: 25px; }
+  .testimonial-author { font-weight: 700; font-size: 1.1rem; margin: 0; }
+  .testimonial-info { color: #777; font-size: 0.9rem; margin-top: 4px; }
+  .nav-controls { display: flex; gap: 15px; margin-top: 30px; }
+  .btn-prev, .btn-next {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: #fff;
+  }
+  .btn-next:hover, .btn-prev:hover { background: #1a365d; color: white; border-color: #1a365d; }
+  .btn-next:active, .btn-prev:active { scale: 0.9 }
+  /* Mobile Tweaks */
+  /* @media (max-width: 768px) {
+    .testimonial-container { flex-direction: column; text-align: center; }
+    .nav-controls { justify-content: center; }
+    .testimonial-header h2 { font-size: 1.8rem; }
+  } */
+  @media (max-width: 768px) {
+    .nav-controls {
+        display: none;
+    }
+    .testimonial-header { text-align: center; }
+  }
+{%- endstyle -%}
+
+<section class="testimonial-section">
+  <div class="testimonial-container">
+    
+    <div class="testimonial-header">
+      <div style="color:#f39c12">★★★★★ <span style="color:#666; font-size: 14px; margin-left: 8px;">{{ section.settings.trust_text }}</span></div>
+      <h2>{{ section.settings.heading }}</h2>
+      <p>{{ section.settings.subheading }}</p>
+      
+      <div class="nav-controls">
+        <div class="btn-prev"><p style="height: 0px; line-height: 0; margin-bottom: 4px;">←</p></div>
+        <div class="btn-next"><p style="height: 0px; line-height: 0; margin-bottom: 4px;">→</p></div>
+      </div>
+    </div>
+
+    <div class="testimonial-wrapper">
+      <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            <div class="swiper-slide">
+              <div class="testimonial-card">
+                {% if block.settings.image %}
+                  <img src="{{ block.settings.image | img_url: '600x' }}" class="testimonial-image" loading="lazy">
+                {% endif %}
+                <div class="testimonial-content">
+                  <div class="quote-icon">“</div>
+                  <p class="testimonial-text">{{ block.settings.review_text }}</p>
+                  <p class="testimonial-author">{{ block.settings.author_name }}</p>
+                  <p class="testimonial-info">{{ block.settings.author_info }}</p>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const swiper = new Swiper('.mySwiper', {
+      slidesPerView: 1.2,
+      spaceBetween: 20,
+      loop: true,
+      grabCursor: true,
+      navigation: {
+        nextEl: '.btn-next',
+        prevEl: '.btn-prev',
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 1.5,
+          spaceBetween: 30,
+        },
+        1024: {
+          slidesPerView: 2.4,
+          spaceBetween: 30,
+        }
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Swiper Testimonials",
+  "settings": [
+    { "type": "text", "id": "trust_text", "label": "Trust Text", "default": "Trusted by 450,000 + customers" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Why Our Customers Keep Coming Back" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Thousands of customers. Repeated use. Shared by our customers." }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Review Image" },
+        { "type": "textarea", "id": "review_text", "label": "Review text" },
+        { "type": "text", "id": "author_name", "label": "Author Name" },
+        { "type": "text", "id": "author_info", "label": "Company/Subtitle" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Swiper Testimonials" }]
+}
+{% endschema %}

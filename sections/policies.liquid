@@ -1,0 +1,636 @@
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} policies-section color-{{ section.settings.color_scheme }} spacing-style"
+  data-mobile-width="{{ section.settings.mobile_width }}"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="policies-section__inner">
+    {% if section.settings.title != blank %}
+      <h1 class="policies-section__title">{{ section.settings.title }}</h1>
+    {% endif %}
+    
+    {% if section.settings.show_updated_date %}
+      <p class="policies-section__subtitle">Updated last: {{ 'now' | date: '%B %d, %Y' }}</p>
+    {% endif %}
+
+    <div class="policies-section__content">
+      {% for block in section.blocks %}
+
+        {% if block.type == 'policy_item' %}
+          <div class="policies-section__item" {{ block.shopify_attributes }}>
+            {% if block.settings.heading != blank %}
+              <h2 class="policies-section__heading">{{ block.settings.heading }}</h2>
+            {% endif %}
+            {% if block.settings.content != blank %}
+              <div class="policies-section__body rte">
+                {{ block.settings.content }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if block.type == 'policy_table' %}
+          <div class="policies-section__table" {{ block.shopify_attributes }}>
+            {% assign mobile_layout_class = 'mobile-layout-' | append: block.settings.mobile_layout %}
+            {% unless block.settings.show_headers_on_mobile %}
+              {% assign mobile_layout_class = mobile_layout_class | append: ' hide-mobile-headers' %}
+            {% endunless %}
+            
+            <div class="policies-table policies-table--cols-{{ block.settings.columns }} {{ mobile_layout_class }}">
+
+              <div class="policies-table__col">
+                {% if block.settings.col1_heading != blank %}
+                  <div class="policies-table__heading">{{ block.settings.col1_heading }}</div>
+                {% endif %}
+                <div class="policies-table__content">
+                  {%- if block.settings.col1_content != blank -%}
+                    {%- assign rows = block.settings.col1_content | split: '<p>' -%}
+                    {%- for row in rows -%}
+                      {%- if row != blank -%}
+                        {%- assign clean_row = row | replace: '</p>', '' | strip -%}
+                        <div class="policies-table__row text-align-{{ block.settings.col1_alignment }}"><p>{{ clean_row }}</p></div>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                </div>
+              </div>
+
+              {% if block.settings.columns >= '2' %}
+              <div class="policies-table__col">
+                {% if block.settings.col2_heading != blank %}
+                  <div class="policies-table__heading">{{ block.settings.col2_heading }}</div>
+                {% endif %}
+                <div class="policies-table__content">
+                  {%- if block.settings.col2_content != blank -%}
+                    {%- assign rows = block.settings.col2_content | split: '<p>' -%}
+                    {%- for row in rows -%}
+                      {%- if row != blank -%}
+                        {%- assign clean_row = row | replace: '</p>', '' | strip -%}
+                        <div class="policies-table__row text-align-{{ block.settings.col2_alignment }}"><p>{{ clean_row }}</p></div>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                </div>
+              </div>
+              {% endif %}
+
+              {% if block.settings.columns == '3' %}
+              <div class="policies-table__col">
+                {% if block.settings.col3_heading != blank %}
+                  <div class="policies-table__heading">{{ block.settings.col3_heading }}</div>
+                {% endif %}
+                <div class="policies-table__content">
+                  {%- if block.settings.col3_content != blank -%}
+                    {%- assign rows = block.settings.col3_content | split: '<p>' -%}
+                    {%- for row in rows -%}
+                      {%- if row != blank -%}
+                        {%- assign clean_row = row | replace: '</p>', '' | strip -%}
+                        <div class="policies-table__row text-align-{{ block.settings.col3_alignment }}"><p>{{ clean_row }}</p></div>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                </div>
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+        {% endif %}
+
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .policies-section__inner {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: auto;
+    padding: 0 111px;
+    box-sizing: border-box;
+  }
+
+  .policies-section__title {
+    text-align: center;
+    margin-block-end: 0.5em;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    line-height: 1.2;
+  }
+
+  .policies-section__subtitle {
+    text-align: center;
+    margin-block-end: 2.5rem;
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.85;
+  }
+
+  .policies-section__content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left;
+  }
+
+  .policies-section__body p,
+  .policies-section__body ul {
+    margin-bottom: 0 !important;
+  }
+
+  .policies-section__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .policies-section__heading {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1.125rem;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .policies-section__body {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .policies-section__table{
+    max-width: 747px;
+  }
+  
+  .policies-table {
+    display: grid;
+    border: 1px solid #000;
+  }
+
+  .policies-table--cols-1 {
+    grid-template-columns: 1fr;
+  }
+
+  .policies-table--cols-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .policies-table--cols-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .policies-table__col {
+    border-right: 1px solid #000;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .policies-table__col:last-child {
+    border-right: none;
+  }
+
+  .policies-table__heading {
+    font-weight: 700;
+    padding: 22px 0;
+    border-bottom: 1px solid #000;
+    text-align: center;
+    height: 90px;
+  }
+
+  .policies-table__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .policies-table__row {
+    padding: 21px 17px;
+    border-bottom: 1px solid #000;
+    min-height: 140px;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+  }
+
+  .policies-table__col:last-child .policies-table__row:last-child,
+  .policies-table__content:last-child .policies-table__row:last-child {
+    border-bottom: none;
+  }
+
+  .policies-table__row p {
+    margin: 0;
+    width: 100%;
+  }
+
+  .policies-table__row ul,
+  .policies-table__row ol {
+    margin: 0;
+    padding-left: 20px;
+    width: 100%;
+  }
+
+  .policies-table__row li {
+    margin-bottom: 4px;
+  }
+
+  .policies-table__row li:last-child {
+    margin-bottom: 0;
+  }
+  @media screen and (max-width: 768px){
+    .policies-table__row.text-align-left {
+      text-align: left;
+      justify-content: flex-start;
+    }
+
+    .policies-table__row.text-align-center {
+      text-align: center;
+      justify-content: center;
+    }
+
+    .policies-table__row.text-align-right {
+      text-align: right;
+      justify-content: flex-end;
+    }
+
+    .policies-table__row.text-align-left p,
+    .policies-table__row.text-align-left ul,
+    .policies-table__row.text-align-left ol {
+      text-align: left;
+    }
+
+    .policies-table__row.text-align-center p,
+    .policies-table__row.text-align-center ul,
+    .policies-table__row.text-align-center ol {
+      text-align: center;
+    }
+
+    .policies-table__row.text-align-right p,
+    .policies-table__row.text-align-right ul,
+    .policies-table__row.text-align-right ol {
+      text-align: right;
+    }
+
+    .policies-table__row.text-align-center li {
+      text-align: center;
+      list-style-position: inside;
+    }
+
+    .policies-table__row.text-align-right li {
+      text-align: right;
+      list-style-position: inside;
+    }
+  }
+  @media screen and (max-width: 1006px){
+    .policies-table__row {
+      min-height: 163px;
+    }
+  }
+  @media screen and (max-width: 906px){
+    .policies-table__row {
+      min-height: 187px;
+    }
+  }
+  @media screen and (max-width: 862px){
+    .policies-table__row {
+      min-height: 211px;
+    }
+  }
+  @media screen and (max-width: 803px){
+    .policies-table__row {
+      min-height: 235px;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .policies-section__inner {
+      padding: 0 16px;
+    }
+
+    .policies-table {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .policies-table__col {
+      border-bottom: none;
+    }
+    .policies-table__heading {
+      height: 100%;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .policies-section[data-mobile-width="full-width"] > * {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .policies-table.mobile-layout-rows {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #000;
+    }
+    
+    .policies-table.mobile-layout-rows .policies-table__col {
+      border-right: none;
+      border-bottom: 1px solid #000;
+      width: 100%;
+    }
+    
+    .policies-table.mobile-layout-rows .policies-table__col:last-child {
+      border-bottom: none;
+    }
+    
+    .policies-table.mobile-layout-rows .policies-table__heading {
+      display: block;
+      padding: 15px 0;
+      height: auto;
+      border-bottom: 1px solid #000;
+    }
+    
+    .policies-table.mobile-layout-rows.hide-mobile-headers .policies-table__heading {
+      display: none;
+    }
+    
+    .policies-table.mobile-layout-rows .policies-table__row {
+      min-height: auto;
+      padding: 15px 17px;
+      border-bottom: 1px solid #000;
+    }
+    
+    .policies-table.mobile-layout-rows .policies-table__row:last-child {
+      border-bottom: none;
+    }
+    
+    .policies-table.mobile-layout-rows:not(.hide-mobile-headers) .policies-table__row {
+      position: relative;
+      padding: 32px 17px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Policies",
+  "tag": "section",
+  "class": "section-policies",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Privacy Policy"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_updated_date",
+      "label": "Show updated date",
+      "default": true,
+      "info": "Automatically displays the current date when the section is saved"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        { 
+          "value": "page-width", 
+          "label": "t:options.page" 
+        },
+        { 
+          "value": "full-width", 
+          "label": "t:options.full" 
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Width on mobile",
+      "options": [
+        { 
+          "value": "page-width", 
+          "label": "t:options.page" 
+        },
+        { 
+          "value": "full-width", 
+          "label": "t:options.full" 
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "blocks": [
+    {
+      "type": "policy_item",
+      "name": "Policy section",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "policy_table",
+      "name": "Policy table",
+      "settings": [
+        {
+          "type": "select",
+          "id": "columns",
+          "label": "Number of columns",
+          "options": [
+            { 
+              "value": "1", 
+              "label": "1 column" 
+            },
+            { 
+              "value": "2", 
+              "label": "2 columns" 
+            },
+            { 
+              "value": "3", 
+              "label": "3 columns" 
+            }
+          ],
+          "default": "2"
+        },
+        {
+          "type": "header",
+          "content": "Mobile Layout Settings (below 768px)"
+        },
+        {
+          "type": "select",
+          "id": "mobile_layout",
+          "label": "Mobile layout",
+          "options": [
+            { 
+              "value": "columns", 
+              "label": "Keep as columns (stack vertically)" 
+            },
+            { 
+              "value": "rows", 
+              "label": "Convert to rows (headers become labels)" 
+            }
+          ],
+          "default": "columns",
+          "info": "Convert to rows' will transform columns into stacked rows with headings as labels."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_headers_on_mobile",
+          "label": "Show column headers on mobile",
+          "default": true,
+          "info": "Only applies when 'Convert to rows' is selected"
+        },
+        {
+          "type": "header",
+          "content": "Column 1 Settings"
+        },
+        {
+          "type": "text",
+          "id": "col1_heading",
+          "label": "Column 1 heading"
+        },
+        {
+          "type": "richtext",
+          "id": "col1_content",
+          "label": "Column 1 content"
+        },
+        {
+          "type": "select",
+          "id": "col1_alignment",
+          "label": "Column 1 text alignment",
+          "options": [
+            { 
+              "value": "left", 
+              "label": "Left" 
+            },
+            { 
+              "value": "center", 
+              "label": "Center" 
+            },
+            { 
+              "value": "right", 
+              "label": "Right" 
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "header",
+          "content": "Column 2 Settings"
+        },
+        {
+          "type": "text",
+          "id": "col2_heading",
+          "label": "Column 2 heading"
+        },
+        {
+          "type": "richtext",
+          "id": "col2_content",
+          "label": "Column 2 content"
+        },
+        {
+          "type": "select",
+          "id": "col2_alignment",
+          "label": "Column 2 text alignment",
+          "options": [
+            { 
+              "value": "left", 
+              "label": "Left" 
+            },
+            { 
+              "value": "center", 
+              "label": "Center" 
+            },
+            { 
+              "value": "right", 
+              "label": "Right" 
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "header",
+          "content": "Column 3 Settings"
+        },
+        {
+          "type": "text",
+          "id": "col3_heading",
+          "label": "Column 3 heading"
+        },
+        {
+          "type": "richtext",
+          "id": "col3_content",
+          "label": "Column 3 content"
+        },
+        {
+          "type": "select",
+          "id": "col3_alignment",
+          "label": "Column 3 text alignment",
+          "options": [
+            { 
+              "value": "left", 
+              "label": "Left" 
+            },
+            { 
+              "value": "center", 
+              "label": "Center" 
+            },
+            { 
+              "value": "right", 
+              "label": "Right" 
+            }
+          ],
+          "default": "left"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Policies",
+      "category": "t:categories.text"
+    }
+  ]
+}
+{% endschema %}
