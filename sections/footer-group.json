@@ -55,6 +55,7 @@
           "blocks": {
             "text_LWt8Pz": {
               "type": "text",
+              "disabled": true,
               "settings": {
                 "text": "<h2>Join our email list</h2>",
                 "width": "100%",
@@ -80,6 +81,7 @@
             },
             "text_f9CFLH": {
               "type": "text",
+              "disabled": true,
               "settings": {
                 "text": "<p>Get exclusive deals and early access to new products.</p>",
                 "width": "100%",
@@ -111,6 +113,7 @@
         },
         "email_signup_crihX7": {
           "type": "email-signup",
+          "disabled": true,
           "settings": {
             "width": "fill",
             "custom_width": 100,
