@@ -925,7 +925,7 @@
       }
     },
     "marquee_aeXF9k": {
-      "type": "marquee",
+      "type": "custom-labeled-marquee",
       "blocks": {
         "icon_AwbDVy": {
           "type": "icon",
@@ -969,9 +969,11 @@
       "settings": {
         "movement_direction": "normal",
         "color_scheme": "",
+        "section_width": "page-width",
         "padding-block-start": 24,
         "padding-block-end": 24,
-        "gap_between_elements": 72
+        "gap_between_elements": 72,
+        "side_label_text": "Partnered by Hundred Brands \nWorldwide"
       }
     }
   },
