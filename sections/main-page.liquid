@@ -19,6 +19,18 @@
   </div>
 </div>
 
+{% style %}
+  #shopify-section-{{ section.id }} .section-background,
+  #shopify-section-{{ section.id }} .section {
+    background: linear-gradient(87deg, #0F2E53 -54.36%, #FFF 97.22%) !important;
+  }
+
+  [class*="__image_8rTMPp"] {
+    justify-content: center !important;
+    margin-inline: auto !important;
+  }
+{% endstyle %}
+
 {% schema %}
 {
   "name": "t:names.page",

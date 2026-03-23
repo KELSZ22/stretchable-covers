@@ -41,10 +41,7 @@
           "blocks": {}
         }
       },
-      "block_order": [
-        "image_8rTMPp",
-        "page-content"
-      ],
+      "block_order": ["image_8rTMPp", "page-content"],
       "name": "About Us",
       "settings": {
         "content_direction": "column",
@@ -62,7 +59,7 @@
           "settings": {
             "image": "shopify://shop_images/about-us-image.png",
             "link": "",
-            "image_ratio": "square",
+            "image_ratio": "adapt",
             "width": "fill",
             "custom_width": 82,
             "width_mobile": "fill",
@@ -170,16 +167,10 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "text_TtPB3n",
-            "text_3VXCcf"
-          ]
+          "block_order": ["text_TtPB3n", "text_3VXCcf"]
         }
       },
-      "block_order": [
-        "image_FfQcyE",
-        "group_7c38mN"
-      ],
+      "block_order": ["image_FfQcyE", "group_7c38mN"],
       "name": "About Us Content",
       "settings": {
         "content_direction": "row",
@@ -317,11 +308,7 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "icon_eAq7he",
-            "text_38xRXB",
-            "text_RECrt3"
-          ]
+          "block_order": ["icon_eAq7he", "text_38xRXB", "text_RECrt3"]
         },
         "group_dyiBk6": {
           "type": "group",
@@ -428,11 +415,7 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "icon_VVrC7T",
-            "text_TJjbtt",
-            "text_Y7RtAB"
-          ]
+          "block_order": ["icon_VVrC7T", "text_TJjbtt", "text_Y7RtAB"]
         },
         "group_zD7yrt": {
           "type": "group",
@@ -539,11 +522,7 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "icon_LATNkz",
-            "text_XcNQxE",
-            "text_tyXJ6z"
-          ]
+          "block_order": ["icon_LATNkz", "text_XcNQxE", "text_tyXJ6z"]
         },
         "group_h3X9Y9": {
           "type": "group",
@@ -650,11 +629,7 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "icon_8jP4pG",
-            "text_qMkdiN",
-            "text_DfeHKA"
-          ]
+          "block_order": ["icon_8jP4pG", "text_qMkdiN", "text_DfeHKA"]
         },
         "group_EK3gxW": {
           "type": "group",
@@ -761,11 +736,7 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "icon_hCNCPq",
-            "text_j3YTcC",
-            "text_VtHk3h"
-          ]
+          "block_order": ["icon_hCNCPq", "text_j3YTcC", "text_VtHk3h"]
         }
       },
       "block_order": [
@@ -818,7 +789,7 @@
             "horizontal_alignment_flex_direction_column": "flex-start",
             "vertical_alignment_flex_direction_column": "center",
             "gap": 35,
-            "width": "custom",
+            "width": "fit-content",
             "custom_width": 38,
             "width_mobile": "fill",
             "custom_width_mobile": 100,
@@ -898,19 +869,16 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "text_yc38fj",
-            "text_zPMBQ9"
-          ]
+          "block_order": ["text_yc38fj", "text_zPMBQ9"]
         },
         "image_4CwmLR": {
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/about-us-image2.png",
             "link": "",
-            "image_ratio": "square",
-            "width": "custom",
-            "custom_width": 50,
+            "image_ratio": "adapt",
+            "width": "fill",
+            "custom_width": 45,
             "width_mobile": "fill",
             "custom_width_mobile": 100,
             "height": "fit",
@@ -926,10 +894,7 @@
           "blocks": {}
         }
       },
-      "block_order": [
-        "group_PbhCgH",
-        "image_4CwmLR"
-      ],
+      "block_order": ["group_PbhCgH", "image_4CwmLR"],
       "name": "t:names.image_with_text",
       "settings": {
         "content_direction": "row",
@@ -999,11 +964,7 @@
           "blocks": {}
         }
       },
-      "block_order": [
-        "icon_AwbDVy",
-        "icon_6RBde8",
-        "icon_zYgUxK"
-      ],
+      "block_order": ["icon_AwbDVy", "icon_6RBde8", "icon_zYgUxK"],
       "name": "t:names.marquee_section",
       "settings": {
         "movement_direction": "normal",
