@@ -1,0 +1,273 @@
+<script
+  src="{{ 'marquee.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{% assign gap_between_elements = section.settings.gap_between_elements %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}" style="background-color: #F9FDFF;"></div>
+<div
+  class="section section--{{ section.settings.section_width }} section--mobile-full-width {% if section.settings.section_width == 'page-width' %}section--full-width-right{% endif %} spacing-style color-{{ section.settings.color_scheme }}"
+  style="{%- render 'spacing-style', settings: section.settings %};"
+>
+  <div class="custom-labeled-marquee">
+    <div class="custom-labeled-marquee__label">
+      {{ section.settings.side_label_text | newline_to_br }}
+    </div>
+
+    <marquee-component
+      class="gap-style"
+      style="
+        {% render 'gap-style', value: gap_between_elements, name: 'marquee-gap' %}
+        --marquee-direction: {{ section.settings.movement_direction }};
+        background-color: {% if section.settings.marquee_transparent_background %}transparent{% else %}inherit{% endif %};
+      "
+      data-speed-factor="25"
+      data-movement-direction="{{ section.settings.movement_direction }}"
+    >
+      <div
+        class="marquee__wrapper"
+        ref="wrapper"
+      >
+        <div
+          class="marquee__content"
+          ref="content"
+        >
+          <div
+            class="marquee__repeated-items"
+            ref="marqueeItems[]"
+          >
+            {% content_for 'blocks' %}
+          </div>
+        </div>
+      </div>
+    </marquee-component>
+  </div>
+</div>
+
+{% stylesheet %}
+  .custom-labeled-marquee {
+    display: grid;
+    grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(16px, 3vw, 36px);
+  }
+
+  .custom-labeled-marquee > marquee-component {
+    min-width: 0;
+  }
+
+  .custom-labeled-marquee__label {
+    font-size: clamp(1.25rem, 2vw, 2rem);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: normal;
+    white-space: normal;
+  }
+
+  marquee-component {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .marquee__wrapper {
+    display: flex;
+    gap: var(--marquee-gap);
+    width: fit-content;
+    white-space: nowrap;
+  }
+
+  .marquee__content {
+    min-width: max-content;
+    display: flex;
+    gap: var(--marquee-gap);
+  }
+
+  .marquee__content :is(p, h1, h2, h3, h4, h5, h6) {
+    white-space: nowrap;
+  }
+
+  .marquee__content .marquee__repeated-items * {
+    max-width: none;
+  }
+
+  .marquee__repeated-items {
+    min-width: max-content;
+    display: flex;
+    gap: var(--marquee-gap);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .marquee__repeated-items > * {
+    align-content: center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    marquee-component:not([data-disabled]) .marquee__wrapper {
+      animation: marquee-motion var(--marquee-speed) linear infinite var(--marquee-direction);
+    }
+  }
+
+  @keyframes marquee-motion {
+    to {
+      transform: translate3d(calc(-50% - (var(--marquee-gap) / 2)), 0, 0);
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    .section.section--mobile-full-width > .custom-labeled-marquee {
+      grid-column: 1 / -1 !important;
+    }
+
+    .custom-labeled-marquee {
+      margin-inline: calc(var(--page-margin) * -1);
+      padding-inline: var(--page-margin);
+    }
+
+    .custom-labeled-marquee {
+      grid-template-columns: 1fr;
+      row-gap: 12px;
+    }
+
+    .custom-labeled-marquee__label {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Custom labeled marquee",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "blocks": [
+    {
+      "type": "text"
+    },
+    {
+      "type": "icon"
+    },
+    {
+      "type": "logo"
+    },
+    {
+      "type": "_divider"
+    }
+  ],
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "side_label_text",
+      "label": "Side label text",
+      "default": "Partnered by\nHundred Brands\nNationwide"
+    },
+    {
+      "type": "select",
+      "id": "movement_direction",
+      "label": "t:settings.motion_direction",
+      "options": [
+        {
+          "value": "reverse",
+          "label": "t:options.forward"
+        },
+        {
+          "value": "normal",
+          "label": "t:options.reverse"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "checkbox",
+      "id": "marquee_transparent_background",
+      "label": "Transparent marquee background",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "gap_between_elements",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom labeled marquee",
+      "category": "t:categories.text",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "t:html_defaults.make_things_better",
+            "type_preset": "custom",
+            "font": "var(--font-body--family)",
+            "font_size": "var(--font-size--h2)",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "width": "fit-content"
+          }
+        }
+      },
+      "block_order": ["text"]
+    }
+  ]
+}
+{% endschema %}
