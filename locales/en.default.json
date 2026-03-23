@@ -111,7 +111,7 @@
   "blocks": {
     "contact_form": {
       "name": "Full Name",
-      "email": "Email Address",
+      "email": "Email address",
       "phone": "Phone",
       "comment": "Message",
       "post_success": "Thanks for contacting us. We'll get back to you as soon as possible.",

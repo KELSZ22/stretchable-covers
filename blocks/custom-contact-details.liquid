@@ -38,7 +38,6 @@
     </li>
 
     <li class="custom-contact-details__row">
-      qeqe
       <div
         class="custom-contact-details__icon"
         style="--custom-contact-details-icon-bg: {{ block.settings.icon_background }};"
@@ -207,12 +206,14 @@
   .custom-contact-details__link:hover {
     text-decoration: underline;
   }
-  @media screen and (max-width: 749px) {
+    @media screen and (max-width: 749px) {
     .custom-contact-details__heading {
       font-size: 24px;
+      text-align: center;
     }
     .custom-contact-details__subheading {
       font-size: 14px;
+      text-align: center;
     }
   }
 {% endstylesheet %}

@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */ {
+ */
+{
   "sections": {
     "main": {
       "type": "main-page",
@@ -15,10 +16,10 @@
           "type": "text",
           "name": "t:names.title",
           "settings": {
-            "text": "<h1>{{ closest.page.title }}</h1>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "center",
+            "text": "",
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
             "type_preset": "h2",
             "font": "var(--font-primary--family)",
             "font_size": "",
@@ -40,6 +41,7 @@
         "content": {
           "type": "text",
           "name": "t:names.content",
+          "disabled": true,
           "settings": {
             "text": "{{ closest.page.content }}",
             "width": "100%",
@@ -64,20 +66,24 @@
           "blocks": {}
         }
       },
-      "block_order": ["title", "content"],
+      "block_order": [
+        "title",
+        "content"
+      ],
       "settings": {
         "content_direction": "column",
-        "gap": 32,
-        "color_scheme": "",
+        "gap": 0,
+        "color_scheme": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
         "padding-block-start": 40,
-        "padding-block-end": 0
+        "padding-block-end": 72
       }
     },
     "form": {
       "type": "section",
       "blocks": {
-        "contact_details_left": {
+        "custom_contact_details_n7qGxA": {
           "type": "custom-contact-details",
+          "name": "Contact details",
           "settings": {
             "heading": "Reach Us today!",
             "subheading": "We're here to help you every step of the way.",
@@ -88,16 +94,17 @@
             "link_telephone": true,
             "row_3_label": "Store Hours",
             "row_3_text": "10AM-6PM USA Eastern Time",
-            "icon_background": "#0A1F44",
+            "icon_background": "#0a1f44",
             "width": "custom",
-            "custom_width": 50,
-            "width_mobile": "custom",
+            "custom_width": 45,
+            "width_mobile": "fit-content",
             "custom_width_mobile": 100,
             "inherit_color_scheme": true,
-            "padding-block-start": 25,
-            "padding-block-end": 25,
-            "padding-inline-start": 25,
-            "padding-inline-end": 25
+            "color_scheme": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
           },
           "blocks": {}
         },
@@ -105,7 +112,7 @@
           "type": "contact-form",
           "settings": {
             "width": "custom",
-            "custom_width": 50,
+            "custom_width": 45,
             "width_mobile": "custom",
             "custom_width_mobile": 100,
             "inherit_color_scheme": true,
@@ -120,7 +127,7 @@
               "type": "contact-form-submit-button",
               "static": true,
               "settings": {
-                "label": "Submit Form",
+                "label": "Submit",
                 "style_class": "button",
                 "width": "custom",
                 "custom_width": 100,
@@ -133,18 +140,21 @@
           "block_order": []
         }
       },
-      "block_order": ["contact_details_left", "contact_form_UwiCkQ"],
+      "block_order": [
+        "custom_contact_details_n7qGxA",
+        "contact_form_UwiCkQ"
+      ],
       "name": "t:names.contact_form",
       "settings": {
         "content_direction": "row",
         "vertical_on_mobile": true,
         "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
+        "vertical_alignment": "flex-start",
         "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
+        "horizontal_alignment_flex_direction_column": "flex-end",
         "vertical_alignment_flex_direction_column": "center",
         "gap": 32,
-        "section_width": "full-width",
+        "section_width": "page-width",
         "section_height": "",
         "section_height_custom": 50,
         "color_scheme": "scheme-1",
@@ -159,10 +169,13 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "padding-block-start": 32,
+        "padding-block-start": 0,
         "padding-block-end": 84
       }
     }
   },
-  "order": ["main", "form"]
+  "order": [
+    "main",
+    "form"
+  ]
 }
