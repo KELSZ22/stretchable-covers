@@ -1,0 +1,31 @@
+/* How We Print page title (main-page heading block, h2 preset) */
+#MainContent[data-template="page.how-we-print"] .text-block.h2 > *,
+#MainContent[data-template="page.how-we-print"]
+  .text-block.h2
+  :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 32px;
+}
+
+@media screen and (max-width: 749px) {
+  #MainContent[data-template="page.how-we-print"] .text-block.h2 > *,
+  #MainContent[data-template="page.how-we-print"]
+    .text-block.h2
+    :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 20px;
+  }
+}
+
+/* Our Printing Rules (section heading: custom typography + h4) */
+#MainContent[data-template="page.how-we-print"]
+  .text-block.custom-typography
+  :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 20px;
+}
+
+@media screen and (max-width: 749px) {
+  #MainContent[data-template="page.how-we-print"]
+    .text-block.custom-typography
+    :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 16px;
+  }
+}
