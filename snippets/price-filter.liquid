@@ -78,6 +78,10 @@
     >
       {% assign min_input_max_value = filter.max_value.value | default: filter.range_max %}
       {% assign max_input_min_value = filter.min_value.value | default: 0 %}
+      {% assign range_min = 0 %}
+      {% assign range_max = filter.range_max | money_without_currency | times: 1 %}
+      {% assign current_min = filter.min_value.value | money_without_currency | times: 1 | default: range_min %}
+      {% assign current_max = filter.max_value.value | money_without_currency | times: 1 | default: range_max %}
 
       <price-facet-component
         class="
@@ -89,8 +93,33 @@
         id="facet-inputs-{{ filter.param_name | escape | replace: '.', '-' }}"
         data-money-format="{{ shop.money_format | strip_html }}"
         data-currency="{{ localization.country.currency.iso_code }}"
+        data-range-min="{{ range_min }}"
+        data-range-max="{{ range_max }}"
         on:change="/updatePriceFilterAndResults"
       >
+        <!-- Range Slider Triakl-->
+        <div class="price-facet__slider-container">
+          <div class="price-facet__slider-track"></div>
+          <input
+            type="range"
+            class="price-facet__range-input price-facet__range-input--min"
+            min="{{ range_min }}"
+            max="{{ range_max }}"
+            step="1"
+            value="{{ current_min }}"
+            ref="minSlider"
+          >
+          <input
+            type="range"
+            class="price-facet__range-input price-facet__range-input--max"
+            min="{{ range_min }}"
+            max="{{ range_max }}"
+            step="1"
+            value="{{ current_max }}"
+            ref="maxSlider"
+          >
+        </div>
+
         <div class="facets__inputs-wrapper facets__inputs-wrapper--row">
           <div
             class="price-facet__inputs-wrapper"
@@ -185,7 +214,6 @@
 </accordion-custom>
 
 {% stylesheet %}
-  /* Price filter */
   .price-facet {
     container-type: inline-size;
     display: flex;
@@ -193,6 +221,76 @@
   }
   .price-facet--horizontal {
     min-width: 360px;
+  }
+
+  .price-facet__slider-container {
+    position: relative;
+    height: 40px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+  .price-facet__slider-container input {
+    background-color: #E6F4FC !important;
+  }
+  .price-facet__slider-track {
+    position: absolute;
+    height: 4px;
+    background: #E6F4FC;
+    width: 100%;
+    border-radius: 4px;
+  }
+
+  .price-facet__range-input {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: none;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .price-facet__range-input:focus {
+    outline: none;
+  }
+
+  .price-facet__range-input::-webkit-slider-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #0F2E53;
+    pointer-events: auto;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    margin-top: -6px;
+    z-index: 100;
+    position: relative;
+  }
+
+  .price-facet__range-input::-moz-range-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #0F2E53;
+    pointer-events: auto;
+    cursor: pointer;
+    margin-top: -6px;
+    z-index: 100;
+    position: relative;
+  }
+
+  .price-facet__range-input::-webkit-slider-runnable-track {
+    height: 4px;
+    background: transparent;
+    border: none;
+  }
+
+  .price-facet__range-input::-moz-range-track {
+    height: 4px;
+    background: transparent;
+    border: none;
   }
 
   .price-facet__inputs-wrapper {
@@ -241,3 +339,136 @@
     transform: none;
   }
 {% endstylesheet %}
+
+{% javascript %}
+  class PriceFacetComponent extends HTMLElement {
+    constructor() {
+      super();
+      this.minInput = this.querySelector('[ref="minInput"]');
+      this.maxInput = this.querySelector('[ref="maxInput"]');
+      this.minSlider = this.querySelector('[ref="minSlider"]');
+      this.maxSlider = this.querySelector('[ref="maxSlider"]');
+      this.rangeMin = parseFloat(this.dataset.rangeMin) || 0;
+      this.rangeMax = parseFloat(this.dataset.rangeMax) || 100;
+      
+      this.init();
+    }
+    
+    init() {
+      if (this.minSlider && this.maxSlider) {
+        this.updateSliderBackground();
+        this.minSlider.addEventListener('input', this.handleSliderChange.bind(this));
+        this.maxSlider.addEventListener('input', this.handleSliderChange.bind(this));
+      }
+      
+      if (this.minInput) {
+        this.minInput.addEventListener('input', this.handleInputChange.bind(this, 'min'));
+        this.minInput.addEventListener('blur', this.validateInput.bind(this, 'min'));
+      }
+      
+      if (this.maxInput) {
+        this.maxInput.addEventListener('input', this.handleInputChange.bind(this, 'max'));
+        this.maxInput.addEventListener('blur', this.validateInput.bind(this, 'max'));
+      }
+    }
+    
+    updateSliderBackground() {
+      const min = parseFloat(this.minSlider.value);
+      const max = parseFloat(this.maxSlider.value);
+      const percentMin = ((min - this.rangeMin) / (this.rangeMax - this.rangeMin)) * 100;
+      const percentMax = ((max - this.rangeMin) / (this.rangeMax - this.rangeMin)) * 100;
+      
+      const track = this.querySelector('.price-facet__slider-track');
+      if (track) {
+        track.style.background = `linear-gradient(to right, 
+          var(--facets-border-color, #e5e5e5) 0%, 
+          var(--facets-border-color, #e5e5e5) ${percentMin}%, 
+          var( #0F2E53) ${percentMin}%, 
+          var( #0F2E53) ${percentMax}%, 
+          var(--facets-border-color, #e5e5e5) ${percentMax}%, 
+          var(--facets-border-color, #e5e5e5) 100%)`;
+      }
+    }
+    
+    handleSliderChange() {
+      let minVal = parseFloat(this.minSlider.value);
+      let maxVal = parseFloat(this.maxSlider.value);
+      
+      if (minVal > maxVal) {
+        [minVal, maxVal] = [maxVal, minVal];
+        this.minSlider.value = minVal;
+        this.maxSlider.value = maxVal;
+      }
+      
+      this.minInput.value = Math.floor(minVal);
+      this.maxInput.value = Math.floor(maxVal);
+      
+      this.updateSliderBackground();
+      this.dispatchChangeEvent();
+    }
+    
+    handleInputChange(type, event) {
+      let value = parseFloat(event.target.value);
+      
+      if (isNaN(value)) {
+        value = type === 'min' ? this.rangeMin : this.rangeMax;
+      }
+      
+      if (type === 'min') {
+        value = Math.min(value, this.rangeMax);
+        value = Math.min(value, parseFloat(this.maxInput.value) || this.rangeMax);
+        this.minSlider.value = value;
+        this.minInput.value = Math.floor(value);
+      } else {
+        value = Math.max(value, this.rangeMin);
+        value = Math.max(value, parseFloat(this.minInput.value) || this.rangeMin);
+        this.maxSlider.value = value;
+        this.maxInput.value = Math.floor(value);
+      }
+      
+      this.updateSliderBackground();
+      this.dispatchChangeEvent();
+    }
+    
+    validateInput(type) {
+      let value = parseFloat(this.querySelector(`[ref="${type}Input"]`).value);
+      const otherValue = parseFloat(this.querySelector(`[ref="${type === 'min' ? 'max' : 'min'}Input"]`).value);
+      
+      if (isNaN(value)) {
+        value = type === 'min' ? this.rangeMin : this.rangeMax;
+      }
+      
+      if (type === 'min') {
+        if (value < this.rangeMin) value = this.rangeMin;
+        if (!isNaN(otherValue) && value > otherValue) value = otherValue;
+        this.minSlider.value = value;
+        this.minInput.value = Math.floor(value);
+      } else {
+        if (value > this.rangeMax) value = this.rangeMax;
+        if (!isNaN(otherValue) && value < otherValue) value = otherValue;
+        this.maxSlider.value = value;
+        this.maxInput.value = Math.floor(value);
+      }
+      
+      this.updateSliderBackground();
+      this.dispatchChangeEvent();
+    }
+    
+    dispatchChangeEvent() {
+      const minValue = this.minInput.value;
+      const maxValue = this.maxInput.value;
+      
+      const event = new CustomEvent('priceChange', {
+        detail: { min: minValue, max: maxValue },
+        bubbles: true
+      });
+      
+      this.dispatchEvent(event);
+
+      const changeEvent = new Event('change', { bubbles: true });
+      this.dispatchEvent(changeEvent);
+    }
+  }
+  
+  customElements.define('price-facet-component', PriceFacetComponent);
+{% endjavascript %}
