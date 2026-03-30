@@ -63,8 +63,8 @@
         "policy_item_FWnx4A": {
           "type": "policy_item",
           "settings": {
-            "heading": "Stretchable Covers will always do everything possible to keep shipping costs to a minimum.",
-            "content": "<ul><li>Domestic orders (within the USA) will allow for a choice between USPS, FedEx or UPS. If a service chosen is not readily available, we will choose the best possible way to ship. Note: UPS and FedEx will not deliver to P.O. boxes so please supply your full street address for your order.</li><li>If expedited shipping service is requested, USPS, FedEx and UPS offer one-day, two-day or three-day services.</li><li>Costs are calculated via our Corporate Accounts and are automatically discounted for each order accordingly.</li><li>Freight costs for international orders will be based on the best real-time rates from USPS, FedEx or UPS Worldwide Services.</li></ul>"
+            "heading": "",
+            "content": "<p>Stretchable Covers will always do everything possible to keep shipping costs to a minimum.</p><ul><li>Domestic orders (within the USA) will allow for a choice between USPS, FedEx or UPS. If a service chosen is not readily available, we will choose the best possible way to ship. Note: UPS and FedEx will not deliver to P.O. boxes so please supply your full street address for your order.</li><li>If expedited shipping service is requested, USPS, FedEx and UPS offer one-day, two-day or three-day services.</li><li>Costs are calculated via our Corporate Accounts and are automatically discounted for each order accordingly.</li><li>Freight costs for international orders will be based on the best real-time rates from USPS, FedEx or UPS Worldwide Services.</li></ul>"
           }
         },
         "policy_item_JEwKJF": {

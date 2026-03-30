@@ -216,20 +216,27 @@
             </span>
           {%- endunless -%}
 
-          {% content_for 'block',
-            type: 'add-to-cart',
-            id: 'add-to-cart',
-            can_add_to_cart: can_add_to_cart,
-            add_to_cart_text: add_to_cart_text
-          %}
+          <div class="atc-buttons">
+            {% content_for 'block',
+              type: 'accelerated-checkout',
+              id: 'accelerated-checkout',
+              can_add_to_cart: can_add_to_cart,
+              form_obj: form
+            %}
 
-          {% content_for 'block',
-            type: 'accelerated-checkout',
-            id: 'accelerated-checkout',
-            can_add_to_cart: can_add_to_cart,
-            form_obj: form
-          %}
+            {% content_for 'block',
+              type: 'add-to-cart',
+              id: 'add-to-cart',
+              can_add_to_cart: can_add_to_cart,
+              add_to_cart_text: add_to_cart_text
+            %}
+          </div>
         </div>
+        
+        {% content_for 'block',
+          type: 'product-zip-code',
+          id: 'product-zip-code'
+        %}
       {%- endform -%}
     </product-form-component>
   {%- else -%}
@@ -360,7 +367,48 @@
   </local-pickup>
 {% endif %}
 
-{% stylesheet %}
+{% stylesheet %} 
+  .atc-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .product-form-buttons button {
+    border-radius: 9999px;
+  }
+  .add-to-cart-button {
+    border: 1px solid #0F2E53;
+    color: #0F2E53;
+    background: transparent;
+  }
+  .quantity-selector-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .quantity-selector-toolkit {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .quantity-selector-toolkit p {
+    margin: 0;
+    text-decoration: underline;
+    font-family: Lato;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 16px;
+    leading-trim: NONE;
+    line-height: 24px;
+    letter-spacing: 0%;
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-offset: 0%;
+    text-decoration-thickness: 0%;
+    cursor: pointer;
+  }
+
   .buy-buttons-block {
     --buy-button-preferred-width: 185px;
 
@@ -370,6 +418,8 @@
   .product-form-buttons {
     display: flex;
     flex-wrap: wrap;
+
+    flex-direction: column;
   }
 
   .product-form-buttons:not(:has(.quantity-rules)) {

@@ -1,0 +1,92 @@
+<div class="image-marquee">
+    <div class="swiper">
+        <div class="swiper-wrapper">
+            {% for i in (1..2) %}
+                {% for block in section.blocks %}
+                    <div class="swiper-slide">
+                        <div class="swiper-slide__image">
+                            <img src="{{ block.settings.image | image_url}}" width="512" height="512">
+                        </div>
+                    </div>
+                {% endfor %}
+            {%endfor %}
+        </div>
+    </div>
+</div>
+
+{% style %}
+.image-marquee img {
+    width: 100%;
+    height: auto;
+    margin: auto;
+}
+.image-marquee .swiper-slide .swiper-slide__image {
+    overflow: hidden;
+    border-radius: 23px;
+    padding: 10px;
+    box-shadow: 0px 2px 3px 0px #0000004D;
+    box-shadow: 0px 6px 10px 4px #00000026;
+    margin: 20px 0;
+}
+.image-marquee {
+    margin: 2rem auto;
+    position: relative;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 10%,
+        black 90%,
+        transparent 100%
+    );
+    mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 10%,
+            black 90%,
+            transparent 100%
+    );
+}
+.image-marquee .swiper-wrapper {
+  transition-timing-function: linear;
+}
+{% endstyle %}
+
+{% javascript %}
+  const swiper = new Swiper('.image-marquee .swiper', {
+    slidesPerView: 6,
+    spaceBetween: 20,
+    loop: true,
+    speed: 6000,
+    allowTouchMove: false,
+    autoplay: {
+      delay: 1,
+      disableOnInteraction: false
+    }
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Image marquee",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image marquee"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,63 @@
+<div class="pig">
+    <div class="pig_container">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14.3333 1L5.16667 10.1667L1 6" stroke="#0F2E53" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>Ships via USPS, UPS, or FedEx</p>
+    </div>
+    <div class="pig_container">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14.3333 1L5.16667 10.1667L1 6" stroke="#0F2E53" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>No Limit on Colors or Background Designs</p>
+    </div>
+    <div class="pig_container">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14.3333 1L5.16667 10.1667L1 6" stroke="#0F2E53" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>No Minimum Orders Required</p>
+    </div>
+    <div class="pig_container">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14.3333 1L5.16667 10.1667L1 6" stroke="#0F2E53" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>RUSH DELIVERY available</p>
+    </div>
+</div>
+
+{% style %}
+.pig {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+.pig_container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 10px;
+}
+.pig_container p {
+    margin: 0;
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 14px;
+    line-height: 18px;
+
+}
+.pig_container svg {
+    width: 20px;
+    height: 20px;
+}
+{% endstyle %}
+
+{% schema %}
+{
+    "name": "Product Info Grid",
+    "presets": [
+        {
+            "name": "Product Info Grid",
+        }
+    ]
+}
+{% endschema %}

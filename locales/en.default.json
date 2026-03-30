@@ -59,7 +59,7 @@
   "actions": {
     // Quick add button on product cards, shortened version of add to cart
     "add": "Add",
-    "add_to_cart": "Add to cart",
+    "add_to_cart": "Add to Cart & Design Later",
     // Success message shown after adding item to cart
     "added": "Added",
     // Button to apply discount code to cart
@@ -340,7 +340,7 @@
   },
   "products": {
     "product": {
-      "add_to_cart": "Add to cart",
+      "add_to_cart": "Add to Cart & Design Later",
       "adding_to_cart": "Adding...",
       "added_to_cart": "Added to cart",
       "add_to_cart_error": "Error adding to cart",

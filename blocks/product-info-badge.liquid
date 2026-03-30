@@ -1,0 +1,47 @@
+<div class="pib">
+    <div class="pib_container">
+        <img src="https://cdn.shopify.com/s/files/1/0621/6784/2913/files/d6fe16f0e2010fb3dd1ad5e1ce0928630b9357d9.png?v=1774399198">
+        <p>Made in the USA</p>
+    </div>
+    <div class="pib_container">
+        <img src="https://cdn.shopify.com/s/files/1/0621/6784/2913/files/c6acffd7228b893ee0eaa6bbf9c8a31a569db73b.png?v=1774399223">
+        <p>100% High Quality Polyester Micro Fiber</p>
+    </div>
+</div>
+
+{% style %}
+  .pib {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .pib_container {
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background: #F3F4F5;
+    padding: 10px;
+
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 12px;
+    line-height: 14px;
+
+  }
+  .pib_container img {
+    width: 28px;
+    height: 28px;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+    "name": "Product Info Badge",
+    "presets": [
+        {
+            "name": "Product Info Badge",
+        }
+    ]
+}
+{% endschema %}

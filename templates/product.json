@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "main": {
       "type": "product-information",
@@ -15,23 +16,24 @@
           "type": "_product-media-gallery",
           "static": true,
           "settings": {
-            "media_presentation": "grid",
+            "media_presentation": "carousel",
             "media_columns": "two",
             "image_gap": 4,
             "large_first_image": false,
             "icons_style": "none",
-            "slideshow_controls_style": "counter",
-            "slideshow_mobile_controls_style": "dots",
-            "thumbnail_position": "right",
-            "thumbnail_width": 44,
+            "slideshow_controls_style": "thumbnails",
+            "slideshow_mobile_controls_style": "thumbnails",
+            "thumbnail_position": "bottom",
+            "thumbnail_width": 72,
+            "thumbnail_radius": 0,
             "aspect_ratio": "adapt",
             "constrain_to_viewport": true,
-            "media_fit": "contain",
+            "media_fit": "cover",
             "media_radius": 0,
             "extend_media": false,
             "zoom": true,
             "video_loop": false,
-            "hide_variants": true,
+            "hide_variants": false,
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -70,7 +72,6 @@
               "type": "group",
               "name": "Header",
               "settings": {
-                "open_in_new_tab": false,
                 "content_direction": "column",
                 "vertical_on_mobile": true,
                 "horizontal_alignment": "flex-start",
@@ -98,6 +99,9 @@
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -158,6 +162,12 @@
                 "price_tVjtKg"
               ]
             },
+            "product_info_badge_nFLFrg": {
+              "type": "product-info-badge",
+              "name": "Product Info Badge",
+              "settings": {},
+              "blocks": {}
+            },
             "divider_VJhene": {
               "type": "_divider",
               "name": "t:names.divider",
@@ -173,7 +183,7 @@
             "variant_picker_R3rGDr": {
               "type": "variant-picker",
               "settings": {
-                "variant_style": "buttons",
+                "variant_style": "dropdowns",
                 "show_swatches": false,
                 "alignment": "left",
                 "padding-block-start": 0,
@@ -188,6 +198,7 @@
               "settings": {
                 "stacking": true,
                 "show_pickup_availability": false,
+                "gift_card_form": false,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -213,26 +224,552 @@
                   "static": true,
                   "settings": {},
                   "blocks": {}
+                },
+                "product-zip-code": {
+                  "type": "product-zip-code",
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
                 }
               },
               "block_order": []
             },
-            "text_aEtTtq": {
-              "type": "text",
-              "name": "Product description",
+            "divider_LdbDi9": {
+              "type": "_divider",
+              "name": "t:names.divider",
               "settings": {
-                "text": "{{ closest.product.description }}",
-                "width": "100%",
+                "thickness": 1,
+                "corner_radius": "square",
+                "width_percent": 100,
+                "padding-block-start": 0,
+                "padding-block-end": 0
+              },
+              "blocks": {}
+            },
+            "product_info_grid_B8eVAV": {
+              "type": "product-info-grid",
+              "name": "Product Info Grid",
+              "settings": {},
+              "blocks": {}
+            },
+            "accordion_UF6wpm": {
+              "type": "accordion",
+              "name": "t:names.accordion",
+              "settings": {
+                "icon": "caret",
+                "dividers": true,
+                "type_preset": "h6",
+                "inherit_color_scheme": true,
+                "color_scheme": "",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "accordion_row_QURdHB": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Product Description",
+                    "open_by_default": true,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_yhEcgy": {
+                      "type": "text",
+                      "name": "Product description",
+                      "settings": {
+                        "text": "<p>{{ closest.product.description }}</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-primary--family)",
+                        "font_size": "",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_yhEcgy"
+                  ]
+                },
+                "accordion_row_KLV3Jh": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Important Printing Note",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_Aaaty7": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_Aaaty7"
+                  ]
+                },
+                "accordion_row_jcdHmw": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Specification",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_Dqpam9": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_Dqpam9"
+                  ]
+                },
+                "accordion_row_WaGDtU": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "How to Measure",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_dHtD7r": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_dHtD7r"
+                  ]
+                },
+                "accordion_row_KiUnaw": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Materials",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_r8PefT": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_r8PefT"
+                  ]
+                }
+              },
+              "block_order": [
+                "accordion_row_QURdHB",
+                "accordion_row_KLV3Jh",
+                "accordion_row_jcdHmw",
+                "accordion_row_WaGDtU",
+                "accordion_row_KiUnaw"
+              ]
+            }
+          },
+          "block_order": [
+            "group_icgrde",
+            "product_info_badge_nFLFrg",
+            "divider_VJhene",
+            "variant_picker_R3rGDr",
+            "buy_buttons_eYQEYi",
+            "divider_LdbDi9",
+            "product_info_grid_B8eVAV",
+            "accordion_UF6wpm"
+          ]
+        }
+      },
+      "settings": {
+        "content_width": "content-center-aligned",
+        "desktop_media_position": "left",
+        "equal_columns": true,
+        "limit_details_width": false,
+        "gap": 48,
+        "enable_sticky_add_to_cart": false,
+        "color_scheme": "",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "image_row_7KNinV": {
+      "type": "image-row",
+      "blocks": {
+        "block_LPbYDQ": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/Vector_5.png",
+            "heading": "Fully Custom Covers",
+            "description": "Made to your exact size and specifications."
+          }
+        },
+        "block_aMP6ce": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/Vector_6.png",
+            "heading": "Fast Production",
+            "description": "Quick turnaround without compromising quality."
+          }
+        },
+        "block_7KDmqm": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/Vector_7.png",
+            "heading": "Repeat Customers Worldwide",
+            "description": "Trusted by 50,000+ clients across the globe."
+          }
+        },
+        "block_RBUDxJ": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/Vector_8.png",
+            "heading": "Order as Few as One",
+            "description": "No minimum order required."
+          }
+        },
+        "block_67haib": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/Vector_9.png",
+            "heading": "Made with Premium Microfiber",
+            "description": "Soft, durable, and stretchable material."
+          }
+        }
+      },
+      "block_order": [
+        "block_LPbYDQ",
+        "block_aMP6ce",
+        "block_7KDmqm",
+        "block_RBUDxJ",
+        "block_67haib"
+      ],
+      "name": "Image row",
+      "settings": {
+        "background": "#f6f6f6"
+      }
+    },
+    "spacer_cfBYhw": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_size_mobile": 0,
+        "spacer_size_desktop": 50
+      }
+    },
+    "image_swiper_n9ebDN": {
+      "type": "image-swiper",
+      "blocks": {
+        "block_zWNzWH": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000008196.png",
+            "heading": "9 out of 10",
+            "subheading": "Trusted by businesses who rely on durable, perfectly fitted stretchable covers that last."
+          }
+        },
+        "block_pKTJi8": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000008196_1.png",
+            "heading": "Number of industries served",
+            "subheading": "Supporting businesses across hospitality, events, offices, and more."
+          }
+        },
+        "block_3KMMXV": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000008196_2.png",
+            "heading": "Years in the industry",
+            "subheading": "Decades of experience delivering reliable protection you can count on."
+          }
+        }
+      },
+      "block_order": [
+        "block_zWNzWH",
+        "block_pKTJi8",
+        "block_3KMMXV"
+      ],
+      "name": "Image swiper",
+      "settings": {
+        "section_version": "version-2",
+        "background": "#ffffff",
+        "heading": "Trusted by Hundreds of Brands Worldwide",
+        "description": "Personalize your cover in just a few clicks.",
+        "rating": "Trusted by 50,000 + customers"
+      }
+    },
+    "spacer_kpMBb4": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_size_mobile": 0,
+        "spacer_size_desktop": 50
+      }
+    },
+    "image_swiper_BqqLEK": {
+      "type": "image-swiper",
+      "blocks": {
+        "block_CGQUgm": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/ece298d0ec2c16f10310d45724b276a6035cb503.png",
+            "heading": "Pick your product & size",
+            "subheading": "Step 1"
+          }
+        },
+        "block_MViGd7": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/ece298d0ec2c16f10310d45724b276a6035cb503.png",
+            "heading": "Design your cover using our customizer",
+            "subheading": "Step 2"
+          }
+        },
+        "block_M3mgLt": {
+          "type": "block",
+          "settings": {
+            "image": "shopify://shop_images/ece298d0ec2c16f10310d45724b276a6035cb503.png",
+            "heading": "Review and place order",
+            "subheading": "Step 3"
+          }
+        }
+      },
+      "block_order": [
+        "block_CGQUgm",
+        "block_MViGd7",
+        "block_M3mgLt"
+      ],
+      "name": "Image swiper",
+      "settings": {
+        "section_version": "version-1",
+        "background": "#f6f6f6",
+        "heading": "Design in 3 Easy Steps",
+        "description": "Personalize your cover in just a few clicks.",
+        "rating": ""
+      }
+    },
+    "spacer_CA3eWN": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_size_mobile": 0,
+        "spacer_size_desktop": 50
+      }
+    },
+    "image_marquee_LXkpHT": {
+      "type": "image-marquee",
+      "blocks": {
+        "image_aEigih": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/ca64ac4aa97c21f93731c96e60dc3088ef81b76f.png"
+          }
+        },
+        "image_9zWDjc": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/569da1c55c55162ab9c9799234e8eb61f8060627.png"
+          }
+        },
+        "image_HGEAHn": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/40d48769855ee6f8e158e1a140bb31aa1338294d.png"
+          }
+        },
+        "image_BcNHHn": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/bef7f11125dcdc3dd054682b47853d84ae1903c0.png"
+          }
+        },
+        "image_fHYx7L": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/4dea661671e2ad22151f633a7648932125c9cebd.png"
+          }
+        }
+      },
+      "block_order": [
+        "image_aEigih",
+        "image_9zWDjc",
+        "image_HGEAHn",
+        "image_BcNHHn",
+        "image_fHYx7L"
+      ],
+      "name": "Image marquee",
+      "settings": {}
+    },
+    "spacer_AbwpxQ": {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": {
+        "spacer_size_mobile": 0,
+        "spacer_size_desktop": 50
+      }
+    },
+    "product_list_NiDTqC": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content",
+          "name": "t:names.header",
+          "static": true,
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": false,
+            "horizontal_alignment": "space-between",
+            "vertical_alignment": "flex-end",
+            "align_baseline": true,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_list_text_4xEgir": {
+              "type": "_product-list-text",
+              "name": "t:names.collection_title",
+              "settings": {
+                "text": "<h3>You May Also Like</h3>",
+                "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
                 "wrap": "pretty",
-                "color": "",
+                "color": "var(--color-foreground)",
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
@@ -242,63 +779,33 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "product_list_button_kwtQha": {
+              "type": "_product-list-button",
+              "name": "t:names.product_list_button",
+              "settings": {
+                "label": "View all",
+                "open_in_new_tab": false,
+                "style_class": "link",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
             }
           },
           "block_order": [
-            "group_icgrde",
-            "divider_VJhene",
-            "variant_picker_R3rGDr",
-            "buy_buttons_eYQEYi",
-            "text_aEtTtq"
+            "product_list_text_4xEgir",
+            "product_list_button_kwtQha"
           ]
-        }
-      },
-      "settings": {
-        "content_width": "content-center-aligned",
-        "desktop_media_position": "left",
-        "equal_columns": false,
-        "limit_details_width": false,
-        "gap": 48,
-        "color_scheme": "",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
-    "product_recommendations_qggXJq": {
-      "type": "product-recommendations",
-      "blocks": {
-        "text_cbcgyb": {
-          "type": "text",
-          "name": "t:names.header",
-          "settings": {
-            "text": "<h3>You may also like </h3>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h4",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
         },
         "static-product-card": {
           "type": "_product-card",
           "name": "t:names.product_card",
           "static": true,
           "settings": {
-            "product_card_gap": 8,
+            "product_card_gap": 4,
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -306,12 +813,12 @@
             "border_opacity": 100,
             "border_radius": 0,
             "padding-block-start": 0,
-            "padding-block-end": 8,
+            "padding-block-end": 0,
             "padding-inline-start": 0,
             "padding-inline-end": 0
           },
           "blocks": {
-            "product_card_gallery_DNizbJ": {
+            "product_card_gallery_VEKHWF": {
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
@@ -327,11 +834,11 @@
               },
               "blocks": {}
             },
-            "product_title_M7MJkb": {
+            "product_title_HLqE3A": {
               "type": "product-title",
               "name": "t:names.product_title",
               "settings": {
-                "width": "100%",
+                "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "rte",
@@ -352,8 +859,9 @@
               },
               "blocks": {}
             },
-            "price_gLWgA6": {
+            "price_cccDmC": {
               "type": "price",
+              "name": "t:names.product_price",
               "settings": {
                 "show_sale_price_first": true,
                 "show_installments": false,
@@ -376,38 +884,108 @@
             }
           },
           "block_order": [
-            "product_card_gallery_DNizbJ",
-            "product_title_M7MJkb",
-            "price_gLWgA6"
+            "product_card_gallery_VEKHWF",
+            "product_title_HLqE3A",
+            "price_cccDmC"
           ]
         }
       },
-      "block_order": [
-        "text_cbcgyb"
-      ],
-      "name": "t:names.product_recommendations",
+      "name": "t:names.products_carousel",
       "settings": {
-        "product": "{{ closest.product }}",
-        "recommendation_type": "related",
-        "layout_type": "grid",
+        "collection": "all-items",
+        "layout_type": "carousel",
         "carousel_on_mobile": false,
-        "max_products": 4,
-        "columns": 4,
+        "max_products": 16,
+        "columns": 5,
         "mobile_columns": "2",
-        "columns_gap": 12,
+        "mobile_card_size": "60cqw",
+        "columns_gap": 8,
         "rows_gap": 24,
         "icons_style": "arrow",
-        "icons_shape": "none",
+        "icons_shape": "circle",
         "section_width": "page-width",
+        "horizontal_alignment": "flex-start",
         "gap": 28,
         "color_scheme": "scheme-1",
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "custom_testimonial_n7rJKp": {
+      "type": "custom-testimonial",
+      "blocks": {
+        "testimonial_LiU8bG": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/5e3c21adc5388b38f41c00f0075ac354c008d42f.png",
+            "review_text": "\"Love the waterproof exam stool covers! Just got them today from shipping and receiving. Thank you so much for your patience with me as me moved through this process! We'll be ordering many more.\"",
+            "author_name": "Marilyn Thomas",
+            "author_info": "University Health Care System"
+          }
+        },
+        "testimonial_xGi43b": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/5e3c21adc5388b38f41c00f0075ac354c008d42f.png",
+            "review_text": "\"Love the waterproof exam stool covers! Just got them today from shipping and receiving. Thank you so much for your patience with me as me moved through this process! We'll be ordering many more.\"",
+            "author_name": "Marilyn Thomas",
+            "author_info": "University Health Care System"
+          }
+        },
+        "testimonial_T63Dj8": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/5e3c21adc5388b38f41c00f0075ac354c008d42f.png",
+            "review_text": "\"Love the waterproof exam stool covers! Just got them today from shipping and receiving. Thank you so much for your patience with me as me moved through this process! We'll be ordering many more.\"",
+            "author_name": "Marilyn Thomas",
+            "author_info": "University Health Care System"
+          }
+        },
+        "testimonial_TeccRj": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/5e3c21adc5388b38f41c00f0075ac354c008d42f.png",
+            "review_text": "\"Love the waterproof exam stool covers! Just got them today from shipping and receiving. Thank you so much for your patience with me as me moved through this process! We'll be ordering many more.\"",
+            "author_name": "Marilyn Thomas",
+            "author_info": "University Health Care System"
+          }
+        },
+        "testimonial_cGXmwR": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/5e3c21adc5388b38f41c00f0075ac354c008d42f.png",
+            "review_text": "\"Love the waterproof exam stool covers! Just got them today from shipping and receiving. Thank you so much for your patience with me as me moved through this process! We'll be ordering many more.\"",
+            "author_name": "Marilyn Thomas",
+            "author_info": "University Health Care System"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_LiU8bG",
+        "testimonial_xGi43b",
+        "testimonial_T63Dj8",
+        "testimonial_TeccRj",
+        "testimonial_cGXmwR"
+      ],
+      "name": "Custom Testimonials",
+      "settings": {
+        "trust_text": "Trusted by 450,000 + customers",
+        "heading": "Why Our Customers Keep Coming Back",
+        "subheading": "Stories, feedback, and honest experiences from the people we serve."
+      }
     }
   },
   "order": [
     "main",
-    "product_recommendations_qggXJq"
+    "image_row_7KNinV",
+    "spacer_cfBYhw",
+    "image_swiper_n9ebDN",
+    "spacer_kpMBb4",
+    "image_swiper_BqqLEK",
+    "spacer_CA3eWN",
+    "image_marquee_LXkpHT",
+    "spacer_AbwpxQ",
+    "product_list_NiDTqC",
+    "custom_testimonial_n7rJKp"
   ]
 }

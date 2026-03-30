@@ -1,0 +1,59 @@
+<hr class="hr--clear mobile-spacer" style="{{ section.settings.spacer_size_mobile | prepend: 'padding-bottom: ' | append: 'px' }}" />
+<hr class="hr--clear desktop-spacer" style="{{ section.settings.spacer_size_desktop | prepend: 'padding-bottom: ' | append: 'px' }}" />
+
+{% style %}
+  .mobile-spacer {
+    display: none;
+  }
+  .desktop-spacer {
+    display: block;
+  }
+  @media screen and (max-width: 589px) {
+    .mobile-spacer {
+        display: block;
+    }
+    .desktop-spacer {
+        display: none;
+    }
+  }
+  .hr--clear {
+    border: none;
+  }
+{% endstyle %}
+
+{% schema %}
+  {
+    "name": "Spacer",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Size"
+      },
+	  {
+        "type": "range",
+        "id": "spacer_size_mobile",
+        "label": "Mobile",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "default": 20,
+      },
+	  {
+        "type": "range",
+        "id": "spacer_size_desktop",
+        "label": "Desktop",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "default": 40,
+      },
+	],
+    "presets": [
+      {
+        "name": "Spacer"
+      }
+    ]
+  }
+{% endschema %}

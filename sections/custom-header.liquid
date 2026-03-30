@@ -2,6 +2,79 @@
 {%- assign header_menu = section.settings.menu -%}
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap');
+
+
+  .header-search {
+  width: 100%;
+}
+
+.header-search form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  height: 42px;
+  padding: 0 16px 0 20px;
+  background: #f7f7f7;
+  border: 1px solid #cfcfcf;
+  border-radius: 999px;
+  box-sizing: border-box;
+}
+
+.header-search input[type="text"] {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #444;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
+.header-search input[type="text"]::placeholder {
+  color: #777;
+  opacity: 1;
+}
+
+.header-search input[type="text"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.header-search button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.header-search button svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.header-search button svg circle,
+.header-search button svg line {
+  stroke: #333;
+  stroke-width: 2;
+}
+
+  .topbar-promos span, .topbar-right span {
+    font-family: 'Lato', sans-serif;
+}
   .custom-header-wrapper {
     font-family: Arial, Helvetica, sans-serif;
     width: 100%;
@@ -10,9 +83,13 @@
     z-index: 1000;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
-
+  .custom-topbar-container {
+    background: #e05a00;
+    display: flex;
+    justify-content: center;
+}
   .custom-header-topbar {
-    background-color: #e05a00;
+    width: 1440px;
     color: #fff;
     font-size: 13px;
     padding: 7px 20px;
@@ -72,14 +149,18 @@
     font-size: 13px;
     color: #fff;
   }
-
+  .custom-header-container {
+    display: flex;
+    justify-content: center;
+    background: #0F2E530F;
+}
   .custom-header-main {
-    background: #fff;
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    gap: 16px;
+        gap: 50px;
     border-bottom: 1px solid #e5e5e5;
+    width: 1440px;
   }
 
   .header-logo a {
@@ -105,11 +186,8 @@
     flex: 1;
     display: flex;
     align-items: center;
-    border: 2px solid #ccc;
     border-radius: 4px;
     overflow: hidden;
-    background: #fff;
-    max-width: 600px;
   }
 
   .header-search input {
@@ -129,7 +207,6 @@
   .header-search button {
     background: none;
     border: none;
-    padding: 0 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -186,6 +263,8 @@
     background: #fff;
     border-top: 1px solid #e5e5e5;
     border-bottom: 2px solid #e5e5e5;
+        display: flex;
+    justify-content: center;
   }
 
   .header-nav-inner {
@@ -194,7 +273,9 @@
     padding: 0 20px;
     overflow-x: auto;
     scrollbar-width: none;
-  }
+    width: 1440px;
+    justify-content: center;
+}
 
   .header-nav-inner::-webkit-scrollbar {
     display: none;
@@ -209,13 +290,14 @@
     display: block;
     padding: 13px 14px;
     font-size: 12.5px;
-    font-weight: 700;
+    font-weight: 500;
     color: #222;
     text-decoration: none;
     white-space: nowrap;
     letter-spacing: 0.03em;
     text-transform: uppercase;
     transition: color 0.15s;
+    font-family: 'Lato', sans-serif;
   }
 
   .header-nav-inner > li > a:hover {
@@ -425,12 +507,14 @@
 </style>
 
 <div class="custom-header-wrapper">
-  <div class="custom-header-topbar">
+  <div class="custom-topbar-container">
+    <div class="custom-header-topbar">
     <div class="topbar-promos">
       <span>No Limit on Colors or Background Designs</span>
       <span class="dot"></span>
       <span>No Minimum Orders Required</span>
     </div>
+   
     <div class="topbar-right">
       <a href="tel:{{ section.settings.phone_number }}">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -443,13 +527,15 @@
         ▾
       </span>
     </div>
+     </div>
   </div>
 
+  <div class="custom-header-container">
   <div class="custom-header-main">
     <div class="header-logo">
       <a href="{{ routes.root_url }}">
         {%- if section.settings.logo != blank -%}
-          <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" width="200" height="55" loading="eager">
+         <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}" loading="eager">
         {%- else -%}
           <span class="logo-text">{{ shop.name }}</span>
         {%- endif -%}
@@ -460,10 +546,9 @@
       <form action="{{ routes.search_url }}" method="get" role="search">
         <input type="text" name="q" placeholder="{{ section.settings.search_placeholder | default: 'Search Covers' }}" aria-label="Search">
         <button type="submit" aria-label="Submit search">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="11" cy="11" r="8" stroke="#555" stroke-width="2" fill="none"/>
-            <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="#555" stroke-width="2"/>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+  <image xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAABnUlEQVR4AZyT3VHCQBSFIe+MyTswoQPtACpQKjBUYKyAUAFaQbACYwVQAh24Ad4TC2Did3YY2JDIgzv3sPf3cHf3xus4q9/vj4fDYQoKUIFiMBisQeSkNdQzCQVLz/PWZERVVW3ZV91udwvGIIUo9Vn4G2JJIJgTiSneQDTa7/eT3W43y/N8IpvYO0RRr9f7RG+IF4bhPd6EpEzFhoV9FkwDYYxDRGM6ahzNOx6PLyR0IHnV/hfoKCFWgmdQE4/iJx1D/1iLXBnERfBF/pir8d2w7sQnYFznDd3mBUFw5+aIpKST0HXe0G0HRVH8uDk6jp7x/rpFN8nRH9FNyWI/iy52geXzfHpm1HY5jUFI18qvJXmHw2HDnWQgPiXWEmTg1wva12EMVvK50J3oeWeQZAQSCr6ZBY1+wr7ELvC/Ab2Ojy9Fr4klMcaUeZ5PaXVGtIRQAzVn15CpeMHABcQ/8EXXRJaEQitqleQHBisAIxBgj4CO0iGu76pBVCOxTPwYOgMSdYHnIm1ErSSXknbNJeLO4n+RiPpENOXI2S8AAAD//wU/IxMAAAAGSURBVAMAoru7SgkzdOwAAAAASUVORK5CYII=" x="0" y="0" width="17" height="17"/>
+</svg>
         </button>
       </form>
     </div>
@@ -500,7 +585,7 @@
       </svg>
     </button>
   </div>
-
+</div>
   <nav class="custom-header-nav" aria-label="Main navigation">
     <ul class="header-nav-inner">
       {%- for link in linklists[header_menu].links -%}

@@ -3031,8 +3031,8 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
   }
 
   &:checked + .checkbox__label .icon-checkmark {
-    background-color: var(--color-foreground);
-    border-color: var(--color-foreground);
+    background-color: #EB891B;
+    border-color: #EB891B;
   }
 
   &:disabled + .checkbox__label .icon-checkmark {

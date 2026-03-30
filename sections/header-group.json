@@ -131,6 +131,7 @@
       "name": "Custom Header",
       "settings": {
         "menu": "main-menu",
+        "logo": "shopify://shop_images/image_3_1.png",
         "phone_number": "410-561-0800",
         "search_placeholder": "Search Covers"
       }
