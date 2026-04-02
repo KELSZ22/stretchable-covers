@@ -1,0 +1,237 @@
+.custom-cover-customizer .custom-cover-customizer__layout {
+  display: grid;
+  gap: var(--gap-lg);
+  grid-template-columns: 1fr;
+}
+
+@media screen and (min-width: 990px) {
+  .custom-cover-customizer .custom-cover-customizer__layout {
+    grid-template-columns: minmax(280px, 420px) minmax(320px, 1fr);
+    align-items: start;
+  }
+}
+
+.custom-cover-customizer .custom-cover-customizer__panel,
+.custom-cover-customizer .custom-cover-customizer__preview {
+  background: rgb(var(--color-background-rgb));
+  padding: var(--padding-lg);
+}
+
+.custom-cover-customizer .custom-cover-customizer__preview {
+  border: 0;
+  box-shadow: none;
+}
+
+.custom-cover-customizer .custom-cover-customizer__heading {
+  margin: 0;
+}
+
+.custom-cover-customizer .custom-cover-customizer__subheading {
+  margin: var(--margin-2xs) 0 var(--margin-md);
+  color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+}
+
+.custom-cover-customizer .custom-cover-customizer__form {
+  display: grid;
+  gap: var(--gap-sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__group {
+  display: grid;
+  gap: var(--gap-3xs);
+}
+
+.custom-cover-customizer .custom-cover-customizer__inline-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__label {
+  margin: 0;
+  font-size: var(--font-size--sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__input,
+.custom-cover-customizer .custom-cover-customizer__textarea {
+  width: 100%;
+  border: var(--style-border-width-inputs) solid var(--color-input-border);
+  border-radius: var(--style-border-radius-inputs);
+  color: var(--color-input-text);
+  background: var(--color-input-background);
+}
+
+.custom-cover-customizer .custom-cover-customizer__input {
+  min-height: calc(var(--padding-lg) * 2.2);
+  padding: var(--padding-xs) var(--padding-sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__textarea {
+  padding: var(--padding-sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__color {
+  padding: var(--padding-3xs);
+}
+
+.custom-cover-customizer .custom-cover-customizer__toolbar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap-3xs);
+}
+
+.custom-cover-customizer .custom-cover-customizer__tool {
+  display: grid;
+  gap: var(--gap-3xs);
+  justify-items: center;
+  align-content: center;
+  min-height: 58px;
+  border: var(--style-border-width-inputs) solid rgb(var(--color-foreground-rgb) / 0.18);
+  border-radius: calc(var(--style-border-radius-inputs) + 2px);
+  background: rgb(var(--color-background-rgb));
+  color: rgb(var(--color-foreground-rgb));
+  cursor: pointer;
+  font-size: var(--font-size--sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__tool.is-active {
+  border-color: rgb(var(--color-foreground-rgb));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-foreground-rgb) / 0.28);
+}
+
+.custom-cover-customizer .custom-cover-customizer__tool-icon {
+  font-size: var(--font-size--lg);
+  line-height: 1;
+}
+
+.custom-cover-customizer .custom-cover-customizer__tool-icon--text {
+  font-weight: var(--font-weight-medium);
+}
+
+.custom-cover-customizer .custom-cover-customizer__hidden-upload {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.custom-cover-customizer .custom-cover-customizer__image-panel {
+  display: grid;
+  gap: var(--gap-sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__rights {
+  display: inline-flex;
+  gap: var(--gap-3xs);
+  align-items: center;
+  font-size: var(--font-size--sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__rights input {
+  accent-color: rgb(var(--color-button-rgb));
+}
+
+.custom-cover-customizer .custom-cover-customizer__dropzone {
+  min-height: 150px;
+  border: 2px dashed rgb(var(--color-foreground-rgb) / 0.38);
+  border-radius: calc(var(--style-border-radius-inputs) + 2px);
+  background: rgb(var(--color-background-rgb));
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--gap-xs);
+  color: rgb(var(--color-foreground-rgb) / 0.82);
+  font-size: var(--font-size--sm);
+  cursor: pointer;
+  text-align: center;
+  padding: var(--padding-lg);
+}
+
+.custom-cover-customizer .custom-cover-customizer__dropzone.is-dragover {
+  border-color: rgb(var(--color-button-rgb));
+  background: rgb(var(--color-button-rgb) / 0.06);
+}
+
+.custom-cover-customizer .custom-cover-customizer__dropzone-icon {
+  font-size: calc(var(--font-size--lg) * 1.4);
+  line-height: 1;
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart-panel {
+  display: grid;
+  gap: var(--gap-sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart-title {
+  margin: 0;
+  font-size: var(--font-size--lg);
+  font-weight: var(--font-weight-medium);
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap-2xs);
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart {
+  border: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+  border-radius: calc(var(--style-border-radius-inputs) + 2px);
+  background: rgb(var(--color-foreground-rgb) / 0.03);
+  padding: var(--padding-2xs);
+  min-height: 96px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart:hover {
+  border-color: rgb(var(--color-button-rgb));
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart img {
+  width: 78%;
+  height: auto;
+  object-fit: contain;
+}
+
+.custom-cover-customizer .custom-cover-customizer__pricing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+  padding-top: var(--padding-sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__price-label,
+.custom-cover-customizer .custom-cover-customizer__price-value {
+  margin: 0;
+}
+
+.custom-cover-customizer .custom-cover-customizer__price-value {
+  font-weight: var(--font-weight-medium);
+}
+
+.custom-cover-customizer .custom-cover-customizer__warning {
+  margin: 0;
+  min-height: 1.6em;
+  color: rgb(194 37 37);
+  font-size: var(--font-size--sm);
+}
+
+.custom-cover-customizer .custom-cover-customizer__canvas-wrap {
+  width: min(100%, 760px);
+  margin: 0 auto;
+}
+
+.custom-cover-customizer [data-customizer-canvas] {
+  width: 100%;
+  height: auto;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--color-foreground-rgb) / 0.16);
+  box-shadow: 0 10px 28px rgb(var(--color-foreground-rgb) / 0.18);
+  background: rgb(var(--color-background-rgb));
+  display: block;
+}
