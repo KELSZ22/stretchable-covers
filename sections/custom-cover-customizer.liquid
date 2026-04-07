@@ -16,6 +16,7 @@
 {%- assign google_fonts_pipe = google_fonts_pipe | strip -%}
 {%- assign custom_cover_font_lines = section.settings.font_choices | newline_to_br | split: '<br />' -%}
 {%- assign default_text_hex = section.settings.default_text_color | default: '#000000' -%}
+{%- assign template_handles = section.settings.templates_handles | newline_to_br | split: '<br />' -%}
 {%- if font_library_mode != 'custom' -%}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
@@ -258,6 +259,7 @@
                 <button
                   type="button"
                   class="custom-cover-customizer__mode-tab is-active"
+                  data-mode-tab="editor"
                   role="tab"
                   aria-selected="true">
                   Editor
@@ -265,13 +267,15 @@
                 <button
                   type="button"
                   class="custom-cover-customizer__mode-tab"
+                  data-mode-tab="templates"
                   role="tab"
                   aria-selected="false">
                   Templates
                 </button>
               </div>
 
-              <p class="custom-cover-customizer__label custom-cover-customizer__section-label">Product</p>
+              <div data-mode-panel="editor">
+                <p class="custom-cover-customizer__label custom-cover-customizer__section-label">Product</p>
 
               <div class="custom-cover-customizer__group">
                 <label class="custom-cover-customizer__label" for="CustomizerProduct-{{ section.id }}">Product name</label>
@@ -666,10 +670,57 @@
                 </div>
               </div>
 
-              <p
-                class="custom-cover-customizer__warning"
-                aria-live="polite"
-                data-warning-output></p>
+                <p
+                  class="custom-cover-customizer__warning"
+                  aria-live="polite"
+                  data-warning-output></p>
+              </div>
+
+              <div
+                class="custom-cover-customizer__templates-panel"
+                data-mode-panel="templates"
+                hidden>
+                <p class="custom-cover-customizer__label custom-cover-customizer__section-label">
+                  {{ section.settings.templates_heading | escape }}
+                </p>
+                {% assign template_count = 0 %}
+                {% for template_handle_line in template_handles %}
+                  {% assign template_handle = template_handle_line | strip %}
+                  {% if template_handle != blank and section.settings.templates_metaobject_type != blank %}
+                    {% assign template_item = shop.metaobjects[section.settings.templates_metaobject_type][template_handle] %}
+                    {% if template_item != blank and template_item.image != blank %}
+                      {% assign template_count = template_count | plus: 1 %}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+                {% if template_count > 0 %}
+                  <div class="custom-cover-customizer__templates-list">
+                    {% for template_handle_line in template_handles %}
+                      {% assign template_handle = template_handle_line | strip %}
+                      {% if template_handle != blank and section.settings.templates_metaobject_type != blank %}
+                        {% assign template_item = shop.metaobjects[section.settings.templates_metaobject_type][template_handle] %}
+                        {% if template_item != blank and template_item.image != blank %}
+                          {% assign template_image = template_item.image.value | default: template_item.image %}
+                          {% if template_image != blank %}
+                            <button
+                              type="button"
+                              class="custom-cover-customizer__template"
+                              data-add-template
+                              data-src="{{ template_image | image_url: width: 1400 }}"
+                              aria-label="{{ template_item.title | default: section.settings.templates_heading | escape }}">
+                              {{ template_image | image_url: width: 280 | image_tag: loading: 'lazy', alt: template_item.title }}
+                            </button>
+                          {% endif %}
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <p class="custom-cover-customizer__message custom-cover-customizer__templates-empty">
+                    {{ section.settings.templates_empty_message | escape }}
+                  </p>
+                {% endif %}
+              </div>
 
             </form>
           </custom-cover-customizer-component>
@@ -937,6 +988,31 @@
         "id": "clipart_heading",
         "label": "Clipart title",
         "default": "Clipart"
+      }, {
+        "type": "header",
+        "content": "Templates"
+      }, {
+        "type": "text",
+        "id": "templates_heading",
+        "label": "Templates heading",
+        "default": "Templates"
+      }, {
+        "type": "text",
+        "id": "templates_metaobject_type",
+        "label": "Template metaobject type",
+        "default": "custom_template_item",
+        "info": "Metaobject definition type used for template entries."
+      }, {
+        "type": "textarea",
+        "id": "templates_handles",
+        "label": "Template handles (one per line)",
+        "default": "example-template-handle",
+        "info": "Add metaobject entry handles from Shopify admin. Example: summer-floral"
+      }, {
+        "type": "text",
+        "id": "templates_empty_message",
+        "label": "Templates empty message",
+        "default": "Add template items in the section settings to show template images here."
       }, {
         "type": "textarea",
         "id": "imprint_sizes",

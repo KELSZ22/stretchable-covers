@@ -216,8 +216,11 @@ class CustomCoverCustomizer extends HTMLElement {
     const uploadInput = this.querySelector("[data-upload-input]");
     const imageRights = this.querySelector("[data-image-rights]");
     const uploadDropzone = this.querySelector("[data-upload-dropzone]");
+    const modeTabs = this.querySelectorAll("[data-mode-tab]");
+    const modePanels = this.querySelectorAll("[data-mode-panel]");
     const toolButtons = this.querySelectorAll("[data-tool-button]");
     const clipartButtons = this.querySelectorAll("[data-add-clipart]");
+    const templateButtons = this.querySelectorAll("[data-add-template]");
     const shapeFillInput = this.querySelector("[data-shape-fill-input]");
     const variantSelector = this.querySelector("[data-variant-selector]");
     const imprintSizeSelector = this.querySelector("[data-imprint-size]");
@@ -255,6 +258,27 @@ class CustomCoverCustomizer extends HTMLElement {
     syncDesignTitleInputWidth();
     designTitleInput?.addEventListener("input", syncDesignTitleInputWidth);
     designTitleInput?.addEventListener("change", syncDesignTitleInputWidth);
+
+    const setMode = (mode) => {
+      modeTabs.forEach((tab) => {
+        const isActive = tab.getAttribute("data-mode-tab") === mode;
+        tab.classList.toggle("is-active", isActive);
+        tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+      modePanels.forEach((panel) => {
+        panel.hidden = panel.getAttribute("data-mode-panel") !== mode;
+      });
+    };
+
+    modeTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const mode = tab.getAttribute("data-mode-tab");
+        if (!mode) {
+          return;
+        }
+        setMode(mode);
+      });
+    });
 
     toolButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -391,6 +415,7 @@ class CustomCoverCustomizer extends HTMLElement {
 
     clipartButtons.forEach((button) => {
       button.addEventListener("click", () => {
+        setMode("editor");
         this.setActiveTool("clipart");
         this.toggleToolPanels("clipart");
         const src = button.getAttribute("data-src");
@@ -398,6 +423,17 @@ class CustomCoverCustomizer extends HTMLElement {
           return;
         }
         this.addImageElement(src, "clipart");
+      });
+    });
+
+    templateButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const src = button.getAttribute("data-src");
+        if (!src) {
+          return;
+        }
+        setMode("editor");
+        this.addImageElement(src, "image");
       });
     });
 
@@ -611,6 +647,7 @@ class CustomCoverCustomizer extends HTMLElement {
 
     this.setActiveTool("text");
     this.toggleToolPanels("text");
+    setMode("editor");
     this.syncFormatToolbars();
     this.syncAlignmentControls(this.textDefaults.textAlign);
     this.updateColorChrome();
