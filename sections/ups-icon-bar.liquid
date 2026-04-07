@@ -1,0 +1,294 @@
+{% comment %}
+  Section: USP Icon Bar
+{% endcomment %}
+
+<div id="shopify-section-{{ section.id }}" class="usp-icon-bar">
+  <div class="usp-icon-bar__inner page-width">
+    <div class="usp-icon-bar__grid">
+      {% for block in section.blocks %}
+        <div class="usp-icon-bar__item" {{ block.shopify_attributes }}>
+          <div class="usp-icon-bar__icon">
+            {% if block.settings.custom_icon != blank %}
+              <img
+                src="{{ block.settings.custom_icon | image_url: width: 120 }}"
+                alt="{{ block.settings.heading | escape }}"
+                loading="lazy"
+                width="{{ block.settings.custom_icon.width }}"
+                height="{{ block.settings.custom_icon.height }}"
+              >
+            {% else %}
+              {% case forloop.index %}
+                {% when 1 %}
+                  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                    <path d="M10 15V9H16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M38 15V9H32" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 33V39H16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M38 33V39H32" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <rect x="14" y="13" width="20" height="22" rx="2" stroke="currentColor" stroke-width="2.4"/>
+                    <path d="M22 26L31 17" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M26 17H31V22" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                {% when 2 %}
+                  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                    <rect x="13" y="10" width="22" height="15" rx="2" stroke="currentColor" stroke-width="2.4"/>
+                    <path d="M24 25V31" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M18 35H30" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <rect x="9" y="31" width="30" height="6" rx="2" stroke="currentColor" stroke-width="2.4"/>
+                  </svg>
+                {% when 3 %}
+                  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                    <path d="M24 10C16.268 10 10 16.268 10 24" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M14 12H10V16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M24 38C31.732 38 38 31.732 38 24" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M34 36H38V32" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="24" cy="24" r="8" stroke="currentColor" stroke-width="2.4"/>
+                    <path d="M24 16C26.8 18.5 26.8 29.5 24 32" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M24 16C21.2 18.5 21.2 29.5 24 32" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M17 24H31" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                  </svg>
+                {% when 4 %}
+                  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                    <circle cx="24" cy="24" r="12" stroke="currentColor" stroke-width="2.4"/>
+                    <circle cx="24" cy="24" r="4" stroke="currentColor" stroke-width="2.4"/>
+                    <path d="M24 12V16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M24 32V36" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M12 24H16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M32 24H36" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M16 16L18.8 18.8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M29.2 29.2L32 32" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                  </svg>
+                {% when 5 %}
+                  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                    <circle cx="24" cy="24" r="12" stroke="currentColor" stroke-width="2.4"/>
+                    <path d="M12 24H36" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M24 12C27.2 15 27.2 33 24 36" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M24 12C20.8 15 20.8 33 24 36" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M15.5 18C18 19.2 30 19.2 32.5 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M15.5 30C18 28.8 30 28.8 32.5 30" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                  </svg>
+                {% else %}
+                  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                    <circle cx="24" cy="24" r="12" stroke="currentColor" stroke-width="2.4"/>
+                  </svg>
+              {% endcase %}
+            {% endif %}
+          </div>
+
+          {% if block.settings.heading != blank %}
+            <h3 class="usp-icon-bar__title">{{ block.settings.heading }}</h3>
+          {% endif %}
+
+          {% if block.settings.text != blank %}
+            <div class="usp-icon-bar__text">{{ block.settings.text }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+  #shopify-section-{{ section.id }}.usp-icon-bar {
+    background: {{ section.settings.bg_color }};
+    border-top: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+  }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__inner {
+    padding: 60px 70px;
+  }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 24px;
+    align-items: start;
+  }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__item {
+    text-align: center;
+    max-width: 180px;
+    margin: 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__icon {
+    width: 34px;
+    height: 34px;
+    margin: 0 auto 10px;
+    color: {{ section.settings.icon_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__icon svg,
+  #shopify-section-{{ section.id }} .usp-icon-bar__icon img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__title {
+    margin: 0 0 6px;
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 600;
+    color: {{ section.settings.heading_color }};
+    font-family: Lato, sans-serif;
+  }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__text {
+    font-size: 14px;
+    line-height: 15px;
+    color: {{ section.settings.text_color }};
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .usp-icon-bar__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px 18px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .usp-icon-bar__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px 16px;
+    }
+
+    #shopify-section-{{ section.id }} .usp-icon-bar__item {
+      max-width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .usp-icon-bar__title {
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    #shopify-section-{{ section.id }} .usp-icon-bar__text {
+      font-size: 10px;
+      line-height: 14px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    #shopify-section-{{ section.id }} .usp-icon-bar__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "USP Icon Bar",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#E8E8E8"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Top border color",
+      "default": "#1A2438"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Top border width",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#223B63"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#333333"
+    },
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "USP Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom icon"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "USP heading"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "USP description goes here."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "USP Icon Bar",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "heading": "Fully Custom Covers",
+            "text": "Made to your exact size and specifications."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "heading": "Fast Production",
+            "text": "Quick turnaround without compromising quality."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "heading": "Repeat Customers Worldwide",
+            "text": "Trusted by 50,000+ clients across the globe."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "heading": "Order as Few as One",
+            "text": "No minimum order required."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "heading": "Made with Premium Microfiber",
+            "text": "Soft, durable, and stretchable material."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

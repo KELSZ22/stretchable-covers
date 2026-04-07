@@ -1,0 +1,190 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Title",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "custom_faqs_KTipLW": {
+      "type": "custom-faqs",
+      "blocks": {
+        "category_RggwnL": {
+          "type": "category",
+          "settings": {
+            "category_label": "Product & Materials",
+            "category_key": "product-materials"
+          }
+        },
+        "category_fPBewp": {
+          "type": "category",
+          "settings": {
+            "category_label": "Artwork & Printing",
+            "category_key": "artwork-printing"
+          }
+        },
+        "category_tWX6CL": {
+          "type": "category",
+          "settings": {
+            "category_label": "Orders, Payment & Returns",
+            "category_key": "orders-payment-returns"
+          }
+        },
+        "category_QFNtMU": {
+          "type": "category",
+          "settings": {
+            "category_label": "Production & Shipping",
+            "category_key": "production-shipping"
+          }
+        },
+        "faq_PeefhD": {
+          "type": "faq",
+          "settings": {
+            "category_key": "product-materials",
+            "question": "What material colors do you have?",
+            "answer": "<p>All of our covers start off white and we can print any background color as long as a number is provided as a guide.</p>"
+          }
+        },
+        "faq_nnXxyp": {
+          "type": "faq",
+          "settings": {
+            "category_key": "artwork-printing",
+            "question": "Can you match colors exactly?",
+            "answer": "<p>We can get very close, but final printed output may vary slightly depending on material and production conditions.</p>"
+          }
+        },
+        "faq_wpmYkm": {
+          "type": "faq",
+          "settings": {
+            "category_key": "orders-payment-returns",
+            "question": "Return Policy?",
+            "answer": "<p>Please contact us regarding returns, exchanges, or order issues and we will help review your situation.</p>"
+          }
+        },
+        "faq_xFrPgF": {
+          "type": "faq",
+          "settings": {
+            "category_key": "production-shipping",
+            "question": "How long does production take?",
+            "answer": "<p>Production timelines vary by order size and customization requirements. Reach out for the most accurate lead time.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "category_RggwnL",
+        "category_fPBewp",
+        "category_tWX6CL",
+        "category_QFNtMU",
+        "faq_PeefhD",
+        "faq_nnXxyp",
+        "faq_wpmYkm",
+        "faq_xFrPgF"
+      ],
+      "name": "FAQ categories sticky",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "sidebar_title": "Select by Category",
+        "contact_text": "Have more questions? Reach out so we can assist you.",
+        "contact_button_label": "Contact Us",
+        "contact_button_link": "shopify://pages/contact",
+        "max_width": 1440,
+        "sticky_top": 24,
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "sidebar_radius": 12,
+        "faq_radius": 4,
+        "section_bg_color": "#ffffff",
+        "heading_color": "#1f1f1f",
+        "sidebar_bg_color": "#ffffff",
+        "sidebar_title_color": "#1f1f1f",
+        "category_text_color": "#6a6a6a",
+        "category_active_text_color": "#1f1f1f",
+        "category_divider_color": "#e6e6e6",
+        "faq_closed_bg_color": "#0f2e53",
+        "faq_open_bg_color": "#f3f4f5",
+        "faq_closed_question_color": "#ffffff",
+        "faq_open_question_color": "#1f1f1f",
+        "faq_answer_color": "#666666",
+        "footer_text_color": "#1f1f1f",
+        "button_bg_color": "#db8a1b",
+        "button_text_color": "#ffffff",
+        "heading_font_family": "Raleway",
+        "sidebar_title_font_family": "Lato",
+        "category_font_family": "Lato",
+        "faq_question_font_family": "Lato",
+        "faq_answer_font_family": "Lato",
+        "footer_font_family": "Lato",
+        "button_font_family": "Lato",
+        "heading_size": 32,
+        "sidebar_title_size": 18,
+        "category_font_size": 16,
+        "faq_question_size": 16,
+        "faq_answer_size": 14,
+        "footer_text_size": 14,
+        "button_font_size": 16,
+        "heading_font_weight": "700",
+        "sidebar_title_font_weight": "500",
+        "category_font_weight": "400",
+        "faq_question_font_weight": "700",
+        "faq_answer_font_weight": "400",
+        "footer_font_weight": "500",
+        "button_font_weight": "500"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "custom_faqs_KTipLW"
+  ]
+}

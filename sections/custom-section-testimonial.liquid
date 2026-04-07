@@ -1,0 +1,705 @@
+{% comment %}
+  Section: Customer Testimonial Slider
+{% endcomment %}
+
+<section id="shopify-section-{{ section.id }}" class="cwt-section">
+  <div class="cwt-section__inner page-width">
+    <div class="cwt-section__layout">
+      <div class="cwt-section__left">
+        {% if section.settings.stars_text != blank or section.settings.trusted_text != blank %}
+          <div class="cwt-section__rating">
+            {% if section.settings.stars_text != blank %}
+              <div class="cwt-section__stars">{{ section.settings.stars_text }}</div>
+            {% endif %}
+            {% if section.settings.trusted_text != blank %}
+              <div class="cwt-section__trusted">{{ section.settings.trusted_text }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if section.settings.heading != blank %}
+          <h2 class="cwt-section__heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <div class="cwt-section__description">{{ section.settings.description }}</div>
+        {% endif %}
+
+        <div class="cwt-section__controls">
+          <button type="button" class="cwt-section__arrow cwt-section__arrow--prev" aria-label="Previous testimonial">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M14 6L8 12L14 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <button type="button" class="cwt-section__arrow cwt-section__arrow--next" aria-label="Next testimonial">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10 6L16 12L10 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="cwt-section__indicator">
+          <span class="cwt-section__indicator-fill" data-indicator-fill></span>
+        </div>
+      </div>
+
+      <div class="cwt-section__right">
+        <div class="cwt-section__slider" data-slider>
+          <div class="cwt-section__track" data-slider-track>
+            {% for block in section.blocks %}
+              <div class="cwt-section__card" {{ block.shopify_attributes }}>
+                <div class="cwt-section__card-image-wrap">
+                  {% if block.settings.image != blank %}
+                    <img
+                      src="{{ block.settings.image | image_url: width: 900 }}"
+                      alt="{{ block.settings.image.alt | escape | default: block.settings.author | escape }}"
+                      class="cwt-section__card-image"
+                      loading="lazy"
+                      width="{{ block.settings.image.width }}"
+                      height="{{ block.settings.image.height }}"
+                    >
+                  {% else %}
+                    {{ 'image' | placeholder_svg_tag: 'cwt-section__card-placeholder' }}
+                  {% endif %}
+                </div>
+
+                <div class="cwt-section__card-body">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="33" viewBox="0 0 36 33" fill="none">
+  <path d="M2.93333 0C1.31267 0 0 1.31267 0 2.93333V14.6667C0 16.2873 1.31267 17.6 2.93333 17.6H8.86016C8.89672 20.2198 8.64045 25.8333 6.10443 29.9979H6.10729C5.92013 30.2865 5.8403 30.6317 5.88175 30.9731C5.9232 31.3146 6.0833 31.6306 6.33407 31.866C6.58484 32.1014 6.91035 32.2413 7.25374 32.2611C7.59713 32.2809 7.93656 32.1795 8.21276 31.9745C8.21276 31.9745 14.6667 27.0518 14.6667 17.6V2.93333C14.6667 1.31267 13.354 0 11.7333 0H2.93333ZM23.4667 0C21.846 0 20.5333 1.31267 20.5333 2.93333V14.6667C20.5333 16.2873 21.846 17.6 23.4667 17.6H29.3935C29.4301 20.2198 29.1738 25.8333 26.6378 29.9979H26.6406C26.4535 30.2865 26.3736 30.6317 26.4151 30.9731C26.4565 31.3146 26.6166 31.6306 26.8674 31.866C27.1182 32.1014 27.4437 32.2413 27.7871 32.2611C28.1305 32.2809 28.4699 32.1795 28.7461 31.9745C28.7461 31.9745 35.2 27.0518 35.2 17.6V2.93333C35.2 1.31267 33.8873 0 32.2667 0H23.4667Z" fill="#0F2E53"/>
+</svg>
+
+                  {% if block.settings.quote != blank %}
+                    <div class="cwt-section__quote">{{ block.settings.quote }}</div>
+                  {% endif %}
+
+                  {% if block.settings.author != blank %}
+                    <div class="cwt-section__author">{{ block.settings.author }}</div>
+                  {% endif %}
+
+                  {% if block.settings.role != blank %}
+                    <div class="cwt-section__role">{{ block.settings.role }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }}.cwt-section {
+    background: {{ section.settings.section_bg }};
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__inner {
+    padding: 60px 0 60px 70px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__layout {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    gap: 34px;
+    align-items: center;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__left {
+    max-width: 240px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__stars {
+    color: {{ section.settings.stars_color }};
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 2px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__trusted {
+    font-size: 11px;
+    line-height: 16px;
+    color: {{ section.settings.trusted_color }};
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__heading {
+    margin: 0 0 12px;
+    font-size: 22px;
+    line-height: 26px;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__description {
+    font-size: 12px;
+    line-height: 18px;
+    color: {{ section.settings.description_color }};
+    margin-bottom: 26px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__arrow {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid {{ section.settings.arrow_border }};
+    background: {{ section.settings.arrow_bg }};
+    color: {{ section.settings.arrow_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__arrow:hover {
+    background: {{ section.settings.arrow_hover_bg }};
+    color: {{ section.settings.arrow_hover_color }};
+    border-color: {{ section.settings.arrow_hover_bg }};
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__arrow svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__indicator {
+    position: relative;
+    width: 100%;
+    height: 1px;
+    background: {{ section.settings.line_color }};
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__indicator-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    background: {{ section.settings.arrow_hover_bg }};
+    transition: transform 0.45s ease, width 0.25s ease;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__right {
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__slider {
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__track {
+    display: flex;
+    gap: 16px;
+    transition: transform 0.45s ease;
+    will-change: transform;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__card {
+    flex: 0 0 calc((100% - (({{ section.settings.desktop_cards }} - 1) * 16px)) / {{ section.settings.desktop_cards }});
+    min-width: calc((100% - (({{ section.settings.desktop_cards }} - 1) * 16px)) / {{ section.settings.desktop_cards }});
+    background: {{ section.settings.card_bg }};
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__card-image-wrap {
+    aspect-ratio: 1.8 / 1;
+    overflow: hidden;
+    background: #eaeaea;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__card-image,
+  #shopify-section-{{ section.id }} .cwt-section__card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__card-body {
+    padding: 16px 16px 18px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__quote-icon {
+    font-size: 38px;
+    line-height: 20px;
+    font-weight: 700;
+    color: {{ section.settings.quote_icon_color }};
+    margin-bottom: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__quote {
+    font-size: 12px;
+    line-height: 18px;
+    color: {{ section.settings.quote_color }};
+    margin-bottom: 16px;
+    min-height: 90px;
+    margin-top: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__author {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    color: {{ section.settings.author_color }};
+    margin-bottom: 4px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__role {
+    font-size: 11px;
+    line-height: 15px;
+    color: {{ section.settings.role_color }};
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .cwt-section__layout {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__left {
+      max-width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__card {
+      flex: 0 0 calc((100% - 16px) / 2);
+      min-width: calc((100% - 16px) / 2);
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .cwt-section__inner {
+      padding: 28px 0;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__heading {
+      font-size: 28px;
+      line-height: 32px;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__card {
+      flex: 0 0 88%;
+      min-width: 88%;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__quote {
+      min-height: auto;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    var section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section) return;
+
+    var slider = section.querySelector('[data-slider]');
+    var track = section.querySelector('[data-slider-track]');
+    var prevBtn = section.querySelector('.cwt-section__arrow--prev');
+    var nextBtn = section.querySelector('.cwt-section__arrow--next');
+    var indicatorFill = section.querySelector('[data-indicator-fill]');
+
+    if (!slider || !track || !prevBtn || !nextBtn) return;
+
+    var currentIndex = 0;
+    var clonesPerSide = 0;
+    var isAnimating = false;
+    var resizeTimer = null;
+
+    function getOriginalCards() {
+      return Array.prototype.slice.call(track.querySelectorAll('.cwt-section__card:not(.is-clone)'));
+    }
+
+    function getGap() {
+      return parseInt(window.getComputedStyle(track).gap || 16, 10);
+    }
+
+    function getStep() {
+      var firstCard = track.querySelector('.cwt-section__card');
+      if (!firstCard) return 0;
+      return firstCard.getBoundingClientRect().width + getGap();
+    }
+
+    function getVisibleCount() {
+      var step = getStep();
+      if (!step) return 1;
+      return Math.max(1, Math.round(slider.clientWidth / step));
+    }
+
+    function setTrackPosition(animate) {
+      var offset = currentIndex * getStep();
+      track.style.transition = animate ? 'transform 0.45s ease' : 'none';
+      track.style.transform = 'translate3d(-' + offset + 'px, 0, 0)';
+    }
+
+    function clearClones() {
+      var clones = track.querySelectorAll('.cwt-section__card.is-clone');
+      clones.forEach(function(clone) {
+        clone.remove();
+      });
+    }
+
+    function makeClone(card) {
+      var clone = card.cloneNode(true);
+      clone.classList.add('is-clone');
+      clone.setAttribute('aria-hidden', 'true');
+      return clone;
+    }
+
+    function updateArrowsStaticState() {
+      prevBtn.style.opacity = '0.5';
+      nextBtn.style.opacity = '0.5';
+      prevBtn.style.pointerEvents = 'none';
+      nextBtn.style.pointerEvents = 'none';
+    }
+
+    function updateArrowsActiveState() {
+      prevBtn.style.opacity = '1';
+      nextBtn.style.opacity = '1';
+      prevBtn.style.pointerEvents = 'auto';
+      nextBtn.style.pointerEvents = 'auto';
+    }
+
+    function updateIndicator() {
+      if (!indicatorFill) return;
+
+      var originals = getOriginalCards();
+      var originalCount = originals.length;
+
+      if (!originalCount) {
+        indicatorFill.style.width = '0';
+        indicatorFill.style.transform = 'translateX(0)';
+        return;
+      }
+
+      var realIndex = 0;
+      if (originalCount > 0) {
+        realIndex = ((currentIndex - clonesPerSide) % originalCount + originalCount) % originalCount;
+      }
+
+      var segmentWidth = 100 / originalCount;
+      indicatorFill.style.width = segmentWidth + '%';
+      indicatorFill.style.transform = 'translateX(' + (realIndex * 100) + '%)';
+    }
+
+    function buildSlider() {
+      clearClones();
+      isAnimating = false;
+
+      var originals = getOriginalCards();
+      var visibleCount = getVisibleCount();
+
+      if (originals.length <= 1 || originals.length <= visibleCount) {
+        currentIndex = 0;
+        clonesPerSide = 0;
+        setTrackPosition(false);
+        updateArrowsStaticState();
+        updateIndicator();
+        return;
+      }
+
+      updateArrowsActiveState();
+
+      clonesPerSide = Math.min(originals.length, visibleCount + 1);
+
+      var prependClones = originals.slice(-clonesPerSide).map(makeClone);
+      var appendClones = originals.slice(0, clonesPerSide).map(makeClone);
+
+      for (var i = prependClones.length - 1; i >= 0; i--) {
+        track.insertBefore(prependClones[i], track.firstChild);
+      }
+
+      appendClones.forEach(function(clone) {
+        track.appendChild(clone);
+      });
+
+      currentIndex = clonesPerSide;
+      setTrackPosition(false);
+
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          track.style.transition = 'transform 0.45s ease';
+          updateIndicator();
+        });
+      });
+    }
+
+    function goToSlide(index) {
+      if (isAnimating) return;
+
+      var originals = getOriginalCards();
+      var visibleCount = getVisibleCount();
+
+      if (originals.length <= 1 || originals.length <= visibleCount) return;
+
+      isAnimating = true;
+      currentIndex = index;
+      setTrackPosition(true);
+      updateIndicator();
+    }
+
+    function handleLoopReset() {
+      var originals = getOriginalCards();
+      var originalCount = originals.length;
+
+      if (originalCount <= 1) {
+        isAnimating = false;
+        updateIndicator();
+        return;
+      }
+
+      if (currentIndex >= originalCount + clonesPerSide) {
+        currentIndex = clonesPerSide;
+        setTrackPosition(false);
+      } else if (currentIndex < clonesPerSide) {
+        currentIndex = originalCount + clonesPerSide - 1;
+        setTrackPosition(false);
+      }
+
+      updateIndicator();
+
+      requestAnimationFrame(function() {
+        isAnimating = false;
+      });
+    }
+
+    prevBtn.addEventListener('click', function() {
+      goToSlide(currentIndex - 1);
+    });
+
+    nextBtn.addEventListener('click', function() {
+      goToSlide(currentIndex + 1);
+    });
+
+    track.addEventListener('transitionend', function(event) {
+      if (event.target !== track) return;
+      handleLoopReset();
+    });
+
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        buildSlider();
+      }, 200);
+    });
+
+    buildSlider();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Testimonial Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "stars_text",
+      "label": "Stars text",
+      "default": "★★★★★"
+    },
+    {
+      "type": "text",
+      "id": "trusted_text",
+      "label": "Trusted text",
+      "default": "Trusted by 450,000 + customers"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why Our Customers Keep Coming Back"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Thousands of customers. Repeated use. Shared by our customers."
+    },
+    {
+      "type": "select",
+      "id": "desktop_cards",
+      "label": "Desktop cards to show",
+      "default": "4",
+      "options": [
+        {
+          "value": "4",
+          "label": "4 cards"
+        },
+        {
+          "value": "5",
+          "label": "5 cards"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Section background",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "stars_color",
+      "label": "Stars color",
+      "default": "#F5A623"
+    },
+    {
+      "type": "color",
+      "id": "trusted_color",
+      "label": "Trusted text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1F1F1F"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "quote_icon_color",
+      "label": "Quote icon color",
+      "default": "#0F2E53"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote text color",
+      "default": "#444444"
+    },
+    {
+      "type": "color",
+      "id": "author_color",
+      "label": "Author color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "role_color",
+      "label": "Role color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "arrow_bg",
+      "label": "Arrow background",
+      "default": "#F3F3F3"
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow color",
+      "default": "#7A7A7A"
+    },
+    {
+      "type": "color",
+      "id": "arrow_border",
+      "label": "Arrow border color",
+      "default": "#D5D5D5"
+    },
+    {
+      "type": "color",
+      "id": "arrow_hover_bg",
+      "label": "Arrow hover background",
+      "default": "#0F2E53"
+    },
+    {
+      "type": "color",
+      "id": "arrow_hover_color",
+      "label": "Arrow hover color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Line color",
+      "default": "#D8D8D8"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Top image"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Cathy Powell"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Role",
+          "default": "University Health Care System"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonial Slider",
+      "blocks": [
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

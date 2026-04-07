@@ -1,0 +1,604 @@
+{% comment %}
+  Section: Custom Footer
+{% endcomment %}
+
+<footer id="shopify-section-{{ section.id }}" class="custom-footer">
+  <div class="custom-footer__inner page-width">
+    <div class="custom-footer__top">
+      <div class="custom-footer__brand">
+        {% if section.settings.logo != blank %}
+          <div class="custom-footer__logo-wrap">
+            <img
+              src="{{ section.settings.logo | image_url: width: 500 }}"
+              alt="{{ section.settings.logo.alt | escape | default: shop.name | escape }}"
+              class="custom-footer__logo"
+              loading="lazy"
+              width="{{ section.settings.logo.width }}"
+              height="{{ section.settings.logo.height }}"
+            >
+          </div>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <div class="custom-footer__description">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="custom-footer__menus">
+        <div class="custom-footer__menu-column">
+          {% if section.settings.shop_heading != blank %}
+            <h3 class="custom-footer__menu-title">{{ section.settings.shop_heading }}</h3>
+          {% endif %}
+          {% if section.settings.shop_menu != blank %}
+            <ul class="custom-footer__menu-list">
+              {% for link in linklists[section.settings.shop_menu].links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        <div class="custom-footer__menu-column">
+          {% if section.settings.information_heading != blank %}
+            <h3 class="custom-footer__menu-title">{{ section.settings.information_heading }}</h3>
+          {% endif %}
+          {% if section.settings.information_menu != blank %}
+            <ul class="custom-footer__menu-list">
+              {% for link in linklists[section.settings.information_menu].links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        <div class="custom-footer__menu-column">
+          {% if section.settings.account_heading != blank %}
+            <h3 class="custom-footer__menu-title">{{ section.settings.account_heading }}</h3>
+          {% endif %}
+          {% if section.settings.account_menu != blank %}
+            <ul class="custom-footer__menu-list">
+              {% for link in linklists[section.settings.account_menu].links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        <div class="custom-footer__menu-column">
+          {% if section.settings.policy_heading != blank %}
+            <h3 class="custom-footer__menu-title">{{ section.settings.policy_heading }}</h3>
+          {% endif %}
+          {% if section.settings.policy_menu != blank %}
+            <ul class="custom-footer__menu-list">
+              {% for link in linklists[section.settings.policy_menu].links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="custom-footer__middle">
+      <div class="custom-footer__middle-left">
+        <div class="custom-footer__badge-group">
+          {% if section.settings.trust_label != blank %}
+            <div class="custom-footer__small-label">{{ section.settings.trust_label }}</div>
+          {% endif %}
+          {% if section.settings.trust_image != blank %}
+            <img
+              src="{{ section.settings.trust_image | image_url: width: 300 }}"
+              alt="{{ section.settings.trust_image.alt | escape | default: section.settings.trust_label | escape }}"
+              class="custom-footer__small-image custom-footer__small-image--trust"
+              loading="lazy"
+              width="{{ section.settings.trust_image.width }}"
+              height="{{ section.settings.trust_image.height }}"
+            >
+          {% endif %}
+        </div>
+
+        <div class="custom-footer__badge-group">
+          {% if section.settings.payment_label != blank %}
+            <div class="custom-footer__small-label">{{ section.settings.payment_label }}</div>
+          {% endif %}
+          {% if section.settings.payment_image != blank %}
+            <img
+              src="{{ section.settings.payment_image | image_url: width: 500 }}"
+              alt="{{ section.settings.payment_image.alt | escape | default: section.settings.payment_label | escape }}"
+              class="custom-footer__small-image custom-footer__small-image--payment"
+              loading="lazy"
+              width="{{ section.settings.payment_image.width }}"
+              height="{{ section.settings.payment_image.height }}"
+            >
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="custom-footer__middle-right">
+        <div class="custom-footer__info-item">
+          <span class="custom-footer__info-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21C16 17.2 19 14.3 19 10.5C19 6.9 15.9 4 12 4C8.1 4 5 6.9 5 10.5C5 14.3 8 17.2 12 21Z" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="10.5" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </span>
+          <div class="custom-footer__info-text">
+            {% if section.settings.address_label != blank %}
+              <div class="custom-footer__info-label">{{ section.settings.address_label }}</div>
+            {% endif %}
+            {% if section.settings.address_text != blank %}
+              <div class="custom-footer__info-value">{{ section.settings.address_text }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="custom-footer__info-item">
+          <span class="custom-footer__info-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6.6 5.5C6.9 5.2 7.4 5.1 7.8 5.3L10.3 6.5C10.8 6.7 11.1 7.3 11 7.8L10.6 10C10.5 10.4 10.6 10.8 10.9 11.1L12.9 13.1C13.2 13.4 13.6 13.5 14 13.4L16.2 13C16.7 12.9 17.3 13.2 17.5 13.7L18.7 16.2C18.9 16.6 18.8 17.1 18.5 17.4L17.4 18.5C16.8 19.1 15.8 19.4 14.9 19.2C12.6 18.6 10.4 17.3 8.5 15.5C6.7 13.6 5.4 11.4 4.8 9.1C4.6 8.2 4.9 7.2 5.5 6.6L6.6 5.5Z" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </span>
+          <div class="custom-footer__info-text">
+            {% if section.settings.phone_label != blank %}
+              <div class="custom-footer__info-label">{{ section.settings.phone_label }}</div>
+            {% endif %}
+            {% if section.settings.phone_text != blank %}
+              <div class="custom-footer__info-value">
+                {% if section.settings.phone_link != blank %}
+                  <a href="{{ section.settings.phone_link }}">{{ section.settings.phone_text }}</a>
+                {% else %}
+                  {{ section.settings.phone_text }}
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="custom-footer__info-item">
+          <span class="custom-footer__info-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M12 8V12L14.8 14.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div class="custom-footer__info-text">
+            {% if section.settings.hours_label != blank %}
+              <div class="custom-footer__info-label">{{ section.settings.hours_label }}</div>
+            {% endif %}
+            {% if section.settings.hours_text != blank %}
+              <div class="custom-footer__info-value">{{ section.settings.hours_text }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="custom-footer__bottom">
+      {% if section.settings.copyright_text != blank %}
+        <div class="custom-footer__copyright">{{ section.settings.copyright_text }}</div>
+      {% endif %}
+
+      {% if section.settings.footer_note != blank %}
+        <div class="custom-footer__note">{{ section.settings.footer_note }}</div>
+      {% endif %}
+    </div>
+  </div>
+</footer>
+
+<style>
+  #shopify-section-{{ section.id }}.custom-footer {
+    background: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+    border-top: 1px solid {{ section.settings.border_color }};
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__inner {
+    padding: 60px 70px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__top {
+    display: flex;
+    
+    gap: 36px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__logo-wrap {
+    margin-bottom: 14px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__logo {
+    display: block;
+    max-width: 100%;
+    width: auto;
+    max-height: 88px;
+    object-fit: contain;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__description {
+    font-size: 12px;
+    line-height: 18px;
+    color: {{ section.settings.muted_color }};
+    max-width: 220px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__menus {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 30px;
+    width: 100%;
+  }
+  #shopify-section-{{ section.id }} .custom-footer__brand {
+    width: 40%;
+}
+
+  #shopify-section-{{ section.id }} .custom-footer__menu-title {
+    margin: 0 0 12px;
+    font-size: 21px;
+    line-height: 24px;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__menu-list li {
+    margin-bottom: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__menu-list a {
+    text-decoration: none;
+    color: {{ section.settings.muted_color }};
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__menu-list a:hover {
+    color: {{ section.settings.heading_color }};
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__middle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid {{ section.settings.border_color }};
+    margin-top: 50px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__middle-left {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__badge-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__small-label {
+    font-size: 11px;
+    line-height: 14px;
+    color: {{ section.settings.heading_color }};
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__small-image {
+    display: block;
+    width: auto;
+    object-fit: contain;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__small-image--trust {
+    max-height: 52px;
+    max-width: 96px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__small-image--payment {
+    max-height: 30px;
+    max-width: 280px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__middle-right {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    flex-wrap: wrap;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__info-icon {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 999px;
+    background: {{ section.settings.icon_bg }};
+    color: {{ section.settings.icon_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__info-icon svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__info-label {
+    font-size: 11px;
+    line-height: 14px;
+    color: {{ section.settings.heading_color }};
+    margin-bottom: 2px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__info-value,
+  #shopify-section-{{ section.id }} .custom-footer__info-value a {
+    font-size: 11px;
+    line-height: 15px;
+    color: {{ section.settings.muted_color }};
+    text-decoration: none;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__bottom {
+    text-align: center;
+    padding-top: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__copyright {
+    font-size: 12px;
+    line-height: 18px;
+    color: {{ section.settings.heading_color }};
+    margin-bottom: 4px;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__note {
+    font-size: 12px;
+    line-height: 18px;
+    color: {{ section.settings.muted_color }};
+  }
+
+  @media screen and (max-width: 1100px) {
+    #shopify-section-{{ section.id }} .custom-footer__top {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menus {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__middle {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__middle-right {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .custom-footer__inner {
+      padding-top: 24px;
+      padding-bottom: 12px;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menus {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__middle-left,
+    #shopify-section-{{ section.id }} .custom-footer__middle-right {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__description {
+      max-width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Custom Footer",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    },
+    {
+      "type": "text",
+      "id": "shop_heading",
+      "label": "Shop column heading",
+      "default": "Shop All"
+    },
+    {
+      "type": "link_list",
+      "id": "shop_menu",
+      "label": "Shop menu"
+    },
+    {
+      "type": "text",
+      "id": "information_heading",
+      "label": "Information column heading",
+      "default": "Information"
+    },
+    {
+      "type": "link_list",
+      "id": "information_menu",
+      "label": "Information menu"
+    },
+    {
+      "type": "text",
+      "id": "account_heading",
+      "label": "Account column heading",
+      "default": "Account"
+    },
+    {
+      "type": "link_list",
+      "id": "account_menu",
+      "label": "Account menu"
+    },
+    {
+      "type": "text",
+      "id": "policy_heading",
+      "label": "Policy column heading",
+      "default": "Policy"
+    },
+    {
+      "type": "link_list",
+      "id": "policy_menu",
+      "label": "Policy menu"
+    },
+    {
+      "type": "text",
+      "id": "trust_label",
+      "label": "Trust label",
+      "default": "100% Trusted"
+    },
+    {
+      "type": "image_picker",
+      "id": "trust_image",
+      "label": "Trust image"
+    },
+    {
+      "type": "text",
+      "id": "payment_label",
+      "label": "Payment label",
+      "default": "Accepted payment method"
+    },
+    {
+      "type": "image_picker",
+      "id": "payment_image",
+      "label": "Payment image"
+    },
+    {
+      "type": "text",
+      "id": "address_label",
+      "label": "Address label",
+      "default": "Address"
+    },
+    {
+      "type": "textarea",
+      "id": "address_text",
+      "label": "Address text",
+      "default": "12509 Dover Rd.\nReisterstown, MD 21136"
+    },
+    {
+      "type": "text",
+      "id": "phone_label",
+      "label": "Phone label",
+      "default": "Telephone"
+    },
+    {
+      "type": "text",
+      "id": "phone_text",
+      "label": "Phone text",
+      "default": "410-561-0800"
+    },
+    {
+      "type": "url",
+      "id": "phone_link",
+      "label": "Phone link"
+    },
+    {
+      "type": "text",
+      "id": "hours_label",
+      "label": "Store hours label",
+      "default": "Store Hours"
+    },
+    {
+      "type": "text",
+      "id": "hours_text",
+      "label": "Store hours text",
+      "default": "10AM-4PM USA Eastern Time"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "© Stretchable Covers 2026 All Rights Reserved"
+    },
+    {
+      "type": "text",
+      "id": "footer_note",
+      "label": "Footer note",
+      "default": "Optimized by Launch to Profit Media"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text color",
+      "default": "#4C4C4C"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#D7D7D7"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg",
+      "label": "Info icon background",
+      "default": "#113760"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Info icon color",
+      "default": "#FFFFFF"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Footer"
+    }
+  ]
+}
+{% endschema %}

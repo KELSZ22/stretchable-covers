@@ -1,0 +1,433 @@
+{% comment %}
+  Section: What Makes Our Covers Different
+{% endcomment %}
+
+<section id="shopify-section-{{ section.id }}" class="wmcd-section">
+  <div class="wmcd-container page-width">
+    <div class="wmcd-top">
+      <div class="wmcd-content">
+        {% if section.settings.rating_stars != blank or section.settings.rating_text != blank %}
+          <div class="wmcd-rating">
+            {% if section.settings.rating_stars != blank %}
+              <div class="wmcd-stars">{{ section.settings.rating_stars }}</div>
+            {% endif %}
+            {% if section.settings.rating_text != blank %}
+              <div class="wmcd-rating-text">{{ section.settings.rating_text }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if section.settings.heading != blank %}
+          <h2 class="wmcd-heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <div class="wmcd-description">{{ section.settings.description }}</div>
+        {% endif %}
+      </div>
+
+      <div class="wmcd-image-wrap">
+        {% if section.settings.main_image != blank %}
+          <img
+            src="{{ section.settings.main_image | image_url: width: 1400 }}"
+            alt="{{ section.settings.main_image.alt | escape | default: section.settings.heading | escape }}"
+            class="wmcd-image"
+            loading="lazy"
+            width="{{ section.settings.main_image.width }}"
+            height="{{ section.settings.main_image.height }}"
+          >
+        {% endif %}
+      </div>
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <div class="wmcd-features">
+        {% for block in section.blocks %}
+          <div class="wmcd-feature" {{ block.shopify_attributes }}>
+            <div class="wmcd-feature-inner">
+              <div class="wmcd-feature-icon">
+                {% if block.settings.icon != blank %}
+                  <img
+                    src="{{ block.settings.icon | image_url: width: 120 }}"
+                    alt="{{ block.settings.title | escape }}"
+                    loading="lazy"
+                    width="{{ block.settings.icon.width }}"
+                    height="{{ block.settings.icon.height }}"
+                  >
+                {% else %}
+                  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                    <rect x="8" y="12" width="32" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/>
+                    <path d="M16 30H24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M30 18V30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  </svg>
+                {% endif %}
+              </div>
+
+              {% if block.settings.title != blank %}
+                <h3 class="wmcd-feature-title">{{ block.settings.title }}</h3>
+              {% endif %}
+
+              {% if block.settings.text != blank %}
+                <div class="wmcd-feature-text">{{ block.settings.text }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }}.wmcd-section {
+    background: {{ section.settings.section_bg }};
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-container {
+    padding: 60px 70px;
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    margin-bottom: 40px;
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-content {
+    width: 50%;
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-stars {
+    font-size: 16px;
+    line-height: 1;
+    color: {{ section.settings.stars_color }};
+    letter-spacing: 2px;
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-rating-text {
+    font-size: 14px;
+    line-height: normal;
+    color: {{ section.settings.rating_text_color }};
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-heading {
+    margin: 0 0 18px;
+    font-size: 32px;
+    line-height: normal;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-description {
+    max-width: 500px;
+    font-size: 16px;
+    line-height: 24px;
+    color: {{ section.settings.description_color }};
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-image-wrap {
+    width: 50%;
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-image {
+    width: 100%;
+    display: block;
+    border-radius: {{ section.settings.image_radius }}px;
+    object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-features {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-feature {
+    position: relative;
+  }
+  #shopify-section-{{ section.id }} .wmcd-feature:not(:last-child) {
+    padding-right: 50px;
+}
+
+  #shopify-section-{{ section.id }} .wmcd-feature-icon {
+    width: 42px;
+    height: 42px;
+    margin-bottom: 18px;
+    color: {{ section.settings.icon_color }};
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-feature-icon img,
+  #shopify-section-{{ section.id }} .wmcd-feature-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-feature-title {
+    margin: 0 0 12px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
+    color: {{ section.settings.feature_title_color }};
+    font-family: 'Lato';
+  }
+
+  #shopify-section-{{ section.id }} .wmcd-feature-text {
+    font-size: 14px;
+    line-height: 22px;
+    color: {{ section.settings.feature_text_color }};
+  }
+
+  @media screen and (max-width: 1199px) {
+    #shopify-section-{{ section.id }} .wmcd-top {
+      gap: 40px;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-heading {
+      font-size: 42px;
+      line-height: 46px;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-image-wrap {
+      max-width: 500px;
+      flex: 0 0 500px;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-features {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 30px 0;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-feature:nth-child(2)::after {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .wmcd-container {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-top {
+      flex-direction: column;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-content {
+      max-width: 100%;
+      padding-top: 0;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-heading {
+      max-width: 100%;
+      font-size: 34px;
+      line-height: 38px;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-description {
+      max-width: 100%;
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-image-wrap {
+      max-width: 100%;
+      flex: 0 0 auto;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-features {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-feature {
+      padding: 0 0 24px;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-feature::after {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-feature:not(:last-child) {
+      border-bottom: 1px solid {{ section.settings.divider_color }};
+    }
+
+    #shopify-section-{{ section.id }} .wmcd-feature-inner {
+      max-width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Custom Two Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "rating_stars",
+      "label": "Stars text",
+      "default": "★★★★★"
+    },
+    {
+      "type": "text",
+      "id": "rating_text",
+      "label": "Trusted text",
+      "default": "Trusted by 50,000 + customers"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What Makes Our Stretchable Covers Different"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Designed for a precise fit, durable performance, and standout branding—trusted by bands, brands, and professionals across industries."
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Main image"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Background color",
+      "default": "#F2F2F2"
+    },
+    {
+      "type": "color",
+      "id": "stars_color",
+      "label": "Stars color",
+      "default": "#F5A623"
+    },
+    {
+      "type": "color",
+      "id": "rating_text_color",
+      "label": "Trusted text color",
+      "default": "#555555"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1F1F1F"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Fallback icon color",
+      "default": "#183B6B"
+    },
+    {
+      "type": "color",
+      "id": "feature_title_color",
+      "label": "Feature title color",
+      "default": "#1F1F1F"
+    },
+    {
+      "type": "color",
+      "id": "feature_text_color",
+      "label": "Feature text color",
+      "default": "#4A4A4A"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#D7D7D7"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature item",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature title"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Feature description goes here."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Two Section",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "True Stretch Fit, Not One-Size",
+            "text": "Designed for a precise fit, durable performance, and standout branding—trusted by bands, brands, and professionals across industries."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Built for Real-World Use",
+            "text": "Designed to withstand repeated use in marching bands, events, marine environments, and industrial settings."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Custom Branding That Pops",
+            "text": "High-quality printing delivers bold colors and crisp logos that stand out in motion, on camera, and up close."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Trusted Across Industries",
+            "text": "Proven performance for music programs, sports teams, parades, corporations, and professionals worldwide."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

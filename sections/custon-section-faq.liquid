@@ -1,0 +1,708 @@
+{% comment %}
+  Section: FAQ Category Accordion
+{% endcomment %}
+
+<section id="shopify-section-{{ section.id }}" class="faq-cat-section">
+  <div class="faq-cat-section__inner page-width">
+    <div class="faq-cat-section__layout">
+      <aside class="faq-cat-section__sidebar">
+        {% if section.settings.side_label != blank %}
+          <div class="faq-cat-section__side-label">{{ section.settings.side_label }}</div>
+        {% endif %}
+
+        <div class="faq-cat-section__categories">
+          {% if section.settings.category_1 != blank %}
+            <button type="button" class="faq-cat-section__category is-active" data-category="category_1">
+              {{ section.settings.category_1 }}
+            </button>
+          {% endif %}
+          {% if section.settings.category_2 != blank %}
+            <button type="button" class="faq-cat-section__category" data-category="category_2">
+              {{ section.settings.category_2 }}
+            </button>
+          {% endif %}
+          {% if section.settings.category_3 != blank %}
+            <button type="button" class="faq-cat-section__category" data-category="category_3">
+              {{ section.settings.category_3 }}
+            </button>
+          {% endif %}
+          {% if section.settings.category_4 != blank %}
+            <button type="button" class="faq-cat-section__category" data-category="category_4">
+              {{ section.settings.category_4 }}
+            </button>
+          {% endif %}
+          {% if section.settings.category_5 != blank %}
+            <button type="button" class="faq-cat-section__category" data-category="category_5">
+              {{ section.settings.category_5 }}
+            </button>
+          {% endif %}
+          {% if section.settings.category_6 != blank %}
+            <button type="button" class="faq-cat-section__category" data-category="category_6">
+              {{ section.settings.category_6 }}
+            </button>
+          {% endif %}
+        </div>
+      </aside>
+
+      <div class="faq-cat-section__content">
+        {% if section.settings.heading != blank %}
+          <h2 class="faq-cat-section__heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        <div class="faq-cat-section__accordion" data-faq-wrap>
+          {% for block in section.blocks %}
+            <div
+              class="faq-cat-section__item"
+              data-faq-item
+              data-category="{{ block.settings.category }}"
+              {{ block.shopify_attributes }}
+            >
+              <button
+                type="button"
+                class="faq-cat-section__question"
+                aria-expanded="false"
+              >
+                <span class="faq-cat-section__question-text">{{ block.settings.question }}</span>
+                <span class="faq-cat-section__icon">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M7 12H17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </span>
+              </button>
+
+              <div class="faq-cat-section__answer">
+                <div class="faq-cat-section__answer-inner rte">
+                  {{ block.settings.answer }}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if section.settings.bottom_text != blank or section.settings.button_label != blank %}
+          <div class="faq-cat-section__bottom">
+            {% if section.settings.bottom_text != blank %}
+              <div class="faq-cat-section__bottom-text">{{ section.settings.bottom_text }}</div>
+            {% endif %}
+
+            {% if section.settings.button_label != blank %}
+              <a
+                {% if section.settings.button_link != blank %}
+                  href="{{ section.settings.button_link }}"
+                {% else %}
+                  role="link" aria-disabled="true"
+                {% endif %}
+                class="faq-cat-section__button"
+              >
+                {{ section.settings.button_label }}
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }}.faq-cat-section {
+    background: {{ section.settings.section_bg }};
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__inner {
+    padding: 60px 70px;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__layout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 34px;
+    align-items: start;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__side-label {
+    font-size: 28px;
+    line-height: 32px;
+    font-weight: 700;
+    color: {{ section.settings.side_label_color }};
+    margin-bottom: 22px;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__categories {
+    background: {{ section.settings.category_box_bg }};
+    border-radius: 8px;
+    padding: 10px 0;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__category {
+    width: 100%;
+    display: block;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid {{ section.settings.category_divider_color }};
+    color: {{ section.settings.category_text_color }};
+    padding: 14px 18px;
+    font-size: 13px;
+    line-height: 18px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__category:last-child {
+    border-bottom: 0;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__category.is-active {
+    background: {{ section.settings.category_active_bg }};
+    color: {{ section.settings.category_active_text_color }};
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__heading {
+    margin: 0 0 18px;
+    font-size: 34px;
+    line-height: 40px;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__item {
+    display: none;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__item.is-visible {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    text-align: left;
+    border: 0;
+    cursor: pointer;
+    padding: 14px 18px;
+    background: {{ section.settings.closed_bg }};
+    color: {{ section.settings.closed_text }};
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__item.is-open .faq-cat-section__question {
+    background: {{ section.settings.open_bg }};
+    color: {{ section.settings.open_text }};
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__question-text {
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 500;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__icon {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__item.is-open .faq-cat-section__icon {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__icon svg {
+    width: 12px;
+    height: 12px;
+    display: block;
+    transition: transform 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__item.is-open .faq-cat-section__icon svg {
+    transform: rotate(45deg);
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__answer {
+    display: none;
+    background: {{ section.settings.open_bg }};
+    color: {{ section.settings.answer_color }};
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__item.is-open .faq-cat-section__answer {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__answer-inner {
+    padding: 0 18px 16px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__answer-inner p {
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__bottom {
+    text-align: center;
+    margin-top: 24px;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__bottom-text {
+    font-size: 11px;
+    line-height: 16px;
+    color: {{ section.settings.bottom_text_color }};
+    margin-bottom: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .faq-cat-section__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 118px;
+    min-height: 38px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: {{ section.settings.button_bg }};
+    color: {{ section.settings.button_text }};
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .faq-cat-section__layout {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .faq-cat-section__side-label {
+      margin-bottom: 14px;
+    }
+
+    #shopify-section-{{ section.id }} .faq-cat-section__categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+      background: transparent;
+      border-radius: 0;
+    }
+
+    #shopify-section-{{ section.id }} .faq-cat-section__category {
+      width: auto;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: {{ section.settings.category_box_bg }};
+    }
+
+    #shopify-section-{{ section.id }} .faq-cat-section__heading {
+      text-align: left;
+      font-size: 28px;
+      line-height: 34px;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .faq-cat-section__inner {
+      padding: 60px 70px;
+    }
+
+    #shopify-section-{{ section.id }} .faq-cat-section__side-label {
+      font-size: 22px;
+      line-height: 28px;
+    }
+
+    #shopify-section-{{ section.id }} .faq-cat-section__heading {
+      font-size: 24px;
+      line-height: 30px;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    var section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section) return;
+
+    var categoryButtons = section.querySelectorAll('.faq-cat-section__category');
+    var faqItems = section.querySelectorAll('[data-faq-item]');
+
+    function closeAllVisibleItems() {
+      faqItems.forEach(function(item) {
+        item.classList.remove('is-open');
+        var button = item.querySelector('.faq-cat-section__question');
+        if (button) button.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function openFirstVisibleItem() {
+      var firstVisible = section.querySelector('.faq-cat-section__item.is-visible');
+      if (!firstVisible) return;
+
+      firstVisible.classList.add('is-open');
+      var button = firstVisible.querySelector('.faq-cat-section__question');
+      if (button) button.setAttribute('aria-expanded', 'true');
+    }
+
+    function filterCategory(categoryKey) {
+      faqItems.forEach(function(item) {
+        if (item.getAttribute('data-category') === categoryKey) {
+          item.classList.add('is-visible');
+        } else {
+          item.classList.remove('is-visible');
+          item.classList.remove('is-open');
+
+          var btn = item.querySelector('.faq-cat-section__question');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      openFirstVisibleItem();
+    }
+
+    if (categoryButtons.length) {
+      categoryButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          categoryButtons.forEach(function(btn) {
+            btn.classList.remove('is-active');
+          });
+
+          button.classList.add('is-active');
+          filterCategory(button.getAttribute('data-category'));
+        });
+      });
+
+      filterCategory(categoryButtons[0].getAttribute('data-category'));
+    } else {
+      faqItems.forEach(function(item) {
+        item.classList.add('is-visible');
+      });
+      openFirstVisibleItem();
+    }
+
+    faqItems.forEach(function(item) {
+      var question = item.querySelector('.faq-cat-section__question');
+      if (!question) return;
+
+      question.addEventListener('click', function() {
+        var isOpen = item.classList.contains('is-open');
+        var visibleItems = section.querySelectorAll('.faq-cat-section__item.is-visible');
+
+        visibleItems.forEach(function(visibleItem) {
+          visibleItem.classList.remove('is-open');
+          var btn = visibleItem.querySelector('.faq-cat-section__question');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+        });
+
+        if (!isOpen) {
+          item.classList.add('is-open');
+          question.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FAQ Category Accordion",
+  "settings": [
+    {
+      "type": "text",
+      "id": "side_label",
+      "label": "Left label",
+      "default": "FAQS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "text",
+      "id": "category_1",
+      "label": "Category 1",
+      "default": "Product & Materials"
+    },
+    {
+      "type": "text",
+      "id": "category_2",
+      "label": "Category 2",
+      "default": "Artwork & Printing"
+    },
+    {
+      "type": "text",
+      "id": "category_3",
+      "label": "Category 3",
+      "default": "Orders, Payment & Returns"
+    },
+    {
+      "type": "text",
+      "id": "category_4",
+      "label": "Category 4",
+      "default": "Production & Shipping"
+    },
+    {
+      "type": "text",
+      "id": "category_5",
+      "label": "Category 5"
+    },
+    {
+      "type": "text",
+      "id": "category_6",
+      "label": "Category 6"
+    },
+    {
+      "type": "textarea",
+      "id": "bottom_text",
+      "label": "Bottom text",
+      "default": "Have more questions? Reach out so we can assist you."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Background color",
+      "default": "#F4F4F4"
+    },
+    {
+      "type": "color",
+      "id": "side_label_color",
+      "label": "Left label color",
+      "default": "#1F1F1F"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1F1F1F"
+    },
+    {
+      "type": "color",
+      "id": "category_box_bg",
+      "label": "Category box background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "category_divider_color",
+      "label": "Category divider color",
+      "default": "#E7E7E7"
+    },
+    {
+      "type": "color",
+      "id": "category_text_color",
+      "label": "Category text color",
+      "default": "#6A6A6A"
+    },
+    {
+      "type": "color",
+      "id": "category_active_bg",
+      "label": "Category active background",
+      "default": "#F0F0F0"
+    },
+    {
+      "type": "color",
+      "id": "category_active_text_color",
+      "label": "Category active text color",
+      "default": "#1F1F1F"
+    },
+    {
+      "type": "color",
+      "id": "closed_bg",
+      "label": "Closed item background",
+      "default": "#0F2E53"
+    },
+    {
+      "type": "color",
+      "id": "closed_text",
+      "label": "Closed item text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "open_bg",
+      "label": "Open item background",
+      "default": "#EAEAEA"
+    },
+    {
+      "type": "color",
+      "id": "open_text",
+      "label": "Open item heading color",
+      "default": "#1F1F1F"
+    },
+    {
+      "type": "color",
+      "id": "answer_color",
+      "label": "Answer color",
+      "default": "#7A7A7A"
+    },
+    {
+      "type": "color",
+      "id": "bottom_text_color",
+      "label": "Bottom text color",
+      "default": "#6A6A6A"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#F3A12A"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 20,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 20,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What is the largest imprint you can print?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>29 inches</p>"
+        },
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Category",
+          "default": "category_1",
+          "options": [
+            {
+              "value": "category_1",
+              "label": "Category 1"
+            },
+            {
+              "value": "category_2",
+              "label": "Category 2"
+            },
+            {
+              "value": "category_3",
+              "label": "Category 3"
+            },
+            {
+              "value": "category_4",
+              "label": "Category 4"
+            },
+            {
+              "value": "category_5",
+              "label": "Category 5"
+            },
+            {
+              "value": "category_6",
+              "label": "Category 6"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Category Accordion",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is the largest imprint you can print?",
+            "answer": "<p>29 inches</p>",
+            "category": "category_1"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What material colors do you have?",
+            "answer": "<p>We offer a wide range of material colors depending on the product type and print method.</p>",
+            "category": "category_1"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can you match colors exactly?",
+            "answer": "<p>We can get very close, but exact color matching may vary slightly by material and printing method.</p>",
+            "category": "category_2"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Return Policy?",
+            "answer": "<p>Please contact us right away if there is an issue with your order so we can review it.</p>",
+            "category": "category_3"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your standard production time?",
+            "answer": "<p>Production time depends on quantity and artwork approval, but standard turnaround is typically discussed before checkout.</p>",
+            "category": "category_4"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

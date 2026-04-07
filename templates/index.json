@@ -9,6 +9,896 @@
  */
 {
   "sections": {
+    "custom_hero_slider_7GLFPm": {
+      "type": "custom-hero-slider",
+      "blocks": {
+        "slide_bTGBkb": {
+          "type": "slide",
+          "settings": {
+            "bg_image": "shopify://shop_images/Homepage_Banners.png",
+            "rating_text": "#1 Covers in the Industry | Cover over 450,000+ items",
+            "heading": "Custom Stretchable Covers That Bring Messages to Life",
+            "subheading": "For fleets, marching bands, dealerships, medical facilities & more",
+            "button_label": "Get My Custom Cover",
+            "button_link": "",
+            "feature_1": "Rush Order Available",
+            "feature_2": "Customizable",
+            "feature_3": "Multi-Purpose Use",
+            "testimonial_text": "All the sousaphone bell covers came out amazing! Thank you! Thanks for getting it done so quickly!",
+            "testimonial_author": "Michael H.",
+            "testimonial_role": "ESPN Networks Production Manager",
+            "testimonial_verified": "Verified Buyer",
+            "testimonial_text_2": "All the sousaphone bell covers came out amazing! Thank you! Thanks for getting it done so quickly!",
+            "testimonial_author_2": "Michael H.",
+            "testimonial_role_2": "ESPN Networks Production Manager",
+            "testimonial_verified_2": "Verified Buyer",
+            "testimonial_text_3": "",
+            "testimonial_author_3": "",
+            "testimonial_role_3": "",
+            "testimonial_verified_3": "Verified Buyer",
+            "testimonial_text_4": "",
+            "testimonial_author_4": "",
+            "testimonial_role_4": "",
+            "testimonial_verified_4": "Verified Buyer"
+          }
+        },
+        "slide_NwJdJk": {
+          "type": "slide",
+          "settings": {
+            "bg_image": "shopify://shop_images/Variant7.png",
+            "rating_text": "#1 Covers in the Industry | Cover over 450,000+ items",
+            "heading": "Custom Stretchable Covers That Bring Messages to Life",
+            "subheading": "For fleets, marching bands, dealerships, medical facilities & more",
+            "button_label": "Get My Custom Cover",
+            "button_link": "",
+            "feature_1": "Rush Order Available",
+            "feature_2": "Customizable",
+            "feature_3": "Multi-Purpose Use",
+            "testimonial_text": "All the sousaphone bell covers came out amazing! Thank you! Thanks for getting it done so quickly!",
+            "testimonial_author": "Michael H.",
+            "testimonial_role": "ESPN Networks Production Manager",
+            "testimonial_verified": "Verified Buyer",
+            "testimonial_text_2": "",
+            "testimonial_author_2": "",
+            "testimonial_role_2": "",
+            "testimonial_verified_2": "Verified Buyer",
+            "testimonial_text_3": "",
+            "testimonial_author_3": "",
+            "testimonial_role_3": "",
+            "testimonial_verified_3": "Verified Buyer",
+            "testimonial_text_4": "",
+            "testimonial_author_4": "",
+            "testimonial_role_4": "",
+            "testimonial_verified_4": "Verified Buyer"
+          }
+        },
+        "slide_yk9YqR": {
+          "type": "slide",
+          "settings": {
+            "bg_image": "shopify://shop_images/Rectangle_436.png",
+            "rating_text": "#1 Covers in the Industry | Cover over 450,000+ items",
+            "heading": "Custom Stretchable Covers That Bring Messages to Life",
+            "subheading": "For fleets, marching bands, dealerships, medical facilities & more",
+            "button_label": "Get My Custom Cover",
+            "button_link": "",
+            "feature_1": "Rush Order Available",
+            "feature_2": "Customizable",
+            "feature_3": "Multi-Purpose Use",
+            "testimonial_text": "All the sousaphone bell covers came out amazing! Thank you! Thanks for getting it done so quickly!",
+            "testimonial_author": "Michael H.",
+            "testimonial_role": "ESPN Networks Production Manager",
+            "testimonial_verified": "Verified Buyer",
+            "testimonial_text_2": "",
+            "testimonial_author_2": "",
+            "testimonial_role_2": "",
+            "testimonial_verified_2": "Verified Buyer",
+            "testimonial_text_3": "",
+            "testimonial_author_3": "",
+            "testimonial_role_3": "",
+            "testimonial_verified_3": "Verified Buyer",
+            "testimonial_text_4": "",
+            "testimonial_author_4": "",
+            "testimonial_role_4": "",
+            "testimonial_verified_4": "Verified Buyer"
+          }
+        },
+        "slide_cHL8zU": {
+          "type": "slide",
+          "settings": {
+            "bg_image": "shopify://shop_images/Variant7_6fc96061-6e96-4ce1-9397-2ad7d89958fb.png",
+            "rating_text": "#1 Covers in the Industry | Cover over 450,000+ items",
+            "heading": "Custom Stretchable Covers That Bring Messages to Life",
+            "subheading": "For fleets, marching bands, dealerships, medical facilities & more",
+            "button_label": "Get My Custom Cover",
+            "button_link": "",
+            "feature_1": "Rush Order Available",
+            "feature_2": "Customizable",
+            "feature_3": "Multi-Purpose Use",
+            "testimonial_text": "All the sousaphone bell covers came out amazing! Thank you! Thanks for getting it done so quickly!",
+            "testimonial_author": "Michael H.",
+            "testimonial_role": "ESPN Networks Production Manager",
+            "testimonial_verified": "Verified Buyer",
+            "testimonial_text_2": "",
+            "testimonial_author_2": "",
+            "testimonial_role_2": "",
+            "testimonial_verified_2": "Verified Buyer",
+            "testimonial_text_3": "",
+            "testimonial_author_3": "",
+            "testimonial_role_3": "",
+            "testimonial_verified_3": "Verified Buyer",
+            "testimonial_text_4": "",
+            "testimonial_author_4": "",
+            "testimonial_role_4": "",
+            "testimonial_verified_4": "Verified Buyer"
+          }
+        },
+        "slide_TmJUk7": {
+          "type": "slide",
+          "settings": {
+            "bg_image": "shopify://shop_images/Rectangle_436_b5be077f-40e4-4140-8973-1452bef3aed4.png",
+            "rating_text": "#1 Covers in the Industry | Cover over 450,000+ items",
+            "heading": "Custom Stretchable Covers That Bring Messages to Life",
+            "subheading": "For fleets, marching bands, dealerships, medical facilities & more",
+            "button_label": "Get My Custom Cover",
+            "button_link": "",
+            "feature_1": "Rush Order Available",
+            "feature_2": "Customizable",
+            "feature_3": "Multi-Purpose Use",
+            "testimonial_text": "All the sousaphone bell covers came out amazing! Thank you! Thanks for getting it done so quickly!",
+            "testimonial_author": "Michael H.",
+            "testimonial_role": "ESPN Networks Production Manager",
+            "testimonial_verified": "Verified Buyer",
+            "testimonial_text_2": "",
+            "testimonial_author_2": "",
+            "testimonial_role_2": "",
+            "testimonial_verified_2": "Verified Buyer",
+            "testimonial_text_3": "",
+            "testimonial_author_3": "",
+            "testimonial_role_3": "",
+            "testimonial_verified_3": "Verified Buyer",
+            "testimonial_text_4": "",
+            "testimonial_author_4": "",
+            "testimonial_role_4": "",
+            "testimonial_verified_4": "Verified Buyer"
+          }
+        },
+        "slide_4RxtXf": {
+          "type": "slide",
+          "settings": {
+            "bg_image": "shopify://shop_images/Variant7_dcbb4105-bea7-49b5-ae10-0db7fd812a3d.png",
+            "rating_text": "#1 Covers in the Industry | Cover over 450,000+ items",
+            "heading": "Custom Stretchable Covers That Bring Messages to Life",
+            "subheading": "For fleets, marching bands, dealerships, medical facilities & more",
+            "button_label": "Get My Custom Cover",
+            "button_link": "",
+            "feature_1": "Rush Order Available",
+            "feature_2": "Customizable",
+            "feature_3": "Multi-Purpose Use",
+            "testimonial_text": "All the sousaphone bell covers came out amazing! Thank you! Thanks for getting it done so quickly!",
+            "testimonial_author": "Michael H.",
+            "testimonial_role": "ESPN Networks Production Manager",
+            "testimonial_verified": "Verified Buyer",
+            "testimonial_text_2": "",
+            "testimonial_author_2": "",
+            "testimonial_role_2": "",
+            "testimonial_verified_2": "Verified Buyer",
+            "testimonial_text_3": "",
+            "testimonial_author_3": "",
+            "testimonial_role_3": "",
+            "testimonial_verified_3": "Verified Buyer",
+            "testimonial_text_4": "",
+            "testimonial_author_4": "",
+            "testimonial_role_4": "",
+            "testimonial_verified_4": "Verified Buyer"
+          }
+        }
+      },
+      "block_order": [
+        "slide_bTGBkb",
+        "slide_NwJdJk",
+        "slide_yk9YqR",
+        "slide_cHL8zU",
+        "slide_TmJUk7",
+        "slide_4RxtXf"
+      ],
+      "name": "Custom Cover Slider",
+      "settings": {
+        "autoplay": true,
+        "autoplay_speed": 3
+      }
+    },
+    "ups_icon_bar_7UnGza": {
+      "type": "ups-icon-bar",
+      "blocks": {
+        "item_DrKUdf": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector.png",
+            "heading": "Fully Custom Covers",
+            "text": "Made to your exact size and specifications."
+          }
+        },
+        "item_xix4kk": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_1.png",
+            "heading": "Fast Production",
+            "text": "Quick turnaround without compromising quality."
+          }
+        },
+        "item_Rc9TGn": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_2.png",
+            "heading": "Repeat Customers Worldwide",
+            "text": "Trusted by 50,000+ clients across the globe."
+          }
+        },
+        "item_Wpj7qV": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_3.png",
+            "heading": "Order as Few as One",
+            "text": "No minimum order required."
+          }
+        },
+        "item_bdxxUK": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_4.png",
+            "heading": "Made with Premium Microfiber",
+            "text": "Soft, durable, and stretchable material."
+          }
+        }
+      },
+      "block_order": [
+        "item_DrKUdf",
+        "item_xix4kk",
+        "item_Rc9TGn",
+        "item_Wpj7qV",
+        "item_bdxxUK"
+      ],
+      "name": "USP Icon Bar",
+      "settings": {
+        "bg_color": "#ffffff",
+        "border_color": "#1a2438",
+        "border_width": 2,
+        "icon_color": "#223b63",
+        "heading_color": "#111111",
+        "text_color": "#333333"
+      }
+    },
+    "custom_section_collection_DW3gt8": {
+      "type": "custom-section-collection",
+      "blocks": {
+        "slide_DWMgjW": {
+          "type": "slide",
+          "settings": {
+            "collection": "safety-programs",
+            "custom_title": ""
+          }
+        },
+        "slide_EicXxU": {
+          "type": "slide",
+          "settings": {
+            "collection": "instruments-equipments",
+            "custom_title": ""
+          }
+        },
+        "slide_x4fqbH": {
+          "type": "slide",
+          "settings": {
+            "collection": "trucks-cars",
+            "custom_title": ""
+          }
+        },
+        "slide_q9pAm4": {
+          "type": "slide",
+          "settings": {
+            "collection": "marine-boating",
+            "custom_title": ""
+          }
+        },
+        "slide_CrADzE": {
+          "type": "slide",
+          "settings": {
+            "collection": "seating-furniture",
+            "custom_title": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_DWMgjW",
+        "slide_EicXxU",
+        "slide_x4fqbH",
+        "slide_q9pAm4",
+        "slide_CrADzE"
+      ],
+      "name": "All Collections Slider",
+      "settings": {
+        "heading": "Shop by Collections",
+        "subheading": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
+        "view_all_text": "View All",
+        "view_all_link": "",
+        "enable_autoplay": false,
+        "autoplay_speed": 4,
+        "section_bg": "#ffffff",
+        "heading_color": "#111111",
+        "subheading_color": "#666666",
+        "link_color": "#111111",
+        "card_radius": 6,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20
+      }
+    },
+    "custom_two_section_xezL3r": {
+      "type": "custom-two-section",
+      "blocks": {
+        "feature_z8K6gw": {
+          "type": "feature",
+          "settings": {
+            "icon": "shopify://shop_images/Vector.svg",
+            "title": "True Stretch Fit, Not One-Size",
+            "text": "Designed for a precise fit, durable performance, and standout branding—trusted by bands, brands, and professionals across industries."
+          }
+        },
+        "feature_UKfy3Y": {
+          "type": "feature",
+          "settings": {
+            "icon": "shopify://shop_images/Vector_1.svg",
+            "title": "Built for Real-World Use",
+            "text": "Designed to withstand repeated use in marching bands, events, marine environments, and industrial settings."
+          }
+        },
+        "feature_q36GVQ": {
+          "type": "feature",
+          "settings": {
+            "icon": "shopify://shop_images/Vector_2.svg",
+            "title": "Custom Branding That Pops",
+            "text": "High-quality printing delivers bold colors and crisp logos that stand out in motion, on camera, and up close."
+          }
+        },
+        "feature_Ka37mh": {
+          "type": "feature",
+          "settings": {
+            "icon": "shopify://shop_images/Vector_3.svg",
+            "title": "Trusted Across Industries",
+            "text": "Proven performance for music programs, sports teams, parades, corporations, and professionals worldwide."
+          }
+        }
+      },
+      "block_order": [
+        "feature_z8K6gw",
+        "feature_UKfy3Y",
+        "feature_q36GVQ",
+        "feature_Ka37mh"
+      ],
+      "name": "Custom Two Section",
+      "settings": {
+        "rating_stars": "★★★★★",
+        "rating_text": "Trusted by 50,000 + customers",
+        "heading": "What Makes Our Stretchable<br> Covers Different",
+        "description": "Designed for a precise fit, durable performance, and standout branding—trusted by bands, brands, and professionals across industries.",
+        "main_image": "shopify://shop_images/Frame_1000007667.png",
+        "section_bg": "#ffffff",
+        "stars_color": "#f5a623",
+        "rating_text_color": "#555555",
+        "heading_color": "#1f1f1f",
+        "description_color": "#333333",
+        "icon_color": "#183b6b",
+        "feature_title_color": "#1f1f1f",
+        "feature_text_color": "#4a4a4a",
+        "divider_color": "#d7d7d7",
+        "image_radius": 12
+      }
+    },
+    "custom_section_product_Chehbq": {
+      "type": "custom-section-product",
+      "blocks": {
+        "product_slide_mQUd6G": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_TWMA3J": {
+          "type": "product_slide",
+          "settings": {
+            "product": "",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_eN8M3N": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_xHtdPX": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_7RkDH6": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_jkJHC7": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_MKHFep": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_fceCaQ": {
+          "type": "product_slide",
+          "settings": {
+            "product": "",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        }
+      },
+      "block_order": [
+        "product_slide_mQUd6G",
+        "product_slide_TWMA3J",
+        "product_slide_eN8M3N",
+        "product_slide_xHtdPX",
+        "product_slide_7RkDH6",
+        "product_slide_jkJHC7",
+        "product_slide_MKHFep",
+        "product_slide_fceCaQ"
+      ],
+      "name": "Selected Products Slider",
+      "settings": {
+        "heading": "Shop Best Seller",
+        "subheading": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
+        "view_all_text": "View All",
+        "view_all_link": "",
+        "enable_autoplay": true,
+        "autoplay_speed": 4,
+        "section_bg": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "subheading_color": "#666666",
+        "link_color": "#1a1a1a",
+        "title_color": "#1a1a1a",
+        "meta_color": "#666666",
+        "price_color": "#1a1a1a",
+        "stars_color": "#f5a623",
+        "badge_bg": "#eb891b",
+        "badge_color": "#ffffff",
+        "card_radius": 6
+      }
+    },
+    "custom_section_static_Nq9Tby": {
+      "type": "custom-section-static",
+      "blocks": {
+        "image_item_MbcBAd": {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000007667_d25b69a2-203d-4383-b363-f30b50cb2369.png",
+            "alt_text": "",
+            "link": "",
+            "desktop_span": "4",
+            "mobile_span": "1"
+          }
+        },
+        "image_item_7tNNpq": {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000007708.png",
+            "alt_text": "",
+            "link": "",
+            "desktop_span": "1",
+            "mobile_span": "1"
+          }
+        },
+        "image_item_QapE6T": {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000007702.png",
+            "alt_text": "",
+            "link": "",
+            "desktop_span": "1",
+            "mobile_span": "1"
+          }
+        },
+        "image_item_DjbCVn": {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000007705.png",
+            "alt_text": "",
+            "link": "",
+            "desktop_span": "1",
+            "mobile_span": "1"
+          }
+        },
+        "image_item_H9Lqjd": {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000007706.png",
+            "alt_text": "",
+            "link": "",
+            "desktop_span": "3",
+            "mobile_span": "1"
+          }
+        },
+        "image_item_m6xRKC": {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000007707.png",
+            "alt_text": "",
+            "link": "",
+            "desktop_span": "2",
+            "mobile_span": "1"
+          }
+        }
+      },
+      "block_order": [
+        "image_item_MbcBAd",
+        "image_item_7tNNpq",
+        "image_item_QapE6T",
+        "image_item_DjbCVn",
+        "image_item_H9Lqjd",
+        "image_item_m6xRKC"
+      ],
+      "name": "Customer Gallery Mosaic",
+      "settings": {
+        "stars_text": "★★★★★",
+        "trusted_text": "Trusted by 50,000 + customers",
+        "heading": "Thousands of customers and repeated use.",
+        "description": "Trusted by thousands of customers and proven through years of repeated, real-world use across multiple industries.",
+        "section_bg": "#f4f4f4",
+        "stars_color": "#f5a623",
+        "trusted_text_color": "#555555",
+        "heading_color": "#1f1f1f",
+        "description_color": "#444444",
+        "grid_gap": 8,
+        "row_height": 280,
+        "row_height_mobile": 150,
+        "image_radius": 6,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "custon_section_faq_WBYxQJ": {
+      "type": "custon-section-faq",
+      "blocks": {
+        "faq_item_bN3ngd": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is the largest imprint you can print?",
+            "answer": "<p>29 inches</p>",
+            "category": "category_1"
+          }
+        },
+        "faq_item_L4PKaA": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is the largest imprint you can print?",
+            "answer": "<p>29 inches</p>",
+            "category": "category_1"
+          }
+        },
+        "faq_item_kiKHLn": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What material colors do you have?",
+            "answer": "<p>We offer a wide range of material colors depending on the product type and print method.</p>",
+            "category": "category_1"
+          }
+        },
+        "faq_item_xLXzGb": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can you match colors exactly?",
+            "answer": "<p>We can get very close, but exact color matching may vary slightly by material and printing method.</p>",
+            "category": "category_2"
+          }
+        },
+        "faq_item_erBhxE": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Return Policy?",
+            "answer": "<p>Please contact us right away if there is an issue with your order so we can review it.</p>",
+            "category": "category_3"
+          }
+        },
+        "faq_item_z8azpt": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your standard production time?",
+            "answer": "<p>Production time depends on quantity and artwork approval, but standard turnaround is typically discussed before checkout.</p>",
+            "category": "category_4"
+          }
+        }
+      },
+      "block_order": [
+        "faq_item_bN3ngd",
+        "faq_item_L4PKaA",
+        "faq_item_kiKHLn",
+        "faq_item_xLXzGb",
+        "faq_item_erBhxE",
+        "faq_item_z8azpt"
+      ],
+      "name": "FAQ Category Accordion",
+      "settings": {
+        "side_label": "FAQS",
+        "heading": "Frequently Asked Questions",
+        "category_1": "Product & Materials",
+        "category_2": "Artwork & Printing",
+        "category_3": "Orders, Payment & Returns",
+        "category_4": "Production & Shipping",
+        "category_5": "",
+        "category_6": "",
+        "bottom_text": "Have more questions? Reach out so we can assist you.",
+        "button_label": "Contact Us",
+        "button_link": "",
+        "section_bg": "#f4f4f4",
+        "side_label_color": "#1f1f1f",
+        "heading_color": "#1f1f1f",
+        "category_box_bg": "#ffffff",
+        "category_divider_color": "#e7e7e7",
+        "category_text_color": "#6a6a6a",
+        "category_active_bg": "#f0f0f0",
+        "category_active_text_color": "#1f1f1f",
+        "closed_bg": "#0f2e53",
+        "closed_text": "#ffffff",
+        "open_bg": "#eaeaea",
+        "open_text": "#1f1f1f",
+        "answer_color": "#7a7a7a",
+        "bottom_text_color": "#6a6a6a",
+        "button_bg": "#f3a12a",
+        "button_text": "#ffffff",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "custom_section_marque_QTHnya": {
+      "type": "custom-section-marque",
+      "blocks": {
+        "logo_inbUiX": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/DUKE_ENERGY_1_c168a1da-69e6-4a13-bad9-b3664a0dbc09.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_QCcThf": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/Ryder_1_1f5fcca6-302d-4de6-9edb-2fd49cbac2d7.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_6awVVG": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/image_32_ba5283b9-57ff-4551-8aeb-8979132b9661.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_3wQQbA": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/image_36_66089adf-d2f3-4d34-8262-74285e689264.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_xyCE3F": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/image_34_42cc10fa-a3b4-4296-9fa7-b16d6f0825ef.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_WUBQPh": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/RUSH_Trucks_3_330e248a-ef53-4c83-8f93-91c48514f8b6.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_qQz3ME": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/Penske_2.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "logo_inbUiX",
+        "logo_QCcThf",
+        "logo_6awVVG",
+        "logo_3wQQbA",
+        "logo_xyCE3F",
+        "logo_WUBQPh",
+        "logo_qQz3ME"
+      ],
+      "name": "Brand Logo Bar",
+      "settings": {
+        "heading": "Partnered by Hundred Brands Worldwide",
+        "section_bg": "#ffffff",
+        "heading_color": "#111111",
+        "border_color": "#1a1a1a",
+        "border_width": 2,
+        "logo_max_height": 66,
+        "logo_max_height_mobile": 34,
+        "logo_gap": 36,
+        "logo_gap_mobile": 18,
+        "marquee_duration": 22,
+        "pause_on_hover": true
+      }
+    },
+    "custom_section_testimonial_VjHWNJ": {
+      "type": "custom-section-testimonial",
+      "blocks": {
+        "testimonial_cC86GR": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_441.png",
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        },
+        "testimonial_jhyrQy": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        },
+        "testimonial_DbttEc": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        },
+        "testimonial_4M9M8i": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        },
+        "testimonial_JMdpQp": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_cC86GR",
+        "testimonial_jhyrQy",
+        "testimonial_DbttEc",
+        "testimonial_4M9M8i",
+        "testimonial_JMdpQp"
+      ],
+      "name": "Testimonial Slider",
+      "settings": {
+        "stars_text": "★★★★★",
+        "trusted_text": "Trusted by 450,000 + customers",
+        "heading": "Why Our Customers Keep Coming Back",
+        "description": "Thousands of customers. Repeated use. Shared by our customers.",
+        "desktop_cards": "4",
+        "section_bg": "#f5f5f5",
+        "stars_color": "#f5a623",
+        "trusted_color": "#666666",
+        "heading_color": "#1f1f1f",
+        "description_color": "#666666",
+        "card_bg": "#ffffff",
+        "quote_icon_color": "#0f2e53",
+        "quote_color": "#444444",
+        "author_color": "#222222",
+        "role_color": "#666666",
+        "arrow_bg": "#f3f3f3",
+        "arrow_color": "#7a7a7a",
+        "arrow_border": "#d5d5d5",
+        "arrow_hover_bg": "#0f2e53",
+        "arrow_hover_color": "#ffffff",
+        "line_color": "#d8d8d8"
+      }
+    },
+    "custom_section_newspaper_UhHiwa": {
+      "type": "custom-section-newspaper",
+      "name": "Newsletter Subscribe Bar",
+      "settings": {
+        "heading": "Stay Updated with Stretchable Covers",
+        "subheading": "Be the first to know about new designs, custom solutions, and product updates.",
+        "placeholder": "Enter your email",
+        "button_label": "Subscribe",
+        "success_text": "Thanks for subscribing.",
+        "section_bg": "#123764",
+        "heading_color": "#ffffff",
+        "subheading_color": "#d9e4f2",
+        "input_bg": "#123764",
+        "input_border": "#ffffff",
+        "input_text": "#ffffff",
+        "placeholder_color": "#d9e4f2",
+        "button_bg": "#f39a1e",
+        "button_text": "#ffffff",
+        "success_color": "#b9f6ca",
+        "error_color": "#ffd1d1"
+      }
+    },
     "slideshow_m9Nq9Y": {
       "type": "slideshow",
       "blocks": {
@@ -210,6 +1100,7 @@
         "slide_xxWXgf",
         "slide_zBiADT"
       ],
+      "disabled": true,
       "name": "t:names.slideshow_full_frame",
       "settings": {
         "display_mode": "full_frame",
@@ -486,6 +1377,7 @@
           ]
         }
       },
+      "disabled": true,
       "name": "Featured collection",
       "settings": {
         "collection": "all",
@@ -563,6 +1455,7 @@
         "testimonial_GQLbXr",
         "testimonial_xD9MJt"
       ],
+      "disabled": true,
       "name": "Custom Testimonials",
       "settings": {
         "trust_text": "Trusted by 450,000 + customers",
@@ -572,6 +1465,16 @@
     }
   },
   "order": [
+    "custom_hero_slider_7GLFPm",
+    "ups_icon_bar_7UnGza",
+    "custom_section_collection_DW3gt8",
+    "custom_two_section_xezL3r",
+    "custom_section_product_Chehbq",
+    "custom_section_static_Nq9Tby",
+    "custon_section_faq_WBYxQJ",
+    "custom_section_marque_QTHnya",
+    "custom_section_testimonial_VjHWNJ",
+    "custom_section_newspaper_UhHiwa",
     "slideshow_m9Nq9Y",
     "hero_jVaWmY",
     "product_list_fa6P9H",

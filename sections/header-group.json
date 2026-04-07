@@ -133,7 +133,10 @@
         "menu": "main-menu",
         "logo": "shopify://shop_images/image_3_1.png",
         "phone_number": "410-561-0800",
-        "search_placeholder": "Search Covers"
+        "search_placeholder": "Search Covers",
+        "best_seller_1": "sample-1",
+        "best_seller_2": "sample-1",
+        "best_seller_3": "sample-1"
       }
     }
   },
