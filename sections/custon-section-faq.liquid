@@ -11,6 +11,8 @@
         {% endif %}
 
         <div class="faq-cat-section__categories">
+          <span>Select by Category</span>
+          <div class="faq-cat-section-custom">
           {% if section.settings.category_1 != blank %}
             <button type="button" class="faq-cat-section__category is-active" data-category="category_1">
               {{ section.settings.category_1 }}
@@ -41,6 +43,7 @@
               {{ section.settings.category_6 }}
             </button>
           {% endif %}
+          </div>
         </div>
       </aside>
 
@@ -106,6 +109,15 @@
 </section>
 
 <style>
+  #shopify-section-{{ section.id }} .faq-cat-section-custom {
+    margin-top: 15px;
+}
+  #shopify-section-{{ section.id }} .faq-cat-section__categories span {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+    margin-bottom: 10px;
+}
   #shopify-section-{{ section.id }}.faq-cat-section {
     background: {{ section.settings.section_bg }};
   }
@@ -116,24 +128,26 @@
 
   #shopify-section-{{ section.id }} .faq-cat-section__layout {
     display: grid;
-    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-columns: 300px minmax(0, 1fr);
     gap: 34px;
     align-items: start;
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__side-label {
-    font-size: 28px;
-    line-height: 32px;
-    font-weight: 700;
+    font-size: 32px;
+    line-height: 36px;
+    font-weight: 800;
     color: {{ section.settings.side_label_color }};
     margin-bottom: 22px;
+    font-family: 'Raleway';
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__categories {
     background: {{ section.settings.category_box_bg }};
     border-radius: 8px;
-    padding: 10px 0;
+    padding: 20px;
     overflow: hidden;
+    box-shadow: 0 4px 19.1px 0 rgba(0, 0, 0, 0.10);
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__category {
@@ -145,10 +159,11 @@
     border-bottom: 1px solid {{ section.settings.category_divider_color }};
     color: {{ section.settings.category_text_color }};
     padding: 14px 18px;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: 16px;
+    line-height: 24px;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
+    font-family: 'Lato';
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__category:last-child {
@@ -156,15 +171,15 @@
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__category.is-active {
-    background: {{ section.settings.category_active_bg }};
     color: {{ section.settings.category_active_text_color }};
+    font-weight: 700;
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__heading {
     margin: 0 0 18px;
-    font-size: 34px;
-    line-height: 40px;
-    font-weight: 700;
+    font-size: 32px;
+    line-height: 36px;
+    font-weight: 800;
     color: {{ section.settings.heading_color }};
     text-align: center;
   }
@@ -206,9 +221,9 @@
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__question-text {
-    font-size: 13px;
-    line-height: 18px;
-    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__icon {
@@ -249,8 +264,9 @@
 
   #shopify-section-{{ section.id }} .faq-cat-section__answer-inner {
     padding: 0 18px 16px;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 18px;
+    color: #5F5F5F;
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__answer-inner p {
@@ -263,10 +279,11 @@
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__bottom-text {
-    font-size: 11px;
-    line-height: 16px;
+    font-size: 14px;
+    line-height: 18px;
     color: {{ section.settings.bottom_text_color }};
     margin-bottom: 12px;
+    font-weight: 500;
   }
 
   #shopify-section-{{ section.id }} .faq-cat-section__button {
@@ -523,12 +540,7 @@
       "label": "Category text color",
       "default": "#6A6A6A"
     },
-    {
-      "type": "color",
-      "id": "category_active_bg",
-      "label": "Category active background",
-      "default": "#F0F0F0"
-    },
+    
     {
       "type": "color",
       "id": "category_active_text_color",

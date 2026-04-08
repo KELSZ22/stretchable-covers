@@ -215,7 +215,7 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 4px 8px;
+    padding: 6px 10px;
     border-radius: 999px;
     background: {{ section.settings.badge_bg }};
     color: {{ section.settings.badge_color }};
@@ -264,33 +264,35 @@
 
   #shopify-section-{{ section.id }} .sps-card__stars {
     color: {{ section.settings.stars_color }};
-    font-size: 11px;
+    font-size: 15px;
     line-height: 1;
     letter-spacing: 1px;
   }
 
   #shopify-section-{{ section.id }} .sps-card__rating-text {
-    font-size: 11px;
-    line-height: 14px;
+    font-size: 14px;
+    line-height: 18px;
     color: {{ section.settings.meta_color }};
   }
 
   #shopify-section-{{ section.id }} .sps-card__title {
     margin: 0 0 4px;
-    font-size: 16px;
-    line-height: 20px;
-    font-weight: 600;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
     color: {{ section.settings.title_color }};
+    font-family: 'Lato';
   }
 
   #shopify-section-{{ section.id }} .sps-card__meta {
     display: flex;
     flex-wrap: wrap;
     gap: 8px 14px;
-    font-size: 12px;
+    font-size: 16px;
     line-height: 16px;
     color: {{ section.settings.meta_color }};
     margin-bottom: 6px;
+    font-weight: 500px;
   }
 
   #shopify-section-{{ section.id }} .sps-card__price-row {
@@ -307,9 +309,9 @@
   }
 
   #shopify-section-{{ section.id }} .sps-card__price {
-    font-size: 15px;
-    line-height: 18px;
-    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
     color: {{ section.settings.price_color }};
   }
 
@@ -364,8 +366,9 @@
 
     #shopify-section-{{ section.id }} .sps-subheading,
     #shopify-section-{{ section.id }} .sps-view-all {
-      font-size: 12px;
+      font-size: 16px;
       line-height: 16px;
+      text-decoration-line: underline;
     }
 
     #shopify-section-{{ section.id }} .sps-card {

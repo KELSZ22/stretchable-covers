@@ -164,7 +164,6 @@
     align-items: center;
     padding: 15px 70px;
     gap: 50px;
-    border-bottom: 1px solid #e5e5e5;
     width: 100%;
   }
 
@@ -266,8 +265,6 @@
 
   .custom-header-nav {
     background: #fff;
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 2px solid #e5e5e5;
     display: flex;
     justify-content: center;
   }
@@ -279,7 +276,9 @@
     overflow-x: auto;
     scrollbar-width: none;
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 1440px;
+
   }
 
   .header-nav-inner::-webkit-scrollbar {
@@ -482,6 +481,12 @@
   }
 
   @media (max-width: 900px) {
+    .custom-header-main{
+      gap: 0;
+    }
+    .header-search form{
+      display: none;
+    }
     .custom-header-nav {
       display: none;
     }
@@ -956,6 +961,24 @@
     justify-content: center;
   }
 
+  .custom-topbar-container > .custom-header-topbar:not(.mobile) {
+    display: flex;
+  }
+
+  .custom-topbar-container > marquee.custom-header-topbar.mobile,
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee {
+    display: none;
+  }
+
+  @keyframes mobileTopbarLoop {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-1 * var(--loop-width, 0px)));
+    }
+  }
+
   {% comment %} .custom-cart-payment-badge {
     display: inline-flex;
     align-items: center;
@@ -973,6 +996,131 @@
   } {% endcomment %}
 
   @media (max-width: 767px) {
+    .topbar-promos span {
+      font-size: 12px !important;
+    }
+
+    .custom-topbar-container > .custom-header-topbar:not(.mobile) {
+      display: none;
+    }
+
+    .custom-topbar-container > marquee.custom-header-topbar.mobile {
+      display: block;
+      width: 100%;
+      padding: 8px 16px;
+      border: 0;
+    }
+
+    .custom-topbar-container > marquee.custom-header-topbar.mobile .marquee-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      white-space: nowrap;
+    }
+
+    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-promos,
+    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right,
+    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right a {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-promos {
+      gap: 10px;
+    }
+
+    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right {
+      gap: 12px;
+    }
+
+    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right a {
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .custom-topbar-container > marquee.custom-header-topbar.mobile .dot,
+    .custom-topbar-container > marquee.custom-header-topbar.mobile svg {
+      flex: 0 0 auto;
+    }
+
+    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-flag {
+      display: none;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee {
+      display: block;
+      width: 100%;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-viewport {
+      width: 100%;
+      overflow: hidden;
+      padding: 8px 16px;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      will-change: transform;
+      animation: mobileTopbarLoop 18s linear infinite;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-group {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-shrink: 0;
+      white-space: nowrap;
+      padding-right: 20px;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-promos,
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right,
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right a,
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-flag {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      flex-wrap: nowrap;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-promos {
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right {
+      gap: 12px;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right a {
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .dot,
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee svg {
+      flex: 0 0 auto;
+    }
+
+    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-flag {
+      display: none;
+    }
+
+    .custom-header-main {
+      padding: 10px 16px;
+    }
+
     .custom-cart-drawer {
       width: calc(100% - 10px);
       max-width: calc(100% - 10px);
@@ -1134,7 +1282,30 @@
           ▾
         </span>
       </div>
+      
     </div>
+    <marquee class="custom-header-topbar mobile" behavior="scroll" direction="left" scrollamount="4" loop="-1">
+      <div class="marquee-container">
+        <div class="topbar-promos">
+          <span>No Limit on Colors or Background Designs</span>
+          <span class="dot"></span>
+          <span>No Minimum Orders Required</span>
+        </div>
+
+      <div class="topbar-right">
+        <a href="tel:{{ section.settings.phone_number }}">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+          </svg>
+          <span>{{ section.settings.phone_number }}</span>
+        </a>
+        <span class="topbar-flag">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="14" viewBox="0 0 22 14"><rect width="22" height="14" fill="#B22234"/><rect y="1.08" width="22" height="1.08" fill="#fff"/><rect y="3.23" width="22" height="1.08" fill="#fff"/><rect y="5.38" width="22" height="1.08" fill="#fff"/><rect y="7.54" width="22" height="1.08" fill="#fff"/><rect y="9.69" width="22" height="1.08" fill="#fff"/><rect y="11.85" width="22" height="1.08" fill="#fff"/><rect width="8.8" height="7.54" fill="#3C3B6E"/></svg>
+      ▾
+        </span>
+      </div>
+    </div>
+    </marquee>
   </div>
 
   <div class="custom-header-container">
@@ -1148,6 +1319,7 @@
           {%- endif -%}
         </a>
       </div>
+      
 
       <div class="header-search">
         <form action="{{ routes.search_url }}" method="get" role="search">
@@ -1262,6 +1434,89 @@
     <a href="/checkout" class="custom-cart-checkout">Secure Check Out</a>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const mobileBreakpoint = 767;
+  const marquees = document.querySelectorAll('marquee.custom-header-topbar.mobile');
+
+  marquees.forEach(function (marquee) {
+    if (marquee.dataset.jsMarqueeInit === 'true') return;
+    marquee.dataset.jsMarqueeInit = 'true';
+
+    const source = marquee.querySelector('.marquee-container');
+    if (!source) return;
+
+    const sourceHTML = source.innerHTML;
+    let wrapper = null;
+    let viewport = null;
+    let track = null;
+    let resizeTimer = null;
+
+    function createWrapper() {
+      wrapper = document.createElement('div');
+      wrapper.className = 'custom-header-topbar mobile js-marquee';
+
+      viewport = document.createElement('div');
+      viewport.className = 'marquee-viewport';
+
+      track = document.createElement('div');
+      track.className = 'marquee-track';
+
+      viewport.appendChild(track);
+      wrapper.appendChild(viewport);
+
+      marquee.insertAdjacentElement('afterend', wrapper);
+    }
+
+    function buildMarquee() {
+      if (!wrapper) createWrapper();
+
+      if (window.innerWidth > mobileBreakpoint) {
+        wrapper.style.display = 'none';
+        marquee.style.display = '';
+        return;
+      }
+
+      wrapper.style.display = 'block';
+      marquee.style.display = 'none';
+
+      track.innerHTML = '';
+
+      const group = document.createElement('div');
+      group.className = 'marquee-group';
+      track.appendChild(group);
+
+      let loops = 0;
+      const minWidth = Math.max(viewport.clientWidth, window.innerWidth, 320) + 100;
+
+      while (group.scrollWidth < minWidth && loops < 10) {
+        const chunk = document.createElement('div');
+        chunk.className = 'marquee-container';
+        chunk.innerHTML = sourceHTML;
+        group.appendChild(chunk);
+        loops++;
+      }
+
+      if (!group.children.length) return;
+
+      const clone = group.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      track.appendChild(clone);
+
+      wrapper.style.setProperty('--loop-width', group.scrollWidth + 'px');
+    }
+
+    function handleResize() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(buildMarquee, 120);
+    }
+
+    buildMarquee();
+    window.addEventListener('resize', handleResize);
+  });
+});
+</script>
 
 <script>
   (function() {
