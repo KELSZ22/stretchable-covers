@@ -96,113 +96,119 @@
                 {% endif %}
 
                 {% if testimonial_count > 0 %}
-                  <div class="cc-slide__testimonial" data-autoplay="true" data-speed="4">
-                    <div class="cc-slide__testimonial-track">
-                      {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
-                        <div class="cc-slide__testimonial-item">
-                          <div class="cc-slide__quote">“</div>
+                  {% capture testimonial_slider_markup %}
+                    <div class="cc-slide__testimonial" data-autoplay="true" data-speed="4">
+                      <div class="cc-slide__testimonial-track">
+                        {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
+                          <div class="cc-slide__testimonial-item">
+                            <div class="cc-slide__quote">“</div>
 
-                          {% if block.settings.testimonial_text != blank %}
-                            <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text }}</div>
+                            {% if block.settings.testimonial_text != blank %}
+                              <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_author != blank %}
+                              <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_role != blank %}
+                              <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_verified != blank %}
+                              <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified }} <span>★★★★★</span></div>
+                            {% endif %}
+                          </div>
+                        {% endif %}
+
+                        {% if block.settings.testimonial_text_2 != blank or block.settings.testimonial_author_2 != blank %}
+                          <div class="cc-slide__testimonial-item">
+                            <div class="cc-slide__quote">“</div>
+
+                            {% if block.settings.testimonial_text_2 != blank %}
+                              <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text_2 }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_author_2 != blank %}
+                              <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author_2 }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_role_2 != blank %}
+                              <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role_2 }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_verified_2 != blank %}
+                              <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified_2 }} <span>★★★★★</span></div>
+                            {% endif %}
+                          </div>
+                        {% endif %}
+
+                        {% if block.settings.testimonial_text_3 != blank or block.settings.testimonial_author_3 != blank %}
+                          <div class="cc-slide__testimonial-item">
+                            <div class="cc-slide__quote">“</div>
+
+                            {% if block.settings.testimonial_text_3 != blank %}
+                              <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text_3 }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_author_3 != blank %}
+                              <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author_3 }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_role_3 != blank %}
+                              <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role_3 }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_verified_3 != blank %}
+                              <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified_3 }} <span>★★★★★</span></div>
+                            {% endif %}
+                          </div>
+                        {% endif %}
+
+                        {% if block.settings.testimonial_text_4 != blank or block.settings.testimonial_author_4 != blank %}
+                          <div class="cc-slide__testimonial-item">
+                            <div class="cc-slide__quote">“</div>
+
+                            {% if block.settings.testimonial_text_4 != blank %}
+                              <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text_4 }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_author_4 != blank %}
+                              <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author_4 }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_role_4 != blank %}
+                              <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role_4 }}</div>
+                            {% endif %}
+
+                            {% if block.settings.testimonial_verified_4 != blank %}
+                              <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified_4 }} <span>★★★★★</span></div>
+                            {% endif %}
+                          </div>
+                        {% endif %}
+                      </div>
+
+                      {% if testimonial_count > 1 %}
+                        <div class="cc-slide__testimonial-dots">
+                          {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
+                            <button class="cc-slide__testimonial-dot is-active" type="button" aria-label="Go to testimonial 1"></button>
                           {% endif %}
-
-                          {% if block.settings.testimonial_author != blank %}
-                            <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author }}</div>
+                          {% if block.settings.testimonial_text_2 != blank or block.settings.testimonial_author_2 != blank %}
+                            <button class="cc-slide__testimonial-dot" type="button" aria-label="Go to testimonial 2"></button>
                           {% endif %}
-
-                          {% if block.settings.testimonial_role != blank %}
-                            <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role }}</div>
+                          {% if block.settings.testimonial_text_3 != blank or block.settings.testimonial_author_3 != blank %}
+                            <button class="cc-slide__testimonial-dot" type="button" aria-label="Go to testimonial 3"></button>
                           {% endif %}
-
-                          {% if block.settings.testimonial_verified != blank %}
-                            <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified }} <span>★★★★★</span></div>
-                          {% endif %}
-                        </div>
-                      {% endif %}
-
-                      {% if block.settings.testimonial_text_2 != blank or block.settings.testimonial_author_2 != blank %}
-                        <div class="cc-slide__testimonial-item">
-                          <div class="cc-slide__quote">“</div>
-
-                          {% if block.settings.testimonial_text_2 != blank %}
-                            <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text_2 }}</div>
-                          {% endif %}
-
-                          {% if block.settings.testimonial_author_2 != blank %}
-                            <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author_2 }}</div>
-                          {% endif %}
-
-                          {% if block.settings.testimonial_role_2 != blank %}
-                            <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role_2 }}</div>
-                          {% endif %}
-
-                          {% if block.settings.testimonial_verified_2 != blank %}
-                            <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified_2 }} <span>★★★★★</span></div>
-                          {% endif %}
-                        </div>
-                      {% endif %}
-
-                      {% if block.settings.testimonial_text_3 != blank or block.settings.testimonial_author_3 != blank %}
-                        <div class="cc-slide__testimonial-item">
-                          <div class="cc-slide__quote">“</div>
-
-                          {% if block.settings.testimonial_text_3 != blank %}
-                            <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text_3 }}</div>
-                          {% endif %}
-
-                          {% if block.settings.testimonial_author_3 != blank %}
-                            <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author_3 }}</div>
-                          {% endif %}
-
-                          {% if block.settings.testimonial_role_3 != blank %}
-                            <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role_3 }}</div>
-                          {% endif %}
-
-                          {% if block.settings.testimonial_verified_3 != blank %}
-                            <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified_3 }} <span>★★★★★</span></div>
-                          {% endif %}
-                        </div>
-                      {% endif %}
-
-                      {% if block.settings.testimonial_text_4 != blank or block.settings.testimonial_author_4 != blank %}
-                        <div class="cc-slide__testimonial-item">
-                          <div class="cc-slide__quote">“</div>
-
-                          {% if block.settings.testimonial_text_4 != blank %}
-                            <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text_4 }}</div>
-                          {% endif %}
-
-                          {% if block.settings.testimonial_author_4 != blank %}
-                            <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author_4 }}</div>
-                          {% endif %}
-
-                          {% if block.settings.testimonial_role_4 != blank %}
-                            <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role_4 }}</div>
-                          {% endif %}
-
-                          {% if block.settings.testimonial_verified_4 != blank %}
-                            <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified_4 }} <span>★★★★★</span></div>
+                          {% if block.settings.testimonial_text_4 != blank or block.settings.testimonial_author_4 != blank %}
+                            <button class="cc-slide__testimonial-dot" type="button" aria-label="Go to testimonial 4"></button>
                           {% endif %}
                         </div>
                       {% endif %}
                     </div>
+                  {% endcapture %}
 
-                    {% if testimonial_count > 1 %}
-                      <div class="cc-slide__testimonial-dots">
-                        {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
-                          <button class="cc-slide__testimonial-dot is-active" type="button" aria-label="Go to testimonial 1"></button>
-                        {% endif %}
-                        {% if block.settings.testimonial_text_2 != blank or block.settings.testimonial_author_2 != blank %}
-                          <button class="cc-slide__testimonial-dot" type="button" aria-label="Go to testimonial 2"></button>
-                        {% endif %}
-                        {% if block.settings.testimonial_text_3 != blank or block.settings.testimonial_author_3 != blank %}
-                          <button class="cc-slide__testimonial-dot" type="button" aria-label="Go to testimonial 3"></button>
-                        {% endif %}
-                        {% if block.settings.testimonial_text_4 != blank or block.settings.testimonial_author_4 != blank %}
-                          <button class="cc-slide__testimonial-dot" type="button" aria-label="Go to testimonial 4"></button>
-                        {% endif %}
-                      </div>
-                    {% endif %}
+                  <div class="cc-slide__testimonial-wrap cc-slide__testimonial-wrap--desktop">
+                    {{ testimonial_slider_markup }}
                   </div>
                 {% endif %}
               </div>
@@ -224,6 +230,137 @@
         {% endfor %}
       </div>
     {% endif %}
+  </div>
+
+  <div class="cc-mobile-testimonials">
+    {% for block in section.blocks %}
+      {% assign testimonial_count = 0 %}
+      {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
+        {% assign testimonial_count = testimonial_count | plus: 1 %}
+      {% endif %}
+      {% if block.settings.testimonial_text_2 != blank or block.settings.testimonial_author_2 != blank %}
+        {% assign testimonial_count = testimonial_count | plus: 1 %}
+      {% endif %}
+      {% if block.settings.testimonial_text_3 != blank or block.settings.testimonial_author_3 != blank %}
+        {% assign testimonial_count = testimonial_count | plus: 1 %}
+      {% endif %}
+      {% if block.settings.testimonial_text_4 != blank or block.settings.testimonial_author_4 != blank %}
+        {% assign testimonial_count = testimonial_count | plus: 1 %}
+      {% endif %}
+
+      <div class="cc-mobile-testimonial-slide{% if forloop.first %} is-active{% endif %}" data-slide-index="{{ forloop.index0 }}">
+        {% if testimonial_count > 0 %}
+          <div class="cc-slide__testimonial" data-autoplay="true" data-speed="4">
+            <div class="cc-slide__testimonial-track">
+              {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
+                <div class="cc-slide__testimonial-item">
+                  <div class="cc-slide__quote">“</div>
+
+                  {% if block.settings.testimonial_text != blank %}
+                    <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_author != blank %}
+                    <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_role != blank %}
+                    <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_verified != blank %}
+                    <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified }} <span>★★★★★</span></div>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if block.settings.testimonial_text_2 != blank or block.settings.testimonial_author_2 != blank %}
+                <div class="cc-slide__testimonial-item">
+                  <div class="cc-slide__quote">“</div>
+
+                  {% if block.settings.testimonial_text_2 != blank %}
+                    <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text_2 }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_author_2 != blank %}
+                    <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author_2 }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_role_2 != blank %}
+                    <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role_2 }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_verified_2 != blank %}
+                    <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified_2 }} <span>★★★★★</span></div>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if block.settings.testimonial_text_3 != blank or block.settings.testimonial_author_3 != blank %}
+                <div class="cc-slide__testimonial-item">
+                  <div class="cc-slide__quote">“</div>
+
+                  {% if block.settings.testimonial_text_3 != blank %}
+                    <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text_3 }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_author_3 != blank %}
+                    <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author_3 }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_role_3 != blank %}
+                    <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role_3 }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_verified_3 != blank %}
+                    <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified_3 }} <span>★★★★★</span></div>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if block.settings.testimonial_text_4 != blank or block.settings.testimonial_author_4 != blank %}
+                <div class="cc-slide__testimonial-item">
+                  <div class="cc-slide__quote">“</div>
+
+                  {% if block.settings.testimonial_text_4 != blank %}
+                    <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text_4 }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_author_4 != blank %}
+                    <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author_4 }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_role_4 != blank %}
+                    <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role_4 }}</div>
+                  {% endif %}
+
+                  {% if block.settings.testimonial_verified_4 != blank %}
+                    <div class="cc-slide__testimonial-verified">{{ block.settings.testimonial_verified_4 }} <span>★★★★★</span></div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+
+            {% if testimonial_count > 1 %}
+              <div class="cc-slide__testimonial-dots">
+                {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
+                  <button class="cc-slide__testimonial-dot is-active" type="button" aria-label="Go to testimonial 1"></button>
+                {% endif %}
+                {% if block.settings.testimonial_text_2 != blank or block.settings.testimonial_author_2 != blank %}
+                  <button class="cc-slide__testimonial-dot" type="button" aria-label="Go to testimonial 2"></button>
+                {% endif %}
+                {% if block.settings.testimonial_text_3 != blank or block.settings.testimonial_author_3 != blank %}
+                  <button class="cc-slide__testimonial-dot" type="button" aria-label="Go to testimonial 3"></button>
+                {% endif %}
+                {% if block.settings.testimonial_text_4 != blank or block.settings.testimonial_author_4 != blank %}
+                  <button class="cc-slide__testimonial-dot" type="button" aria-label="Go to testimonial 4"></button>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
   </div>
 </div>
 
@@ -343,6 +480,22 @@
     color: #ffffff;
   }
 
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--desktop {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .cc-mobile-testimonials {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .cc-mobile-testimonial-slide {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .cc-mobile-testimonial-slide.is-active {
+    display: block;
+  }
+
   #shopify-section-{{ section.id }} .cc-slide__testimonial {
     max-width: 400px;
     overflow: hidden;
@@ -460,9 +613,10 @@
   }
 
   @media screen and (max-width: 1024px) {
-    #shopify-section-{{ section.id }} .cc-slide__inner.page-width{
+    #shopify-section-{{ section.id }} .cc-slide__inner.page-width {
       height: 1300px;
     }
+
     #shopify-section-{{ section.id }} .cc-slide {
       background-position: center;
       background-image: var(--cc-bg-1024, var(--cc-bg-desktop, none));
@@ -479,14 +633,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-}
-    #shopify-section-{{ section.id }} .cc-slide__features{
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__features {
       justify-content: center;
     }
 
     #shopify-section-{{ section.id }} .cc-slide__inner {
       gap: 30px;
-      padding: 50px 40px 70px;
+      padding: 60px;
     }
 
     #shopify-section-{{ section.id }} .cc-slide__subheading {
@@ -497,39 +652,41 @@
 
   @media screen and (max-width: 767px) {
     #shopify-section-{{ section.id }} .cc-slide__rating-text {
-    font-size: 12px;
-    line-height: 14px;
-}
+      font-size: 12px;
+      line-height: 14px;
+    }
+
     #shopify-section-{{ section.id }} .cc-slide__heading {
       font-size: 20px;
       line-height: 27px;
-}
-    #shopify-section-{{ section.id }} .cc-slide {
-    background-position: center bottom;
-}
-    #shopify-section-{{ section.id }} .cc-slide__inner.page-width {
-    height: 1100px;
-}
-    #shopify-section-{{ section.id }} .cc-slide__inner.page-width{
-      justify-content: start;
     }
+
     #shopify-section-{{ section.id }} .cc-slide {
+      background-position: center bottom;
       background-image: var(--cc-bg-767, var(--cc-bg-1024, var(--cc-bg-desktop, none)));
     }
 
+    #shopify-section-{{ section.id }} .cc-slide__inner.page-width {
+      height: 900px;
+      justify-content: flex-start;
+    }
+
     #shopify-section-{{ section.id }} .cc-slide__inner {
-      height: auto;
-      min-height: 100vh;
-      min-height: 100svh;
+      height: 100vh;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       gap: 24px;
-      padding: 40px 20px 80px;
+      padding: 60px 16px;
     }
 
     #shopify-section-{{ section.id }} .cc-slide__content {
       width: 100%;
       max-width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 0 0 auto;
     }
 
     #shopify-section-{{ section.id }} .cc-slide__subheading {
@@ -539,11 +696,35 @@
 
     #shopify-section-{{ section.id }} .cc-slide__features {
       gap: 14px;
+      justify-content: center;
     }
 
-    #shopify-section-{{ section.id }} .cc-slide__testimonial {
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--desktop {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .cc-mobile-testimonials {
+      display: block;
+      width: 100%;
+      padding: 20px 16px;
+      box-sizing: border-box;
+    }
+
+    #shopify-section-{{ section.id }} .cc-mobile-testimonial-slide .cc-slide__testimonial {
+      width: 100%;
       max-width: 100%;
     }
+    #shopify-section-{{ section.id }} .cc-mobile-testimonials .cc-slide__testimonial {
+    background: #0F2E53;
+}
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-text{
+      font-size: 14px;
+}
+  }
+  @media screen and (max-width: 500px){
+    #shopify-section-{{ section.id }} .cc-slide__inner.page-width {
+    height: 800px;
+}
   }
 </style>
 
@@ -584,14 +765,30 @@
       });
     }
 
+    function updateMobileTestimonialSlides() {
+      var mobileSlides = section.querySelectorAll('.cc-mobile-testimonial-slide');
+
+      mobileSlides.forEach(function(slide, i) {
+        slide.classList.toggle('is-active', i === currentHeroIndex);
+      });
+    }
+
     function getActiveHeroSlide() {
       return heroSlides[currentHeroIndex];
     }
 
     function getTestimonialData(heroSlide) {
-      if (!heroSlide) return null;
+      var testimonialSlider = null;
 
-      var testimonialSlider = heroSlide.querySelector('.cc-slide__testimonial');
+      if (window.innerWidth <= 767) {
+        var activeMobileSlide = section.querySelector('.cc-mobile-testimonial-slide.is-active');
+        testimonialSlider = activeMobileSlide ? activeMobileSlide.querySelector('.cc-slide__testimonial') : null;
+      } else {
+        testimonialSlider = heroSlide
+          ? heroSlide.querySelector('.cc-slide__testimonial-wrap--desktop .cc-slide__testimonial')
+          : null;
+      }
+
       if (!testimonialSlider) return null;
 
       var testimonialTrack = testimonialSlider.querySelector('.cc-slide__testimonial-track');
@@ -715,6 +912,7 @@
       currentHeroIndex = index;
       track.style.transform = 'translateX(-' + (currentHeroIndex * 100) + '%)';
       updateHeroDots();
+      updateMobileTestimonialSlides();
       runHeroCycle();
     }
 
@@ -737,6 +935,12 @@
       }
     });
 
+    window.addEventListener('resize', function() {
+      updateMobileTestimonialSlides();
+      runHeroCycle();
+    });
+
+    updateMobileTestimonialSlides();
     goToHeroSlide(0);
   })();
 </script>

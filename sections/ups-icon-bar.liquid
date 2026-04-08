@@ -73,7 +73,7 @@
               {% endcase %}
             {% endif %}
           </div>
-
+          <div class="usp-text-container">
           {% if block.settings.heading != blank %}
             <h3 class="usp-icon-bar__title">{{ block.settings.heading }}</h3>
           {% endif %}
@@ -82,7 +82,9 @@
             <div class="usp-icon-bar__text">{{ block.settings.text }}</div>
           {% endif %}
         </div>
+        </div>
       {% endfor %}
+    
     </div>
   </div>
 </div>
@@ -90,7 +92,7 @@
 <style>
   #shopify-section-{{ section.id }}.usp-icon-bar {
     background: {{ section.settings.bg_color }};
-    border-top: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+    
   }
 
   #shopify-section-{{ section.id }} .usp-icon-bar__inner {
@@ -151,10 +153,39 @@
   }
 
   @media screen and (max-width: 749px) {
-    #shopify-section-{{ section.id }} .usp-icon-bar__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px 16px;
-    }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 20px 16px;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    text-align: left;
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  #shopify-section-{{ section.id }} .usp-icon-bar__icon {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .usp-text-container {
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  #shopify-section-{{ section.id }} .usp-text-container h3,
+  #shopify-section-{{ section.id }} .usp-text-container p {
+    text-align: left;
+  }
 
     #shopify-section-{{ section.id }} .usp-icon-bar__item {
       max-width: 100%;
