@@ -44,10 +44,7 @@
           "blocks": {}
         }
       },
-      "block_order": [
-        "heading",
-        "page-content"
-      ],
+      "block_order": ["heading", "page-content"],
       "disabled": true,
       "settings": {
         "content_direction": "column",
@@ -124,8 +121,5 @@
       }
     }
   },
-  "order": [
-    "main",
-    "custom_cover_customizer"
-  ]
+  "order": ["main", "custom_cover_customizer"]
 }

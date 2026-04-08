@@ -280,77 +280,79 @@
               </div>
 
               <div data-mode-panel="editor">
-                <p class="custom-cover-customizer__label custom-cover-customizer__section-label">Product</p>
+                <div class="custom-cover-customizer__product-fields">
+                  <p class="custom-cover-customizer__label custom-cover-customizer__section-label">Product</p>
 
-                <div class="custom-cover-customizer__group">
-                  <label class="custom-cover-customizer__label" for="CustomizerProduct-{{ section.id }}">Product name</label>
-                  <select
-                    id="CustomizerProduct-{{ section.id }}"
-                    class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                    disabled>
-                    <option selected>{{ customizer_product.title | escape }}</option>
-                  </select>
-                </div>
-
-                <div class="custom-cover-customizer__group">
-                  <label class="custom-cover-customizer__label" for="CustomizerVariant-{{ section.id }}">Product size</label>
-                  <div class="custom-cover-customizer__input-action-row">
+                  <div class="custom-cover-customizer__group">
+                    <label class="custom-cover-customizer__label" for="CustomizerProduct-{{ section.id }}">Product name</label>
                     <select
-                      id="CustomizerVariant-{{ section.id }}"
+                      id="CustomizerProduct-{{ section.id }}"
                       class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                      name="variant_selector"
-                      data-variant-selector>
-                      {% for variant in customizer_product.variants %}
-                        <option
-                          value="{{ variant.id }}"
-                          data-price="{{ variant.price }}"
-                          {% if variant.id == initial_variant.id %}
-                          selected
-                          {% endif %}
-                          {% unless variant.available %}
-                          disabled
-                          {% endunless %}>
-                          {{ variant.title | escape }}{% unless variant.available %}
-                            - {{ 'content.unavailable' | t }}{% endunless %}
-                        </option>
-                      {% endfor %}
+                      disabled>
+                      <option selected>{{ customizer_product.title | escape }}</option>
                     </select>
-                    <button
-                      type="button"
-                      class="custom-cover-customizer__round-action"
-                      data-size-helper="variant"
-                      aria-label="Find product size">
-                      <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
-                        {{- 'custom-icon-size-helper.svg' | inline_asset_content -}}
-                      </span>
-                    </button>
                   </div>
-                </div>
 
-                <div class="custom-cover-customizer__group">
-                  <label class="custom-cover-customizer__label" for="CustomizerImprint-{{ section.id }}">Imprint size</label>
-                  <div class="custom-cover-customizer__input-action-row">
-                    <select
-                      id="CustomizerImprint-{{ section.id }}"
-                      class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                      data-imprint-size>
-                      {% assign imprint_sizes = section.settings.imprint_sizes | newline_to_br | split: '<br />' %}
-                      {% for imprint_size in imprint_sizes %}
-                        {% assign trimmed_imprint_size = imprint_size | strip %}
-                        {% if trimmed_imprint_size != blank %}
-                          <option value="{{ trimmed_imprint_size | escape }}">{{ trimmed_imprint_size | escape }}</option>
-                        {% endif %}
-                      {% endfor %}
-                    </select>
-                    <button
-                      type="button"
-                      class="custom-cover-customizer__round-action"
-                      data-size-helper="imprint"
-                      aria-label="Add custom imprint size">
-                      <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
-                        {{- 'custom-icon-size-helper.svg' | inline_asset_content -}}
-                      </span>
-                    </button>
+                  <div class="custom-cover-customizer__group">
+                    <label class="custom-cover-customizer__label" for="CustomizerVariant-{{ section.id }}">Product size</label>
+                    <div class="custom-cover-customizer__input-action-row">
+                      <select
+                        id="CustomizerVariant-{{ section.id }}"
+                        class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
+                        name="variant_selector"
+                        data-variant-selector>
+                        {% for variant in customizer_product.variants %}
+                          <option
+                            value="{{ variant.id }}"
+                            data-price="{{ variant.price }}"
+                            {% if variant.id == initial_variant.id %}
+                            selected
+                            {% endif %}
+                            {% unless variant.available %}
+                            disabled
+                            {% endunless %}>
+                            {{ variant.title | escape }}{% unless variant.available %}
+                              - {{ 'content.unavailable' | t }}{% endunless %}
+                          </option>
+                        {% endfor %}
+                      </select>
+                      <button
+                        type="button"
+                        class="custom-cover-customizer__round-action"
+                        data-size-helper="variant"
+                        aria-label="Find product size">
+                        <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
+                          {{- 'custom-icon-size-helper.svg' | inline_asset_content -}}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="custom-cover-customizer__group">
+                    <label class="custom-cover-customizer__label" for="CustomizerImprint-{{ section.id }}">Imprint size</label>
+                    <div class="custom-cover-customizer__input-action-row">
+                      <select
+                        id="CustomizerImprint-{{ section.id }}"
+                        class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
+                        data-imprint-size>
+                        {% assign imprint_sizes = section.settings.imprint_sizes | newline_to_br | split: '<br />' %}
+                        {% for imprint_size in imprint_sizes %}
+                          {% assign trimmed_imprint_size = imprint_size | strip %}
+                          {% if trimmed_imprint_size != blank %}
+                            <option value="{{ trimmed_imprint_size | escape }}">{{ trimmed_imprint_size | escape }}</option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                      <button
+                        type="button"
+                        class="custom-cover-customizer__round-action"
+                        data-size-helper="imprint"
+                        aria-label="Add custom imprint size">
+                        <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
+                          {{- 'custom-icon-size-helper.svg' | inline_asset_content -}}
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -416,7 +418,13 @@
                     type="button"
                     class="custom-cover-customizer__dropzone"
                     data-upload-dropzone>
-                    <span class="custom-cover-customizer__dropzone-icon">⇪</span>
+                    <span class="custom-cover-customizer__dropzone-icon" aria-hidden="true">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <path d="M20 5V25" stroke="#5F5F5F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M28.3334 13.3333L20 5L11.6667 13.3333" stroke="#5F5F5F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M35 25V31.6667C35 32.5507 34.6488 33.3986 34.0237 34.0237C33.3986 34.6488 32.5507 35 31.6667 35H8.33333C7.44928 35 6.60143 34.6488 5.97631 34.0237C5.35119 33.3986 5 32.5507 5 31.6667V25" stroke="#5F5F5F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
                     <span>Browse your computer or drag your file here</span>
                   </button>
                 </div>
@@ -425,7 +433,7 @@
                   class="custom-cover-customizer__clipart-panel"
                   data-tool-panel="clipart"
                   hidden>
-                  <p class="custom-cover-customizer__clipart-title">{{ section.settings.clipart_heading | escape }}</p>
+                  <p class="custom-cover-customizer__clipart-title">Choose a clipart</p>
                   {% assign clipart_count = 0 %}
                   {% for block in section.blocks %}
                     {% if block.type == 'clipart' and block.settings.icon != blank %}
@@ -647,7 +655,7 @@
                   data-tool-panel="shapes"
                   hidden>
                   <div class="custom-cover-customizer__group">
-                    <p class="custom-cover-customizer__label">{{ section.settings.shapes_section_heading | escape }}</p>
+                    <p class="custom-cover-customizer__label custom-cover-customizer__shapes-title">Choose a Shape</p>
                   </div>
                   <div class="custom-cover-customizer__group">
                     <p class="custom-cover-customizer__label">{{ section.settings.shapes_fill_label | escape }}</p>
