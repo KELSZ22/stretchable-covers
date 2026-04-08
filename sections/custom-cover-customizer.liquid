@@ -62,98 +62,40 @@
           class="custom-cover-customizer__design-tool"
           data-design-copy
           aria-label="Duplicate design element">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            focusable="false">
-            <rect
-              x="9"
-              y="9"
-              width="10"
-              height="10"
-              rx="2"
-              stroke="currentColor"
-              stroke-width="1.5"></rect>
-            <path
-              d="M5 15V7a2 2 0 0 1 2-2h8"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"></path>
-          </svg>
+          {{- 'custom-icon-design-copy.svg' | inline_asset_content -}}
         </button>
         <button
           type="button"
           class="custom-cover-customizer__design-tool"
           data-design-undo
           aria-label="Undo">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            focusable="false">
-            <path
-              d="M9 7 5 11l4 4"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"></path>
-            <path
-              d="M6 11h7a6 6 0 1 1 0 12h-2"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"></path>
-          </svg>
+          {{- 'custom-icon-design-undo.svg' | inline_asset_content -}}
         </button>
         <button
           type="button"
           class="custom-cover-customizer__design-tool"
           data-design-redo
           aria-label="Redo">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            focusable="false">
-            <path
-              d="m15 7 4 4-4 4"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"></path>
-            <path
-              d="M18 11h-7a6 6 0 1 0 0 12h2"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"></path>
-          </svg>
+          {{- 'custom-icon-design-redo.svg' | inline_asset_content -}}
         </button>
         <button
           type="button"
           class="custom-cover-customizer__design-tool"
           data-design-delete
           aria-label="Delete selected element">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            focusable="false">
-            <path
-              d="M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6"
-              stroke="#5F5F5F"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"></path>
-            <path
-              d="M3 6H21"
-              stroke="#5F5F5F"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"></path>
-            <path
-              d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6"
-              stroke="#5F5F5F"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"></path>
-          </svg>
+          {{- 'custom-icon-design-delete.svg' | inline_asset_content -}}
+        </button>
+        <button
+          type="button"
+          class="custom-cover-customizer__design-tool"
+          aria-label="Download design">
+          {{- 'custom-icon-design-download.svg' | inline_asset_content -}}
+        </button>
+        <button
+          type="button"
+          class="custom-cover-customizer__design-tool"
+          aria-label="Design folder">
+          {{- 'custom-icon-design-folder.svg' | inline_asset_content -}}
         </button>
       </div>
       <div class="custom-cover-customizer__design-cta">
@@ -419,10 +361,30 @@
                     class="custom-cover-customizer__dropzone"
                     data-upload-dropzone>
                     <span class="custom-cover-customizer__dropzone-icon" aria-hidden="true">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
-                        <path d="M20 5V25" stroke="#5F5F5F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M28.3334 13.3333L20 5L11.6667 13.3333" stroke="#5F5F5F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M35 25V31.6667C35 32.5507 34.6488 33.3986 34.0237 34.0237C33.3986 34.6488 32.5507 35 31.6667 35H8.33333C7.44928 35 6.60143 34.6488 5.97631 34.0237C5.35119 33.3986 5 32.5507 5 31.6667V25" stroke="#5F5F5F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="40"
+                        height="40"
+                        viewBox="0 0 40 40"
+                        fill="none">
+                        <path
+                          d="M20 5V25"
+                          stroke="#5F5F5F"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                          stroke-linejoin="round" />
+                        <path
+                          d="M28.3334 13.3333L20 5L11.6667 13.3333"
+                          stroke="#5F5F5F"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                          stroke-linejoin="round" />
+                        <path
+                          d="M35 25V31.6667C35 32.5507 34.6488 33.3986 34.0237 34.0237C33.3986 34.6488 32.5507 35 31.6667 35H8.33333C7.44928 35 6.60143 34.6488 5.97631 34.0237C5.35119 33.3986 5 32.5507 5 31.6667V25"
+                          stroke="#5F5F5F"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                          stroke-linejoin="round" />
                       </svg>
                     </span>
                     <span>Browse your computer or drag your file here</span>
@@ -819,6 +781,25 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <div class="custom-cover-customizer__preview-footer">
+        <div class="custom-cover-customizer__preview-footer-icons">
+          <button
+            type="button"
+            class="custom-cover-customizer__preview-footer-icon-button"
+            aria-label="Share design">
+            {{- 'custom-icon-preview-share.svg' | inline_asset_content -}}
+          </button>
+          <button
+            type="button"
+            class="custom-cover-customizer__preview-footer-icon-button"
+            aria-label="Design help">
+            {{- 'custom-icon-preview-help.svg' | inline_asset_content -}}
+          </button>
+        </div>
+        <p class="custom-cover-customizer__preview-footer-price">
+          Total: ${{ initial_variant.price | money_without_currency }}</p>
       </div>
     </div>
   </div>
