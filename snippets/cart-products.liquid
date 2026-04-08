@@ -200,6 +200,8 @@
                     or item.selling_plan_allocation != null
                   -%}
                     <dl class="cart-items__variants">
+                      {%- assign customizer_preview = item.properties['_Customizer Preview'] | default: item.properties['Customizer Preview'] -%}
+                      {%- assign customizer_preview_token = item.properties['_Customizer Preview Token'] | default: item.properties['Customizer Preview Token'] -%}
                       {%- if item.product.has_only_default_variant == false and item.item_components.size == 0 -%}
                         {%- for option in item.options_with_values -%}
                           <div class="cart-items__variant">
@@ -218,7 +220,19 @@
                           <div class="cart-items__properties">
                             <dt>{{ property.first }}:</dt>
                             <dd>
-                              {%- if property.last contains '/uploads/' -%}
+                              {%- if property.first == 'Design title' and customizer_preview != blank -%}
+                                <button
+                                  type="button"
+                                  class="button button-unstyled cart-items__design-title-link"
+                                  data-design-preview-open
+                                  data-design-preview-src="{{ customizer_preview | strip | escape }}"
+                                  data-design-preview-token="{{ customizer_preview_token | strip | escape }}"
+                                  data-design-preview-product-id="{{ item.product_id }}"
+                                  data-design-preview-title="{{ property.last | escape }}"
+                                >
+                                  {{ property.last }}
+                                </button>
+                              {%- elsif property.last contains '/uploads/' -%}
                                 <a href="{{ property.last }}">{{ property.last | split: '/' | last }}</a>
                               {%- else -%}
                                 {{ property.last }}
@@ -358,7 +372,86 @@
           </tbody>
         </table>
       </div>
+      <dialog class="cart-items__design-preview-modal" data-design-preview-modal>
+        <button
+          type="button"
+          class="button button-unstyled cart-items__design-preview-close"
+          data-design-preview-close
+          aria-label="{{ 'accessibility.close_dialog' | t }}"
+        >
+          {{- 'icon-close.svg' | inline_asset_content -}}
+        </button>
+        <p class="cart-items__design-preview-heading">Design Preview</p>
+        <img
+          class="cart-items__design-preview-image"
+          data-design-preview-image
+          src=""
+          alt="Design preview"
+          loading="eager"
+          width="600"
+          height="600"
+        >
+      </dialog>
     </form>
+    <script>
+      (() => {
+        const root = document.currentScript?.closest(".cart-items__wrapper");
+        if (!root || root.dataset.designPreviewBound === "true") return;
+        root.dataset.designPreviewBound = "true";
+        const modal = root.querySelector("[data-design-preview-modal]");
+        const image = root.querySelector("[data-design-preview-image]");
+        const title = root.querySelector("[data-design-preview-title]");
+        const closeBtn = root.querySelector("[data-design-preview-close]");
+        if (!modal || !image || !title || !closeBtn) return;
+
+        root.addEventListener("click", (event) => {
+          const trigger = event.target.closest("[data-design-preview-open]");
+          if (!trigger) return;
+          event.preventDefault();
+          const previewSrc = (trigger.getAttribute("data-design-preview-src") || "").trim();
+          const previewToken = (trigger.getAttribute("data-design-preview-token") || "").trim();
+          const productId = (trigger.getAttribute("data-design-preview-product-id") || "unknown-product").trim();
+          let resolvedPreviewSrc = previewSrc;
+          if ((!resolvedPreviewSrc || resolvedPreviewSrc.length < 64) && previewToken) {
+            try {
+              const storageKey = `custom-cover-preview:v1:${productId || "unknown-product"}`;
+              const raw = window.localStorage.getItem(storageKey);
+              if (raw) {
+                const map = JSON.parse(raw);
+                const cached = map?.[previewToken]?.image;
+                if (cached) {
+                  resolvedPreviewSrc = String(cached).trim();
+                }
+              }
+            } catch (error) {
+              // Keep fallback behavior when local cache is unavailable.
+            }
+          }
+          if (!resolvedPreviewSrc) return;
+          image.removeAttribute("srcset");
+          image.src = resolvedPreviewSrc;
+          const nextTitle = trigger.getAttribute("data-design-preview-title") || "Design preview";
+          title.textContent = nextTitle;
+          image.alt = `${nextTitle} preview`;
+          if (typeof modal.showModal === "function") {
+            modal.showModal();
+          }
+        });
+
+        const closeModal = () => {
+          if (modal.open) {
+            modal.close();
+          }
+        };
+
+        closeBtn.addEventListener("click", closeModal);
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            closeModal();
+          }
+        });
+      })();
+    </script>
   {%- endif -%}
 </div>
 
@@ -685,6 +778,69 @@
   .cart-items__properties dt,
   .cart-items__properties dd {
     display: inline;
+  }
+
+  .cart-items__design-title-link {
+    display: inline;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+    word-break: normal;
+  }
+
+  .cart-items__design-preview-modal {
+    position: relative;
+    border: var(--style-border-popover);
+    border-radius: var(--style-border-radius-popover);
+    padding: var(--padding-xl) var(--padding-xl) calc(var(--padding-xl) - var(--margin-2xs));
+    width: fit-content;
+    max-width: min(92vw, 760px);
+    max-height: 90vh;
+    overflow: auto;
+  }
+
+  .cart-items__design-preview-close {
+    position: absolute;
+    top: var(--margin-xs);
+    right: var(--margin-xs);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+  }
+
+  .cart-items__design-preview-close .svg-wrapper,
+  .cart-items__design-preview-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .cart-items__design-preview-heading {
+    margin: 0;
+    font-size: var(--font-size--lg);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .cart-items__design-preview-title {
+    margin: var(--margin-2xs) 0 var(--margin-sm);
+    font-size: var(--font-size--md);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  .cart-items__design-preview-image {
+    display: block;
+    width: auto;
+    max-width: min(84vw, 640px);
+    height: auto;
+    max-height: calc(90vh - 10rem);
+    margin-inline: auto;
+    object-fit: contain;
+    border-radius: var(--style-border-radius-inputs);
   }
 
   @media screen and (prefers-reduced-motion: no-preference) {

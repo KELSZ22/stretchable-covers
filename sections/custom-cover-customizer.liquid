@@ -1,9 +1,6 @@
 {%- liquid
-  assign customizer_product = section.settings.product
-  assign initial_variant = blank
-  if customizer_product != blank
-    assign initial_variant = customizer_product.selected_or_first_available_variant
-  endif
+  assign all_catalog_products = collections['all'].products
+  assign all_catalog_products_limit = 250
 -%}
 
 {{ 'custom-cover-customizer.css' | asset_url | stylesheet_tag }}
@@ -88,13 +85,15 @@
         <button
           type="button"
           class="custom-cover-customizer__design-tool"
+          data-design-download
           aria-label="Download design">
           {{- 'custom-icon-design-download.svg' | inline_asset_content -}}
         </button>
         <button
           type="button"
           class="custom-cover-customizer__design-tool"
-          aria-label="Design folder">
+          data-design-load
+          aria-label="Load image file">
           {{- 'custom-icon-design-folder.svg' | inline_asset_content -}}
         </button>
       </div>
@@ -145,13 +144,13 @@
         <span>Can’t print up to the end of the edge</span>
       </div>
       <div class="custom-cover-customizer__panel">
-        {% if customizer_product == blank %}
-          <p class="custom-cover-customizer__message">
-            {{ section.settings.empty_product_message | escape }}
-          </p>
-        {% else %}
           <custom-cover-customizer-component
             class="custom-cover-customizer__app"
+            data-section-id="{{ section.id }}"
+            data-product-id=""
+            data-customer-id="{% if customer %}{{ customer.id }}{% endif %}"
+            data-customer-logged-in="{% if customer %}true{% else %}false{% endif %}"
+            data-draft-api-endpoint="{{ section.settings.drafts_api_endpoint | escape }}"
             data-safe-area-shape="{{ section.settings.safe_area_shape | default: 'circle' }}"
             data-safe-x="{{ section.settings.safe_area_x }}"
             data-safe-y="{{ section.settings.safe_area_y }}"
@@ -173,6 +172,26 @@
             data-currency-code="{{ cart.currency.iso_code }}"
             data-money-format="{{ shop.money_format | escape }}"
             data-include-preview="{{ section.settings.include_preview_data }}">
+            <script type="application/json" data-product-catalog>
+              [
+                {%- for product in all_catalog_products limit: all_catalog_products_limit -%}
+                  {
+                    "id": {{ product.id | json }},
+                    "title": {{ product.title | strip | json }},
+                    "variants": [
+                      {%- for variant in product.variants -%}
+                        {
+                          "id": {{ variant.id | json }},
+                          "title": {{ variant.title | strip | json }},
+                          "price": {{ variant.price | json }},
+                          "available": {{ variant.available | json }}
+                        }{%- unless forloop.last -%},{%- endunless -%}
+                      {%- endfor -%}
+                    ]
+                  }{%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              ]
+            </script>
             <form
               method="post"
               action="{{ routes.cart_add_url }}"
@@ -181,7 +200,7 @@
               <input
                 type="hidden"
                 name="id"
-                value="{{ initial_variant.id }}">
+                value="">
               <input
                 type="hidden"
                 name="quantity"
@@ -198,6 +217,10 @@
                 type="hidden"
                 name="properties[_Customizer Preview]"
                 data-preview-image>
+              <input
+                type="hidden"
+                name="properties[_Customizer Preview Token]"
+                data-preview-token>
 
               <div
                 class="custom-cover-customizer__mode-tabs"
@@ -219,6 +242,14 @@
                   aria-selected="false">
                   Templates
                 </button>
+                <button
+                  type="button"
+                  class="custom-cover-customizer__mode-tab"
+                  data-mode-tab="drafts"
+                  role="tab"
+                  aria-selected="false">
+                  Drafts
+                </button>
               </div>
 
               <div data-mode-panel="editor">
@@ -230,8 +261,12 @@
                     <select
                       id="CustomizerProduct-{{ section.id }}"
                       class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                      disabled>
-                      <option selected>{{ customizer_product.title | escape }}</option>
+                      name="product_selector"
+                      data-product-selector>
+                      <option value="" selected disabled>Select product</option>
+                      {%- for product in all_catalog_products limit: all_catalog_products_limit -%}
+                        <option value="{{ product.id }}">{{ product.title | escape }}</option>
+                      {%- endfor -%}
                     </select>
                   </div>
 
@@ -243,20 +278,7 @@
                         class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
                         name="variant_selector"
                         data-variant-selector>
-                        {% for variant in customizer_product.variants %}
-                          <option
-                            value="{{ variant.id }}"
-                            data-price="{{ variant.price }}"
-                            {% if variant.id == initial_variant.id %}
-                            selected
-                            {% endif %}
-                            {% unless variant.available %}
-                            disabled
-                            {% endunless %}>
-                            {{ variant.title | escape }}{% unless variant.available %}
-                              - {{ 'content.unavailable' | t }}{% endunless %}
-                          </option>
-                        {% endfor %}
+                        <option value="" selected disabled>Select product size</option>
                       </select>
                       <button
                         type="button"
@@ -277,6 +299,7 @@
                         id="CustomizerImprint-{{ section.id }}"
                         class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
                         data-imprint-size>
+                        <option value="" selected disabled>Select imprint size</option>
                         {% assign imprint_sizes = section.settings.imprint_sizes | newline_to_br | split: '<br />' %}
                         {% for imprint_size in imprint_sizes %}
                           {% assign trimmed_imprint_size = imprint_size | strip %}
@@ -741,9 +764,28 @@
                 {% endif %}
               </div>
 
+              <div
+                class="custom-cover-customizer__drafts-panel"
+                data-mode-panel="drafts"
+                hidden>
+                <p
+                  class="custom-cover-customizer__message custom-cover-customizer__drafts-notice"
+                  data-drafts-notice
+                  hidden></p>
+                <div
+                  class="custom-cover-customizer__drafts-list"
+                  data-drafts-list
+                  role="list"
+                  aria-live="polite"></div>
+                <p
+                  class="custom-cover-customizer__message custom-cover-customizer__drafts-empty"
+                  data-drafts-empty>
+                  No drafts yet. Click Save as Draft to store your current design.
+                </p>
+              </div>
+
             </form>
           </custom-cover-customizer-component>
-        {% endif %}
       </div>
     </div>
 
@@ -799,7 +841,7 @@
           </button>
         </div>
         <p class="custom-cover-customizer__preview-footer-price">
-          Total: ${{ initial_variant.price | money_without_currency }}</p>
+          Total: {{ 0 | money }}</p>
       </div>
     </div>
   </div>
@@ -810,11 +852,6 @@
     "name": "Custom Cover Customizer",
     "class": "section-wrapper",
     "settings": [
-      {
-        "type": "product",
-        "id": "product",
-        "label": "Customizer product"
-      },
       {
         "type": "color_scheme",
         "id": "color_scheme",
@@ -832,11 +869,6 @@
         "id": "subheading",
         "label": "Subheading",
         "default": "Text, images, clipart, and shapes—then arrange everything on your cover before checkout."
-      }, {
-        "type": "text",
-        "id": "empty_product_message",
-        "label": "Empty state message",
-        "default": "Select a product in section settings to activate the customizer."
       }, {
         "type": "header",
         "content": "Text settings"
@@ -1051,6 +1083,15 @@
         "id": "templates_empty_message",
         "label": "Templates empty message",
         "default": "Add template items in the section settings to show template images here."
+      }, {
+        "type": "header",
+        "content": "Drafts"
+      }, {
+        "type": "text",
+        "id": "drafts_api_endpoint",
+        "label": "Draft API endpoint",
+        "default": "/apps/customizer-drafts",
+        "info": "Endpoint used to save customer drafts in account storage. Leave default unless your app uses a different path."
       }, {
         "type": "textarea",
         "id": "imprint_sizes",

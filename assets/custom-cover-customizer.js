@@ -8,6 +8,8 @@ const CUSTOMIZER_ROT_HANDLE_OFFSET = 28;
 const CUSTOMIZER_HANDLE_RADIUS_PX = 6;
 const CUSTOMIZER_ROT_HANDLE_RADIUS_PX = 6;
 const CUSTOMIZER_ROT_HANDLE_HIT_RADIUS_PX = 5;
+const CUSTOMIZER_DRAFTS_STORAGE_VERSION = 1;
+const CUSTOMIZER_PREVIEW_STORAGE_VERSION = 1;
 
 class CustomCoverCustomizer extends HTMLElement {
   constructor() {
@@ -63,6 +65,12 @@ class CustomCoverCustomizer extends HTMLElement {
     this.redoStack = [];
     this.historyLimit = 60;
     this.pendingHistorySnapshot = null;
+    this.drafts = [];
+    this.draftNotice = "";
+    this.lastTemplateSelection = null;
+    this.setMode = null;
+    this._draftSyncInFlight = false;
+    this.previewToken = "";
   }
 
   connectedCallback() {
@@ -92,6 +100,14 @@ class CustomCoverCustomizer extends HTMLElement {
     if (this._onDesignKeydown) {
       window.removeEventListener("keydown", this._onDesignKeydown);
       this._onDesignKeydown = null;
+    }
+    if (this._onOutsideCanvasPointerDown) {
+      window.removeEventListener("mousedown", this._onOutsideCanvasPointerDown);
+      window.removeEventListener(
+        "touchstart",
+        this._onOutsideCanvasPointerDown,
+      );
+      this._onOutsideCanvasPointerDown = null;
     }
     this._stopCaretBlinkLoop();
   }
@@ -222,6 +238,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const clipartButtons = this.querySelectorAll("[data-add-clipart]");
     const templateButtons = this.querySelectorAll("[data-add-template]");
     const shapeFillInput = this.querySelector("[data-shape-fill-input]");
+    const productSelector = this.querySelector("[data-product-selector]");
     const variantSelector = this.querySelector("[data-variant-selector]");
     const imprintSizeSelector = this.querySelector("[data-imprint-size]");
     const variantSizeHelper = this.querySelector(
@@ -245,6 +262,12 @@ class CustomCoverCustomizer extends HTMLElement {
     const undoBtn = sectionRoot?.querySelector("[data-design-undo]");
     const redoBtn = sectionRoot?.querySelector("[data-design-redo]");
     const deleteBtn = sectionRoot?.querySelector("[data-design-delete]");
+    const downloadBtn = sectionRoot?.querySelector("[data-design-download]");
+    const loadBtn = sectionRoot?.querySelector("[data-design-load]");
+    const saveDraftBtn = sectionRoot?.querySelector("[data-save-draft]");
+    const draftsList = this.querySelector("[data-drafts-list]");
+    const draftsEmpty = this.querySelector("[data-drafts-empty]");
+    const draftsNotice = this.querySelector("[data-drafts-notice]");
 
     this.applyCanvasViewportTransform();
 
@@ -269,6 +292,7 @@ class CustomCoverCustomizer extends HTMLElement {
         panel.hidden = panel.getAttribute("data-mode-panel") !== mode;
       });
     };
+    this.setMode = setMode;
 
     modeTabs.forEach((tab) => {
       tab.addEventListener("click", () => {
@@ -432,6 +456,11 @@ class CustomCoverCustomizer extends HTMLElement {
         if (!src) {
           return;
         }
+        this.lastTemplateSelection = {
+          src,
+          label: button.getAttribute("aria-label") || "Template",
+          selectedAt: new Date().toISOString(),
+        };
         setMode("editor");
         this.addImageElement(src, "image");
       });
@@ -467,8 +496,86 @@ class CustomCoverCustomizer extends HTMLElement {
       }
     });
 
+    let productCatalog = this.readProductCatalog();
+
+    const populateVariantsForProduct = (productId) => {
+      if (!variantSelector) {
+        return;
+      }
+      const selectedProduct = productCatalog.find(
+        (product) => String(product.id) === String(productId),
+      );
+      variantSelector.innerHTML = "";
+      const placeholderOption = document.createElement("option");
+      placeholderOption.value = "";
+      placeholderOption.textContent = "Select product size";
+      placeholderOption.disabled = true;
+      placeholderOption.selected = true;
+      variantSelector.append(placeholderOption);
+      if (!selectedProduct) {
+        if (idField) {
+          idField.value = "";
+        }
+        this.variantPriceCents = 0;
+        this.dataset.productId = "";
+        this.updatePrice();
+        return;
+      }
+      this.dataset.productId = String(selectedProduct.id);
+      selectedProduct.variants.forEach((variant) => {
+        const option = document.createElement("option");
+        option.value = String(variant.id);
+        option.setAttribute("data-price", String(variant.price || 0));
+        option.disabled = !variant.available;
+        option.textContent = variant.available
+          ? variant.title
+          : `${variant.title} - Unavailable`;
+        variantSelector.append(option);
+      });
+      if (idField) {
+        idField.value = "";
+      }
+      const firstAvailableVariant = selectedProduct.variants.find(
+        (variant) => variant.available,
+      );
+      // Keep Product size unselected in UI, but preserve previous temporary pricing behavior.
+      this.variantPriceCents = Number(firstAvailableVariant?.price || 0);
+      this.updatePrice();
+    };
+
+    productSelector?.addEventListener("change", () => {
+      populateVariantsForProduct(productSelector.value);
+    });
+
+    const populateProductSelector = (products) => {
+      if (!productSelector) {
+        return;
+      }
+      productSelector.innerHTML = "";
+      const placeholderOption = document.createElement("option");
+      placeholderOption.value = "";
+      placeholderOption.textContent = "Select product";
+      placeholderOption.disabled = true;
+      placeholderOption.selected = true;
+      productSelector.append(placeholderOption);
+      products.forEach((product) => {
+        const option = document.createElement("option");
+        option.value = String(product.id);
+        option.textContent = product.title;
+        productSelector.append(option);
+      });
+    };
+
     variantSelector?.addEventListener("change", () => {
       const selected = variantSelector.options[variantSelector.selectedIndex];
+      if (!selected || !selected.value) {
+        if (idField) {
+          idField.value = "";
+        }
+        this.variantPriceCents = 0;
+        this.updatePrice();
+        return;
+      }
       if (idField) {
         idField.value = selected.value;
       }
@@ -637,6 +744,32 @@ class CustomCoverCustomizer extends HTMLElement {
     undoBtn?.addEventListener("click", () => this.undoLastChange());
     redoBtn?.addEventListener("click", () => this.redoLastChange());
     deleteBtn?.addEventListener("click", () => this.deleteSelectedElement());
+    downloadBtn?.addEventListener("click", () => this.downloadCanvasPng());
+    loadBtn?.addEventListener("click", () => {
+      this.setActiveTool("image");
+      this.toggleToolPanels("image");
+      uploadInput?.click();
+    });
+    saveDraftBtn?.addEventListener("click", () => {
+      void this.saveCurrentAsDraft();
+    });
+    draftsList?.addEventListener("click", (event) => {
+      const loadBtn = event.target.closest("[data-draft-load-id]");
+      if (loadBtn) {
+        const id = loadBtn.getAttribute("data-draft-load-id");
+        if (id) {
+          this.loadDraftById(id);
+        }
+        return;
+      }
+      const deleteDraftBtn = event.target.closest("[data-draft-delete-id]");
+      if (deleteDraftBtn) {
+        const id = deleteDraftBtn.getAttribute("data-draft-delete-id");
+        if (id) {
+          void this.deleteDraftById(id);
+        }
+      }
+    });
 
     this.form.addEventListener("submit", (event) => this.handleSubmit(event));
     if (this._onDesignKeydown) {
@@ -644,13 +777,120 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     this._onDesignKeydown = (event) => this.handleDesignKeydown(event);
     window.addEventListener("keydown", this._onDesignKeydown);
+    if (this._onOutsideCanvasPointerDown) {
+      window.removeEventListener("mousedown", this._onOutsideCanvasPointerDown);
+      window.removeEventListener(
+        "touchstart",
+        this._onOutsideCanvasPointerDown,
+      );
+    }
+    this._onOutsideCanvasPointerDown = (event) =>
+      this.handleOutsideCanvasPointerDown(event);
+    window.addEventListener("mousedown", this._onOutsideCanvasPointerDown);
+    window.addEventListener("touchstart", this._onOutsideCanvasPointerDown, {
+      passive: true,
+    });
 
     this.setActiveTool("text");
     this.toggleToolPanels("text");
     setMode("editor");
+    if (productCatalog.length === 0) {
+      void this.fetchProductCatalogFromStorefront().then((fallbackProducts) => {
+        if (!fallbackProducts.length) {
+          this.setWarning(
+            "No products found. Make sure products are active and available on Online Store sales channel.",
+          );
+          return;
+        }
+        productCatalog = fallbackProducts;
+        populateProductSelector(productCatalog);
+      });
+    }
+    populateVariantsForProduct(productSelector?.value || "");
     this.syncFormatToolbars();
     this.syncAlignmentControls(this.textDefaults.textAlign);
     this.updateColorChrome();
+    this.renderDraftsList();
+    if (draftsEmpty) {
+      draftsEmpty.hidden = this.drafts.length > 0;
+    }
+    if (draftsNotice) {
+      draftsNotice.hidden = true;
+    }
+    void this.initializeDrafts();
+  }
+
+  readProductCatalog() {
+    const source = this.querySelector("[data-product-catalog]");
+    if (!source) {
+      return [];
+    }
+    try {
+      const parsed = JSON.parse(source.textContent || "[]");
+      if (!Array.isArray(parsed)) {
+        return [];
+      }
+      return parsed
+        .map((product) => ({
+          id: product?.id,
+          title: String(product?.title || "").trim(),
+          variants: Array.isArray(product?.variants)
+            ? product.variants.map((variant) => ({
+                id: variant?.id,
+                title: String(variant?.title || "").trim(),
+                price: Number(variant?.price || 0),
+                available: Boolean(variant?.available),
+              }))
+            : [],
+        }))
+        .filter(
+          (product) =>
+            product.id &&
+            product.title &&
+            Array.isArray(product.variants) &&
+            product.variants.length > 0,
+        );
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async fetchProductCatalogFromStorefront() {
+    try {
+      const response = await fetch("/products.json?limit=250", {
+        headers: { Accept: "application/json" },
+        credentials: "same-origin",
+      });
+      if (!response.ok) {
+        return [];
+      }
+      const data = await response.json();
+      const products = Array.isArray(data?.products) ? data.products : [];
+      return products
+        .map((product) => ({
+          id: product?.id,
+          title: String(product?.title || "").trim(),
+          variants: Array.isArray(product?.variants)
+            ? product.variants.map((variant) => ({
+                id: variant?.id,
+                title: String(variant?.title || "").trim(),
+                price: Number(variant?.price || 0),
+                available:
+                  variant?.available !== false &&
+                  variant?.inventory_quantity !== 0,
+              }))
+            : [],
+        }))
+        .filter(
+          (product) =>
+            product.id &&
+            product.title &&
+            Array.isArray(product.variants) &&
+            product.variants.length > 0,
+        );
+    } catch (error) {
+      return [];
+    }
   }
 
   updateColorChrome() {
@@ -743,6 +983,135 @@ class CustomCoverCustomizer extends HTMLElement {
       this.addImageElement(reader.result, "image");
     };
     reader.readAsDataURL(file);
+  }
+
+  sanitizeFilename(value) {
+    const cleaned = String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9-_ ]+/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+    return cleaned || "design";
+  }
+
+  downloadCanvasPng() {
+    if (!this.canvas) {
+      return;
+    }
+    const sectionRoot = this.closest(".custom-cover-customizer");
+    const designTitleInput = sectionRoot?.querySelector(
+      "[data-design-title-input]",
+    );
+    const fileName = `${this.sanitizeFilename(designTitleInput?.value)}.png`;
+    const pngDataUrl = this.canvas.toDataURL("image/png");
+    const downloadLink = document.createElement("a");
+    downloadLink.href = pngDataUrl;
+    downloadLink.download = fileName;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.remove();
+  }
+
+  createCartPreviewDataUrl() {
+    if (!this.canvas) {
+      return "";
+    }
+    // Keep preview payload compact so line item properties are less likely
+    // to be truncated before they reach cart/order surfaces.
+    const maxChars = 12000;
+    const maxSide = 320;
+    const srcW = this.canvas.width;
+    const srcH = this.canvas.height;
+    if (!srcW || !srcH) {
+      return "";
+    }
+    const previewCanvas = document.createElement("canvas");
+    const previewCtx = previewCanvas.getContext("2d");
+    if (!previewCtx) {
+      return this.canvas.toDataURL("image/png");
+    }
+
+    const renderAt = (side, quality) => {
+      const ratio = Math.min(side / srcW, side / srcH, 1);
+      const outW = Math.max(1, Math.round(srcW * ratio));
+      const outH = Math.max(1, Math.round(srcH * ratio));
+      previewCanvas.width = outW;
+      previewCanvas.height = outH;
+      previewCtx.clearRect(0, 0, outW, outH);
+      previewCtx.fillStyle = "#ffffff";
+      previewCtx.fillRect(0, 0, outW, outH);
+      previewCtx.drawImage(this.canvas, 0, 0, outW, outH);
+      return previewCanvas.toDataURL("image/jpeg", quality);
+    };
+
+    let candidate = renderAt(maxSide, 0.85);
+    if (candidate.length <= maxChars) {
+      return candidate;
+    }
+
+    const qualitySteps = [0.7, 0.6, 0.5, 0.4];
+    for (let i = 0; i < qualitySteps.length; i += 1) {
+      candidate = renderAt(maxSide, qualitySteps[i]);
+      if (candidate.length <= maxChars) {
+        return candidate;
+      }
+    }
+
+    const sideSteps = [280, 240, 220, 200, 180];
+    for (let i = 0; i < sideSteps.length; i += 1) {
+      candidate = renderAt(sideSteps[i], 0.55);
+      if (candidate.length <= maxChars) {
+        return candidate;
+      }
+    }
+
+    return renderAt(220, 0.45);
+  }
+
+  getPreviewStorageKey() {
+    const productId = this.dataset.productId || "unknown-product";
+    return `custom-cover-preview:v${CUSTOMIZER_PREVIEW_STORAGE_VERSION}:${productId}`;
+  }
+
+  ensurePreviewToken() {
+    if (this.previewToken) {
+      return this.previewToken;
+    }
+    this.previewToken = `pv-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    return this.previewToken;
+  }
+
+  savePreviewByToken(token, previewDataUrl) {
+    if (!token || !previewDataUrl) {
+      return;
+    }
+    try {
+      const storageKey = this.getPreviewStorageKey();
+      const raw = window.localStorage.getItem(storageKey);
+      const index = raw ? JSON.parse(raw) : {};
+      const next = typeof index === "object" && index ? index : {};
+      next[token] = {
+        image: previewDataUrl,
+        updatedAt: Date.now(),
+      };
+      const keys = Object.keys(next);
+      if (keys.length > 30) {
+        keys
+          .sort(
+            (a, b) =>
+              Number(next[b]?.updatedAt || 0) - Number(next[a]?.updatedAt || 0),
+          )
+          .slice(30)
+          .forEach((key) => {
+            delete next[key];
+          });
+      }
+      window.localStorage.setItem(storageKey, JSON.stringify(next));
+    } catch (error) {
+      // Ignore preview cache failures and continue form submission.
+    }
   }
 
   populateShapePickerGrid() {
@@ -1368,6 +1737,25 @@ class CustomCoverCustomizer extends HTMLElement {
     if (this.canvas) {
       this.canvas.style.cursor = "";
     }
+  }
+
+  handleOutsideCanvasPointerDown(event) {
+    if (!this.canvas || !this.selectedElementId) {
+      return;
+    }
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+    if (target === this.canvas || this.canvas.contains(target)) {
+      return;
+    }
+    this.selectedElementId = null;
+    this.dragState = null;
+    this.pendingHistorySnapshot = null;
+    this.canvas.style.cursor = "";
+    this.syncControlInputs();
+    this.render();
   }
 
   applyCanvasViewportTransform() {
@@ -2004,6 +2392,14 @@ class CustomCoverCustomizer extends HTMLElement {
   }
 
   updatePrice() {
+    const sectionRoot = this.closest(".custom-cover-customizer");
+    const priceOutput = sectionRoot?.querySelector(
+      ".custom-cover-customizer__preview-footer-price",
+    );
+    if (priceOutput) {
+      const total = this.moneyFormatter.format(this.getLiveTotalCents() / 100);
+      priceOutput.textContent = `Total: ${total}`;
+    }
     this.updateHiddenProperties();
   }
 
@@ -2213,10 +2609,448 @@ class CustomCoverCustomizer extends HTMLElement {
     button.setAttribute("aria-pressed", isOn ? "true" : "false");
   }
 
+  isCustomerLoggedIn() {
+    return this.dataset.customerLoggedIn === "true";
+  }
+
+  getDraftApiEndpoint() {
+    const raw = String(this.dataset.draftApiEndpoint || "").trim();
+    return raw || "";
+  }
+
+  getDraftStorageKey() {
+    const sectionId = this.dataset.sectionId || "global";
+    const productId = this.dataset.productId || "unknown-product";
+    return `custom-cover-drafts:v${CUSTOMIZER_DRAFTS_STORAGE_VERSION}:${sectionId}:${productId}`;
+  }
+
+  readLocalDrafts() {
+    try {
+      const raw = window.localStorage.getItem(this.getDraftStorageKey());
+      if (!raw) {
+        return [];
+      }
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  writeLocalDrafts(drafts) {
+    try {
+      window.localStorage.setItem(
+        this.getDraftStorageKey(),
+        JSON.stringify(drafts),
+      );
+    } catch (error) {
+      this.setDraftNotice("Could not persist drafts in browser storage.");
+    }
+  }
+
+  setDraftNotice(message) {
+    this.draftNotice = message || "";
+    const noticeEl = this.querySelector("[data-drafts-notice]");
+    if (!noticeEl) {
+      return;
+    }
+    noticeEl.textContent = this.draftNotice;
+    noticeEl.hidden = !this.draftNotice;
+  }
+
+  sortDraftsNewestFirst(drafts) {
+    return [...drafts].sort(
+      (a, b) =>
+        new Date(b.updatedAt || 0).getTime() -
+        new Date(a.updatedAt || 0).getTime(),
+    );
+  }
+
+  mergeDraftLists(localDrafts, remoteDrafts) {
+    const mergedById = new Map();
+    [...localDrafts, ...remoteDrafts].forEach((draft) => {
+      if (!draft?.id) {
+        return;
+      }
+      const existing = mergedById.get(draft.id);
+      if (!existing) {
+        mergedById.set(draft.id, draft);
+        return;
+      }
+      const existingTime = new Date(existing.updatedAt || 0).getTime();
+      const nextTime = new Date(draft.updatedAt || 0).getTime();
+      mergedById.set(draft.id, nextTime >= existingTime ? draft : existing);
+    });
+    return this.sortDraftsNewestFirst([...mergedById.values()]);
+  }
+
+  async fetchRemoteDrafts() {
+    const endpoint = this.getDraftApiEndpoint();
+    if (!endpoint || !this.isCustomerLoggedIn()) {
+      return [];
+    }
+    try {
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+        credentials: "same-origin",
+      });
+      if (!response.ok) {
+        return [];
+      }
+      const data = await response.json();
+      const drafts = Array.isArray(data?.drafts) ? data.drafts : [];
+      return drafts;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async saveRemoteDraft(draft) {
+    const endpoint = this.getDraftApiEndpoint();
+    if (!endpoint || !this.isCustomerLoggedIn()) {
+      return null;
+    }
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "same-origin",
+        body: JSON.stringify({ draft }),
+      });
+      if (!response.ok) {
+        return null;
+      }
+      const data = await response.json();
+      return data?.draft || draft;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async deleteRemoteDraft(draftId) {
+    const endpoint = this.getDraftApiEndpoint();
+    if (!endpoint || !this.isCustomerLoggedIn()) {
+      return false;
+    }
+    try {
+      const response = await fetch(endpoint, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "same-origin",
+        body: JSON.stringify({ id: draftId }),
+      });
+      return response.ok;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  formatDraftDate(value) {
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) {
+      return "Just now";
+    }
+    return parsed.toLocaleString();
+  }
+
+  renderDraftsList() {
+    const list = this.querySelector("[data-drafts-list]");
+    const empty = this.querySelector("[data-drafts-empty]");
+    if (!list || !empty) {
+      return;
+    }
+    list.replaceChildren();
+    const drafts = this.sortDraftsNewestFirst(this.drafts);
+    drafts.forEach((draft) => {
+      const row = document.createElement("article");
+      row.className = "custom-cover-customizer__draft-item";
+      row.setAttribute("role", "listitem");
+
+      const title = document.createElement("p");
+      title.className = "custom-cover-customizer__draft-title";
+      title.textContent = draft.title || "Untitled draft";
+
+      const meta = document.createElement("p");
+      meta.className = "custom-cover-customizer__draft-meta";
+      const scope = draft.syncState === "synced" ? "Account" : "Local";
+      meta.textContent = `${scope} • Updated ${this.formatDraftDate(draft.updatedAt)}`;
+
+      const actions = document.createElement("div");
+      actions.className = "custom-cover-customizer__draft-actions";
+
+      const loadBtn = document.createElement("button");
+      loadBtn.type = "button";
+      loadBtn.className = "custom-cover-customizer__draft-action";
+      loadBtn.textContent = "Load";
+      loadBtn.setAttribute("data-draft-load-id", draft.id);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.className =
+        "custom-cover-customizer__draft-action custom-cover-customizer__draft-action--danger";
+      deleteBtn.textContent = "Delete";
+      deleteBtn.setAttribute("data-draft-delete-id", draft.id);
+
+      actions.append(loadBtn, deleteBtn);
+      row.append(title, meta, actions);
+      list.appendChild(row);
+    });
+    empty.hidden = drafts.length > 0;
+  }
+
+  getCurrentCustomizerPayload() {
+    this.updateHiddenProperties();
+    const jsonTarget = this.form?.querySelector("[data-customizer-json]");
+    if (!jsonTarget?.value) {
+      return null;
+    }
+    try {
+      return JSON.parse(jsonTarget.value);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  createDraftFromCurrentState() {
+    const now = new Date().toISOString();
+    const payload = this.getCurrentCustomizerPayload();
+    if (!payload) {
+      return null;
+    }
+    const variantSelector = this.querySelector("[data-variant-selector]");
+    const imprintSize = this.querySelector("[data-imprint-size]")?.value || "";
+    const designTitleInput = this.closest(
+      ".custom-cover-customizer",
+    )?.querySelector("[data-design-title-input]");
+    const title =
+      String(designTitleInput?.value || "Untitled").trim() || "Untitled";
+    return {
+      id: crypto.randomUUID(),
+      title,
+      createdAt: now,
+      updatedAt: now,
+      productId: this.dataset.productId || "",
+      variantId: variantSelector?.value || "",
+      imprintSize,
+      customizerPayload: payload,
+      previewDataUrl: this.canvas.toDataURL("image/png", 0.8),
+      sourceTemplate: this.lastTemplateSelection
+        ? { ...this.lastTemplateSelection }
+        : null,
+      syncState: this.isCustomerLoggedIn() ? "synced" : "sync_pending",
+    };
+  }
+
+  hydrateElementFromDraft(item) {
+    const next = { ...item };
+    if ((next.type === "image" || next.type === "clipart") && next.src) {
+      const image = new Image();
+      image.onload = () => this.render();
+      image.src = next.src;
+      next.image = image;
+    }
+    return next;
+  }
+
+  applyDraft(draft) {
+    const payload = draft?.customizerPayload;
+    if (!payload || !Array.isArray(payload.elements)) {
+      this.setDraftNotice("Draft could not be loaded.");
+      return;
+    }
+    this.elements = payload.elements.map((item) =>
+      this.hydrateElementFromDraft(item),
+    );
+    this.selectedElementId =
+      this.elements[this.elements.length - 1]?.id || null;
+    const variantSelector = this.querySelector("[data-variant-selector]");
+    if (variantSelector && draft.variantId) {
+      const existing = [...variantSelector.options].find(
+        (opt) => opt.value === draft.variantId,
+      );
+      if (existing) {
+        variantSelector.value = draft.variantId;
+        variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }
+    const imprintSizeSelector = this.querySelector("[data-imprint-size]");
+    if (imprintSizeSelector && draft.imprintSize) {
+      const existing = [...imprintSizeSelector.options].find(
+        (opt) => opt.value === draft.imprintSize,
+      );
+      if (!existing) {
+        const option = document.createElement("option");
+        option.value = draft.imprintSize;
+        option.textContent = draft.imprintSize;
+        imprintSizeSelector.append(option);
+      }
+      imprintSizeSelector.value = draft.imprintSize;
+    }
+    const designTitleInput = this.closest(
+      ".custom-cover-customizer",
+    )?.querySelector("[data-design-title-input]");
+    if (designTitleInput) {
+      designTitleInput.value = draft.title || designTitleInput.value;
+      designTitleInput.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    this.syncControlInputs();
+    this.render();
+    this.updatePrice();
+    this.updateHiddenProperties();
+    if (typeof this.setMode === "function") {
+      this.setMode("editor");
+    }
+    this.setDraftNotice("");
+  }
+
+  loadDraftById(id) {
+    const draft = this.drafts.find((item) => item.id === id);
+    if (!draft) {
+      return;
+    }
+    this.applyDraft(draft);
+  }
+
+  async deleteDraftById(id) {
+    const target = this.drafts.find((item) => item.id === id);
+    if (!target) {
+      return;
+    }
+    if (target.syncState === "synced") {
+      const deletedRemotely = await this.deleteRemoteDraft(id);
+      if (!deletedRemotely && this.isCustomerLoggedIn()) {
+        this.setDraftNotice("Could not delete account draft. Try again.");
+        return;
+      }
+    }
+    this.drafts = this.drafts.filter((item) => item.id !== id);
+    this.writeLocalDrafts(this.drafts);
+    this.renderDraftsList();
+  }
+
+  async syncPendingDraftsToAccount() {
+    if (!this.isCustomerLoggedIn() || this._draftSyncInFlight) {
+      return;
+    }
+    if (!this.getDraftApiEndpoint()) {
+      return;
+    }
+    const pending = this.drafts.filter(
+      (draft) => draft.syncState === "sync_pending",
+    );
+    if (!pending.length) {
+      return;
+    }
+    this._draftSyncInFlight = true;
+    let syncFailed = false;
+    for (const draft of pending) {
+      const synced = await this.saveRemoteDraft({
+        ...draft,
+        syncState: "synced",
+      });
+      if (synced) {
+        draft.syncState = "synced";
+        draft.updatedAt = synced.updatedAt || draft.updatedAt;
+      } else {
+        syncFailed = true;
+      }
+    }
+    this._draftSyncInFlight = false;
+    this.writeLocalDrafts(this.drafts);
+    this.renderDraftsList();
+    this.setDraftNotice(
+      syncFailed
+        ? "Some drafts are still local. They will sync when the account endpoint is available."
+        : "",
+    );
+  }
+
+  async initializeDrafts() {
+    const localDrafts = this.readLocalDrafts();
+    this.drafts = this.sortDraftsNewestFirst(localDrafts);
+    this.renderDraftsList();
+
+    if (this.isCustomerLoggedIn()) {
+      const remoteDrafts = await this.fetchRemoteDrafts();
+      if (remoteDrafts.length) {
+        this.drafts = this.mergeDraftLists(this.drafts, remoteDrafts).map(
+          (draft) => ({
+            ...draft,
+            syncState: "synced",
+          }),
+        );
+        this.writeLocalDrafts(this.drafts);
+      }
+      if (!this.getDraftApiEndpoint()) {
+        this.setDraftNotice(
+          "Draft API endpoint is not configured. Drafts are currently local only.",
+        );
+      }
+      await this.syncPendingDraftsToAccount();
+    }
+    this.renderDraftsList();
+  }
+
+  async saveCurrentAsDraft() {
+    const draft = this.createDraftFromCurrentState();
+    if (!draft) {
+      this.setDraftNotice("Could not save draft from current design.");
+      return;
+    }
+
+    if (this.isCustomerLoggedIn() && this.getDraftApiEndpoint()) {
+      const saved = await this.saveRemoteDraft({
+        ...draft,
+        syncState: "synced",
+      });
+      if (saved) {
+        this.drafts = this.sortDraftsNewestFirst([
+          { ...draft, ...saved, syncState: "synced" },
+          ...this.drafts,
+        ]);
+        this.setDraftNotice("");
+      } else {
+        draft.syncState = "sync_pending";
+        this.drafts = this.sortDraftsNewestFirst([draft, ...this.drafts]);
+        this.setDraftNotice(
+          "Draft saved locally. It will sync to your account when the endpoint is available.",
+        );
+      }
+    } else {
+      draft.syncState = this.isCustomerLoggedIn()
+        ? "local_only"
+        : "sync_pending";
+      this.drafts = this.sortDraftsNewestFirst([draft, ...this.drafts]);
+      if (this.isCustomerLoggedIn()) {
+        this.setDraftNotice(
+          "Account endpoint is missing. Draft saved locally only.",
+        );
+      } else {
+        this.setDraftNotice("");
+      }
+    }
+
+    this.writeLocalDrafts(this.drafts);
+    this.renderDraftsList();
+    if (typeof this.setMode === "function") {
+      this.setMode("drafts");
+    }
+  }
+
   updateHiddenProperties() {
     const jsonTarget = this.form.querySelector("[data-customizer-json]");
     const statusTarget = this.form.querySelector("[data-safe-area-status]");
     const previewTarget = this.form.querySelector("[data-preview-image]");
+    const previewTokenTarget = this.form.querySelector("[data-preview-token]");
 
     const safeShape = this.getSafeAreaShape();
     const circleMetrics =
@@ -2287,15 +3121,24 @@ class CustomCoverCustomizer extends HTMLElement {
     if (statusTarget) {
       statusTarget.value = payload.safeAreaPass ? "PASS" : "FAIL";
     }
+    const previewDataUrl = this.createCartPreviewDataUrl();
+    const previewToken = this.ensurePreviewToken();
+    this.savePreviewByToken(previewToken, previewDataUrl);
+    if (previewTokenTarget) {
+      previewTokenTarget.value = previewToken;
+    }
     if (previewTarget) {
-      previewTarget.value =
-        this.dataset.includePreview === "true"
-          ? this.canvas.toDataURL("image/png", 0.8).slice(0, 65000)
-          : "";
+      previewTarget.value = previewDataUrl;
     }
   }
 
   handleSubmit(event) {
+    const variantSelector = this.querySelector("[data-variant-selector]");
+    if (!variantSelector?.value) {
+      event.preventDefault();
+      this.setWarning("Please select a product size before saving.");
+      return;
+    }
     const blockOutside = this.dataset.blockOutsideSafeArea === "true";
     const safe = this.elementsWithinSafeArea();
     if (blockOutside && !safe) {

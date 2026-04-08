@@ -643,6 +643,82 @@
   line-height: 1.45;
 }
 
+.custom-cover-customizer .custom-cover-customizer__drafts-panel {
+  display: grid;
+  gap: var(--gap-sm);
+  min-height: clamp(20rem, 52vh, 36rem);
+  align-content: start;
+}
+
+.custom-cover-customizer .custom-cover-customizer__drafts-notice {
+  margin: 0;
+  padding: var(--padding-sm);
+  border: 1px solid rgb(var(--color-foreground-rgb) / 0.15);
+  border-radius: calc(var(--style-border-radius-inputs) + 2px);
+  background: rgb(var(--color-foreground-rgb) / 0.03);
+}
+
+.custom-cover-customizer .custom-cover-customizer__drafts-list {
+  display: grid;
+  gap: var(--gap-2xs);
+}
+
+.custom-cover-customizer .custom-cover-customizer__draft-item {
+  border: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+  border-radius: calc(var(--style-border-radius-inputs) + 2px);
+  background: rgb(var(--color-foreground-rgb) / 0.03);
+  padding: var(--padding-xs);
+  display: grid;
+  gap: var(--gap-3xs);
+}
+
+.custom-cover-customizer .custom-cover-customizer__draft-title {
+  margin: 0;
+  font-size: var(--font-size--sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.custom-cover-customizer .custom-cover-customizer__draft-meta {
+  margin: 0;
+  font-size: var(--font-size--xs);
+  color: rgb(var(--color-foreground-rgb) / 0.7);
+}
+
+.custom-cover-customizer .custom-cover-customizer__draft-actions {
+  display: inline-flex;
+  gap: var(--gap-3xs);
+}
+
+.custom-cover-customizer .custom-cover-customizer__draft-action {
+  min-height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--color-foreground-rgb) / 0.25);
+  background: rgb(var(--color-background-rgb));
+  color: rgb(var(--color-foreground-rgb));
+  padding: 0.3rem 0.85rem;
+  font-size: var(--font-size--xs);
+  cursor: pointer;
+}
+
+.custom-cover-customizer .custom-cover-customizer__draft-action:hover {
+  border-color: rgb(var(--color-button-rgb));
+}
+
+.custom-cover-customizer .custom-cover-customizer__draft-action--danger {
+  color: #b00020;
+}
+
+.custom-cover-customizer .custom-cover-customizer__drafts-empty {
+  margin: 0;
+  padding: var(--padding-sm);
+  border-radius: calc(var(--style-border-radius-inputs) + 2px);
+  border: 1px dashed rgb(var(--color-foreground-rgb) / 0.2);
+  background: rgb(var(--color-foreground-rgb) / 0.03);
+  font-size: var(--font-size--sm);
+  color: rgb(var(--color-foreground-rgb) / 0.75);
+  line-height: 1.45;
+}
+
 .custom-cover-customizer .custom-cover-customizer__shapes-panel {
   display: grid;
   gap: var(--gap-sm);
