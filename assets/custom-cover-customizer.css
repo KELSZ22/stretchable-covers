@@ -16,6 +16,8 @@
 .custom-cover-customizer .custom-cover-customizer__left-column {
   display: grid;
   gap: 12px;
+  align-content: start;
+  align-items: start;
 }
 
 .custom-cover-customizer .custom-cover-customizer__panel,
@@ -39,6 +41,7 @@
   color: #da0004;
   font-size: var(--font-size--sm);
   line-height: 1.3;
+  align-self: start;
 }
 
 .custom-cover-customizer .custom-cover-customizer__safe-banner-icon {
@@ -887,9 +890,10 @@
 
 .custom-cover-customizer .custom-cover-customizer__warning {
   margin: 0;
-  min-height: 1.6em;
+  min-height: calc(1.3em * 2);
   color: rgb(194 37 37);
   font-size: var(--font-size--sm);
+  line-height: 1.3;
 }
 
 .custom-cover-customizer .custom-cover-customizer__canvas-wrap {
@@ -971,6 +975,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
 }
 
 .custom-cover-customizer
@@ -986,6 +991,24 @@
   font-size: 24px;
   font-weight: 700;
   color: #000;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__preview-footer-icon-button.is-tooltip-visible::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  background: #1f1f1f;
+  color: #fff;
+  font-size: var(--font-size--xs);
+  line-height: 1;
+  border-radius: 999px;
+  padding: 6px 10px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .custom-cover-customizer [data-customizer-canvas]:focus {

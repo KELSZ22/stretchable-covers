@@ -71,6 +71,7 @@ class CustomCoverCustomizer extends HTMLElement {
     this.setMode = null;
     this._draftSyncInFlight = false;
     this.previewToken = "";
+    this._shareTooltipTimer = null;
   }
 
   connectedCallback() {
@@ -255,6 +256,9 @@ class CustomCoverCustomizer extends HTMLElement {
     const designTitleInput = sectionRoot?.querySelector(
       "[data-design-title-input]",
     );
+    const designTitleEditIcon = sectionRoot?.querySelector(
+      ".custom-cover-customizer__design-title-icon",
+    );
     const zoomInBtn = sectionRoot?.querySelector("[data-canvas-zoom-in]");
     const zoomOutBtn = sectionRoot?.querySelector("[data-canvas-zoom-out]");
     const panBtn = sectionRoot?.querySelector("[data-canvas-pan]");
@@ -264,6 +268,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const deleteBtn = sectionRoot?.querySelector("[data-design-delete]");
     const downloadBtn = sectionRoot?.querySelector("[data-design-download]");
     const loadBtn = sectionRoot?.querySelector("[data-design-load]");
+    const shareBtn = sectionRoot?.querySelector("[data-design-share]");
     const saveDraftBtn = sectionRoot?.querySelector("[data-save-draft]");
     const draftsList = this.querySelector("[data-drafts-list]");
     const draftsEmpty = this.querySelector("[data-drafts-empty]");
@@ -281,6 +286,18 @@ class CustomCoverCustomizer extends HTMLElement {
     syncDesignTitleInputWidth();
     designTitleInput?.addEventListener("input", syncDesignTitleInputWidth);
     designTitleInput?.addEventListener("change", syncDesignTitleInputWidth);
+    designTitleEditIcon?.addEventListener("mousedown", (event) => {
+      event.preventDefault();
+    });
+    designTitleEditIcon?.addEventListener("click", () => {
+      if (!designTitleInput) {
+        return;
+      }
+      designTitleInput.focus({ preventScroll: true });
+      if (typeof designTitleInput.select === "function") {
+        designTitleInput.select();
+      }
+    });
 
     const setMode = (mode) => {
       modeTabs.forEach((tab) => {
@@ -720,7 +737,7 @@ class CustomCoverCustomizer extends HTMLElement {
     window.addEventListener("touchend", () => this.handlePointerUp());
 
     zoomInBtn?.addEventListener("click", () => {
-      this.viewZoom = Math.min(2.5, this.viewZoom + 0.1);
+      this.viewZoom = Math.min(1.4, this.viewZoom + 0.1);
       this.applyCanvasViewportTransform();
     });
     zoomOutBtn?.addEventListener("click", () => {
@@ -749,6 +766,11 @@ class CustomCoverCustomizer extends HTMLElement {
       this.setActiveTool("image");
       this.toggleToolPanels("image");
       uploadInput?.click();
+    });
+    shareBtn?.addEventListener("click", async () => {
+      const pageUrl = window.location.href;
+      const copied = await this.copyTextToClipboard(pageUrl);
+      this.showShareTooltip(shareBtn, copied ? "Copied" : "Copy failed");
     });
     saveDraftBtn?.addEventListener("click", () => {
       void this.saveCurrentAsDraft();
@@ -818,6 +840,49 @@ class CustomCoverCustomizer extends HTMLElement {
       draftsNotice.hidden = true;
     }
     void this.initializeDrafts();
+  }
+
+  async copyTextToClipboard(text) {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (error) {
+        // Fall through to legacy copy method.
+      }
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    let copied = false;
+    try {
+      copied = document.execCommand("copy");
+    } catch (error) {
+      copied = false;
+    }
+    textarea.remove();
+    return copied;
+  }
+
+  showShareTooltip(button, message) {
+    if (!button) {
+      return;
+    }
+    button.setAttribute("data-tooltip", message);
+    button.classList.add("is-tooltip-visible");
+    if (this._shareTooltipTimer) {
+      clearTimeout(this._shareTooltipTimer);
+    }
+    this._shareTooltipTimer = window.setTimeout(() => {
+      button.classList.remove("is-tooltip-visible");
+      button.removeAttribute("data-tooltip");
+      this._shareTooltipTimer = null;
+    }, 1600);
   }
 
   readProductCatalog() {
@@ -1747,6 +1812,13 @@ class CustomCoverCustomizer extends HTMLElement {
     if (!(target instanceof Element)) {
       return;
     }
+    if (
+      target.closest(
+        ".custom-cover-customizer__design-bar, .custom-cover-customizer__panel",
+      )
+    ) {
+      return;
+    }
     if (target === this.canvas || this.canvas.contains(target)) {
       return;
     }
@@ -2450,6 +2522,9 @@ class CustomCoverCustomizer extends HTMLElement {
     });
     requestAnimationFrame(() => {
       textInput?.focus({ preventScroll: true });
+      if (textInput && typeof textInput.select === "function") {
+        textInput.select();
+      }
     });
   }
 
