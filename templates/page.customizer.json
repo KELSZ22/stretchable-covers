@@ -101,7 +101,7 @@
         "safe_area_width": 80,
         "safe_area_height": 80,
         "block_outside_safe_area": true,
-        "safe_area_warning": "Can’t print up to the edge. Keep your design in the safe area.",
+        "safe_area_warning": "Can’t print up to the end of the edge",
         "upload_warning": "Image file is too large for upload.",
         "max_upload_mb": 8,
         "text_price_adjustment": 0,

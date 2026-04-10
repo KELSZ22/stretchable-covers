@@ -72,6 +72,8 @@ class CustomCoverCustomizer extends HTMLElement {
     this._draftSyncInFlight = false;
     this.previewToken = "";
     this._shareTooltipTimer = null;
+    this._canvasViewportMq = null;
+    this._onCanvasViewportChange = null;
   }
 
   connectedCallback() {
@@ -84,10 +86,24 @@ class CustomCoverCustomizer extends HTMLElement {
       return;
     }
 
+    this.applyResponsiveCanvasSize();
     this.ctx = this.canvas.getContext("2d");
     if (!this.ctx) {
       return;
     }
+    this._canvasViewportMq = window.matchMedia("(max-width: 989px)");
+    this._onCanvasViewportChange = () => {
+      if (!this.canvas) {
+        return;
+      }
+      if (this.applyResponsiveCanvasSize()) {
+        this.render();
+      }
+    };
+    this._canvasViewportMq.addEventListener(
+      "change",
+      this._onCanvasViewportChange,
+    );
 
     this.setupMoneyFormatter();
     this.bindFields();
@@ -98,10 +114,30 @@ class CustomCoverCustomizer extends HTMLElement {
   }
 
   disconnectedCallback() {
+    if (this._onCanvasViewportChange && this._canvasViewportMq) {
+      this._canvasViewportMq.removeEventListener(
+        "change",
+        this._onCanvasViewportChange,
+      );
+      this._onCanvasViewportChange = null;
+      this._canvasViewportMq = null;
+    }
     if (this._onDesignKeydown) {
       window.removeEventListener("keydown", this._onDesignKeydown);
       this._onDesignKeydown = null;
     }
+    if (this._onDrawerEscape) {
+      window.removeEventListener("keydown", this._onDrawerEscape, true);
+      this._onDrawerEscape = null;
+    }
+    if (this._onDrawerMq && this._drawerMq) {
+      this._drawerMq.removeEventListener("change", this._onDrawerMq);
+      this._onDrawerMq = null;
+      this._drawerMq = null;
+    }
+    document.documentElement.classList.remove(
+      "custom-cover-customizer-drawer-open",
+    );
     if (this._onOutsideCanvasPointerDown) {
       window.removeEventListener("mousedown", this._onOutsideCanvasPointerDown);
       window.removeEventListener(
@@ -118,6 +154,24 @@ class CustomCoverCustomizer extends HTMLElement {
     return String(value || "")
       .replace(/\r\n/g, "\n")
       .replace(/\r/g, "\n");
+  }
+
+  applyResponsiveCanvasSize() {
+    if (!this.canvas) {
+      return false;
+    }
+    const isMobile = window.matchMedia("(max-width: 989px)").matches;
+    const targetWidth = isMobile ? 350 : 600;
+    const targetHeight = isMobile ? 355 : 600;
+    if (
+      this.canvas.width === targetWidth &&
+      this.canvas.height === targetHeight
+    ) {
+      return false;
+    }
+    this.canvas.width = targetWidth;
+    this.canvas.height = targetHeight;
+    return true;
   }
 
   setupMoneyFormatter() {
@@ -262,17 +316,68 @@ class CustomCoverCustomizer extends HTMLElement {
     const zoomInBtn = sectionRoot?.querySelector("[data-canvas-zoom-in]");
     const zoomOutBtn = sectionRoot?.querySelector("[data-canvas-zoom-out]");
     const panBtn = sectionRoot?.querySelector("[data-canvas-pan]");
-    const copyBtn = sectionRoot?.querySelector("[data-design-copy]");
-    const undoBtn = sectionRoot?.querySelector("[data-design-undo]");
-    const redoBtn = sectionRoot?.querySelector("[data-design-redo]");
-    const deleteBtn = sectionRoot?.querySelector("[data-design-delete]");
-    const downloadBtn = sectionRoot?.querySelector("[data-design-download]");
-    const loadBtn = sectionRoot?.querySelector("[data-design-load]");
+    const copyBtns = sectionRoot?.querySelectorAll("[data-design-copy]") ?? [];
+    const undoBtns = sectionRoot?.querySelectorAll("[data-design-undo]") ?? [];
+    const redoBtns = sectionRoot?.querySelectorAll("[data-design-redo]") ?? [];
+    const deleteBtns =
+      sectionRoot?.querySelectorAll("[data-design-delete]") ?? [];
+    const downloadBtns =
+      sectionRoot?.querySelectorAll("[data-design-download]") ?? [];
+    const loadBtns = sectionRoot?.querySelectorAll("[data-design-load]") ?? [];
     const shareBtn = sectionRoot?.querySelector("[data-design-share]");
-    const saveDraftBtn = sectionRoot?.querySelector("[data-save-draft]");
+    const saveDraftBtns =
+      sectionRoot?.querySelectorAll("[data-save-draft]") ?? [];
     const draftsList = this.querySelector("[data-drafts-list]");
     const draftsEmpty = this.querySelector("[data-drafts-empty]");
     const draftsNotice = this.querySelector("[data-drafts-notice]");
+    const drawerRoot = this.querySelector("[data-customizer-drawer]");
+    const drawerBackdrop = this.querySelector(
+      "[data-customizer-drawer-backdrop]",
+    );
+    const drawerClose = this.querySelector("[data-customizer-drawer-close]");
+    const drawerTitleEl = this.querySelector("[data-customizer-drawer-title]");
+    const drawerMq = window.matchMedia("(max-width: 989px)");
+    this._drawerMq = drawerMq;
+    let lastModeTabForFocus = null;
+
+    const drawerModeLabels = {
+      editor: "Editor",
+      templates: "Templates",
+      drafts: "Drafts",
+    };
+
+    const setDrawerScrollLock = (on) => {
+      document.documentElement.classList.toggle(
+        "custom-cover-customizer-drawer-open",
+        Boolean(on),
+      );
+    };
+
+    const isMobileDrawer = () => drawerMq.matches;
+
+    const openDrawer = () => {
+      if (!drawerRoot || !isMobileDrawer()) {
+        return;
+      }
+      drawerRoot.classList.add("is-open");
+      drawerRoot.setAttribute("aria-hidden", "false");
+      setDrawerScrollLock(true);
+      requestAnimationFrame(() => {
+        drawerClose?.focus({ preventScroll: true });
+      });
+    };
+
+    const closeDrawer = () => {
+      if (!drawerRoot?.classList.contains("is-open")) {
+        return;
+      }
+      drawerRoot.classList.remove("is-open");
+      drawerRoot.setAttribute("aria-hidden", "true");
+      setDrawerScrollLock(false);
+      const returnEl =
+        lastModeTabForFocus || this.querySelector("[data-mode-tab].is-active");
+      returnEl?.focus({ preventScroll: true });
+    };
 
     this.applyCanvasViewportTransform();
 
@@ -308,6 +413,13 @@ class CustomCoverCustomizer extends HTMLElement {
       modePanels.forEach((panel) => {
         panel.hidden = panel.getAttribute("data-mode-panel") !== mode;
       });
+      if (drawerTitleEl) {
+        drawerTitleEl.textContent =
+          drawerModeLabels[mode] ||
+          (mode && mode.length > 0
+            ? mode.charAt(0).toUpperCase() + mode.slice(1)
+            : "Editor");
+      }
     };
     this.setMode = setMode;
 
@@ -317,9 +429,36 @@ class CustomCoverCustomizer extends HTMLElement {
         if (!mode) {
           return;
         }
+        lastModeTabForFocus = tab;
         setMode(mode);
+        openDrawer();
       });
     });
+
+    drawerClose?.addEventListener("click", () => closeDrawer());
+    drawerBackdrop?.addEventListener("click", () => closeDrawer());
+
+    this._onDrawerEscape = (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+      if (!drawerRoot?.classList.contains("is-open") || !isMobileDrawer()) {
+        return;
+      }
+      event.preventDefault();
+      closeDrawer();
+    };
+    window.addEventListener("keydown", this._onDrawerEscape, true);
+
+    this._onDrawerMq = () => {
+      if (drawerMq.matches) {
+        return;
+      }
+      drawerRoot?.classList.remove("is-open");
+      drawerRoot?.setAttribute("aria-hidden", "true");
+      setDrawerScrollLock(false);
+    };
+    drawerMq.addEventListener("change", this._onDrawerMq);
 
     toolButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -757,39 +896,83 @@ class CustomCoverCustomizer extends HTMLElement {
         this.viewPanDrag = null;
       }
     });
-    copyBtn?.addEventListener("click", () => this.duplicateSelectedElement());
-    undoBtn?.addEventListener("click", () => this.undoLastChange());
-    redoBtn?.addEventListener("click", () => this.redoLastChange());
-    deleteBtn?.addEventListener("click", () => this.deleteSelectedElement());
-    downloadBtn?.addEventListener("click", () => this.downloadCanvasPng());
-    loadBtn?.addEventListener("click", () => {
-      this.setActiveTool("image");
-      this.toggleToolPanels("image");
-      uploadInput?.click();
-    });
+    copyBtns.forEach((btn) =>
+      btn.addEventListener("click", () => this.duplicateSelectedElement()),
+    );
+    undoBtns.forEach((btn) =>
+      btn.addEventListener("click", () => this.undoLastChange()),
+    );
+    redoBtns.forEach((btn) =>
+      btn.addEventListener("click", () => this.redoLastChange()),
+    );
+    deleteBtns.forEach((btn) =>
+      btn.addEventListener("click", () => this.deleteSelectedElement()),
+    );
+    downloadBtns.forEach((btn) =>
+      btn.addEventListener("click", () => this.downloadCanvasPng()),
+    );
+    loadBtns.forEach((btn) =>
+      btn.addEventListener("click", () => {
+        this.setActiveTool("image");
+        this.toggleToolPanels("image");
+        uploadInput?.click();
+      }),
+    );
     shareBtn?.addEventListener("click", async () => {
       const pageUrl = window.location.href;
       const copied = await this.copyTextToClipboard(pageUrl);
       this.showShareTooltip(shareBtn, copied ? "Copied" : "Copy failed");
     });
-    saveDraftBtn?.addEventListener("click", () => {
-      void this.saveCurrentAsDraft();
+    saveDraftBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        void this.saveCurrentAsDraft();
+      });
     });
-    draftsList?.addEventListener("click", (event) => {
-      const loadBtn = event.target.closest("[data-draft-load-id]");
-      if (loadBtn) {
-        const id = loadBtn.getAttribute("data-draft-load-id");
-        if (id) {
-          this.loadDraftById(id);
-        }
+
+    const designOverflow = sectionRoot?.querySelector(
+      ".custom-cover-customizer__design-overflow",
+    );
+    const designOverflowBody = designOverflow?.querySelector(
+      ".custom-cover-customizer__design-overflow-body",
+    );
+    designOverflowBody?.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
         return;
       }
+      if (target.closest("button")) {
+        designOverflow?.removeAttribute("open");
+      }
+    });
+    draftsList?.addEventListener("click", (event) => {
       const deleteDraftBtn = event.target.closest("[data-draft-delete-id]");
       if (deleteDraftBtn) {
         const id = deleteDraftBtn.getAttribute("data-draft-delete-id");
         if (id) {
           void this.deleteDraftById(id);
         }
+        return;
+      }
+      const draftCard = event.target.closest("[data-draft-item-id]");
+      if (draftCard) {
+        const id = draftCard.getAttribute("data-draft-item-id");
+        if (id) {
+          this.loadDraftById(id);
+        }
+      }
+    });
+    draftsList?.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+      const draftCard = event.target.closest("[data-draft-item-id]");
+      if (!draftCard) {
+        return;
+      }
+      event.preventDefault();
+      const id = draftCard.getAttribute("data-draft-item-id");
+      if (id) {
+        this.loadDraftById(id);
       }
     });
 
@@ -873,6 +1056,10 @@ class CustomCoverCustomizer extends HTMLElement {
     if (!button) {
       return;
     }
+    const defaultTooltip =
+      button.getAttribute("data-tooltip-default") ||
+      button.getAttribute("aria-label") ||
+      "";
     button.setAttribute("data-tooltip", message);
     button.classList.add("is-tooltip-visible");
     if (this._shareTooltipTimer) {
@@ -880,7 +1067,11 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     this._shareTooltipTimer = window.setTimeout(() => {
       button.classList.remove("is-tooltip-visible");
-      button.removeAttribute("data-tooltip");
+      if (defaultTooltip) {
+        button.setAttribute("data-tooltip", defaultTooltip);
+      } else {
+        button.removeAttribute("data-tooltip");
+      }
       this._shareTooltipTimer = null;
     }, 1600);
   }
@@ -2074,12 +2265,8 @@ class CustomCoverCustomizer extends HTMLElement {
     });
 
     const safe = this.elementsWithinSafeArea();
-    this.setWarning(
-      safe
-        ? ""
-        : this.dataset.safeWarning ||
-            "Can’t print up to the edge. Keep your design in the safe area.",
-    );
+    const safeWarning = (this.dataset.safeWarning || "").trim();
+    this.setWarning(safe ? "" : safeWarning);
     this.updateHiddenProperties();
 
     const editingText = this.getSelectedElement();
@@ -2465,12 +2652,13 @@ class CustomCoverCustomizer extends HTMLElement {
 
   updatePrice() {
     const sectionRoot = this.closest(".custom-cover-customizer");
-    const priceOutput = sectionRoot?.querySelector(
-      ".custom-cover-customizer__preview-footer-price",
+    const totalEl = sectionRoot?.querySelector(
+      "[data-preview-footer-price-total]",
     );
-    if (priceOutput) {
-      const total = this.moneyFormatter.format(this.getLiveTotalCents() / 100);
-      priceOutput.textContent = `Total: ${total}`;
+    if (totalEl) {
+      totalEl.textContent = this.moneyFormatter.format(
+        this.getLiveTotalCents() / 100,
+      );
     }
     this.updateHiddenProperties();
   }
@@ -2849,6 +3037,22 @@ class CustomCoverCustomizer extends HTMLElement {
       const row = document.createElement("article");
       row.className = "custom-cover-customizer__draft-item";
       row.setAttribute("role", "listitem");
+      row.setAttribute("tabindex", "0");
+      row.setAttribute("data-draft-item-id", draft.id);
+
+      if (draft.previewDataUrl) {
+        const previewWrap = document.createElement("div");
+        previewWrap.className = "custom-cover-customizer__draft-preview";
+
+        const previewImage = document.createElement("img");
+        previewImage.className = "custom-cover-customizer__draft-preview-image";
+        previewImage.src = draft.previewDataUrl;
+        previewImage.alt = `${draft.title || "Draft"} preview`;
+        previewImage.loading = "lazy";
+        previewImage.decoding = "async";
+        previewWrap.appendChild(previewImage);
+        row.appendChild(previewWrap);
+      }
 
       const title = document.createElement("p");
       title.className = "custom-cover-customizer__draft-title";
@@ -2859,24 +3063,15 @@ class CustomCoverCustomizer extends HTMLElement {
       const scope = draft.syncState === "synced" ? "Account" : "Local";
       meta.textContent = `${scope} • Updated ${this.formatDraftDate(draft.updatedAt)}`;
 
-      const actions = document.createElement("div");
-      actions.className = "custom-cover-customizer__draft-actions";
-
-      const loadBtn = document.createElement("button");
-      loadBtn.type = "button";
-      loadBtn.className = "custom-cover-customizer__draft-action";
-      loadBtn.textContent = "Load";
-      loadBtn.setAttribute("data-draft-load-id", draft.id);
-
       const deleteBtn = document.createElement("button");
       deleteBtn.type = "button";
-      deleteBtn.className =
-        "custom-cover-customizer__draft-action custom-cover-customizer__draft-action--danger";
-      deleteBtn.textContent = "Delete";
+      deleteBtn.className = "custom-cover-customizer__draft-delete";
+      deleteBtn.setAttribute("aria-label", "Remove draft");
+      deleteBtn.innerHTML =
+        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
       deleteBtn.setAttribute("data-draft-delete-id", draft.id);
 
-      actions.append(loadBtn, deleteBtn);
-      row.append(title, meta, actions);
+      row.append(title, meta, deleteBtn);
       list.appendChild(row);
     });
     empty.hidden = drafts.length > 0;
@@ -3218,10 +3413,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const safe = this.elementsWithinSafeArea();
     if (blockOutside && !safe) {
       event.preventDefault();
-      this.setWarning(
-        this.dataset.safeWarning ||
-          "Can’t print up to the edge. Keep your design in the safe area.",
-      );
+      this.setWarning((this.dataset.safeWarning || "").trim());
       return;
     }
     this.updateHiddenProperties();
