@@ -461,31 +461,91 @@
                       data-tool-panel="clipart"
                       hidden>
                       <p class="custom-cover-customizer__clipart-title">Choose a clipart</p>
+                      {% assign clipart_metaobject_type = section.settings.clipart_metaobject_type | strip | downcase | replace: ' ', '_' %}
+                      {% assign clipart_metaobjects_collection = shop.metaobjects[clipart_metaobject_type] %}
+                      {% if clipart_metaobjects_collection == blank and shop.metaobjects.clipart_item != blank %}
+                        {% assign clipart_metaobjects_collection = shop.metaobjects.clipart_item %}
+                      {% endif %}
+                      {% assign selected_category = section.settings.clipart_category_handle | default: 'all' %}
                       {% assign clipart_count = 0 %}
-                      {% for block in section.blocks %}
-                        {% if block.type == 'clipart' and block.settings.icon != blank %}
-                          {% assign clipart_count = clipart_count | plus: 1 %}
-                        {% endif %}
-                      {% endfor %}
+                      {% assign categories = '' %}
+                      {% if clipart_metaobjects_collection != blank %}
+                        {% for clipart in clipart_metaobjects_collection.values %}
+                          {% assign clipart_image = clipart.image.value | default: clipart.image %}
+                          {% if clipart_image != blank %}
+                            {% assign clipart_count = clipart_count | plus: 1 %}
+                            {% assign category_in_list = false %}
+                            {% if categories contains clipart.category.handle %}
+                              {% assign category_in_list = true %}
+                            {% endif %}
+                            {% if clipart.category.handle != blank and category_in_list == false %}
+                              {% assign categories = categories | append: clipart.category.handle | append: ',' %}
+                            {% endif %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
                       {% if clipart_count > 0 %}
-                        <div class="custom-cover-customizer__clipart-list">
-                          {% for block in section.blocks %}
-                            {% if block.type == 'clipart' and block.settings.icon != blank %}
-                              <button
-                                type="button"
-                                class="custom-cover-customizer__clipart"
-                                data-add-clipart
-                                data-src="{{ block.settings.icon | image_url: width: 240 }}"
-                                aria-label="{{ block.settings.label | default: 'Clipart' | escape }}"
-                                {{ block.shopify_attributes }}>
-                                {{ block.settings.icon | image_url: width: 160 | image_tag: loading: 'lazy', alt: block.settings.label }}
-                              </button>
+                        {% assign category_list = categories | split: ',' %}
+                        {% if selected_category == 'all' %}
+                          {% for category_handle in category_list %}
+                            {% assign category_name = '' %}
+                            {% for clipart in clipart_metaobjects_collection.values %}
+                              {% if clipart.category.handle == category_handle and clipart.category.name != blank %}
+                                {% assign category_name = clipart.category.name %}
+                                {% break %}
+                              {% endif %}
+                            {% endfor %}
+                            <div class="custom-cover-customizer__clipart-category">
+                              <p class="custom-cover-customizer__clipart-category-name">{{ category_name | default: category_handle | escape }}</p>
+                              <div class="custom-cover-customizer__clipart-list">
+                                {% for clipart in clipart_metaobjects_collection.values %}
+                                  {% assign clipart_image = clipart.image.value | default: clipart.image %}
+                                  {% if clipart_image != blank and clipart.category.handle == category_handle %}
+                                    <button
+                                      type="button"
+                                      class="custom-cover-customizer__clipart"
+                                      data-add-clipart
+                                      data-src="{{ clipart_image | image_url: width: 240 }}"
+                                      data-category="{{ clipart.category.handle | escape }}"
+                                      aria-label="Clipart">
+                                      {{ clipart_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: 'Clipart' }}
+                                    </button>
+                                  {% endif %}
+                                {% endfor %}
+                              </div>
+                            </div>
+                          {% endfor %}
+                        {% else %}
+                          {% assign category_name = '' %}
+                          {% for clipart in clipart_metaobjects_collection.values %}
+                            {% if clipart.category.handle == selected_category and clipart.category.name != blank %}
+                              {% assign category_name = clipart.category.name %}
+                              {% break %}
                             {% endif %}
                           {% endfor %}
-                        </div>
+                          <div class="custom-cover-customizer__clipart-category">
+                            <p class="custom-cover-customizer__clipart-category-name">{{ category_name | default: selected_category | escape }}</p>
+                            <div class="custom-cover-customizer__clipart-list">
+                              {% for clipart in clipart_metaobjects_collection.values %}
+                                {% assign clipart_image = clipart.image.value | default: clipart.image %}
+                                {% if clipart_image != blank and clipart.category.handle == selected_category %}
+                                  <button
+                                    type="button"
+                                    class="custom-cover-customizer__clipart"
+                                    data-add-clipart
+                                    data-src="{{ clipart_image | image_url: width: 240 }}"
+                                    data-category="{{ clipart.category.handle | escape }}"
+                                    aria-label="Clipart">
+                                    {{ clipart_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: 'Clipart' }}
+                                  </button>
+                                {% endif %}
+                              {% endfor %}
+                            </div>
+                          </div>
+                        {% endif %}
                       {% else %}
                         <p class="custom-cover-customizer__message custom-cover-customizer__clipart-empty">
-                          Add clipart items in the theme editor (section blocks).
+                          Add clipart items in Shopify Admin → Content → Metaobjects
                         </p>
                       {% endif %}
                     </div>
@@ -1118,6 +1178,18 @@
         "label": "Clipart title",
         "default": "Clipart"
       }, {
+        "type": "text",
+        "id": "clipart_metaobject_type",
+        "label": "Clipart metaobject type",
+        "default": "clipart_item",
+        "info": "Metaobject definition type used for clipart entries."
+      }, {
+        "type": "text",
+        "id": "clipart_category_handle",
+        "label": "Clipart category filter (optional)",
+        "default": "all",
+        "info": "Enter category handle to filter, or 'all' for all categories"
+      }, {
         "type": "header",
         "content": "Templates"
       }, {
@@ -1318,24 +1390,7 @@
         "default": 32
       }
     ],
-    "blocks": [
-      {
-        "type": "clipart",
-        "name": "Clipart",
-        "settings": [
-          {
-            "type": "image_picker",
-            "id": "icon",
-            "label": "Icon"
-          }, {
-            "type": "text",
-            "id": "label",
-            "label": "Label",
-            "default": "Clipart icon"
-          }
-        ]
-      }
-    ],
+    "blocks": [],
     "presets": [
       {
         "name": "Custom Cover Customizer",
