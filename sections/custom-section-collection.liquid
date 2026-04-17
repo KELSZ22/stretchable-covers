@@ -106,7 +106,7 @@
     margin: 0 0 4px;
     font-size: 32px;
     line-height: normal;
-    font-weight: 700;
+    font-weight: 800;
     color: {{ section.settings.heading_color }};
   }
 
@@ -118,12 +118,13 @@
 
   #shopify-section-{{ section.id }} .acs-view-all {
     flex: 0 0 auto;
-    font-size: 13px;
+    font-size: 16px;
     line-height: 18px;
     color: {{ section.settings.link_color }};
     text-decoration: none;
     font-weight: 600;
     white-space: nowrap;
+    text-decoration: underline;
   }
 
   #shopify-section-{{ section.id }} .acs-view-all:hover {
@@ -236,52 +237,64 @@
       flex: 0 0 calc((100% - 28px) / 3);
       min-width: calc((100% - 28px) / 3);
     }
+
+    #shopify-section-{{ section.id }} .acs-header {
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #shopify-section-{{ section.id }} .acs-heading {
+      text-align: center;
+    }
+
+    #shopify-section-{{ section.id }} .acs-subheading {
+      text-align: center;
+    }
   }
 
   @media screen and (max-width: 767px) {
     #shopify-section-{{ section.id }}.acs-section {
-      padding: 40px 20px;
-    }
-
-    #shopify-section-{{ section.id }} .page-width {
-      padding-top: {{ section.settings.padding_top_mobile }}px;
-      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      padding: 60px 16px;
+      overflow: visible;
     }
 
     #shopify-section-{{ section.id }} .acs-heading {
-      font-size: 22px;
+      font-size: 20px;
       line-height: 26px;
     }
 
     #shopify-section-{{ section.id }} .acs-subheading,
     #shopify-section-{{ section.id }} .acs-view-all {
-      font-size: 12px;
+      font-size: 14px;
       line-height: 16px;
     }
 
-    #shopify-section-{{ section.id }} .acs-card {
-      flex: 0 0 calc((100% - 14px) / 2);
-      min-width: calc((100% - 14px) / 2);
-    }
-
-    #shopify-section-{{ section.id }} .acs-arrow--prev {
-      left: -10px;
-    }
-
-    #shopify-section-{{ section.id }} .acs-arrow--next {
-      right: -10px;
-    }
-  }
-
-  @media screen and (max-width: 480px) {
-    #shopify-section-{{ section.id }} .acs-card {
-      flex: 0 0 78%;
-      min-width: 78%;
+    #shopify-section-{{ section.id }} .acs-card__title {
+      font-size: 14px;
+      line-height: 18px;
     }
 
     #shopify-section-{{ section.id }} .acs-arrow {
-      width: 30px;
-      height: 30px;
+      display: none !important;
+    }
+
+    #shopify-section-{{ section.id }} .acs-slider {
+      overflow: visible;
+    }
+
+    #shopify-section-{{ section.id }} .acs-slider__track {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      transform: none !important;
+      transition: none !important;
+      will-change: auto;
+    }
+
+    #shopify-section-{{ section.id }} .acs-card {
+      flex: none;
+      min-width: 0;
+      width: 100%;
     }
   }
 </style>
@@ -306,6 +319,10 @@
     var clonesPerSide = 0;
     var isAnimating = false;
 
+    function isGridMode() {
+      return window.innerWidth <= 767;
+    }
+
     function getOriginalCards() {
       return Array.prototype.slice.call(track.querySelectorAll('.acs-card:not(.is-clone)'));
     }
@@ -326,6 +343,13 @@
       return Math.max(1, Math.round(slider.clientWidth / step));
     }
 
+    function canLoop(originalCount, visibleCount) {
+      if (originalCount <= 1) return false;
+      if (originalCount > visibleCount) return true;
+      if (originalCount === visibleCount && originalCount >= 5) return true;
+      return false;
+    }
+
     function stopAutoSlide() {
       if (autoSlide) {
         clearInterval(autoSlide);
@@ -336,10 +360,12 @@
     function startAutoSlide() {
       stopAutoSlide();
 
+      if (isGridMode()) return;
+
       var originals = getOriginalCards();
       var visibleCount = getVisibleCount();
 
-      if (!autoplayEnabled || originals.length <= visibleCount) return;
+      if (!autoplayEnabled || !canLoop(originals.length, visibleCount)) return;
 
       autoSlide = setInterval(function() {
         goToSlide(currentIndex + 1);
@@ -372,18 +398,19 @@
       clearClones();
 
       var originals = getOriginalCards();
-      var visibleCount = getVisibleCount();
 
-      if (originals.length <= 1) {
+      if (isGridMode()) {
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
         currentIndex = 0;
         track.style.transition = 'none';
-        track.style.transform = 'translate3d(0, 0, 0)';
+        track.style.transform = 'none';
         return;
       }
 
-      if (originals.length <= visibleCount) {
+      var visibleCount = getVisibleCount();
+
+      if (!canLoop(originals.length, visibleCount)) {
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
         currentIndex = 0;
@@ -421,13 +448,18 @@
     }
 
     function goToSlide(index) {
-      if (isAnimating) return;
+      if (isGridMode() || isAnimating) return;
       isAnimating = true;
       currentIndex = index;
       setTrackPosition(true);
     }
 
     function handleLoopReset() {
+      if (isGridMode()) {
+        isAnimating = false;
+        return;
+      }
+
       var originals = getOriginalCards();
       var originalCount = originals.length;
 

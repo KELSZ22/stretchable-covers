@@ -33,7 +33,7 @@
       for="sort-select-{{ section_id }}"
       class="facets__label"
     >
-      {{- 'actions.sort' | t -}}
+      Sort By:
     </label>
     <div class="sorting-filter__select-wrapper">
       <select
@@ -93,7 +93,7 @@
           class="facets__label"
           id="sort-label-{{ section_id }}"
         >
-          {{- 'actions.sort' | t -}}
+          Sort By:
         </span>
         <span
           class="facets__status h6 desktop:hidden"
@@ -348,4 +348,38 @@
       display: none;
     }
   }
+  @media screen and (max-width: 749px) {
+  .facets-mobile-wrapper .sorting-filter {
+    width: 100%;
+  }
+
+  .facets-mobile-wrapper .sorting-filter .facets__panel {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  .facets-mobile-wrapper .sorting-filter .facets__summary {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .facets-mobile-wrapper .sorting-filter .facets__label {
+    display: inline-block;
+    margin: 0;
+    color: #0F2E53;
+    font-family: Lato;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+  }
+
+  .facets-mobile-wrapper .sorting-filter .icon-caret {
+    color: #0F2E53;
+  }
+}
 {% endstylesheet %}

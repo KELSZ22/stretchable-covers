@@ -100,10 +100,7 @@ class CustomCoverCustomizer extends HTMLElement {
         this.render();
       }
     };
-    this._canvasViewportMq.addEventListener(
-      "change",
-      this._onCanvasViewportChange,
-    );
+    this._canvasViewportMq.addEventListener("change", this._onCanvasViewportChange);
 
     this.setupMoneyFormatter();
     this.bindFields();
@@ -145,6 +142,14 @@ class CustomCoverCustomizer extends HTMLElement {
         this._onOutsideCanvasPointerDown,
       );
       this._onOutsideCanvasPointerDown = null;
+    }
+    if (this._onDesignOverflowOutsidePointerDown) {
+      document.removeEventListener(
+        "pointerdown",
+        this._onDesignOverflowOutsidePointerDown,
+        true,
+      );
+      this._onDesignOverflowOutsidePointerDown = null;
     }
     this._stopCaretBlinkLoop();
   }
@@ -319,21 +324,16 @@ class CustomCoverCustomizer extends HTMLElement {
     const copyBtns = sectionRoot?.querySelectorAll("[data-design-copy]") ?? [];
     const undoBtns = sectionRoot?.querySelectorAll("[data-design-undo]") ?? [];
     const redoBtns = sectionRoot?.querySelectorAll("[data-design-redo]") ?? [];
-    const deleteBtns =
-      sectionRoot?.querySelectorAll("[data-design-delete]") ?? [];
-    const downloadBtns =
-      sectionRoot?.querySelectorAll("[data-design-download]") ?? [];
+    const deleteBtns = sectionRoot?.querySelectorAll("[data-design-delete]") ?? [];
+    const downloadBtns = sectionRoot?.querySelectorAll("[data-design-download]") ?? [];
     const loadBtns = sectionRoot?.querySelectorAll("[data-design-load]") ?? [];
     const shareBtn = sectionRoot?.querySelector("[data-design-share]");
-    const saveDraftBtns =
-      sectionRoot?.querySelectorAll("[data-save-draft]") ?? [];
+    const saveDraftBtns = sectionRoot?.querySelectorAll("[data-save-draft]") ?? [];
     const draftsList = this.querySelector("[data-drafts-list]");
     const draftsEmpty = this.querySelector("[data-drafts-empty]");
     const draftsNotice = this.querySelector("[data-drafts-notice]");
     const drawerRoot = this.querySelector("[data-customizer-drawer]");
-    const drawerBackdrop = this.querySelector(
-      "[data-customizer-drawer-backdrop]",
-    );
+    const drawerBackdrop = this.querySelector("[data-customizer-drawer-backdrop]");
     const drawerClose = this.querySelector("[data-customizer-drawer-close]");
     const drawerTitleEl = this.querySelector("[data-customizer-drawer-title]");
     const drawerMq = window.matchMedia("(max-width: 989px)");
@@ -375,7 +375,8 @@ class CustomCoverCustomizer extends HTMLElement {
       drawerRoot.setAttribute("aria-hidden", "true");
       setDrawerScrollLock(false);
       const returnEl =
-        lastModeTabForFocus || this.querySelector("[data-mode-tab].is-active");
+        lastModeTabForFocus ||
+        this.querySelector("[data-mode-tab].is-active");
       returnEl?.focus({ preventScroll: true });
     };
 
@@ -940,10 +941,37 @@ class CustomCoverCustomizer extends HTMLElement {
       if (!(target instanceof Element)) {
         return;
       }
-      if (target.closest("button")) {
-        designOverflow?.removeAttribute("open");
+      if (target.closest("button, a[href]")) {
+        /* Defer so submit / default actions finish before the panel hides */
+        queueMicrotask(() => designOverflow?.removeAttribute("open"));
       }
     });
+
+    if (this._onDesignOverflowOutsidePointerDown) {
+      document.removeEventListener(
+        "pointerdown",
+        this._onDesignOverflowOutsidePointerDown,
+        true,
+      );
+    }
+    this._onDesignOverflowOutsidePointerDown = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+      if (!designOverflow?.hasAttribute("open")) {
+        return;
+      }
+      if (designOverflow.contains(target)) {
+        return;
+      }
+      designOverflow.removeAttribute("open");
+    };
+    document.addEventListener(
+      "pointerdown",
+      this._onDesignOverflowOutsidePointerDown,
+      true,
+    );
     draftsList?.addEventListener("click", (event) => {
       const deleteDraftBtn = event.target.closest("[data-draft-delete-id]");
       if (deleteDraftBtn) {

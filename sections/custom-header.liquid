@@ -540,7 +540,7 @@
     top: 0;
     right: 0;
     width: 100%;
-    max-width: 380px;
+    max-width: 510px;
     height: 100vh;
     background: #ffffff;
     transform: translateX(100%);
@@ -622,20 +622,24 @@
   }
 
   .custom-cart-empty h3 {
-    font-size: 18px;
-    line-height: 1.35;
-    font-weight: 700;
+    color:  #1F1F1F;
+    font-family: Raleway;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 32px; 
     margin: 0 0 8px;
-    color: #222;
-    font-family: 'Lato', sans-serif;
   }
 
   .custom-cart-empty p {
+    color:  #1F1F1F;
+    text-align: center;
+    font-family: Lato;
     font-size: 14px;
-    color: #555;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; 
     margin: 0 0 22px;
-    line-height: 1.5;
-    font-family: 'Lato', sans-serif;
   }
 
   .custom-cart-empty .shop-now-btn {
@@ -656,19 +660,20 @@
   }
 
   .custom-cart-recommendations {
-    background: #f3e9dc;
-    padding: 16px 14px 18px;
+    background:rgba(235, 137, 27, 0.14);
+    padding: 25px 20px;
     margin-top: auto;
   }
 
   .custom-cart-recommendations h4 {
     text-align: center;
-    font-size: 16px;
-    line-height: 1.3;
-    font-weight: 700;
-    margin: 0 0 14px;
-    color: #222;
-    font-family: 'Lato', sans-serif;
+    color: #1F1F1F;
+    font-family: Raleway;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 27px; 
+    margin: 0 0 20px;
   }
 
   .custom-rec-item {
@@ -688,12 +693,12 @@
   }
 
   .custom-rec-item img {
-    width: 74px;
-    height: 74px;
+    width: 79px;
+    height: 79px;
     object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid #ececec;
-    background: #fff;
+    border-radius: 2.6px;
+    background: #fcfdfc;
+    box-shadow: 0 1.427px 1.427px 0 rgba(0, 0, 0, 0.12);
   }
 
   .custom-rec-content {
@@ -701,12 +706,13 @@
   }
 
   .custom-rec-title {
-    font-size: 14px;
-    line-height: 1.25;
-    font-weight: 700;
-    color: #222;
+    color: #1F1F1F;
+    font-family: Lato;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px; 
     margin-bottom: 3px;
-    font-family: 'Lato', sans-serif;
   }
 
   .custom-rec-meta {
@@ -738,22 +744,23 @@
   }
 
   .custom-rec-price {
-    font-size: 14px;
-    line-height: 1.2;
-    color: #222;
-    font-weight: 400;
-    font-family: 'Lato', sans-serif;
+    color:  #1F1F1F;
+    font-family: Lato;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px; 
   }
 
   .custom-rec-btn {
-    background: #143b6d;
+    background: #0F2E53;
     color: #fff;
     text-decoration: none;
     padding: 10px 14px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1;
-    font-weight: 700;
+    font-weight: 500;
     white-space: nowrap;
     font-family: 'Lato', sans-serif;
     display: inline-flex;
@@ -779,8 +786,9 @@
     height: 104px;
     object-fit: cover;
     border: 1px solid #ece7e1;
-    border-radius: 4px;
-    background: #fff;
+    border-radius: 3.88px;
+    background: #fcfdfc;
+    box-shadow: 0 2.129px 2.129px 0 rgba(0, 0, 0, 0.12);
   }
 
   .custom-cart-item-details {
@@ -812,6 +820,7 @@
     margin-bottom: 4px;
     line-height: 1.3;
     font-family: 'Lato', sans-serif;
+    display: none;
   }
 
   .custom-cart-item-meta-icon {
@@ -897,7 +906,6 @@
   }
 
   .custom-cart-footer {
-    border-top: 1px solid #ddd8d2;
     padding: 18px 30px 16px;
     margin-top: auto;
   }
@@ -905,27 +913,34 @@
   .custom-cart-subtotal-row {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 6px;
     margin-bottom: 16px;
   }
 
   .custom-cart-subtotal-row strong {
-    font-size: 14px;
-    line-height: 1.3;
-    color: #222;
-    font-family: 'Lato', sans-serif;
+    color: #1F1F1F;
+    font-family: Raleway;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 27px; 
   }
 
   .custom-cart-subtotal-row p {
+    color:  #1F1F1F;
+    font-family: Lato;
     font-size: 12px;
-    color: #555;
-    margin: 6px 0 0;
-    line-height: 1.4;
-    font-family: 'Lato', sans-serif;
-    max-width: 240px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14px; 
   }
-
+  .custom-cart-subtotal-row-inner {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
   .custom-cart-checkout {
     display: block;
     text-align: center;
@@ -941,15 +956,17 @@
 
   .custom-cart-delivery {
     text-align: center;
+    color: #1F1F1F;
+    font-family: Lato;
     font-size: 12px;
-    line-height: 1.45;
-    color: #444;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14px; 
     margin-bottom: 12px;
-    font-family: 'Lato', sans-serif;
   }
 
   .custom-cart-delivery span {
-    color: #d6402b;
+    color: #DA0004;
   }
 
   .custom-cart-payments {
@@ -1163,7 +1180,8 @@
       grid-template-columns: 78px 1fr;
       gap: 12px;
       align-items: start;
-      padding: 12px 10px;
+      padding: 15px;
+      border-radius: 4px;
     }
 
     .custom-rec-item img {
@@ -1336,11 +1354,13 @@
             <circle cx="12" cy="7" r="4"/>
           </svg>
         </a>
+        {% comment %}
         <a href="#" aria-label="Wishlist">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
           </svg>
         </a>
+        {% endcomment %}
         <a href="{{ routes.cart_url }}" aria-label="Cart" id="customCartTrigger">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <circle cx="9" cy="21" r="1"/>
@@ -1421,11 +1441,11 @@
 
   <div class="custom-cart-footer" id="customCartFooter" style="display:none;">
     <div class="custom-cart-subtotal-row">
-      <div>
-        <strong>Subtotal (<span id="customCartItemLabel">0 Items</span>)</strong>
-        <p>Discounts and promo codes will be calculated at checkout</p>
-      </div>
+      <div class="custom-cart-subtotal-row-inner">
+      <strong>Subtotal (<span id="customCartItemLabel">0 Items</span>)</strong>
       <strong id="customCartSubtotal">$0.00</strong>
+      </div>
+        <p>Discounts and promo codes will be calculated at checkout</p>
     </div>
 
     <a href="/checkout" class="custom-cart-checkout">Secure Check Out</a>
@@ -1631,14 +1651,24 @@ document.addEventListener('DOMContentLoaded', function () {
       return '';
     }
 
-    function getDiameterHtml(item) {
+    function getDiameterValue(item) {
       var props = item.properties || {};
       var diameter = '';
 
-      if (props.Diameter) diameter = props.Diameter;
-      if (props.diameter) diameter = props.diameter;
+      if (props.product_variant_diameter) diameter = props.product_variant_diameter;
+      else if (props.product_diameter) diameter = props.product_diameter;
+      else if (props.Diameter) diameter = props.Diameter;
+      else if (props.diameter) diameter = props.diameter;
 
       if (!diameter || String(diameter).trim() === '') return '';
+
+      return String(diameter).trim();
+    }
+
+    function getDiameterHtml(item) {
+      var diameter = getDiameterValue(item);
+
+      if (!diameter) return '';
 
       return `
         <div class="custom-cart-item-meta">
@@ -1651,6 +1681,14 @@ document.addEventListener('DOMContentLoaded', function () {
           <span>${escapeHtml(diameter)}</span>
         </div>
       `;
+    }
+
+    function getVariantDiameterText(item) {
+      var diameter = getDiameterValue(item);
+
+      if (!diameter) return '';
+
+      return 'Diameter (' + diameter + ')';
     }
 
     function bestSellersHtml() {
@@ -1919,7 +1957,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       return `
         <div class="custom-cart-delivery">
-          Estimated Delivery by <strong>${formattedDate}</strong><br>
+          Estimated Delivery by <strong>${formattedDate}</strong>
           <span>Order within ${countdown}</span>
         </div>
       `;
@@ -1946,80 +1984,77 @@ document.addEventListener('DOMContentLoaded', function () {
       `;
     }
 
-    function renderCartItems(cart) {
-      bodyEl.classList.remove('is-empty');
-      countEl.textContent = '(' + cart.item_count + ')';
-      footerEl.style.display = 'block';
-      subtotalEl.textContent = money(cart.total_price);
-      itemLabelEl.textContent = cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items');
+function renderCartItems(cart) {
+  bodyEl.classList.remove('is-empty');
+  countEl.textContent = '(' + cart.item_count + ')';
+  footerEl.style.display = 'block';
+  subtotalEl.textContent = money(cart.total_price);
+  itemLabelEl.textContent = cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items');
 
-      bodyEl.innerHTML = cart.items.map(function(item, index) {
-        var variantText = item.variant_title && item.variant_title !== 'Default Title'
-          ? item.variant_title
-          : '';
+  bodyEl.innerHTML = cart.items.map(function(item, index) {
+    var variantText = getVariantDiameterText(item);
+    var image = getItemImage(item);
+    var quantity = Number(item.quantity || 0);
+    var unitPrice = item.final_price != null ? item.final_price : item.price;
+    var diameterHtml = getDiameterHtml(item);
 
-        var image = getItemImage(item);
-        var quantity = Number(item.quantity || 0);
-        var unitPrice = item.final_price != null ? item.final_price : item.price;
-        var diameterHtml = getDiameterHtml(item);
-
-        return `
-          <div class="custom-cart-item">
-            <div class="custom-cart-item-image">
-              ${image ? `<img src="${image}" alt="${escapeHtml(item.product_title)}">` : ''}
-            </div>
-
-            <div class="custom-cart-item-details">
-              <div class="custom-cart-item-top">
-                <div>
-                  <div class="custom-cart-item-title">${escapeHtml(item.product_title)}</div>
-                  ${diameterHtml}
-                  ${variantText ? `<div class="custom-cart-item-variant">${escapeHtml(variantText)}</div>` : ''}
-                  <div class="custom-cart-item-price">${money(unitPrice)}</div>
-                </div>
-
-                <button type="button" class="custom-cart-remove" data-line="${index + 1}" data-remove="true" aria-label="Remove item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 6h18"></path>
-                    <path d="M8 6V4h8v2"></path>
-                    <path d="M19 6l-1 14H6L5 6"></path>
-                    <path d="M10 11v6"></path>
-                    <path d="M14 11v6"></path>
-                  </svg>
-                </button>
-              </div>
-
-              <div class="custom-cart-item-bottom">
-                <div class="custom-cart-qty">
-                  <button type="button" data-line="${index + 1}" data-qty="${quantity - 1}">−</button>
-                  <span>${quantity}</span>
-                  <button type="button" data-line="${index + 1}" data-qty="${quantity + 1}">+</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      footerEl.innerHTML = `
-        <div class="custom-cart-subtotal-row">
-          <div>
-            <strong>Subtotal (<span id="customCartItemLabel">${cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items')}</span>)</strong>
-            <p>Discounts and promo codes will be calculated at checkout</p>
-          </div>
-          <strong id="customCartSubtotal">${money(cart.total_price)}</strong>
+    return `
+      <div class="custom-cart-item">
+        <div class="custom-cart-item-image">
+          ${image ? `<img src="${image}" alt="${escapeHtml(item.product_title)}">` : ''}
         </div>
 
-        <a href="/checkout" class="custom-cart-checkout">Secure Check Out</a>
+        <div class="custom-cart-item-details">
+          <div class="custom-cart-item-top">
+            <div>
+              <div class="custom-cart-item-title">${escapeHtml(item.product_title)}</div>
+              ${diameterHtml}
+              ${variantText ? `<div class="custom-cart-item-variant">${escapeHtml(variantText)}</div>` : ''}
+              <div class="custom-cart-item-price">${money(unitPrice)}</div>
+            </div>
 
-        <div class="custom-cart-delivery">
-          Estimated Delivery by <strong>Friday, Feb 13.</strong><br>
-          <span>Order within 20 hrs. 30 mins.</span>
+            <button type="button" class="custom-cart-remove" data-line="${index + 1}" data-remove="true" aria-label="Remove item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 6h18"></path>
+                <path d="M8 6V4h8v2"></path>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="custom-cart-item-bottom">
+            <div class="custom-cart-qty">
+              <button type="button" data-line="${index + 1}" data-qty="${quantity - 1}">−</button>
+              <span>${quantity}</span>
+              <button type="button" data-line="${index + 1}" data-qty="${quantity + 1}">+</button>
+            </div>
+          </div>
         </div>
+      </div>
+    `;
+  }).join('');
 
-        ${paymentIconsHtml()}
-      `;
-    }
+  footerEl.innerHTML = `
+    <div class="custom-cart-subtotal-row">
+      <div class="custom-cart-subtotal-row-inner">
+        <strong>Subtotal (<span id="customCartItemLabel">${cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items')}</span>)</strong>
+        <strong id="customCartSubtotal">${money(cart.total_price)}</strong>
+      </div>
+        <p>Discounts and promo codes will be calculated at checkout</p>
+    </div>
+
+    <a href="/checkout" class="custom-cart-checkout">Secure Check Out</a>
+
+    <div class="custom-cart-delivery">
+      Estimated Delivery by <strong>Friday, Feb 13.</strong>
+      <span>Order within 20 hrs. 30 mins.</span>
+    </div>
+
+    ${paymentIconsHtml()}
+  `;
+}
 
     function updateHeaderBubble(count) {
       var bubble = document.querySelector('.cart-count');

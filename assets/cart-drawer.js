@@ -72,3 +72,25 @@ class CartDrawerComponent extends DialogComponent {
 if (!customElements.get('cart-drawer-component')) {
   customElements.define('cart-drawer-component', CartDrawerComponent);
 }
+
+function getDiameterValue(item) {
+  var props = item.properties || {};
+  var diameter = '';
+
+  if (props.product_variant_diameter) diameter = props.product_variant_diameter;
+  else if (props.product_diameter) diameter = props.product_diameter;
+  else if (props.Diameter) diameter = props.Diameter;
+  else if (props.diameter) diameter = props.diameter;
+
+  if (!diameter || String(diameter).trim() === '') return '';
+
+  return String(diameter).trim();
+}
+
+function getVariantDiameterText(item) {
+  var diameter = getDiameterValue(item);
+
+  if (!diameter) return '';
+
+  return 'Diameter (' + diameter + ')';
+}

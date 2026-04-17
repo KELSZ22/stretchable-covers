@@ -63,6 +63,17 @@
           ref="variantId"
           value="{{ product.selected_or_first_available_variant.id }}"
         >
+        <input
+          type="hidden"
+          name="properties[product_diameter]"
+          value="{{ product.metafields.custom.product_diameter.value | default: product.metafields.custom.product_diameter }}"
+        >
+
+        <input
+          type="hidden"
+          name="properties[product_variant_diameter]"
+          value="{{ product.selected_or_first_available_variant.metafields.custom.product_variant_diameter.value | default: product.selected_or_first_available_variant.metafields.custom.product_variant_diameter }}"
+        >
         {%- if block_settings.gift_card_form and product.gift_card? -%}
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section, block: block -%}
         {%- endif -%}

@@ -4472,7 +4472,10 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
 }
 
 .resource-list__carousel slideshow-arrows {
-  padding-inline: var(--util-page-margin-offset);
+  /* padding-inline: var(--util-page-margin-offset); */
+}
+slideshow-component.resource-list__carousel slideshow-slides {
+    padding: 0;
 }
 
 .resource-list__carousel .resource-list__slide {

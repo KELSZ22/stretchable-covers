@@ -26,13 +26,21 @@
         {% endif %}
       </div>
 
-      <div class="custom-footer__menus">
-        <div class="custom-footer__menu-column">
+      <div class="custom-footer__menus" data-footer-accordion>
+        <div class="custom-footer__menu-column is-open" data-accordion-item>
           {% if section.settings.shop_heading != blank %}
-            <h3 class="custom-footer__menu-title">{{ section.settings.shop_heading }}</h3>
+            <button
+              type="button"
+              class="custom-footer__menu-toggle"
+              data-accordion-trigger
+              aria-expanded="true"
+            >
+              <span class="custom-footer__menu-title">{{ section.settings.shop_heading }}</span>
+              <span class="custom-footer__menu-icon"></span>
+            </button>
           {% endif %}
           {% if section.settings.shop_menu != blank %}
-            <ul class="custom-footer__menu-list">
+            <ul class="custom-footer__menu-list" data-accordion-content>
               {% for link in linklists[section.settings.shop_menu].links %}
                 <li><a href="{{ link.url }}">{{ link.title }}</a></li>
               {% endfor %}
@@ -40,12 +48,20 @@
           {% endif %}
         </div>
 
-        <div class="custom-footer__menu-column">
+        <div class="custom-footer__menu-column" data-accordion-item>
           {% if section.settings.information_heading != blank %}
-            <h3 class="custom-footer__menu-title">{{ section.settings.information_heading }}</h3>
+            <button
+              type="button"
+              class="custom-footer__menu-toggle"
+              data-accordion-trigger
+              aria-expanded="false"
+            >
+              <span class="custom-footer__menu-title">{{ section.settings.information_heading }}</span>
+              <span class="custom-footer__menu-icon"></span>
+            </button>
           {% endif %}
           {% if section.settings.information_menu != blank %}
-            <ul class="custom-footer__menu-list">
+            <ul class="custom-footer__menu-list" data-accordion-content>
               {% for link in linklists[section.settings.information_menu].links %}
                 <li><a href="{{ link.url }}">{{ link.title }}</a></li>
               {% endfor %}
@@ -53,12 +69,20 @@
           {% endif %}
         </div>
 
-        <div class="custom-footer__menu-column">
+        <div class="custom-footer__menu-column" data-accordion-item>
           {% if section.settings.account_heading != blank %}
-            <h3 class="custom-footer__menu-title">{{ section.settings.account_heading }}</h3>
+            <button
+              type="button"
+              class="custom-footer__menu-toggle"
+              data-accordion-trigger
+              aria-expanded="false"
+            >
+              <span class="custom-footer__menu-title">{{ section.settings.account_heading }}</span>
+              <span class="custom-footer__menu-icon"></span>
+            </button>
           {% endif %}
           {% if section.settings.account_menu != blank %}
-            <ul class="custom-footer__menu-list">
+            <ul class="custom-footer__menu-list" data-accordion-content>
               {% for link in linklists[section.settings.account_menu].links %}
                 <li><a href="{{ link.url }}">{{ link.title }}</a></li>
               {% endfor %}
@@ -66,12 +90,20 @@
           {% endif %}
         </div>
 
-        <div class="custom-footer__menu-column">
+        <div class="custom-footer__menu-column" data-accordion-item>
           {% if section.settings.policy_heading != blank %}
-            <h3 class="custom-footer__menu-title">{{ section.settings.policy_heading }}</h3>
+            <button
+              type="button"
+              class="custom-footer__menu-toggle"
+              data-accordion-trigger
+              aria-expanded="false"
+            >
+              <span class="custom-footer__menu-title">{{ section.settings.policy_heading }}</span>
+              <span class="custom-footer__menu-icon"></span>
+            </button>
           {% endif %}
           {% if section.settings.policy_menu != blank %}
-            <ul class="custom-footer__menu-list">
+            <ul class="custom-footer__menu-list" data-accordion-content>
               {% for link in linklists[section.settings.policy_menu].links %}
                 <li><a href="{{ link.url }}">{{ link.title }}</a></li>
               {% endfor %}
@@ -120,8 +152,8 @@
         <div class="custom-footer__info-item">
           <span class="custom-footer__info-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
-  <path d="M8.0995 0C5.05188 0 2.57245 2.47944 2.57245 5.52705C2.57245 7.48991 3.88569 9.52517 5.17477 11.0548H2.60195C2.06214 11.0548 1.5538 11.3423 1.2756 11.8054L0.258714 13.5003C-0.0780682 14.0607 -0.0863588 14.7355 0.235684 15.3045C0.558096 15.873 1.14082 16.2127 1.79449 16.2127H14.4045C15.0585 16.2127 15.6409 15.873 15.9633 15.3045C16.2854 14.7355 16.2767 14.0611 15.9403 13.5003L14.9241 11.8047C14.6459 11.3419 14.1376 11.0541 13.5978 11.0541H12.5003L11.1163 12.528H13.5978C13.6232 12.528 13.6475 12.5415 13.6604 12.5632L14.6773 14.2581C14.7602 14.3962 14.7148 14.5175 14.6809 14.5776C14.6466 14.638 14.5655 14.7388 14.4045 14.7388H1.79449C1.63346 14.7388 1.5524 14.638 1.51813 14.5783C1.48423 14.5183 1.43883 14.397 1.52173 14.2588L2.53862 12.564C2.55152 12.5419 2.57581 12.5287 2.60123 12.5287H6.54718C7.12972 13.0999 7.57136 13.4796 7.62956 13.5276C7.76589 13.6404 7.93295 13.6967 8.0995 13.6967C8.26605 13.6967 8.43311 13.6404 8.56944 13.5276C8.77615 13.357 13.6266 9.29908 13.6266 5.52705C13.6266 2.47944 11.1471 0 8.0995 0ZM8.0995 1.47388C10.3343 1.47388 12.1527 3.29228 12.1527 5.52705C12.1527 7.80715 9.55311 10.6534 8.0995 11.9818C6.64588 10.6534 4.04633 7.80715 4.04633 5.52705C4.04633 3.29228 5.86473 1.47388 8.0995 1.47388ZM8.0995 4.42164C7.48894 4.42164 6.99409 4.9165 6.99409 5.52705C6.99409 6.13761 7.48894 6.63246 8.0995 6.63246C8.71005 6.63246 9.20491 6.13761 9.20491 5.52705C9.20491 4.9165 8.71005 4.42164 8.0995 4.42164Z" fill="white"/>
-</svg>
+              <path d="M8.0995 0C5.05188 0 2.57245 2.47944 2.57245 5.52705C2.57245 7.48991 3.88569 9.52517 5.17477 11.0548H2.60195C2.06214 11.0548 1.5538 11.3423 1.2756 11.8054L0.258714 13.5003C-0.0780682 14.0607 -0.0863588 14.7355 0.235684 15.3045C0.558096 15.873 1.14082 16.2127 1.79449 16.2127H14.4045C15.0585 16.2127 15.6409 15.873 15.9633 15.3045C16.2854 14.7355 16.2767 14.0611 15.9403 13.5003L14.9241 11.8047C14.6459 11.3419 14.1376 11.0541 13.5978 11.0541H12.5003L11.1163 12.528H13.5978C13.6232 12.528 13.6475 12.5415 13.6604 12.5632L14.6773 14.2581C14.7602 14.3962 14.7148 14.5175 14.6809 14.5776C14.6466 14.638 14.5655 14.7388 14.4045 14.7388H1.79449C1.63346 14.7388 1.5524 14.638 1.51813 14.5783C1.48423 14.5183 1.43883 14.397 1.52173 14.2588L2.53862 12.564C2.55152 12.5419 2.57581 12.5287 2.60123 12.5287H6.54718C7.12972 13.0999 7.57136 13.4796 7.62956 13.5276C7.76589 13.6404 7.93295 13.6967 8.0995 13.6967C8.26605 13.6967 8.43311 13.6404 8.56944 13.5276C8.77615 13.357 13.6266 9.29908 13.6266 5.52705C13.6266 2.47944 11.1471 0 8.0995 0ZM8.0995 1.47388C10.3343 1.47388 12.1527 3.29228 12.1527 5.52705C12.1527 7.80715 9.55311 10.6534 8.0995 11.9818C6.64588 10.6534 4.04633 7.80715 4.04633 5.52705C4.04633 3.29228 5.86473 1.47388 8.0995 1.47388ZM8.0995 4.42164C7.48894 4.42164 6.99409 4.9165 6.99409 5.52705C6.99409 6.13761 7.48894 6.63246 8.0995 6.63246C8.71005 6.63246 9.20491 6.13761 9.20491 5.52705C9.20491 4.9165 8.71005 4.42164 8.0995 4.42164Z" fill="white"/>
+            </svg>
           </span>
           <div class="custom-footer__info-text">
             {% if section.settings.address_label != blank %}
@@ -136,8 +168,8 @@
         <div class="custom-footer__info-item">
           <span class="custom-footer__info-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-  <path d="M14.8016 11.0533C15.323 11.4045 15.5669 12.0405 15.4085 12.6359C14.9615 14.3172 13.7762 15.0409 13.1265 15.3596C12.5882 15.6231 11.7787 15.5999 11.6844 15.5907C10.1707 15.4433 6.31059 14.6942 3.17896 10.9362C0.373058 7.56944 -0.0167836 4.77128 0.00053451 3.40315C0.0104832 2.64042 0.300469 1.93296 0.817433 1.41083C1.30787 0.91524 1.95416 0.485236 2.40959 0.211831C3.06731 -0.183538 3.90484 -0.0114622 4.35696 0.611252L6.54972 3.62608C6.97862 4.21673 6.91561 5.01926 6.40049 5.53512L5.75383 6.18142C5.61381 6.32143 5.60939 6.54657 5.74351 6.69212L8.73254 9.9295C8.86556 10.0736 9.08848 10.0883 9.23919 9.96266L10.1994 9.16234C10.7186 8.72902 11.4625 8.70396 12.0082 9.10154C12.4909 9.45306 13.4969 10.1742 14.8016 11.0533ZM11.8277 14.1238C12.5882 14.1492 13.5776 13.388 13.8911 12.5504C13.9527 12.3861 13.8963 12.1993 13.75 12.1027C12.7102 11.4141 11.8782 10.8256 11.37 10.4597C11.2333 10.3613 11.0498 10.3694 10.9205 10.4774L9.91349 11.319C9.30993 11.8223 8.41971 11.7641 7.88653 11.1863L4.4207 7.43164C3.88384 6.85019 3.90226 5.94854 4.4616 5.38921L5.13517 4.71601C5.26339 4.58778 5.27924 4.38549 5.17275 4.23884L3.36688 1.75609C3.25192 1.59802 3.03489 1.55527 2.87092 1.66139C2.53782 1.87658 1.53411 2.72664 1.47442 3.42194C1.41841 4.07192 1.57169 5.11506 2.10597 6.43198C2.52566 7.46664 3.20991 8.67154 4.3109 9.99287C5.30098 11.1808 6.36917 12.0298 7.39499 12.6366C9.25171 13.7354 10.9651 14.0947 11.8277 14.1238Z" fill="white"/>
-</svg>
+              <path d="M14.8016 11.0533C15.323 11.4045 15.5669 12.0405 15.4085 12.6359C14.9615 14.3172 13.7762 15.0409 13.1265 15.3596C12.5882 15.6231 11.7787 15.5999 11.6844 15.5907C10.1707 15.4433 6.31059 14.6942 3.17896 10.9362C0.373058 7.56944 -0.0167836 4.77128 0.00053451 3.40315C0.0104832 2.64042 0.300469 1.93296 0.817433 1.41083C1.30787 0.91524 1.95416 0.485236 2.40959 0.211831C3.06731 -0.183538 3.90484 -0.0114622 4.35696 0.611252L6.54972 3.62608C6.97862 4.21673 6.91561 5.01926 6.40049 5.53512L5.75383 6.18142C5.61381 6.32143 5.60939 6.54657 5.74351 6.69212L8.73254 9.9295C8.86556 10.0736 9.08848 10.0883 9.23919 9.96266L10.1994 9.16234C10.7186 8.72902 11.4625 8.70396 12.0082 9.10154C12.4909 9.45306 13.4969 10.1742 14.8016 11.0533ZM11.8277 14.1238C12.5882 14.1492 13.5776 13.388 13.8911 12.5504C13.9527 12.3861 13.8963 12.1993 13.75 12.1027C12.7102 11.4141 11.8782 10.8256 11.37 10.4597C11.2333 10.3613 11.0498 10.3694 10.9205 10.4774L9.91349 11.319C9.30993 11.8223 8.41971 11.7641 7.88653 11.1863L4.4207 7.43164C3.88384 6.85019 3.90226 5.94854 4.4616 5.38921L5.13517 4.71601C5.26339 4.58778 5.27924 4.38549 5.17275 4.23884L3.36688 1.75609C3.25192 1.59802 3.03489 1.55527 2.87092 1.66139C2.53782 1.87658 1.53411 2.72664 1.47442 3.42194C1.41841 4.07192 1.57169 5.11506 2.10597 6.43198C2.52566 7.46664 3.20991 8.67154 4.3109 9.99287C5.30098 11.1808 6.36917 12.0298 7.39499 12.6366C9.25171 13.7354 10.9651 14.0947 11.8277 14.1238Z" fill="white"/>
+            </svg>
           </span>
           <div class="custom-footer__info-text">
             {% if section.settings.phone_label != blank %}
@@ -158,15 +190,15 @@
         <div class="custom-footer__info-item">
           <span class="custom-footer__info-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-  <g clip-path="url(#clip0_1213_1208)">
-    <path d="M6.18523 0.493164L1.66956 4.29109L2.93617 5.79376L7.45185 1.99583L6.18523 0.493164ZM17.3967 0.493164L16.132 1.99583L20.6477 5.79376L21.9124 4.29109L17.3967 0.493164ZM11.791 2.94771C6.90653 2.94771 2.94769 6.90656 2.94769 11.791C2.94769 14.3798 4.06729 16.7007 5.83979 18.3179L3.93027 20.2274L5.31971 21.6169L7.44801 19.4886C8.73154 20.2142 10.2111 20.6343 11.791 20.6343C13.3708 20.6343 14.8504 20.2142 16.1339 19.4886L18.2622 21.6169L19.6517 20.2274L17.7421 18.3179C19.5146 16.7007 20.6343 14.3798 20.6343 11.791C20.6343 6.90656 16.6754 2.94771 11.791 2.94771ZM11.791 4.91289C15.5897 4.91289 18.6691 7.99231 18.6691 11.791C18.6691 15.5897 15.5897 18.6691 11.791 18.6691C7.99229 18.6691 4.91286 15.5897 4.91286 11.791C4.91286 7.99231 7.99229 4.91289 11.791 4.91289ZM10.8084 7.86065V12.7736H14.7387V10.8084H12.7736V7.86065H10.8084Z" fill="white"/>
-  </g>
-  <defs>
-    <clipPath id="clip0_1213_1208">
-      <rect width="23.5821" height="23.5821" fill="white"/>
-    </clipPath>
-  </defs>
-</svg>
+              <g clip-path="url(#clip0_1213_1208)">
+                <path d="M6.18523 0.493164L1.66956 4.29109L2.93617 5.79376L7.45185 1.99583L6.18523 0.493164ZM17.3967 0.493164L16.132 1.99583L20.6477 5.79376L21.9124 4.29109L17.3967 0.493164ZM11.791 2.94771C6.90653 2.94771 2.94769 6.90656 2.94769 11.791C2.94769 14.3798 4.06729 16.7007 5.83979 18.3179L3.93027 20.2274L5.31971 21.6169L7.44801 19.4886C8.73154 20.2142 10.2111 20.6343 11.791 20.6343C13.3708 20.6343 14.8504 20.2142 16.1339 19.4886L18.2622 21.6169L19.6517 20.2274L17.7421 18.3179C19.5146 16.7007 20.6343 14.3798 20.6343 11.791C20.6343 6.90656 16.6754 2.94771 11.791 2.94771ZM11.791 4.91289C15.5897 4.91289 18.6691 7.99231 18.6691 11.791C18.6691 15.5897 15.5897 18.6691 11.791 18.6691C7.99229 18.6691 4.91286 15.5897 4.91286 11.791C4.91286 7.99231 7.99229 4.91289 11.791 4.91289ZM10.8084 7.86065V12.7736H14.7387V10.8084H12.7736V7.86065H10.8084Z" fill="white"/>
+              </g>
+              <defs>
+                <clipPath id="clip0_1213_1208">
+                  <rect width="23.5821" height="23.5821" fill="white"/>
+                </clipPath>
+              </defs>
+            </svg>
           </span>
           <div class="custom-footer__info-text">
             {% if section.settings.hours_label != blank %}
@@ -205,7 +237,6 @@
 
   #shopify-section-{{ section.id }} .custom-footer__top {
     display: flex;
-    
     gap: 36px;
   }
 
@@ -234,17 +265,37 @@
     gap: 30px;
     width: 100%;
   }
+
   #shopify-section-{{ section.id }} .custom-footer__brand {
     width: 40%;
-}
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__menu-column {
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__menu-toggle {
+    display: block;
+    width: auto;
+    padding: 0;
+    margin: 0 0 12px;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: default;
+  }
 
   #shopify-section-{{ section.id }} .custom-footer__menu-title {
-    margin: 0 0 12px;
+    margin: 0;
     font-size: 21px;
     line-height: 24px;
     font-weight: 700;
     color: {{ section.settings.heading_color }};
     font-family: 'Lato';
+  }
+
+  #shopify-section-{{ section.id }} .custom-footer__menu-icon {
+    display: none;
   }
 
   #shopify-section-{{ section.id }} .custom-footer__menu-list {
@@ -380,10 +431,6 @@
   }
 
   @media screen and (max-width: 1100px) {
-    #shopify-section-{{ section.id }} .custom-footer__top {
-      grid-template-columns: 1fr;
-    }
-
     #shopify-section-{{ section.id }} .custom-footer__menus {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -399,14 +446,117 @@
   }
 
   @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .custom-footer__top {
+      flex-direction: column;
+      align-items: center;
+    }
+
     #shopify-section-{{ section.id }} .custom-footer__inner {
-      padding-top: 24px;
-      padding-bottom: 12px;
+      padding: 60px 16px;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__brand {
+      width: 100%;
+      text-align: center;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__logo {
+      display: block;
+      max-width: 100%;
+      width: auto;
+      max-height: 88px;
+      object-fit: contain;
+      margin: 0 auto;
     }
 
     #shopify-section-{{ section.id }} .custom-footer__menus {
       grid-template-columns: 1fr;
-      gap: 20px;
+      gap: 0;
+      width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-column {
+      border-top: 1px solid {{ section.settings.border_color }};
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-column:last-child {
+      border-bottom: 1px solid {{ section.settings.border_color }};
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-toggle {
+      width: 100%;
+      margin: 0;
+      padding: 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      cursor: pointer;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-title {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-icon {
+      position: relative;
+      display: block;
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      border-radius: 999px;
+      background: #113760;
+      transition: all 0.25s ease;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-icon::before,
+    #shopify-section-{{ section.id }} .custom-footer__menu-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background: #ffffff;
+      transform: translate(-50%, -50%);
+      transition: all 0.25s ease;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-icon::before {
+      width: 10px;
+      height: 2px;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-icon::after {
+      width: 2px;
+      height: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-column.is-open .custom-footer__menu-icon {
+      background: #f1f1f1;
+      border: 1px solid #d7d7d7;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-column.is-open .custom-footer__menu-icon::before {
+      background: #9b9b9b;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-column.is-open .custom-footer__menu-icon::after {
+      opacity: 0;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-list {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding-bottom 0.3s ease;
+      padding-bottom: 0;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-column.is-open .custom-footer__menu-list {
+      padding-bottom: 12px;
+    }
+
+    #shopify-section-{{ section.id }} .custom-footer__menu-list li {
+      margin-bottom: 10px;
     }
 
     #shopify-section-{{ section.id }} .custom-footer__middle-left,
@@ -421,6 +571,94 @@
     }
   }
 </style>
+
+<script>
+  (function() {
+    var section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section) return;
+
+    var accordion = section.querySelector('[data-footer-accordion]');
+    if (!accordion) return;
+
+    var items = Array.prototype.slice.call(accordion.querySelectorAll('[data-accordion-item]'));
+    var mobileBreakpoint = window.matchMedia('(max-width: 767px)');
+
+    function openItem(item) {
+      var trigger = item.querySelector('[data-accordion-trigger]');
+      var content = item.querySelector('[data-accordion-content]');
+      if (!trigger || !content) return;
+
+      item.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      content.style.maxHeight = content.scrollHeight + 'px';
+    }
+
+    function closeItem(item) {
+      var trigger = item.querySelector('[data-accordion-trigger]');
+      var content = item.querySelector('[data-accordion-content]');
+      if (!trigger || !content) return;
+
+      item.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      content.style.maxHeight = '0px';
+    }
+
+    function setupDesktop() {
+      items.forEach(function(item) {
+        var trigger = item.querySelector('[data-accordion-trigger]');
+        var content = item.querySelector('[data-accordion-content]');
+        if (!content || !trigger) return;
+
+        item.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        content.style.maxHeight = 'none';
+      });
+    }
+
+    function setupMobile() {
+      items.forEach(function(item, index) {
+        var content = item.querySelector('[data-accordion-content]');
+        if (!content) return;
+
+        if (index === 0) {
+          openItem(item);
+        } else {
+          closeItem(item);
+        }
+      });
+    }
+
+    function handleResize() {
+      if (mobileBreakpoint.matches) {
+        setupMobile();
+      } else {
+        setupDesktop();
+      }
+    }
+
+    items.forEach(function(item) {
+      var trigger = item.querySelector('[data-accordion-trigger]');
+      if (!trigger) return;
+
+      trigger.addEventListener('click', function() {
+        if (!mobileBreakpoint.matches) return;
+
+        var isOpen = item.classList.contains('is-open');
+
+        items.forEach(function(otherItem) {
+          closeItem(otherItem);
+        });
+
+        if (!isOpen) {
+          openItem(item);
+        }
+      });
+    });
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+  })();
+</script>
 
 {% schema %}
 {
@@ -510,7 +748,7 @@
       "type": "text",
       "id": "address_label",
       "label": "Address label",
-      "default": "Address"
+      "default": "12509 Dover Rd.\nReisterstown, MD 21136"
     },
     {
       "type": "textarea",

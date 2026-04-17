@@ -66,8 +66,8 @@
 
                 <div class="cwt-section__card-body">
                   <svg xmlns="http://www.w3.org/2000/svg" width="36" height="33" viewBox="0 0 36 33" fill="none">
-  <path d="M2.93333 0C1.31267 0 0 1.31267 0 2.93333V14.6667C0 16.2873 1.31267 17.6 2.93333 17.6H8.86016C8.89672 20.2198 8.64045 25.8333 6.10443 29.9979H6.10729C5.92013 30.2865 5.8403 30.6317 5.88175 30.9731C5.9232 31.3146 6.0833 31.6306 6.33407 31.866C6.58484 32.1014 6.91035 32.2413 7.25374 32.2611C7.59713 32.2809 7.93656 32.1795 8.21276 31.9745C8.21276 31.9745 14.6667 27.0518 14.6667 17.6V2.93333C14.6667 1.31267 13.354 0 11.7333 0H2.93333ZM23.4667 0C21.846 0 20.5333 1.31267 20.5333 2.93333V14.6667C20.5333 16.2873 21.846 17.6 23.4667 17.6H29.3935C29.4301 20.2198 29.1738 25.8333 26.6378 29.9979H26.6406C26.4535 30.2865 26.3736 30.6317 26.4151 30.9731C26.4565 31.3146 26.6166 31.6306 26.8674 31.866C27.1182 32.1014 27.4437 32.2413 27.7871 32.2611C28.1305 32.2809 28.4699 32.1795 28.7461 31.9745C28.7461 31.9745 35.2 27.0518 35.2 17.6V2.93333C35.2 1.31267 33.8873 0 32.2667 0H23.4667Z" fill="#0F2E53"/>
-</svg>
+                    <path d="M2.93333 0C1.31267 0 0 1.31267 0 2.93333V14.6667C0 16.2873 1.31267 17.6 2.93333 17.6H8.86016C8.89672 20.2198 8.64045 25.8333 6.10443 29.9979H6.10729C5.92013 30.2865 5.8403 30.6317 5.88175 30.9731C5.9232 31.3146 6.0833 31.6306 6.33407 31.866C6.58484 32.1014 6.91035 32.2413 7.25374 32.2611C7.59713 32.2809 7.93656 32.1795 8.21276 31.9745C8.21276 31.9745 14.6667 27.0518 14.6667 17.6V2.93333C14.6667 1.31267 13.354 0 11.7333 0H2.93333ZM23.4667 0C21.846 0 20.5333 1.31267 20.5333 2.93333V14.6667C20.5333 16.2873 21.846 17.6 23.4667 17.6H29.3935C29.4301 20.2198 29.1738 25.8333 26.6378 29.9979H26.6406C26.4535 30.2865 26.3736 30.6317 26.4151 30.9731C26.4565 31.3146 26.6166 31.6306 26.8674 31.866C27.1182 32.1014 27.4437 32.2413 27.7871 32.2611C28.1305 32.2809 28.4699 32.1795 28.7461 31.9745C28.7461 31.9745 35.2 27.0518 35.2 17.6V2.93333C35.2 1.31267 33.8873 0 32.2667 0H23.4667Z" fill="#0F2E53"/>
+                  </svg>
 
                   {% if block.settings.quote != blank %}
                     <div class="cwt-section__quote">{{ block.settings.quote }}</div>
@@ -107,7 +107,6 @@
   }
 
   #shopify-section-{{ section.id }} .cwt-section__left {
-  
   }
 
   #shopify-section-{{ section.id }} .cwt-section__rating {
@@ -204,23 +203,24 @@
 
   #shopify-section-{{ section.id }} .cwt-section__slider {
     overflow: hidden;
+    padding: 20px;
   }
 
   #shopify-section-{{ section.id }} .cwt-section__track {
     display: flex;
-    gap: 16px;
     transition: transform 0.45s ease;
     will-change: transform;
   }
 
   #shopify-section-{{ section.id }} .cwt-section__card {
-  flex: 0 0 calc((100% - 32px) / 3);
-  min-width: calc((100% - 32px) / 3);
-  background: {{ section.settings.card_bg }};
-  border-radius: 4px;
-  box-shadow: 0 4px 28.8px 0 rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-}
+    flex: 0 0 calc((100% - 32px) / 3);
+    min-width: calc((100% - 32px) / 3);
+    background: {{ section.settings.card_bg }};
+    border-radius: 4px;
+    box-shadow: 0 4px 28.8px 0 rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    margin: 10px 16px
+  }
 
   #shopify-section-{{ section.id }} .cwt-section__card-image-wrap {
     aspect-ratio: 1.8 / 1;
@@ -260,7 +260,7 @@
   #shopify-section-{{ section.id }} .cwt-section__author {
     font-size: 14px;
     line-height: 16px;
-    font-weight: 500;
+    font-weight: 600;
     color: {{ section.settings.author_color }};
     margin-bottom: 4px;
     font-style: italic;
@@ -269,9 +269,23 @@
   #shopify-section-{{ section.id }} .cwt-section__role {
     font-size: 14px;
     line-height: 15px;
-    font-weight: 500;
+    font-weight: 600;
     color: {{ section.settings.role_color }};
     font-style: italic;
+  }
+
+  @media screen and (max-width: 1366px) {
+    #shopify-section-{{ section.id }} .cwt-section__card {
+      flex: 0 0 calc((100% - 16px) / 2);
+      min-width: calc((100% - 16px) / 2);
+    }
+  }
+
+  @media screen and (max-width: 1150px) {
+    #shopify-section-{{ section.id }} .cwt-section__card {
+      flex: 0 0 calc((100% - 16px) / 1);
+      min-width: calc((100% - 16px) / 1);
+    }
   }
 
   @media screen and (max-width: 989px) {
@@ -288,25 +302,103 @@
       flex: 0 0 calc((100% - 16px) / 2);
       min-width: calc((100% - 16px) / 2);
     }
-  }
 
-  @media screen and (max-width: 767px) {
     #shopify-section-{{ section.id }} .cwt-section__inner {
-      padding: 28px 0;
+      padding: 60px 70px 60px 70px;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__rating {
+      justify-content: center;
     }
 
     #shopify-section-{{ section.id }} .cwt-section__heading {
-      font-size: 28px;
+      text-align: center;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__description {
+      text-align: center;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__controls {
+      justify-content: center;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__indicator {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .cwt-section__controls {
+    display: none !important;
+}
+    #shopify-section-{{ section.id }} .cwt-section__inner {
+      padding: 28px 16px 40px;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      align-items: start;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__left {
+      display: contents;
+      max-width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__rating {
+      grid-row: 1;
+      margin-bottom: 0;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__heading {
+      grid-row: 2;
+      font-size: 20px;
       line-height: 32px;
+      margin-bottom: 0;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__description {
+      grid-row: 3;
+      margin-bottom: 0;
+      font-size: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__controls {
+      grid-row: 4;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__right {
+      grid-row: 5;
+      min-width: 0;
+      margin-bottom: 14px;
+    }
+
+    #shopify-section-{{ section.id }} .cwt-section__indicator {
+      grid-row: 6;
+      width: 100%;
+      margin-top: 0;
+      margin-bottom: 0;
     }
 
     #shopify-section-{{ section.id }} .cwt-section__card {
-      flex: 0 0 88%;
-      min-width: 88%;
+      flex: 0 0 calc((100% - 16px) / 2);
+      min-width: calc((100% - 16px) / 2);
     }
 
     #shopify-section-{{ section.id }} .cwt-section__quote {
       min-height: auto;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    #shopify-section-{{ section.id }} .cwt-section__card {
+      flex: 0 0 100%;
+      min-width: 100%;
     }
   }
 </style>
@@ -329,28 +421,47 @@
     var isAnimating = false;
     var resizeTimer = null;
 
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var touchEndX = 0;
+    var touchEndY = 0;
+    var isTouching = false;
+    var swipeThreshold = 50;
+
     function getOriginalCards() {
       return Array.prototype.slice.call(track.querySelectorAll('.cwt-section__card:not(.is-clone)'));
     }
 
-    function getGap() {
-      return parseInt(window.getComputedStyle(track).gap || 16, 10);
+    function getAllCards() {
+      return Array.prototype.slice.call(track.querySelectorAll('.cwt-section__card'));
     }
 
-    function getStep() {
-      var firstCard = track.querySelector('.cwt-section__card');
-      if (!firstCard) return 0;
-      return firstCard.getBoundingClientRect().width + getGap();
+    function getOuterWidth(el) {
+      if (!el) return 0;
+      var styles = window.getComputedStyle(el);
+      var marginLeft = parseFloat(styles.marginLeft) || 0;
+      var marginRight = parseFloat(styles.marginRight) || 0;
+      return el.getBoundingClientRect().width + marginLeft + marginRight;
     }
 
     function getVisibleCount() {
-      var step = getStep();
-      if (!step) return 1;
-      return Math.max(1, Math.round(slider.clientWidth / step));
+      var originals = getOriginalCards();
+      var firstCard = originals[0];
+      if (!firstCard) return 1;
+
+      var cardOuterWidth = getOuterWidth(firstCard);
+      if (!cardOuterWidth) return 1;
+
+      return Math.max(1, Math.floor(slider.clientWidth / cardOuterWidth));
     }
 
     function setTrackPosition(animate) {
-      var offset = currentIndex * getStep();
+      var cards = getAllCards();
+      var targetCard = cards[currentIndex];
+      if (!targetCard) return;
+
+      var offset = targetCard.offsetLeft;
+
       track.style.transition = animate ? 'transform 0.45s ease' : 'none';
       track.style.transform = 'translate3d(-' + offset + 'px, 0, 0)';
     }
@@ -395,12 +506,9 @@
         return;
       }
 
-      var realIndex = 0;
-      if (originalCount > 0) {
-        realIndex = ((currentIndex - clonesPerSide) % originalCount + originalCount) % originalCount;
-      }
-
+      var realIndex = ((currentIndex - clonesPerSide) % originalCount + originalCount) % originalCount;
       var segmentWidth = 100 / originalCount;
+
       indicatorFill.style.width = segmentWidth + '%';
       indicatorFill.style.transform = 'translateX(' + (realIndex * 100) + '%)';
     }
@@ -486,6 +594,20 @@
       });
     }
 
+    function handleSwipe() {
+      var deltaX = touchEndX - touchStartX;
+      var deltaY = touchEndY - touchStartY;
+
+      if (Math.abs(deltaX) < swipeThreshold) return;
+      if (Math.abs(deltaX) <= Math.abs(deltaY)) return;
+
+      if (deltaX < 0) {
+        goToSlide(currentIndex + 1);
+      } else {
+        goToSlide(currentIndex - 1);
+      }
+    }
+
     prevBtn.addEventListener('click', function() {
       goToSlide(currentIndex - 1);
     });
@@ -499,11 +621,45 @@
       handleLoopReset();
     });
 
+    slider.addEventListener('touchstart', function(e) {
+      if (!e.touches || !e.touches.length) return;
+      isTouching = true;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchEndX = touchStartX;
+      touchEndY = touchStartY;
+    }, { passive: true });
+
+    slider.addEventListener('touchmove', function(e) {
+      if (!isTouching || !e.touches || !e.touches.length) return;
+      touchEndX = e.touches[0].clientX;
+      touchEndY = e.touches[0].clientY;
+    }, { passive: true });
+
+    slider.addEventListener('touchend', function() {
+      if (!isTouching) return;
+      isTouching = false;
+      handleSwipe();
+    }, { passive: true });
+
     window.addEventListener('resize', function() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function() {
         buildSlider();
       }, 200);
+    });
+
+    var images = section.querySelectorAll('img');
+    images.forEach(function(img) {
+      if (!img.complete) {
+        img.addEventListener('load', function() {
+          buildSlider();
+        });
+      }
+    });
+
+    window.addEventListener('load', function() {
+      buildSlider();
     });
 
     buildSlider();

@@ -62,7 +62,7 @@
                   </svg>
                 {% endif %}
               </div>
-
+              <div class="wmcd-featured-container">
               {% if block.settings.title != blank %}
                 <h3 class="wmcd-feature-title">{{ block.settings.title }}</h3>
               {% endif %}
@@ -70,6 +70,7 @@
               {% if block.settings.text != blank %}
                 <div class="wmcd-feature-text">{{ block.settings.text }}</div>
               {% endif %}
+            </div>
             </div>
           </div>
         {% endfor %}
@@ -193,13 +194,7 @@
       gap: 40px;
     }
 
-    #shopify-section-{{ section.id }} .wmcd-heading {
-      font-size: 42px;
-      line-height: 46px;
-    }
-
     #shopify-section-{{ section.id }} .wmcd-image-wrap {
-      max-width: 500px;
       flex: 0 0 500px;
     }
 
@@ -212,8 +207,57 @@
       display: none;
     }
   }
-
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1024px){
+    #shopify-section-{{ section.id }} .wmcd-feature-icon img {
+    filter: brightness(0) invert(1);
+}
+    #shopify-section-{{ section.id }} .wmcd-feature-inner {
+    display: flex;
+    gap: 15px;
+}
+    #shopify-section-{{ section.id }} .wmcd-feature-title {
+    color: #fff;
+    font-size: 14px;
+}
+    #shopify-section-{{ section.id }} .wmcd-feature-text {
+    color: #fff;
+    font-size: 12px;
+}
+    #shopify-section-{{ section.id }} .wmcd-feature {
+    padding: 25px;
+    background: #0F2E53;
+    border-radius: 14px;
+}
+    #shopify-section-{{ section.id }} .wmcd-features {
+    display: flex !important;
+    flex-direction: column;
+}
+   
+    #shopify-section-{{ section.id }} .wmcd-content {
+    width: 100%;
+}
+#shopify-section-{{ section.id }} .wmcd-image-wrap {
+    width: 100%;
+    flex: unset;
+}
+#shopify-section-{{ section.id }} .wmcd-top {
+    flex-direction: column;
+}
+#shopify-section-{{ section.id }} .wmcd-rating {
+    justify-content: center;
+}
+#shopify-section-{{ section.id }} .wmcd-heading {
+    text-align: center;
+}
+#shopify-section-{{ section.id }} .wmcd-description {
+    text-align: center;
+    margin: 0 auto;
+}
+  }
+  @media screen and (max-width: 768px) {
+     #shopify-section-{{ section.id }} .wmcd-container.page-width{
+      padding: 60px 16px;
+    }
     #shopify-section-{{ section.id }} .wmcd-container {
       padding-top: {{ section.settings.padding_top_mobile }}px;
       padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
@@ -232,14 +276,14 @@
 
     #shopify-section-{{ section.id }} .wmcd-heading {
       max-width: 100%;
-      font-size: 34px;
-      line-height: 38px;
+      font-size: 20px;
+      line-height: 27px;
     }
 
     #shopify-section-{{ section.id }} .wmcd-description {
       max-width: 100%;
-      font-size: 16px;
-      line-height: 26px;
+      font-size: 14px;
+      line-height: 18px;
     }
 
     #shopify-section-{{ section.id }} .wmcd-image-wrap {
@@ -250,10 +294,6 @@
     #shopify-section-{{ section.id }} .wmcd-features {
       grid-template-columns: 1fr;
       gap: 24px;
-    }
-
-    #shopify-section-{{ section.id }} .wmcd-feature {
-      padding: 0 0 24px;
     }
 
     #shopify-section-{{ section.id }} .wmcd-feature::after {
