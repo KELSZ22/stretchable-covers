@@ -1018,6 +1018,10 @@
 
 .custom-cover-customizer .custom-cover-customizer__clipart-panel {
   display: grid;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-top: 20px;
 }
 
 .custom-cover-customizer .custom-cover-customizer__clipart-title {
