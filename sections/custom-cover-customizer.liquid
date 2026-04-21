@@ -89,10 +89,11 @@
           , menu_variant: 'inline' %}
       </div>
     </div>
+
     <div class="custom-cover-customizer__left-column">
       {%- assign safe_banner_text = section.settings.safe_area_warning | strip -%}
       {%- if safe_banner_text == blank -%}
-        {%- assign safe_banner_text = "Can’t print up to the end of the edge" -%}
+        {%- assign safe_banner_text = "Can't print up to the end of the edge" -%}
       {%- endif -%}
       <div
         class="custom-cover-customizer__safe-banner"
@@ -124,6 +125,7 @@
         </span>
         <span>{{ safe_banner_text | escape }}</span>
       </div>
+
       <div class="custom-cover-customizer__panel">
         <custom-cover-customizer-component
           class="custom-cover-customizer__app"
@@ -153,26 +155,28 @@
           data-currency-code="{{ cart.currency.iso_code }}"
           data-money-format="{{ shop.money_format | escape }}"
           data-include-preview="{{ section.settings.include_preview_data }}">
+
           <script type="application/json" data-product-catalog>
-              [
-                {%- for product in all_catalog_products limit: all_catalog_products_limit -%}
-                  {
-                    "id": {{ product.id | json }},
-                    "title": {{ product.title | strip | json }},
-                    "variants": [
-                      {%- for variant in product.variants -%}
-                        {
-                          "id": {{ variant.id | json }},
-                          "title": {{ variant.title | strip | json }},
-                          "price": {{ variant.price | json }},
-                          "available": {{ variant.available | json }}
-                        }{%- unless forloop.last -%},{%- endunless -%}
-                      {%- endfor -%}
-                    ]
-                  }{%- unless forloop.last -%},{%- endunless -%}
-                {%- endfor -%}
-              ]
+            [
+              {%- for product in all_catalog_products limit: all_catalog_products_limit -%}
+                {
+                  "id": {{ product.id | json }},
+                  "title": {{ product.title | strip | json }},
+                  "variants": [
+                    {%- for variant in product.variants -%}
+                      {
+                        "id": {{ variant.id | json }},
+                        "title": {{ variant.title | strip | json }},
+                        "price": {{ variant.price | json }},
+                        "available": {{ variant.available | json }}
+                      }{%- unless forloop.last -%},{%- endunless -%}
+                    {%- endfor -%}
+                  ]
+                }{%- unless forloop.last -%},{%- endunless -%}
+              {%- endfor -%}
+            ]
           </script>
+
           <form
             method="post"
             action="{{ routes.cart_add_url }}"
@@ -213,9 +217,7 @@
                 data-mode-tab="editor"
                 role="tab"
                 aria-selected="true">
-                <span class="custom-cover-customizer__mode-tab-icon" aria-hidden="true">
-                  {{- 'custom-icon-editor.svg' | inline_asset_content -}}
-                </span>
+                <span class="custom-cover-customizer__mode-tab-icon" aria-hidden="true">{{- 'custom-icon-editor.svg' | inline_asset_content -}}</span>
                 <span class="custom-cover-customizer__mode-tab-label">Editor</span>
               </button>
               <button
@@ -224,9 +226,7 @@
                 data-mode-tab="templates"
                 role="tab"
                 aria-selected="false">
-                <span class="custom-cover-customizer__mode-tab-icon" aria-hidden="true">
-                  {{- 'custom-icon-templates.svg' | inline_asset_content -}}
-                </span>
+                <span class="custom-cover-customizer__mode-tab-icon" aria-hidden="true">{{- 'custom-icon-templates.svg' | inline_asset_content -}}</span>
                 <span class="custom-cover-customizer__mode-tab-label">Templates</span>
               </button>
               <button
@@ -235,9 +235,7 @@
                 data-mode-tab="drafts"
                 role="tab"
                 aria-selected="false">
-                <span class="custom-cover-customizer__mode-tab-icon" aria-hidden="true">
-                  {{- 'custom-icon-drafts.svg' | inline_asset_content -}}
-                </span>
+                <span class="custom-cover-customizer__mode-tab-icon" aria-hidden="true">{{- 'custom-icon-drafts.svg' | inline_asset_content -}}</span>
                 <span class="custom-cover-customizer__mode-tab-label">Drafts</span>
               </button>
             </div>
@@ -279,6 +277,7 @@
                     </svg>
                   </button>
                 </div>
+
                 <div class="custom-cover-customizer__drawer-body">
                   <p
                     class="custom-cover-customizer__warning"
@@ -288,7 +287,6 @@
                   <div data-mode-panel="editor">
                     <div class="custom-cover-customizer__product-fields">
                       <p class="custom-cover-customizer__label custom-cover-customizer__section-label">Product</p>
-
                       <div class="custom-cover-customizer__group">
                         <label class="custom-cover-customizer__label" for="CustomizerProduct-{{ section.id }}">Product name</label>
                         <select
@@ -305,7 +303,6 @@
                           {%- endfor -%}
                         </select>
                       </div>
-
                       <div class="custom-cover-customizer__group">
                         <label class="custom-cover-customizer__label" for="CustomizerVariant-{{ section.id }}">Product size</label>
                         <div class="custom-cover-customizer__input-action-row">
@@ -324,13 +321,10 @@
                             class="custom-cover-customizer__round-action"
                             data-size-helper="variant"
                             aria-label="Find product size">
-                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
-                              {{- 'custom-icon-size-helper.svg' | inline_asset_content -}}
-                            </span>
+                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">{{- 'custom-icon-size-helper.svg' | inline_asset_content -}}</span>
                           </button>
                         </div>
                       </div>
-
                       <div class="custom-cover-customizer__group">
                         <label class="custom-cover-customizer__label" for="CustomizerImprint-{{ section.id }}">Imprint size</label>
                         <div class="custom-cover-customizer__input-action-row">
@@ -355,9 +349,7 @@
                             class="custom-cover-customizer__round-action"
                             data-size-helper="imprint"
                             aria-label="Add custom imprint size">
-                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
-                              {{- 'custom-icon-size-helper.svg' | inline_asset_content -}}
-                            </span>
+                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">{{- 'custom-icon-size-helper.svg' | inline_asset_content -}}</span>
                           </button>
                         </div>
                       </div>
@@ -373,36 +365,28 @@
                           type="button"
                           class="custom-cover-customizer__tool is-active"
                           data-tool-button="text">
-                          <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">
-                            {{- 'icon-customizer-tool-text.svg' | inline_asset_content -}}
-                          </span>
+                          <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">{{- 'icon-customizer-tool-text.svg' | inline_asset_content -}}</span>
                           <span>{{ section.settings.text_button_label | escape }}</span>
                         </button>
                         <button
                           type="button"
                           class="custom-cover-customizer__tool"
                           data-tool-button="image">
-                          <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">
-                            {{- 'icon-customizer-tool-image.svg' | inline_asset_content -}}
-                          </span>
+                          <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">{{- 'icon-customizer-tool-image.svg' | inline_asset_content -}}</span>
                           <span>{{ section.settings.image_button_label | escape }}</span>
                         </button>
                         <button
                           type="button"
                           class="custom-cover-customizer__tool"
                           data-tool-button="clipart">
-                          <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">
-                            {{- 'icon-customizer-tool-clipart.svg' | inline_asset_content -}}
-                          </span>
+                          <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">{{- 'icon-customizer-tool-clipart.svg' | inline_asset_content -}}</span>
                           <span>{{ section.settings.clipart_heading | escape }}</span>
                         </button>
                         <button
                           type="button"
                           class="custom-cover-customizer__tool"
                           data-tool-button="shapes">
-                          <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">
-                            {{- 'icon-customizer-tool-shapes.svg' | inline_asset_content -}}
-                          </span>
+                          <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">{{- 'icon-customizer-tool-shapes.svg' | inline_asset_content -}}</span>
                           <span>{{ section.settings.shapes_section_heading | escape }}</span>
                         </button>
                       </div>
@@ -456,99 +440,104 @@
                       </button>
                     </div>
 
+                    {%- comment -%} ===== CLIPART PANEL ===== {%- endcomment -%}
                     <div
                       class="custom-cover-customizer__clipart-panel"
                       data-tool-panel="clipart"
                       hidden>
                       <p class="custom-cover-customizer__clipart-title">Choose a clipart</p>
-                      {% assign clipart_metaobject_type = section.settings.clipart_metaobject_type | strip | downcase | replace: ' ', '_' %}
-                      {% assign clipart_metaobjects_collection = shop.metaobjects[clipart_metaobject_type] %}
-                      {% if clipart_metaobjects_collection == blank and shop.metaobjects.clipart_item != blank %}
-                        {% assign clipart_metaobjects_collection = shop.metaobjects.clipart_item %}
-                      {% endif %}
-                      {% assign selected_category = section.settings.clipart_category_handle | default: 'all' %}
-                      {% assign clipart_count = 0 %}
-                      {% assign categories = '' %}
-                      {% if clipart_metaobjects_collection != blank %}
-                        {% for clipart in clipart_metaobjects_collection.values %}
-                          {% assign clipart_image = clipart.image.value | default: clipart.image %}
-                          {% if clipart_image != blank %}
-                            {% assign clipart_count = clipart_count | plus: 1 %}
-                            {% assign category_in_list = false %}
-                            {% if categories contains clipart.category.handle %}
-                              {% assign category_in_list = true %}
-                            {% endif %}
-                            {% if clipart.category.handle != blank and category_in_list == false %}
-                              {% assign categories = categories | append: clipart.category.handle | append: ',' %}
-                            {% endif %}
-                          {% endif %}
-                        {% endfor %}
-                      {% endif %}
-                      {% if clipart_count > 0 %}
-                        {% assign category_list = categories | split: ',' %}
-                        {% if selected_category == 'all' %}
-                          {% for category_handle in category_list %}
-                            {% assign category_name = '' %}
-                            {% for clipart in clipart_metaobjects_collection.values %}
-                              {% if clipart.category.handle == category_handle and clipart.category.name != blank %}
-                                {% assign category_name = clipart.category.name %}
-                                {% break %}
-                              {% endif %}
-                            {% endfor %}
+
+                      {%- assign clipart_metaobject_type = section.settings.clipart_metaobject_type | strip | downcase | replace: ' ', '_' -%}
+                      {%- assign clipart_metaobjects_collection = shop.metaobjects[clipart_metaobject_type] -%}
+                      {%- if clipart_metaobjects_collection == blank and shop.metaobjects.clipart_item != blank -%}
+                        {%- assign clipart_metaobjects_collection = shop.metaobjects.clipart_item -%}
+                      {%- endif -%}
+
+                      {%- comment -%}
+                        KEY FINDING from debug:
+                        - .category.value.handle is EMPTY (Shopify does not expose system handle for referenced metaobjects)
+                        - .category.value.name returns the name string directly e.g. "Misc", "Safety", "Music"
+                        So we use the lowercased name as our grouping key.
+                      {%- endcomment -%}
+
+                      {%- assign clipart_count = 0 -%}
+                      {%- assign seen_cat_keys = '' -%}
+                      {%- assign ordered_cat_keys = '' -%}
+                      {%- assign ordered_cat_names = '' -%}
+
+                        {%- if clipart_metaobjects_collection != blank -%}
+
+                        {%- comment -%} Pass 1: collect unique categories in encounter order {%- endcomment -%}
+                        {%- for clipart in clipart_metaobjects_collection.values -%}
+                          {%- assign clipart_image = clipart.image.value | default: clipart.image -%}
+                          {%- if clipart_image == blank -%}
+                            {%- continue -%}{%- endif -%}
+
+                          {%- assign cat_name = clipart.category.value.name | strip -%}
+                          {%- if cat_name == blank -%}
+                            {%- assign cat_name = 'Uncategorized' -%}
+                          {%- endif -%}
+                          {%- assign cat_key = cat_name | downcase | replace: ' ', '-' -%}
+
+                          {%- assign clipart_count = clipart_count | plus: 1 -%}
+                          {%- assign sentinel = cat_key | prepend: '|' | append: '|' -%}
+                          {%- unless seen_cat_keys contains sentinel -%}
+                            {%- assign seen_cat_keys = seen_cat_keys | append: sentinel -%}
+                            {%- assign ordered_cat_keys = ordered_cat_keys | append: cat_key | append: '~~~' -%}
+                            {%- assign ordered_cat_names = ordered_cat_names | append: cat_name | append: '~~~' -%}
+                          {%- endunless -%}
+                        {%- endfor -%}
+
+                        {%- if clipart_count > 0 -%}
+                          {%- assign cat_key_list = ordered_cat_keys | split: '~~~' -%}
+                          {%- assign cat_name_list = ordered_cat_names | split: '~~~' -%}
+
+                          {%- comment -%} Pass 2: render each category section {%- endcomment -%}
+                          {%- for cat_key in cat_key_list -%}
+                            {%- if cat_key == blank -%}
+                              {%- continue -%}{%- endif -%}
+                            {%- assign current_cat_name = cat_name_list[forloop.index0] -%}
+
                             <div class="custom-cover-customizer__clipart-category">
-                              <p class="custom-cover-customizer__clipart-category-name">{{ category_name | default: category_handle | escape }}</p>
+                              <p class="custom-cover-customizer__clipart-category-name">{{ current_cat_name | escape }}</p>
                               <div class="custom-cover-customizer__clipart-list">
-                                {% for clipart in clipart_metaobjects_collection.values %}
-                                  {% assign clipart_image = clipart.image.value | default: clipart.image %}
-                                  {% if clipart_image != blank and clipart.category.handle == category_handle %}
-                                    <button
-                                      type="button"
-                                      class="custom-cover-customizer__clipart"
-                                      data-add-clipart
-                                      data-src="{{ clipart_image | image_url: width: 240 }}"
-                                      data-category="{{ clipart.category.handle | escape }}"
-                                      aria-label="Clipart">
-                                      {{ clipart_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: 'Clipart' }}
-                                    </button>
-                                  {% endif %}
-                                {% endfor %}
-                              </div>
-                            </div>
-                          {% endfor %}
-                        {% else %}
-                          {% assign category_name = '' %}
-                          {% for clipart in clipart_metaobjects_collection.values %}
-                            {% if clipart.category.handle == selected_category and clipart.category.name != blank %}
-                              {% assign category_name = clipart.category.name %}
-                              {% break %}
-                            {% endif %}
-                          {% endfor %}
-                          <div class="custom-cover-customizer__clipart-category">
-                            <p class="custom-cover-customizer__clipart-category-name">{{ category_name | default: selected_category | escape }}</p>
-                            <div class="custom-cover-customizer__clipart-list">
-                              {% for clipart in clipart_metaobjects_collection.values %}
-                                {% assign clipart_image = clipart.image.value | default: clipart.image %}
-                                {% if clipart_image != blank and clipart.category.handle == selected_category %}
+                                {%- for clipart in clipart_metaobjects_collection.values -%}
+                                  {%- assign clipart_image = clipart.image.value | default: clipart.image -%}
+                                  {%- if clipart_image == blank -%}
+                                    {%- continue -%}{%- endif -%}
+
+                                  {%- assign item_cat_name = clipart.category.value.name | strip -%}
+                                  {%- if item_cat_name == blank -%}
+                                    {%- assign item_cat_name = 'Uncategorized' -%}
+                                  {%- endif -%}
+                                  {%- assign item_cat_key = item_cat_name | downcase | replace: ' ', '-' -%}
+
+                                  {%- unless item_cat_key == cat_key -%}
+                                    {%- continue -%}{%- endunless -%}
+
                                   <button
                                     type="button"
                                     class="custom-cover-customizer__clipart"
                                     data-add-clipart
                                     data-src="{{ clipart_image | image_url: width: 240 }}"
-                                    data-category="{{ clipart.category.handle | escape }}"
-                                    aria-label="Clipart">
-                                    {{ clipart_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: 'Clipart' }}
+                                    data-category="{{ item_cat_key | escape }}"
+                                    aria-label="{{ item_cat_name | escape }} clipart">
+                                    {{ clipart_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: item_cat_name }}
                                   </button>
-                                {% endif %}
-                              {% endfor %}
+                                {%- endfor -%}
+                              </div>
                             </div>
-                          </div>
-                        {% endif %}
-                      {% else %}
-                        <p class="custom-cover-customizer__message custom-cover-customizer__clipart-empty">
-                          Add clipart items in Shopify Admin → Content → Metaobjects
-                        </p>
-                      {% endif %}
+                          {%- endfor -%}
+
+                        {%- else -%}
+                          <p class="custom-cover-customizer__message custom-cover-customizer__clipart-empty">
+                            Add clipart items in Shopify Admin → Content → Metaobjects
+                          </p>
+                        {%- endif -%}
+
+                      {%- endif -%}
                     </div>
+                    {%- comment -%} ===== END CLIPART PANEL ===== {%- endcomment -%}
 
                     <div class="custom-cover-customizer__text-panel" data-tool-panel="text">
                       <div class="custom-cover-customizer__group">
@@ -563,7 +552,6 @@
                           data-text-input
                           placeholder="{{ section.settings.text_placeholder | escape }}"></textarea>
                       </div>
-
                       <div class="custom-cover-customizer__inline-grid">
                         <div class="custom-cover-customizer__group">
                           <label class="custom-cover-customizer__label" for="CustomizerFont-{{ section.id }}">
@@ -607,14 +595,11 @@
                               <option
                                 value="{{ font_size }}"
                                 {% if font_size == default_size %}
-                                selected{% endif %}>
-                                {{ font_size }}px
-                              </option>
+                                selected{% endif %}>{{ font_size }}px</option>
                             {% endfor %}
                           </select>
                         </div>
                       </div>
-
                       <div class="custom-cover-customizer__group custom-cover-customizer__group--tight">
                         <fieldset class="custom-cover-customizer__subfield">
                           <div
@@ -636,9 +621,7 @@
                                   data-color-swatch
                                   aria-hidden="true"
                                   style="background-color: {{ default_text_hex }}"></span>
-                                <span class="custom-cover-customizer__color-hex" data-color-hex>
-                                  {{- default_text_hex | upcase -}}
-                                </span>
+                                <span class="custom-cover-customizer__color-hex" data-color-hex>{{- default_text_hex | upcase -}}</span>
                               </label>
                             </div>
                             <div class="custom-cover-customizer__format-cluster custom-cover-customizer__format-cluster--grow">
@@ -653,9 +636,7 @@
                                   aria-pressed="true"
                                   aria-label="{{ section.settings.align_left_aria_label | escape }}">
                                   <span class="visually-hidden">{{ section.settings.align_left_short_label | escape }}</span>
-                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">
-                                    {{- 'icon-customizer-align-left.svg' | inline_asset_content -}}
-                                  </span>
+                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-left.svg' | inline_asset_content -}}</span>
                                 </button>
                                 <button
                                   type="button"
@@ -664,9 +645,7 @@
                                   aria-pressed="false"
                                   aria-label="{{ section.settings.align_center_aria_label | escape }}">
                                   <span class="visually-hidden">{{ section.settings.align_center_short_label | escape }}</span>
-                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">
-                                    {{- 'icon-customizer-align-center.svg' | inline_asset_content -}}
-                                  </span>
+                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-center.svg' | inline_asset_content -}}</span>
                                 </button>
                                 <button
                                   type="button"
@@ -675,9 +654,7 @@
                                   aria-pressed="false"
                                   aria-label="{{ section.settings.align_right_aria_label | escape }}">
                                   <span class="visually-hidden">{{ section.settings.align_right_short_label | escape }}</span>
-                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">
-                                    {{- 'icon-customizer-align-right.svg' | inline_asset_content -}}
-                                  </span>
+                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-right.svg' | inline_asset_content -}}</span>
                                 </button>
                                 <button
                                   type="button"
@@ -686,9 +663,7 @@
                                   aria-pressed="false"
                                   aria-label="{{ section.settings.align_justify_aria_label | escape }}">
                                   <span class="visually-hidden">{{ section.settings.align_justify_short_label | escape }}</span>
-                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">
-                                    {{- 'icon-customizer-align-justify.svg' | inline_asset_content -}}
-                                  </span>
+                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-justify.svg' | inline_asset_content -}}</span>
                                 </button>
                               </div>
                             </div>
@@ -760,9 +735,7 @@
                             data-shape-fill-swatch
                             aria-hidden="true"
                             style="background-color: {{ default_shape_fill }}"></span>
-                          <span class="custom-cover-customizer__color-hex" data-shape-fill-hex>
-                            {{- default_shape_fill | upcase -}}
-                          </span>
+                          <span class="custom-cover-customizer__color-hex" data-shape-fill-hex>{{- default_shape_fill | upcase -}}</span>
                         </label>
                       </div>
                       <div class="custom-cover-customizer__shapes-list">
@@ -882,7 +855,6 @@
                 </div>
               </div>
             </div>
-
           </form>
         </custom-cover-customizer-component>
       </div>
@@ -948,17 +920,14 @@
             </div>
             <p class="custom-cover-customizer__preview-footer-price">
               <span class="custom-cover-customizer__preview-footer-price-label">Total:</span>
-              <span class="custom-cover-customizer__preview-footer-price-amount" data-preview-footer-price-total>
-                {{- 0 | money -}}
-              </span>
+              <span class="custom-cover-customizer__preview-footer-price-amount" data-preview-footer-price-total>{{- 0 | money -}}</span>
             </p>
           </div>
         </div>
         <div class="custom-cover-customizer__preview-footer-ctas">
           {% render 'custom-cover-customizer-design-bar-actions'
             , section_id: section.id
-            , menu_variant: 'preview-footer'
-          %}
+            , menu_variant: 'preview-footer' %}
         </div>
       </div>
     </div>
@@ -1188,7 +1157,7 @@
         "id": "clipart_category_handle",
         "label": "Clipart category filter (optional)",
         "default": "all",
-        "info": "Enter category handle to filter, or 'all' for all categories"
+        "info": "Enter category name to filter (e.g. Misc), or 'all' for all categories"
       }, {
         "type": "header",
         "content": "Templates"
