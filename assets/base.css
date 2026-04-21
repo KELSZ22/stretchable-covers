@@ -4974,3 +4974,9 @@ product-recommendations:has([data-has-recommendations='false']) {
     translate: 0px var(--atc-destination, 0px);
   }
 }
+.yotpo-label-container {
+    display: none !important;
+}
+.main-widget.yotpo-display-wrapper.yotpo-no-reviews {
+    padding: 60px 40px;
+}

@@ -1,0 +1,85 @@
+{%- doc -%}
+  Custom Design Cover block.
+  Standalone custom button only.
+  Does not use Shopify accelerated checkout.
+
+  @param {string} can_add_to_cart - Whether the product can be added to the cart
+  @param form_obj - Unused, kept only for compatibility
+{%- enddoc -%}
+
+{% liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+%}
+
+{% if product != blank %}
+  <div
+    class="design-cover-block"
+    {{ block.shopify_attributes }}
+    {% if request.visual_preview_mode %}
+      data-shopify-visual-preview
+    {% endif %}
+    {% unless can_add_to_cart %}
+      hidden
+    {% endunless %}
+  >
+    <button
+      type="button"
+      class="shopify-payment-button__button shopify-payment-button__button--unbranded"
+      aria-label="Design Cover"
+      data-design-cover-trigger
+    >
+      <span class="design-cover-button__icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <path d="M11 10L14 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M6.50008 21C7.19232 21 7.869 20.7947 8.44458 20.4101C9.02015 20.0256 9.46875 19.4789 9.73366 18.8394C9.99857 18.1999 10.0679 17.4961 9.93283 16.8172C9.79778 16.1383 9.46444 15.5146 8.97495 15.0251C8.48547 14.5356 7.86183 14.2023 7.1829 14.0673C6.50396 13.9322 5.80023 14.0015 5.16069 14.2664C4.52115 14.5313 3.97452 14.9799 3.58994 15.5555C3.20535 16.1311 3.00008 16.8078 3.00008 17.5C3.00027 18.1656 2.74713 18.8063 2.29208 19.292C2.15187 19.4319 2.05634 19.6102 2.0176 19.8044C1.97887 19.9986 1.99868 20.2 2.07451 20.3829C2.15035 20.5659 2.2788 20.7222 2.44357 20.832C2.60835 20.9419 2.80204 21.0004 3.00008 21H6.50008Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M9.96904 17.031L21.378 5.62398C21.7761 5.22589 21.9998 4.68596 21.9998 4.12298C21.9998 3.55999 21.7761 3.02007 21.378 2.62198C20.98 2.22389 20.44 2.00024 19.877 2.00024C19.3141 2.00024 18.7741 2.22389 18.376 2.62198L6.96704 14.031" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+      </span>
+      <span class="design-cover-button__text">Design Cover</span>
+    </button>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+.design-cover-block button.shopify-payment-button__button.shopify-payment-button__button--unbranded {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    height: 52px;
+    background: #EB891B;
+}
+  .design-cover-block[data-shopify-visual-preview] {
+    width: 145px;
+  }
+
+  .design-cover-button:hover {
+    background: #c97d14;
+    transform: translateY(-1px);
+  }
+
+  .design-cover-button:focus-visible {
+    outline: 2px solid #d98a1c;
+    outline-offset: 2px;
+  }
+
+  .design-cover-button__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .design-cover-button__text {
+    white-space: nowrap;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Design Cover",
+  "tag": "div"
+}
+{% endschema %}

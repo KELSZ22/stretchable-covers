@@ -191,7 +191,6 @@
     display: flex;
     align-items: center;
     border-radius: 4px;
-    overflow: hidden;
   }
 
   .header-search input {
@@ -219,7 +218,7 @@
   .header-search button svg {
     width: 20px;
     height: 20px;
-    fill: #555;
+
   }
 
   .header-icons {
@@ -267,27 +266,48 @@
     background: #fff;
     display: flex;
     justify-content: center;
+    position: relative;
+    overflow: visible;
+  }
+
+  .custom-header-nav-scroll {
+    width: 100%;
+    position: relative;
+    overflow: visible;
+  }
+
+  .custom-header-nav-scroll.is-scrollable {
+     overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  }
+
+  .custom-header-nav-scroll.is-scrollable::-webkit-scrollbar {
+    display: none;
+  }
+
+  .custom-header-nav-scroll.is-dragging {
+    cursor: grabbing;
   }
 
   .header-nav-inner {
     display: flex;
     align-items: center;
-    padding: 0 20px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    width: 100%;
-    justify-content: flex-start;
-    width: 1440px;
-
-  }
-
-  .header-nav-inner::-webkit-scrollbar {
-    display: none;
+    justify-content: center;
+    gap: 0;
+    padding: 8px;
+    margin: 0;
+    width: max-content;
+    min-width: 100%;
+    position: relative;
   }
 
   .header-nav-inner > li {
     list-style: none;
     position: relative;
+    flex: 0 0 auto;
   }
 
   .header-nav-inner > li > a {
@@ -306,6 +326,36 @@
 
   .header-nav-inner > li > a:hover {
     color: #e05a00;
+  }
+
+  .custom-nav-item {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .custom-nav-item > a {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .custom-nav-modal {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 9999;
+    width: 760px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.14);
+    overflow: hidden;
+  }
+
+  .custom-nav-modal[hidden] {
+    display: none !important;
+  }
+
+  .custom-nav-item.is-open > .custom-nav-modal {
+    display: block;
   }
 
   .header-nav-inner > li.has-dropdown:hover > .nav-dropdown {
@@ -364,7 +414,7 @@
     top: 0;
     left: 0;
     width: 80%;
-    max-width: 320px;
+    max-width: 430px;
     height: 100%;
     background: #fff;
     z-index: 9999;
@@ -436,24 +486,22 @@
     color: #e05a00;
   }
 
-  .mobile-nav-list .mobile-sub-toggle {
+  .mobile-nav-list .mobile-sub-toggle, li.mobile-nav-list__item a {
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
     padding: 13px 20px;
-    font-size: 13.5px;
-    font-weight: 700;
-    color: #222;
+    font-size: 16px;
     text-transform: uppercase;
     border-bottom: 1px solid #f0f0f0;
     letter-spacing: 0.03em;
+    font-family: Lato;
+    color: #1F1F1F;
+    font-weight: 400;
   }
 
-  .mobile-nav-list .mobile-sub-toggle:hover {
-    background: #fff5ee;
-    color: #e05a00;
-  }
+
 
   .mobile-sub-toggle .arrow {
     font-size: 12px;
@@ -1337,14 +1385,14 @@
       
 
       <div class="header-search">
-        <form action="{{ routes.search_url }}" method="get" role="search">
-          <input type="text" name="q" placeholder="{{ section.settings.search_placeholder | default: 'Search Covers' }}" aria-label="Search">
-          <button type="submit" aria-label="Submit search">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
-              <image xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAABnUlEQVR4AZyT3VHCQBSFIe+MyTswoQPtACpQKjBUYKyAUAFaQbACYwVQAh24Ad4TC2Did3YY2JDIgzv3sPf3cHf3xus4q9/vj4fDYQoKUIFiMBisQeSkNdQzCQVLz/PWZERVVW3ZV91udwvGIIUo9Vn4G2JJIJgTiSneQDTa7/eT3W43y/N8IpvYO0RRr9f7RG+IF4bhPd6EpEzFhoV9FkwDYYxDRGM6ahzNOx6PLyR0IHnV/hfoKCFWgmdQE4/iJx1D/1iLXBnERfBF/pir8d2w7sQnYFznDd3mBUFw5+aIpKST0HXe0G0HRVH8uDk6jp7x/rpFN8nRH9FNyWI/iy52geXzfHpm1HY5jUFI18qvJXmHw2HDnWQgPiXWEmTg1wva12EMVvK50J3oeWeQZAQSCr6ZBY1+wr7ELvC/Ab2Ojy9Fr4klMcaUeZ5PaXVGtIRQAzVn15CpeMHABcQ/8EXXRJaEQitqleQHBisAIxBgj4CO0iGu76pBVCOxTPwYOgMSdYHnIm1ErSSXknbNJeLO4n+RiPpENOXI2S8AAAD//wU/IxMAAAAGSURBVAMAoru7SgkzdOwAAAAASUVORK5CYII=" x="0" y="0" width="17" height="17"/>
-            </svg>
-          </button>
-        </form>
+        {% render 'custom-header-search',
+          search_placeholder: section.settings.search_placeholder,
+          product_1: section.settings.search_product_1,
+          product_2: section.settings.search_product_2,
+          featured_image: section.settings.search_image_featured,
+          featured_heading: section.settings.search_heading_featured,
+          featured_text: section.settings.search_text_featured
+        %}
       </div>
 
       <div class="header-icons">
@@ -1384,48 +1432,54 @@
   </div>
 
   <nav class="custom-header-nav" aria-label="Main navigation">
-    <ul class="header-nav-inner">
-      {%- for link in linklists[header_menu].links -%}
-        <li class="{% if link.links != blank %}has-dropdown{% endif %}">
-          <a href="{{ link.url }}">{{ link.title }}</a>
-          {%- if link.links != blank -%}
-            <ul class="nav-dropdown">
-              {%- for child_link in link.links -%}
-                <li><a href="{{ child_link.url }}">{{ child_link.title }}</a></li>
-              {%- endfor -%}
-            </ul>
-          {%- endif -%}
-        </li>
-      {%- endfor -%}
-    </ul>
+    <div class="custom-header-nav-scroll" id="CustomHeaderNavScroll">
+      <ul class="header-nav-inner">
+        {%- for link in linklists[header_menu].links -%}
+          <li class="custom-nav-item {% if link.links != blank %}has-dropdown{% endif %}">
+            <a
+              href="{{ link.url }}"
+              {% if link.links != blank %}
+                class="custom-nav-trigger"
+                aria-expanded="false"
+                aria-haspopup="true"
+              {% endif %}
+            >
+              {{ link.title }}
+            </a>
+
+            {%- if link.links != blank -%}
+              {% render 'custom-header-dropdown',
+                link: link,
+                menu2: section.settings.menu2,
+                mega_image_1: section.settings.mega_image_1,
+                mega_heading_1: section.settings.mega_heading_1,
+                mega_description_1: section.settings.mega_description_1,
+                mega_image_2: section.settings.mega_image_2,
+                mega_heading_2: section.settings.mega_heading_2,
+                mega_description_2: section.settings.mega_description_2
+              %}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
   </nav>
 </div>
 
-<div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
-<div class="mobile-nav-drawer" id="mobileNavDrawer">
-  <div class="mobile-drawer-header">
-    <span>Menu</span>
-    <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close menu">&#x2715;</button>
-  </div>
-  <ul class="mobile-nav-list">
-    {%- for link in linklists[header_menu].links -%}
-      {%- if link.links != blank -%}
-        <li>
-          <div class="mobile-sub-toggle" data-target="mobile-sub-{{ forloop.index }}">
-            {{ link.title }} <span class="arrow">&#9660;</span>
-          </div>
-          <ul class="mobile-submenu" id="mobile-sub-{{ forloop.index }}">
-            {%- for child_link in link.links -%}
-              <li><a href="{{ child_link.url }}">{{ child_link.title }}</a></li>
-            {%- endfor -%}
-          </ul>
-        </li>
-      {%- else -%}
-        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-      {%- endif -%}
-    {%- endfor -%}
-  </ul>
-</div>
+{% render 'custom-header-mobile-drawer',
+  header_menu: header_menu,
+  menu2: section.settings.menu2,
+  search_placeholder: section.settings.search_placeholder,
+  mega_image_1: section.settings.mega_image_1,
+  mega_heading_1: section.settings.mega_heading_1,
+  mega_description_1: section.settings.mega_description_1,
+  mega_image_2: section.settings.mega_image_2,
+  mega_heading_2: section.settings.mega_heading_2,
+  mega_description_2: section.settings.mega_description_2,
+  featured_image: section.settings.search_image_featured,
+          featured_heading: section.settings.search_heading_featured,
+          featured_text: section.settings.search_text_featured
+%}
 
 <div class="custom-cart-overlay" id="customCartOverlay"></div>
 
@@ -1533,6 +1587,158 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('resize', handleResize);
   });
 });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var navScroll = document.getElementById('CustomHeaderNavScroll');
+    if (!navScroll) return;
+
+    var navInner = navScroll.querySelector('.header-nav-inner');
+    if (!navInner) return;
+
+    function updateDesktopNavScroll() {
+      if (window.innerWidth <= 900) {
+        navScroll.classList.remove('is-scrollable');
+        navScroll.classList.remove('is-dragging');
+        navScroll.scrollLeft = 0;
+        return;
+      }
+
+      navScroll.classList.remove('is-scrollable');
+
+      var navWidth = navInner.scrollWidth;
+      var wrapperWidth = navScroll.clientWidth;
+
+      if (navWidth > wrapperWidth || window.innerWidth < 1440) {
+        navScroll.classList.add('is-scrollable');
+      }
+    }
+
+    updateDesktopNavScroll();
+    window.addEventListener('resize', updateDesktopNavScroll);
+
+    var isDown = false;
+    var startX = 0;
+    var scrollLeft = 0;
+
+    navScroll.addEventListener('mousedown', function (e) {
+      if (!navScroll.classList.contains('is-scrollable')) return;
+
+      isDown = true;
+      navScroll.classList.add('is-dragging');
+      startX = e.pageX - navScroll.offsetLeft;
+      scrollLeft = navScroll.scrollLeft;
+    });
+
+    navScroll.addEventListener('mouseleave', function () {
+      isDown = false;
+      navScroll.classList.remove('is-dragging');
+    });
+
+    navScroll.addEventListener('mouseup', function () {
+      isDown = false;
+      navScroll.classList.remove('is-dragging');
+    });
+
+    navScroll.addEventListener('mousemove', function (e) {
+      if (!isDown) return;
+
+      e.preventDefault();
+      var x = e.pageX - navScroll.offsetLeft;
+      var walk = x - startX;
+      navScroll.scrollLeft = scrollLeft - walk;
+    });
+
+    navScroll.addEventListener('wheel', function (e) {
+      if (!navScroll.classList.contains('is-scrollable')) return;
+
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        navScroll.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const navItems = document.querySelectorAll('.custom-nav-item.has-dropdown');
+    const desktopBreakpoint = window.matchMedia('(min-width: 901px)');
+
+    function closeAllMenus() {
+      navItems.forEach(function (item) {
+        const trigger = item.querySelector('.custom-nav-trigger');
+        const modal = item.querySelector('.custom-nav-modal');
+
+        item.classList.remove('is-open');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        if (modal) modal.hidden = true;
+      });
+    }
+
+    navItems.forEach(function (item) {
+      const trigger = item.querySelector('.custom-nav-trigger');
+      const modal = item.querySelector('.custom-nav-modal');
+      const closeBtn = item.querySelector('.custom-nav-modal__close');
+
+      if (!trigger || !modal) return;
+
+      modal.hidden = true;
+
+      item.addEventListener('mouseenter', function () {
+        if (!desktopBreakpoint.matches) return;
+
+        closeAllMenus();
+        item.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        modal.hidden = false;
+      });
+
+      item.addEventListener('mouseleave', function () {
+        if (!desktopBreakpoint.matches) return;
+
+        item.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+        modal.hidden = true;
+      });
+
+      trigger.addEventListener('click', function (e) {
+        if (desktopBreakpoint.matches) {
+          e.preventDefault();
+          return;
+        }
+
+        e.preventDefault();
+
+        const isOpen = item.classList.contains('is-open');
+        closeAllMenus();
+
+        if (!isOpen) {
+          item.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+          modal.hidden = false;
+        }
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+          item.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+          modal.hidden = true;
+        });
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (desktopBreakpoint.matches) return;
+
+      const clickedInside = e.target.closest('.custom-nav-item.has-dropdown');
+      if (!clickedInside) {
+        closeAllMenus();
+      }
+    });
+  });
 </script>
 
 <script>
@@ -2168,6 +2374,61 @@ function renderCartItems(cart) {
       "id": "menu",
       "label": "Navigation Menu",
       "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu2",
+      "label": "Navigation Menu 2",
+      "default": "main-menu"
+    },
+    {
+      "type": "image_picker",
+      "id": "mega_image_1",
+      "label": "Mega Menu Image 1"
+    },
+    {
+      "type": "text",
+      "id": "mega_heading_1",
+      "label": "Mega Menu Heading 1",
+      "default": "Lorem ipsum dolor sit"
+    },
+    {
+      "type": "textarea",
+      "id": "mega_description_1",
+      "label": "Mega Menu Description 1",
+      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore."
+    },
+    {
+      "type": "image_picker",
+      "id": "mega_image_2",
+      "label": "Mega Menu Image 2"
+    },
+    {
+      "type": "text",
+      "id": "mega_heading_2",
+      "label": "Mega Menu Heading 2",
+      "default": "Lorem ipsum dolor sit"
+    },
+    {
+      "type": "textarea",
+      "id": "mega_description_2",
+      "label": "Mega Menu Description 2",
+      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore."
+    },
+    {
+      "type": "image_picker",
+      "id": "search_image_featured",
+      "label":  "Search Featured Image"
+    },
+    {
+      "type": "text",
+      "id": "search_heading_featured",
+      "label": "Search Featured Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "search_text_featured",
+      "label": "Search Featured Text"
     },
     {
       "type": "image_picker",

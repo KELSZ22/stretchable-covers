@@ -5,250 +5,296 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
 <div class="image-swiper {{ section.settings.section_version }}" style="--section-background: {{ section.settings.background }};">
-    <div class="image-swiper-heading">
-        {% if section.settings.rating != blank %}
-            <div class="image-swiper-rating">
-                <div class="image-swiper-stars">
-                    {% for i in (1..5) %}
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6.99917 11.156L10.4971 13.2671C11.049 13.6001 11.7297 13.1052 11.5833 12.478L10.6548 8.49859L13.7458 5.82077C14.2329 5.3991 13.9725 4.59872 13.3305 4.54451L9.26166 4.19958L7.67003 0.444015C7.41872 -0.148005 6.57962 -0.148005 6.32831 0.444015L4.73668 4.19958L0.667863 4.54451C0.0258625 4.59872 -0.234598 5.3991 0.252534 5.82077L3.34357 8.49859L2.41506 12.478C2.26864 13.1052 2.94936 13.6001 3.50125 13.2671L6.99917 11.156Z" fill="#FFCE0C"/>
-                        </svg>
-                    {% endfor %}
-                </div>
-                <p>{{ section.settings.rating }}</p>
-            </div>
-        {% endif %}
-        <h2>{{ section.settings.heading }}</h2>
-        <p>{{ section.settings.description }}</p>
-    </div>
-    <div class="swiper">
-        <div class="swiper-wrapper">
-            {% for block in section.blocks %}
-                <div class="swiper-slide">
-                <img src="{{ block.settings.image | image_url}}" width="512" height="512">
-                {% if section.settings.section_version == 'version-1' %}
-                    <p>{{ block.settings.subheading }}</p>
-                    <h4>{{ block.settings.heading }}</h4>
-                {% else %}
-                    <h4>{{ block.settings.heading }}</h4>
-                    <p>{{ block.settings.subheading }}</p>
-                {% endif %}
-                </div>
-            {% endfor %}
+  <div class="image-swiper-heading">
+    {% if section.settings.rating != blank %}
+      <div class="image-swiper-rating">
+        <div class="image-swiper-stars">
+          {% for i in (1..5) %}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6.99917 11.156L10.4971 13.2671C11.049 13.6001 11.7297 13.1052 11.5833 12.478L10.6548 8.49859L13.7458 5.82077C14.2329 5.3991 13.9725 4.59872 13.3305 4.54451L9.26166 4.19958L7.67003 0.444015C7.41872 -0.148005 6.57962 -0.148005 6.32831 0.444015L4.73668 4.19958L0.667863 4.54451C0.0258625 4.59872 -0.234598 5.3991 0.252534 5.82077L3.34357 8.49859L2.41506 12.478C2.26864 13.1052 2.94936 13.6001 3.50125 13.2671L6.99917 11.156Z" fill="#FFCE0C"/>
+            </svg>
+          {% endfor %}
         </div>
-        <div class="swiper-interactives">
-            <div class="custom-swiper-button-prev">
-                <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="30.5722" y="30.5722" width="30.1851" height="30.1851" rx="15.0926" transform="rotate(180 30.5722 30.5722)" fill="#0F2E53"/>
-                    <rect x="30.5722" y="30.5722" width="30.1851" height="30.1851" rx="15.0926" transform="rotate(180 30.5722 30.5722)" stroke="#0F2E53" stroke-width="0.773978"/>
-                    <path d="M17.0276 11.2228L12.3837 15.8666L17.0276 20.5105" stroke="white" stroke-width="1.54796" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <div class="swiper-pagination"></div>
-            <div class="custom-swiper-button-next">
-                <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="0.386989" y="-0.386989" width="30.1851" height="30.1851" rx="15.0926" transform="matrix(1 0 0 -1 0 30.1853)" fill="#0F2E53"/>
-                    <rect x="0.386989" y="-0.386989" width="30.1851" height="30.1851" rx="15.0926" transform="matrix(1 0 0 -1 0 30.1853)" stroke="#0F2E53" stroke-width="0.773978"/>
-                    <path d="M13.9316 11.2228L18.5755 15.8666L13.9316 20.5105" stroke="white" stroke-width="1.54796" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
+        <p>{{ section.settings.rating }}</p>
+      </div>
+    {% endif %}
+
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.description }}</p>
+  </div>
+
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      {% for block in section.blocks %}
+        <div class="swiper-slide">
+          <img src="{{ block.settings.image | image_url }}" width="512" height="512">
+
+          {% if section.settings.section_version == 'version-1' %}
+            <p>{{ block.settings.subheading }}</p>
+            <h4>{{ block.settings.heading }}</h4>
+          {% else %}
+            <h4>{{ block.settings.heading }}</h4>
+            <p>{{ block.settings.subheading }}</p>
+          {% endif %}
         </div>
+      {% endfor %}
     </div>
+
+    <div class="swiper-interactives">
+      <div class="custom-swiper-button-prev">
+        <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="30.5722" y="30.5722" width="30.1851" height="30.1851" rx="15.0926" transform="rotate(180 30.5722 30.5722)" fill="#0F2E53"/>
+          <rect x="30.5722" y="30.5722" width="30.1851" height="30.1851" rx="15.0926" transform="rotate(180 30.5722 30.5722)" stroke="#0F2E53" stroke-width="0.773978"/>
+          <path d="M17.0276 11.2228L12.3837 15.8666L17.0276 20.5105" stroke="white" stroke-width="1.54796" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="swiper-pagination"></div>
+
+      <div class="custom-swiper-button-next">
+        <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0.386989" y="-0.386989" width="30.1851" height="30.1851" rx="15.0926" transform="matrix(1 0 0 -1 0 30.1853)" fill="#0F2E53"/>
+          <rect x="0.386989" y="-0.386989" width="30.1851" height="30.1851" rx="15.0926" transform="matrix(1 0 0 -1 0 30.1853)" stroke="#0F2E53" stroke-width="0.773978"/>
+          <path d="M13.9316 11.2228L18.5755 15.8666L13.9316 20.5105" stroke="white" stroke-width="1.54796" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% style %}
 .image-swiper {
-    background: var(--section-background);
-    padding: 60px 70px;
+  background: var(--section-background);
+  padding: 60px 70px;
 }
+
 .image-swiper .image-swiper-rating {
-    display: inline-flex;
-    gap: 5px;
+  display: inline-flex;
+  gap: 5px;
 }
+
 .image-swiper .image-swiper-rating p {
-    margin: auto;
-    margin-left: 2px;
+  margin: auto;
+  margin-left: 2px;
 }
+
 .image-swiper .image-swiper-stars {
-    display: flex;
-    gap: 2px;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
 }
+
 .image-swiper .swiper-interactives > * {
-    position: unset !important;
+  position: unset !important;
 }
+
 .swiper-interactives {
-    margin-top: 5px;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+  margin-top: 5px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
 }
-@media screen and (min-width: 590px) {
-    .swiper-interactives {
-        display: none;
-    }
+
+/* FIXED: hide controls only from 640px and up */
+@media screen and (min-width: 640px) {
+  .swiper-interactives {
+    display: none;
+  }
 }
+
 .image-swiper .image-swiper-heading > * {
-    margin: auto;
-    margin-bottom: 10px;
+  margin: auto;
+  margin-bottom: 10px;
 }
+
 .image-swiper.version-2 .swiper-slide > h4,
 .image-swiper.version-2 .swiper-slide > p {
-    max-width: 300px;
+  max-width: 300px;
 }
-.image-swiper .swiper-slide > * {
-    margin: auto;
-    margin-bottom: 5px;
-}
-.image-swiper .swiper-slide > p {
-    font-family: Lato;
-    font-weight: 500;
-    font-style: Medium;
-    font-size: 16px;
-    leading-trim: NONE;
-    line-height: 24px;
-    letter-spacing: 0%;
-    text-align: center;
-    color: #5F5F5F;
-}
-.image-swiper .swiper-slide > h4 {
-    font-family: Raleway;
-    font-weight: 800;
-    font-style: ExtraBold;
-    font-size: 24px;
-    leading-trim: NONE;
-    line-height: 32px;
-    letter-spacing: 0%;
-    text-align: center;
 
+.image-swiper .swiper-slide > * {
+  margin: auto;
+  margin-bottom: 5px;
 }
+
+.image-swiper .swiper-slide > p {
+  font-family: Lato;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  text-align: center;
+  color: #5F5F5F;
+}
+
+.image-swiper .swiper-slide > h4 {
+  font-family: Raleway;
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: 0%;
+  text-align: center;
+}
+
 .image-swiper .image-swiper-heading {
-    text-align: center;
+  text-align: center;
 }
+
 .image-swiper .swiper-slide {
-    text-align: center;
+  text-align: center;
 }
+
 .image-swiper .swiper-slide img {
-    margin-bottom: 20px;
-    width: 100%;
-    height: auto;
+  margin-bottom: 20px;
+  width: 100%;
+  height: auto;
 }
+
 .image-swiper.version-1 .swiper-slide img {
-    overflow: hidden;
-    border-radius: 12px;
-    border: 1px solid #C5C5C5;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid #C5C5C5;
 }
+
 .image-swiper.version-2 .swiper-slide img {
-    max-width: 150px;
+  max-width: 150px;
 }
+
 .image-swiper .swiper {
-    margin: 0 !important;
-    --swiper-pagination-color: #EB891B;
+  margin: 0 !important;
+  --swiper-pagination-color: #EB891B;
 }
+
 .swiper-pagination-bullet {
-    padding: 1px;
+  padding: 1px;
 }
-@media screen and (max-width: 589px) {
-    .image-swiper .swiper {
-        margin: 2rem;
-    }
+
+.image-swiper-heading h2 {
+  font-size: 32px !important;
+}
+
+/* FIXED: mobile styles should go up to 639px */
+@media screen and (max-width: 639px) {
+  .image-swiper .swiper {
+    margin: 2rem;
+  }
+
+  
+}
+
+@media screen and (max-width: 768px) {
+  .image-swiper {
+    padding: 0 16px;
+  }
+
+  .image-swiper-heading h2 {
+    font-size: 28px !important;
+  }
+}
+
+@media screen and (max-width: 500px){
+    .image-swiper-heading h2 {
+    font-size: 20px !important;
+  }
 }
 {% endstyle %}
 
 {% javascript %}
-    const swiper = new Swiper('.image-swiper .swiper', {
-        loop: true,
-        pagination: {
-            el: '.swiper-pagination',
-        },
-        navigation: {
-            nextEl: '.custom-swiper-button-next',
-            prevEl: '.custom-swiper-button-prev',
-        },        
-        slidesPerView: 1,
-        spaceBetween: 20,
-        breakpoints: {
-            640: {
-            slidesPerView: 3,
-            }
-        }
-    });
+const swiper = new Swiper('.image-swiper .swiper', {
+  loop: true,
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+  },
+  navigation: {
+    nextEl: '.custom-swiper-button-next',
+    prevEl: '.custom-swiper-button-prev',
+  },
+  slidesPerView: 1,
+  spaceBetween: 20,
+  breakpoints: {
+    640: {
+      slidesPerView: 3,
+    }
+  }
+});
 {% endjavascript %}
 
 {% schema %}
 {
-    "name": "Image swiper",
-    "settings": [
+  "name": "Image swiper",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_version",
+      "label": "Version",
+      "options": [
         {
-            "type": "select",
-            "id": "section_version",
-            "label": "Version",
-            "options": [
-                {
-                    "label": "Version 1",
-                    "value": "version-1"
-                },
-                {
-                    "label": "Version 2",
-                    "value": "version-2"
-                },
-            ],
-            "default": "version-1",
+          "label": "Version 1",
+          "value": "version-1"
         },
         {
-            "type": "color",
-            "id": "background",
-            "label": "Background",
-            "default": "#F6F6F6",
-        },
-        {
-            "type": "text",
-            "id": "heading",
-            "label": "Heading",
-            "default": "Heading"
-        },
-        {
-            "type": "text",
-            "id": "description",
-            "label": "description",
-            "default": "description"
-        },
-        {
-            "type": "text",
-            "id": "rating",
-            "label": "Rating"
-        },
-    ],
-    "blocks": [
-        {
-            "type": "block",
-            "name": "Block",
-            "settings": [
-                {
-                    "type": "image_picker",
-                    "id": "image",
-                    "label": "Image"
-                },
-                {
-                    "type": "text",
-                    "id": "heading",
-                    "label": "Heading",
-                    "default": "Heading"
-                },
-                {
-                    "type": "text",
-                    "id": "subheading",
-                    "label": "Sub-Heading",
-                    "default": "Sub-Heading"
-                },
-            ]
+          "label": "Version 2",
+          "value": "version-2"
         }
-    ],
-    "presets": [
+      ],
+      "default": "version-1"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#F6F6F6"
+    },
+    {
+      "type": "html",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "description",
+      "default": "description"
+    },
+    {
+      "type": "text",
+      "id": "rating",
+      "label": "Rating"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "block",
+      "name": "Block",
+      "settings": [
         {
-            "name": "Image swiper",
-            "category": "Custom section by AJ"
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Sub-Heading",
+          "default": "Sub-Heading"
         }
-    ]
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image swiper",
+      "category": "Custom section by AJ"
+    }
+  ]
 }
 {% endschema %}

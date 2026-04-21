@@ -30,20 +30,44 @@
             <h3 class="faq-categories__sidebar-title">{{ section.settings.sidebar_title }}</h3>
           {% endif %}
 
-          <div class="faq-categories__category-list" role="tablist" aria-label="FAQ Categories">
-            {% for block in category_blocks %}
-              <button
-                type="button"
-                class="faq-categories__category-button{% if forloop.first %} faq-categories__category-button--active{% endif %}"
-                data-category-trigger
-                data-category-key="{{ block.settings.category_key | escape }}"
-                role="tab"
-                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-                {{ block.shopify_attributes }}
-              >
-                {{ block.settings.category_label }}
-              </button>
-            {% endfor %}
+          <div class="faq-categories__category-picker">
+            <button
+              type="button"
+              class="faq-categories__mobile-trigger"
+              data-category-dropdown-toggle
+              aria-expanded="false"
+              aria-controls="faq-category-dropdown-{{ section.id }}"
+            >
+              <span class="faq-categories__mobile-trigger-label" data-active-category-label>
+                {% if category_blocks.size > 0 %}
+                  {{ category_blocks.first.settings.category_label }}
+                {% endif %}
+              </span>
+              <span class="faq-categories__mobile-trigger-icon" aria-hidden="true"></span>
+            </button>
+
+            <div
+              id="faq-category-dropdown-{{ section.id }}"
+              class="faq-categories__category-list"
+              role="tablist"
+              aria-label="FAQ Categories"
+              data-category-dropdown
+            >
+              {% for block in category_blocks %}
+                <button
+                  type="button"
+                  class="faq-categories__category-button{% if forloop.first %} faq-categories__category-button--active{% endif %}"
+                  data-category-trigger
+                  data-category-label="{{ block.settings.category_label | escape }}"
+                  data-category-key="{{ block.settings.category_key | escape }}"
+                  role="tab"
+                  aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                  {{ block.shopify_attributes }}
+                >
+                  {{ block.settings.category_label }}
+                </button>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </aside>
@@ -151,6 +175,10 @@
       font-weight: {{ section.settings.sidebar_title_font_weight }};
     }
 
+    .section-{{ section.id }} .faq-categories__category-picker {
+      position: relative;
+    }
+
     .section-{{ section.id }} .faq-categories__category-list {
       display: flex;
       flex-direction: column;
@@ -180,6 +208,68 @@
 
     .section-{{ section.id }} .faq-categories__category-button--active {
       color: {{ section.settings.category_active_text_color }};
+      font-weight: 600;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger {
+      display: none;
+      width: 100%;
+      appearance: none;
+      border: 0;
+      background: #ffffff;
+      color: {{ section.settings.category_active_text_color }};
+      text-align: left;
+      padding: 16px 18px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      font-size: {{ section.settings.category_font_size }}px;
+      line-height: 1.4;
+      font-family: {{ section.settings.category_font_family }};
+      font-weight: 500;
+      cursor: pointer;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-label {
+      flex: 1 1 auto;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon::before,
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 8px;
+      height: 1.5px;
+      background: currentColor;
+      transition: transform 0.25s ease;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon::before {
+      left: 1px;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon::after {
+      right: 1px;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+
+    .section-{{ section.id }} .faq-categories__category-picker.is-open .faq-categories__mobile-trigger-icon::before {
+      transform: translateY(-50%) rotate(-45deg);
+    }
+
+    .section-{{ section.id }} .faq-categories__category-picker.is-open .faq-categories__mobile-trigger-icon::after {
+      transform: translateY(-50%) rotate(45deg);
     }
 
     .section-{{ section.id }} .faq-categories__content {
@@ -218,7 +308,7 @@
       justify-content: space-between;
       gap: 16px;
       cursor: pointer;
-      padding: 18px 20px;
+      padding: 10px 20px;
       font-size: {{ section.settings.faq_question_size }}px;
       line-height: 1.4;
       font-family: {{ section.settings.faq_question_font_family }};
@@ -366,12 +456,57 @@
         padding-left: 21px;
         padding-right: 21px;
       }
+
       .section-{{ section.id }} .faq-categories__heading {
         font-size: calc({{ section.settings.heading_size }}px * 0.82);
       }
 
+      .section-{{ section.id }} .faq-categories__sidebar-inner {
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .section-{{ section.id }} .faq-categories__sidebar-title {
+        display: none;
+      }
+
+      .section-{{ section.id }} .faq-categories__mobile-trigger {
+        display: flex;
+      }
+
+      .section-{{ section.id }} .faq-categories__category-list {
+        display: none;
+        flex-direction: column;
+        gap: 0;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        z-index: 20;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+        padding: 4px 16px;
+      }
+
+      .section-{{ section.id }} .faq-categories__category-picker.is-open .faq-categories__category-list {
+        display: flex;
+      }
+
+      .section-{{ section.id }} .faq-categories__category-button {
+        padding: 14px 0;
+        color: {{ section.settings.category_text_color }};
+      }
+
+      .section-{{ section.id }} .faq-categories__category-button--active {
+        color: {{ section.settings.category_active_text_color }};
+        font-weight: 600;
+      }
+
       .section-{{ section.id }} .faq-categories__question {
-        padding: 16px;
+        padding: 10px 16px;
       }
 
       .section-{{ section.id }} .faq-categories__answer {
@@ -392,6 +527,10 @@
       var categoryButtons = section.querySelectorAll('[data-category-trigger]');
       var faqItems = section.querySelectorAll('[data-faq-item]');
       var initialCategory = section.getAttribute('data-initial-category');
+
+      var categoryPicker = section.querySelector('.faq-categories__category-picker');
+      var dropdownToggle = section.querySelector('[data-category-dropdown-toggle]');
+      var activeCategoryLabel = section.querySelector('[data-active-category-label]');
 
       function closeItem(item) {
         item.removeAttribute('open');
@@ -433,14 +572,45 @@
         }
       }
 
+      function closeDropdown() {
+        if (!categoryPicker || !dropdownToggle) return;
+        categoryPicker.classList.remove('is-open');
+        dropdownToggle.setAttribute('aria-expanded', 'false');
+      }
+
+      function toggleDropdown() {
+        if (!categoryPicker || !dropdownToggle) return;
+        var isOpen = categoryPicker.classList.contains('is-open');
+        categoryPicker.classList.toggle('is-open', !isOpen);
+        dropdownToggle.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      }
+
       function setActiveCategory(categoryKey) {
         categoryButtons.forEach(function(button) {
           var isActive = button.getAttribute('data-category-key') === categoryKey;
           button.classList.toggle('faq-categories__category-button--active', isActive);
           button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+
+          if (isActive && activeCategoryLabel) {
+            activeCategoryLabel.textContent = button.getAttribute('data-category-label') || button.textContent.trim();
+          }
         });
 
         openFirstVisibleFaq(categoryKey);
+        closeDropdown();
+      }
+
+      if (dropdownToggle) {
+        dropdownToggle.addEventListener('click', function() {
+          toggleDropdown();
+        });
+
+        document.addEventListener('click', function(event) {
+          if (!categoryPicker) return;
+          if (!categoryPicker.contains(event.target) && !dropdownToggle.contains(event.target)) {
+            closeDropdown();
+          }
+        });
       }
 
       categoryButtons.forEach(function(button) {

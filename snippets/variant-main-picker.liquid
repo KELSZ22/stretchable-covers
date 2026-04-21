@@ -6,6 +6,15 @@
 {%- enddoc -%}
 
 {% assign block_settings = block.settings %}
+{% assign has_size_option = false %}
+
+{%- for product_option in product_resource.options_with_values -%}
+  {% assign option_name_downcase = product_option.name | downcase %}
+  {% if option_name_downcase contains 'size' %}
+    {% assign has_size_option = true %}
+    {% break %}
+  {% endif %}
+{%- endfor -%}
 
 {% unless product_resource.has_only_default_variant %}
   {% liquid
@@ -15,7 +24,11 @@
     else
       assign strikethrough_color_mix = '#fff'
     endif
+
+    assign size_guide_modal_id = 'SizingGuideModal-' | append: section.id | append: '-' | append: block.id | append: '-' | append: product_resource.id
+    assign size_guide_title_id = 'SizingGuideTitle-' | append: section.id | append: '-' | append: block.id | append: '-' | append: product_resource.id
   %}
+
   <variant-picker
     class="variant-picker spacing-style variant-picker--{{ block_settings.alignment }}"
     style="--color-strikethrough-mix: {{ strikethrough_color_mix }}; {% render 'spacing-style', settings: block_settings %}"
@@ -51,6 +64,12 @@
             assign option_id_attribute = 'data-option-id="' | append: fieldset_id | append: '"'
             assign longest_value = 0
           endif
+
+          assign option_name_downcase = product_option.name | downcase
+          assign show_sizing_guide = false
+          if option_name_downcase contains 'size'
+            assign show_sizing_guide = true
+          endif
         -%}
 
         {%- if variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
@@ -67,10 +86,12 @@
                 <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
               {%- endif %}
             </legend>
+
             {%- for product_option_value in product_option.values -%}
               {% if product_option_value.size > longest_value and option_id_attribute %}
                 {% assign longest_value = product_option_value.size %}
               {% endif %}
+
               <label
                 class="variant-option__button-label{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}"
               >
@@ -99,12 +120,11 @@
                     data-current-checked="false"
                   {% endif %}
                 >
+
                 {% if variant_style == 'swatch' %}
                   {% liquid
                     assign featured_media = product_option_value.variant.featured_media
 
-                    # If the variant has no featured media, and we have a combined listing product, then fall back to
-                    # using the featured media of the child product that is linked to this option value.
                     if featured_media == blank and product_option_value.product_url
                       assign featured_media = product_option_value.variant.product.featured_media
                     endif
@@ -122,6 +142,7 @@
                       data-key="variant-option-pill"
                     ></span>
                   {% endif %}
+
                   <span
                     class="variant-option__button-label__text"
                     data-key="variant-option-text"
@@ -129,9 +150,11 @@
                     {{- product_option_value | escape -}}
                   </span>
                 {% endif %}
+
                 {% render 'strikethrough-variant', product_option: product_option_value %}
               </label>
             {%- endfor -%}
+
             {% if option_id_attribute %}
               {% style %}
                 [data-option-id="{{ fieldset_id }}"] {
@@ -140,27 +163,37 @@
               {% endstyle %}
             {% endif %}
           </fieldset>
+
         {%- elsif block_settings.variant_style == 'dropdowns' -%}
-          {%
-            # There is an opportunity to build a custom select component that will allow us to style the select element further (animation for dropdown, swatches shown in the dropdown options, etc)
-            # It's too bad as it mean rebuilding baked in behaviours but I think we've already done that for the locale selectors
-            # in dawn. So it might mean more time spent in setting it up but worth it for future updates/styling.
-          %}
           {% liquid
             assign property_being_updated = false
             if settings.variant_swatch_width != settings.variant_swatch_height
               assign property_being_updated = true
-              # (original width / original height) x new height (20px at the moment) = new width
               assign new_width = settings.variant_swatch_width | times: 1.0 | divided_by: settings.variant_swatch_height | times: 20
             endif
           %}
 
           <div class="variant-option variant-option--dropdowns">
-            <label for="Option-{{ block.id }}-{{ forloop.index0 }}">{{ product_option.name | escape }}</label>
+            <div class="varian-option-container">
+              <label for="Option-{{ block.id }}-{{ forloop.index0 }}">{{ product_option.name | escape }}</label>
+
+              {% if show_sizing_guide %}
+                <button
+                  type="button"
+                  class="variant-option__size-guide"
+                  data-size-guide-open
+                  aria-haspopup="dialog"
+                  aria-controls="{{ size_guide_modal_id }}"
+                >
+                  Sizing Guide
+                </button>
+              {% endif %}
+            </div>
+
             <div
               class="variant-option__select-wrapper"
               style="
-                {%- if property_being_updated  -%}
+                {%- if property_being_updated -%}
                   --variant-picker-swatch-width: clamp(10px,{{ new_width }}px, 50px);
                 {%- endif -%}
               "
@@ -189,6 +222,7 @@
                   </option>
                 {%- endfor -%}
               </select>
+
               <svg
                 aria-hidden="true"
                 focusable="false"
@@ -206,11 +240,226 @@
         {{ product_resource.selected_or_first_available_variant | json }}
       </script>
     </form>
+
+    {% if has_size_option %}
+      <div
+        id="{{ size_guide_modal_id }}"
+        class="variant-size-guide-modal"
+        aria-hidden="true"
+      >
+        <div class="variant-size-guide-modal__overlay" data-size-guide-close></div>
+
+        <div
+          class="variant-size-guide-modal__dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="{{ size_guide_title_id }}"
+        >
+          <button
+            type="button"
+            class="variant-size-guide-modal__close"
+            aria-label="Close sizing guide"
+            data-size-guide-close
+          >
+            &times;
+          </button>
+
+          <div class="variant-size-guide-modal__content">
+            <h3 id="{{ size_guide_title_id }}" class="variant-size-guide-modal__title">
+              Sizing Guide
+            </h3>
+
+            <div class="variant-size-guide-modal__body">
+              <p>Add your sizing guide content here.</p>
+              <p>You can replace this with your actual size chart image, table, or text.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
   </variant-picker>
+
+  <script>
+    if (!window.variantSizeGuideModalInit) {
+      window.variantSizeGuideModalInit = true;
+
+      function moveModalToBody(modal) {
+        if (!modal || modal.dataset.movedToBody === 'true') return;
+        document.body.appendChild(modal);
+        modal.dataset.movedToBody = 'true';
+      }
+
+      function openSizeGuideModal(modal, triggerButton) {
+        if (!modal) return;
+
+        moveModalToBody(modal);
+
+        modal.classList.add('is-active');
+        modal.setAttribute('aria-hidden', 'false');
+        modal._triggerButton = triggerButton || null;
+        document.body.classList.add('variant-size-guide-modal-open');
+
+        var closeButton = modal.querySelector('.variant-size-guide-modal__close');
+        if (closeButton) {
+          closeButton.focus();
+        }
+      }
+
+      function closeSizeGuideModal(modal) {
+        if (!modal) return;
+
+        modal.classList.remove('is-active');
+        modal.setAttribute('aria-hidden', 'true');
+
+        if (!document.querySelector('.variant-size-guide-modal.is-active')) {
+          document.body.classList.remove('variant-size-guide-modal-open');
+        }
+
+        if (modal._triggerButton) {
+          modal._triggerButton.focus();
+        }
+      }
+
+      function prepareAllSizeGuideModals() {
+        document.querySelectorAll('.variant-size-guide-modal').forEach(function(modal) {
+          moveModalToBody(modal);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', prepareAllSizeGuideModals);
+      } else {
+        prepareAllSizeGuideModals();
+      }
+
+      document.addEventListener('shopify:section:load', function () {
+        prepareAllSizeGuideModals();
+      });
+
+      document.addEventListener('click', function (event) {
+        var openButton = event.target.closest('[data-size-guide-open]');
+        if (openButton) {
+          event.preventDefault();
+
+          var modalId = openButton.getAttribute('aria-controls');
+          var modal = modalId ? document.getElementById(modalId) : null;
+
+          openSizeGuideModal(modal, openButton);
+          return;
+        }
+
+        var closeButton = event.target.closest('[data-size-guide-close]');
+        if (closeButton) {
+          event.preventDefault();
+
+          var modal = closeButton.closest('.variant-size-guide-modal');
+          closeSizeGuideModal(modal);
+        }
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+
+        var activeModal = document.querySelector('.variant-size-guide-modal.is-active');
+        if (activeModal) {
+          closeSizeGuideModal(activeModal);
+        }
+      });
+    }
+  </script>
 {% endunless %}
 
 {% stylesheet %}
-  /* Variant picker container styles - unique to main variant picker */
+  .varian-option-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .variant-option__size-guide {
+    background: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: #7a7a7a;
+    cursor: pointer;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .variant-option__size-guide:hover {
+    text-decoration: underline;
+  }
+
+  .variant-size-guide-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .variant-size-guide-modal.is-active {
+    display: flex;
+  }
+
+  .variant-size-guide-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  .variant-size-guide-modal__dialog {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 700px;
+    max-height: calc(100vh - 40px);
+    overflow: auto;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  }
+
+  .variant-size-guide-modal__content {
+    padding: 32px;
+  }
+
+  .variant-size-guide-modal__title {
+    margin: 0 0 16px;
+    text-align: center;
+  }
+
+  .variant-size-guide-modal__body p {
+    margin: 0 0 12px;
+  }
+
+  .variant-size-guide-modal__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .variant-size-guide-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    background: transparent;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  body.variant-size-guide-modal-open {
+    overflow: hidden;
+  }
+
   .variant-picker {
     width: 100%;
   }
@@ -224,7 +473,6 @@
     padding-inline-start: max(4px, var(--padding-inline-start));
   }
 
-  /* Dropdown variant option styles */
   .variant-option__select-wrapper {
     display: flex;
     position: relative;
@@ -280,7 +528,6 @@
     transform: translateY(-50%);
   }
 
-  /* Variant picker alignment modifiers */
   .variant-picker--center,
   .variant-picker--center .variant-option {
     text-align: center;
@@ -293,5 +540,19 @@
   .variant-picker--right .variant-option {
     text-align: right;
     justify-content: right;
+  }
+
+  @media screen and (max-width: 767px) {
+    .variant-size-guide-modal {
+      padding: 16px;
+    }
+
+    .variant-size-guide-modal__dialog {
+      max-height: calc(100vh - 32px);
+    }
+
+    .variant-size-guide-modal__content {
+      padding: 24px 20px;
+    }
   }
 {% endstylesheet %}

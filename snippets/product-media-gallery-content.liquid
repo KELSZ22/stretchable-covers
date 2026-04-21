@@ -24,8 +24,19 @@
 {%- endif -%}
 {%- liquid
   assign selected_product = closest.product
+  assign selected_variant = selected_product.selected_or_first_available_variant
   assign selected_variant_media = selected_product.selected_or_first_available_variant.featured_media
   assign first_3d_model = selected_product.media | where: 'media_type', 'model' | first
+  assign product_rating = blank
+  assign product_rating_count = 0
+
+  if selected_product.metafields.reviews.rating.value != blank
+    assign product_rating = selected_product.metafields.reviews.rating.value
+  endif
+
+  if selected_product.metafields.reviews.rating_count != blank
+    assign product_rating_count = selected_product.metafields.reviews.rating_count.value | default: selected_product.metafields.reviews.rating_count
+  endif
 
   if block_settings.hide_variants
     assign variant_images = selected_product.images | where: 'attached_to_variant?', true | map: 'src'
@@ -318,6 +329,28 @@
   {% endif %}
 
   :root { --gallery-media-border-radius: {{ block_settings.media_radius }}px; }
+
+  .product-media-gallery__title {
+    margin: 0 0 8px;
+  }
+
+  .product-media-gallery__price {
+    margin: 0 0 8px;
+  }
+
+  .product-media-gallery__review {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .product-media-gallery__review {
+      margin-bottom: 12px;
+    }
+  }
 {% endstyle %}
 
 {% if closest.product == blank %}
@@ -332,6 +365,23 @@
     {{ 'product-apparel-1' | placeholder_svg_tag: 'product-media-gallery__placeholder-image' }}
   </div>
 {% else %}
+  {% if selected_product != blank %}
+    <h1 class="new-product-media-gallery__title">{{ selected_product.title }}</h1>
+  {% endif %}
+
+ 
+
+  {% if product_rating != blank %}
+    <div class="new-product-media-gallery__review">
+      <span class="product-media-gallery__review-rating">
+        {{ product_rating.rating | round: 1 }}/{{ product_rating.scale_max }}
+      </span>
+      {% if product_rating_count != blank and product_rating_count > 0 %}
+        <span class="product-media-gallery__review-count">({{ product_rating_count }} reviews)</span>
+      {% endif %}
+    </div>
+  {% endif %}
+
   <media-gallery
     class="
       spacing-style
@@ -855,4 +905,57 @@
       opacity: 0;
     }
   }
+
+  @media (max-width: 768px){
+    button.slideshow-control.button.button-unstyled.slideshow-controls__thumbnail {
+      width: 100%;
+    }
+
+    .slideshow-controls__thumbnails {
+      width: 100%;
+    }
+    
+  }
+  
 {% endstylesheet %}
+
+<style>
+
+  h1.new-product-media-gallery__title{
+    display: none !important;
+    font-family: Raleway;
+  }
+  .new-product-media-gallery__price{
+    display: none !important;
+    font-family: Lato;
+  }
+  .new-product-media-gallery__review{
+    display: none !important;
+    font-family: Lato;
+  }
+.product-information {
+    display: flex;
+    justify-content: center;
+}
+  @media (max-width: 768px) {
+    h1.new-product-media-gallery__title{
+    display: block !important;
+    font-size: 32px;
+  }
+  .new-product-media-gallery__price{
+    display: block !important;
+    font-size: 16px;
+  }
+  .new-product-media-gallery__review{
+    display: block !important;
+    font-size: 14px;
+  }
+  .group-block-content .spacing-style h1 {
+    display: none;
+}
+.group-block-content .spacing-style product-price {
+    display: none;
+}
+  }
+ 
+</style>
