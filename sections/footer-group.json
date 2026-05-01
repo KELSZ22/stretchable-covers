@@ -28,6 +28,8 @@
         "trust_label": "100% Trusted",
         "trust_image": "shopify://shop_images/image_31.png",
         "payment_label": "Accepted payment method",
+        "show_payment_icons": true,
+        "payment_image": "shopify://shop_images/Frame_1000007669.png",
         "address_label": "Address",
         "address_text": "12509 Dover Rd.\nReisterstown, MD 21136",
         "phone_label": "Telephone",

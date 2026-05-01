@@ -35,22 +35,24 @@
             aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
           >
             <div class="collection-gallery-showcase__grid">
-              <div class="collection-gallery-showcase__image-wrap collection-gallery-showcase__image-wrap--large">
+              <div class="collection-gallery-showcase__image-wrap collection-gallery-showcase__image-wrap--large" data-mobile-slide="0">
                 {% if block.settings.image_left != blank %}
                   {{ block.settings.image_left | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'collection-gallery-showcase__image', alt: block.settings.tab_label }}
                 {% else %}
                   <div class="collection-gallery-showcase__placeholder"></div>
                 {% endif %}
               </div>
+
               <div class="collection-gallery-showcase__right-col">
-                <div class="collection-gallery-showcase__image-wrap">
+                <div class="collection-gallery-showcase__image-wrap" data-mobile-slide="1">
                   {% if block.settings.image_top_right != blank %}
                     {{ block.settings.image_top_right | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'collection-gallery-showcase__image', alt: block.settings.tab_label }}
                   {% else %}
                     <div class="collection-gallery-showcase__placeholder"></div>
                   {% endif %}
                 </div>
-                <div class="collection-gallery-showcase__image-wrap">
+
+                <div class="collection-gallery-showcase__image-wrap" data-mobile-slide="2">
                   {% if block.settings.image_bottom_right != blank %}
                     {{ block.settings.image_bottom_right | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'collection-gallery-showcase__image', alt: block.settings.tab_label }}
                   {% else %}
@@ -72,6 +74,7 @@
           <path d="M23 26L17 20L23 14" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
+
       <button type="button" class="collection-gallery-showcase__arrow collection-gallery-showcase__arrow--next" data-next aria-label="Next">
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="0.5" y="-0.5" width="39" height="39" rx="19.5" transform="matrix(1 0 0 -1 0 39)" fill="#0F2E53"/>
@@ -88,7 +91,7 @@
 
   <style>
     #collection-gallery-{{ section.id }} {
-      background: #f3f4f5;
+      background: #fff;
       padding: 56px 20px 44px;
     }
 
@@ -128,16 +131,19 @@
       color: #0f2e53;
       background: transparent;
       border-radius: 999px;
-      font-size: 14px;
+      font-size: 16px;
       line-height: 1;
       padding: 12px 18px;
       cursor: pointer;
       transition: background .2s ease, color .2s ease;
+      font-family: 'Lato';
     }
 
     #collection-gallery-{{ section.id }} .collection-gallery-showcase__tab.is-active {
       background: #0f2e53;
       color: #ffffff;
+      font-family: 'Lato';
+      font-size: 16px;
     }
 
     #collection-gallery-{{ section.id }} .collection-gallery-showcase__carousel {
@@ -168,8 +174,7 @@
     #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap {
       border-radius: 18px;
       overflow: hidden;
-      min-height: 210px;
-      background: #d9dde3;
+      min-height: 0;
       position: relative;
     }
 
@@ -235,19 +240,49 @@
     @media screen and (max-width: 989px) {
       #collection-gallery-{{ section.id }} {
         padding: 42px 16px 34px;
+        overflow: hidden;
+      }
+
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__carousel {
+        overflow: visible;
       }
 
       #collection-gallery-{{ section.id }} .collection-gallery-showcase__grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        gap: 14px;
+        align-items: stretch;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 0 16px 4px 0;
+        margin-right: -16px;
+      }
+
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__grid::-webkit-scrollbar {
+        display: none;
       }
 
       #collection-gallery-{{ section.id }} .collection-gallery-showcase__right-col {
-        grid-template-rows: repeat(2, minmax(0, 1fr));
+        display: contents;
       }
 
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap--large,
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap {
-        min-height: 240px;
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap[data-mobile-slide],
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap--large {
+        display: block;
+        flex: 0 0 84%;
+        max-width: 84%;
+        min-height: 300px;
+        height: 300px;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+      }
+
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image,
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__placeholder {
+        height: 100%;
       }
 
       #collection-gallery-{{ section.id }} .collection-gallery-showcase__tabs {
@@ -264,6 +299,35 @@
 
       #collection-gallery-{{ section.id }} .collection-gallery-showcase__tab {
         white-space: nowrap;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__tabs {
+    display: none;
+}
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__nav {
+        display: none;
+      }
+
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap[data-mobile-slide],
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap--large {
+        flex-basis: 84%;
+        max-width: 84%;
+        height: 300px;
+        min-height: 300px;
+      }
+
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image {
+        height: 300px !important;
+      }
+    }
+
+    @media screen and (max-width: 500px) {
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap[data-mobile-slide],
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap--large {
+        flex-basis: 86%;
+        max-width: 86%;
       }
     }
   </style>
@@ -283,6 +347,35 @@
 
       let activeIndex = 0;
 
+      const isMobile = () => window.innerWidth <= 989;
+
+      const getActiveMobileScroller = () => {
+        const activeSlide = slides[activeIndex];
+        if (!activeSlide) return null;
+
+        return activeSlide.querySelector('.collection-gallery-showcase__grid');
+      };
+
+      const scrollMobileImages = (direction) => {
+        const scroller = getActiveMobileScroller();
+        if (!scroller) return;
+
+        scroller.scrollBy({
+          left: direction * scroller.clientWidth * 0.86,
+          behavior: 'smooth'
+        });
+      };
+
+      const resetActiveMobileScroll = () => {
+        const scroller = getActiveMobileScroller();
+        if (!scroller) return;
+
+        scroller.scrollTo({
+          left: 0,
+          behavior: 'auto'
+        });
+      };
+
       const setActive = (index) => {
         activeIndex = (index + slides.length) % slides.length;
 
@@ -300,6 +393,10 @@
 
         const width = ((activeIndex + 1) / slides.length) * 100;
         if (progress) progress.style.width = `${width}%`;
+
+        if (isMobile()) {
+          requestAnimationFrame(resetActiveMobileScroll);
+        }
       };
 
       tabs.forEach((tab, index) => {
@@ -307,12 +404,30 @@
       });
 
       if (prevBtn) {
-        prevBtn.addEventListener('click', () => setActive(activeIndex - 1));
+        prevBtn.addEventListener('click', () => {
+          if (isMobile()) {
+            scrollMobileImages(-1);
+          } else {
+            setActive(activeIndex - 1);
+          }
+        });
       }
 
       if (nextBtn) {
-        nextBtn.addEventListener('click', () => setActive(activeIndex + 1));
+        nextBtn.addEventListener('click', () => {
+          if (isMobile()) {
+            scrollMobileImages(1);
+          } else {
+            setActive(activeIndex + 1);
+          }
+        });
       }
+
+      window.addEventListener('resize', () => {
+        if (isMobile()) {
+          resetActiveMobileScroll();
+        }
+      });
 
       setActive(0);
     })();

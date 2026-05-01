@@ -11,6 +11,7 @@
   "current": {
     "logo_height": 36,
     "logo_height_mobile": 28,
+    "favicon": "shopify://shop_images/favicon.png",
     "type_body_font": "lato_n4",
     "type_subheading_font": "raleway_n6",
     "type_heading_font": "raleway_n7",

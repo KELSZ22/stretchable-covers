@@ -20,9 +20,10 @@
     <div class="custom-search-dropdown__body">
       <div class="custom-search-dropdown__col custom-search-dropdown__col--left">
         <h4 class="custom-search-dropdown__title">Top Searches</h4>
+
         <ul class="custom-search-dropdown__links">
           <li>
-            <a href="/search?q=steering+wheel+cover">
+            <a href="{{ routes.search_url }}?q=Steering%20wheel%20cover&type=product">
               <span class="custom-search-dropdown__link-icon" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
                   <path d="M9.58984 0L13.3398 3.75L13.7695 4.19922L13.3398 4.64844L9.58984 8.39844L8.69141 7.5L11.3672 4.82422H10.625C5.43945 4.82422 1.25 9.01367 1.25 14.1992H0C0 8.3374 4.76318 3.57422 10.625 3.57422H11.3672L8.69141 0.898438L9.58984 0Z" fill="#1F1F1F"/>
@@ -31,8 +32,9 @@
               <span>Steering wheel cover</span>
             </a>
           </li>
+
           <li>
-            <a href="/search?q=sousaphone+cover">
+            <a href="{{ routes.search_url }}?q=Sousaphone%20cover&type=product">
               <span class="custom-search-dropdown__link-icon" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
                   <path d="M9.58984 0L13.3398 3.75L13.7695 4.19922L13.3398 4.64844L9.58984 8.39844L8.69141 7.5L11.3672 4.82422H10.625C5.43945 4.82422 1.25 9.01367 1.25 14.1992H0C0 8.3374 4.76318 3.57422 10.625 3.57422H11.3672L8.69141 0.898438L9.58984 0Z" fill="#1F1F1F"/>
@@ -41,8 +43,9 @@
               <span>Sousaphone cover</span>
             </a>
           </li>
+
           <li>
-            <a href="/search?q=bar+exam+stool+cover">
+            <a href="{{ routes.search_url }}?q=Bar%20%26%20Exam%20stool%20cover&type=product">
               <span class="custom-search-dropdown__link-icon" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
                   <path d="M9.58984 0L13.3398 3.75L13.7695 4.19922L13.3398 4.64844L9.58984 8.39844L8.69141 7.5L11.3672 4.82422H10.625C5.43945 4.82422 1.25 9.01367 1.25 14.1992H0C0 8.3374 4.76318 3.57422 10.625 3.57422H11.3672L8.69141 0.898438L9.58984 0Z" fill="#1F1F1F"/>
@@ -56,6 +59,7 @@
 
       <div class="custom-search-dropdown__col custom-search-dropdown__col--middle">
         <h4 class="custom-search-dropdown__title" data-search-products-title>Recently Viewed Products</h4>
+
         <div class="custom-search-dropdown__products" data-search-results>
           {% if product_1 != blank %}
             <a href="{{ product_1.url }}" class="custom-search-dropdown__product">
@@ -78,21 +82,61 @@
       </div>
 
       <div class="custom-search-dropdown__col custom-search-dropdown__col--right">
-        <h4 class="custom-search-dropdown__title" data-featured-title>ㅤ</h4>
+        <h4 class="custom-search-dropdown__title" data-featured-title>Featured Product</h4>
+
         <div data-featured-panel>
-          {% if featured_image != blank or featured_heading != blank or featured_text != blank %}
-            <div class="custom-search-dropdown__featured">
-              {% if featured_image != blank %}
-                <img src="{{ featured_image | image_url: width: 400 }}" alt="{{ featured_heading | escape }}">
-              {% endif %}
+          {% if featured_product != blank %}
+            {% assign featured_variant = featured_product.selected_or_first_available_variant %}
 
-              {% if featured_heading != blank %}
-                <span class="heading-search-featured">{{ featured_heading }}</span>
-              {% endif %}
+            <a href="{{ featured_product.url }}" class="custom-search-dropdown__featured custom-search-dropdown__featured-product">
+              <div class="custom-search-dropdown__featured-image-wrap">
+                {% if featured_product.featured_image != blank %}
+                  <img
+                    src="{{ featured_product.featured_image | image_url: width: 500 }}"
+                    alt="{{ featured_product.title | escape }}"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="custom-search-dropdown__featured-placeholder">
+                    No image
+                  </div>
+                {% endif %}
+              </div>
 
-              {% if featured_text != blank %}
-                <p class="text-search-featured">{{ featured_text }}</p>
-              {% endif %}
+              <span class="heading-search-featured">
+                {{ featured_product.title }}
+              </span>
+
+              <div class="custom-search-featured-price">
+                {% if featured_variant.compare_at_price > featured_variant.price %}
+                  <span class="custom-search-featured-price-current">
+                    {{ featured_variant.price | money }}
+                  </span>
+                  <span class="custom-search-featured-price-compare">
+                    {{ featured_variant.compare_at_price | money }}
+                  </span>
+                {% else %}
+                  <span class="custom-search-featured-price-current">
+                    {{ featured_variant.price | money }}
+                  </span>
+                {% endif %}
+              </div>
+            </a>
+          {% else %}
+            <div class="custom-search-dropdown__featured custom-search-dropdown__featured-product custom-search-dropdown__featured-product--empty">
+              <div class="custom-search-dropdown__featured-image-wrap">
+                <div class="custom-search-dropdown__featured-placeholder">
+                  Select product
+                </div>
+              </div>
+
+              <span class="heading-search-featured">
+                Featured product
+              </span>
+
+              <p class="text-search-featured">
+                Choose a product in the header section settings.
+              </p>
             </div>
           {% endif %}
         </div>
@@ -115,12 +159,12 @@
 
 <style>
   .custom-search-dropdown__col.custom-search-dropdown__col--right .custom-search-dropdown__featured {
-    align-items: self-start;
+    align-items: flex-start;
   }
 
   .heading-search-featured {
     color: #1F1F1F;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
@@ -132,12 +176,13 @@
 
   .text-search-featured {
     color: #1F1F1F;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
     line-height: 14px;
     text-align: left;
+    margin: 0;
   }
 
   .header-search[data-search-dropdown] {
@@ -180,6 +225,19 @@
     gap: 48px;
   }
 
+  .custom-search-dropdown__col {
+    box-sizing: border-box;
+  }
+
+  .custom-search-dropdown__col:not(:last-child) {
+    border-right: 1px solid rgba(0, 0, 0, 0.15);
+    padding-right: 32px;
+  }
+
+  .custom-search-dropdown__col:not(:first-child) {
+    padding-left: 0;
+  }
+
   .custom-search-dropdown__col.custom-search-dropdown__col--left {
     width: 20%;
     position: relative;
@@ -190,7 +248,6 @@
     position: relative;
   }
 
-
   .custom-search-dropdown__col.custom-search-dropdown__col--right {
     width: 20%;
   }
@@ -198,7 +255,7 @@
   .custom-search-dropdown__title {
     margin: 0 0 31px;
     color: #0F2E53;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-size: 24px;
     font-style: normal;
     font-weight: 700;
@@ -234,11 +291,17 @@
 
   .custom-search-dropdown__links span:last-child {
     color: #1F1F1F;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
+  }
+
+  .custom-search-dropdown__links a:hover span:last-child {
+    color: #0F2E53;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .custom-search-dropdown__products {
@@ -255,8 +318,7 @@
     align-items: center;
   }
 
-  .custom-search-dropdown__product img,
-  .custom-search-dropdown__featured img {
+  .custom-search-dropdown__product img {
     width: 100%;
     display: block;
     border-radius: 6px;
@@ -266,11 +328,126 @@
   .custom-search-dropdown__product span {
     color: #0F2E53;
     text-align: center;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
     line-height: 14px;
+  }
+
+  .custom-search-dropdown__featured-product {
+    width: 100%;
+    align-items: flex-start !important;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .custom-search-dropdown__featured-product:hover {
+    transform: translateY(-2px);
+    border-color: rgba(15, 46, 83, 0.35);
+    box-shadow: 0 10px 24px rgba(15, 46, 83, 0.12);
+  }
+
+  .custom-search-dropdown__featured-product--empty {
+    pointer-events: none;
+  }
+
+  .custom-search-dropdown__featured-image-wrap {
+    width: 100%;
+    background: #f7f7f7;
+    overflow: hidden;
+  }
+
+  .custom-search-dropdown__featured-product img,
+  .custom-search-dropdown__featured-placeholder {
+    width: 100%;
+    display: block;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .custom-search-dropdown__featured-product img {
+    object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+
+  .custom-search-dropdown__featured-product:hover img {
+    transform: scale(1.04);
+  }
+
+  .custom-search-dropdown__featured-placeholder {
+    background: #f2f2f2;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Lato, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    padding: 14px;
+  }
+
+  .custom-search-dropdown__featured-product .heading-search-featured,
+  .custom-search-dropdown__featured-product .text-search-featured,
+  .custom-search-dropdown__featured-product .custom-search-featured-price,
+  .custom-search-dropdown__featured-product .custom-search-featured-btn {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .custom-search-dropdown__featured-product .heading-search-featured {
+    margin-top: 10px;
+  }
+
+  .custom-search-featured-price {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 9px;
+  }
+
+  .custom-search-featured-price-current {
+    color: #0F2E53;
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .custom-search-featured-price-compare {
+    color: #8a8a8a;
+    font-family: Lato, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    text-decoration: line-through;
+    line-height: 1.2;
+  }
+
+  .custom-search-featured-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    max-width: calc(100% - 20px);
+    margin-top: 0;
+    margin-bottom: 12px;
+    padding: 7px 12px;
+    background: #0F2E53;
+    color: #fff;
+    border-radius: 999px;
+    font-family: Lato, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
   }
 
   .custom-search-dropdown__featured strong {
@@ -292,14 +469,27 @@
     opacity: 0.7;
   }
 
+  @media (max-width: 1200px) {
+    .custom-search-dropdown__col.custom-search-dropdown__col--right {
+      display: none;
+      border: 0;
+    }
+
+    .custom-search-dropdown__col.custom-search-dropdown__col--middle {
+      width: 75% !important;
+      border: 0;
+    }
+  }
+
   @media (max-width: 900px) {
-  .header-search {
-    display: none !important;
+    .header-search {
+      display: none !important;
+    }
+
+    .mobile.header-search {
+      display: flex !important;
+    }
   }
-  .mobile.header-search {
-    display: flex !important;
-  }
-}
 </style>
 
 <script>
@@ -381,7 +571,7 @@
         productsTitle.textContent = 'Recently Viewed Products';
 
         if (featuredTitle) {
-          featuredTitle.textContent = 'ㅤ';
+          featuredTitle.textContent = 'Featured Product';
         }
 
         if (!items.length) {
@@ -445,14 +635,17 @@
           }
 
           if (typeof featured.price === 'number') {
-            featuredPrice = '<p>' + moneyFromCents(featured.price) + '</p>';
+            featuredPrice = '<div class="custom-search-featured-price"><span class="custom-search-featured-price-current">' + moneyFromCents(featured.price) + '</span></div>';
           }
 
           featuredPanel.innerHTML =
-            '<a href="' + escapeHtml(featured.url) + '" class="custom-search-dropdown__featured">' +
-              featuredImage +
-              '<strong>' + escapeHtml(featured.title) + '</strong>' +
+            '<a href="' + escapeHtml(featured.url) + '" class="custom-search-dropdown__featured custom-search-dropdown__featured-product">' +
+              '<div class="custom-search-dropdown__featured-image-wrap">' +
+                featuredImage +
+              '</div>' +
+              '<span class="heading-search-featured">' + escapeHtml(featured.title) + '</span>' +
               featuredPrice +
+              '<span class="custom-search-featured-btn">View Product</span>' +
             '</a>';
         }
       }

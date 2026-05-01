@@ -6,8 +6,17 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
+    "search_page_hero_eWLPWD": {
+      "type": "search-page-hero",
+      "name": "Search page hero",
+      "settings": {
+        "heading": "Search",
+        "description": ""
+      }
+    },
     "search": {
       "type": "search-header",
       "blocks": {
@@ -46,11 +55,19 @@
           "blocks": {}
         }
       },
+      "disabled": true,
       "settings": {
         "alignment": "flex-start",
         "color_scheme": "scheme-1",
         "padding-block-start": 40,
         "padding-block-end": 0
+      }
+    },
+    "custom_search_results_BmTfyP": {
+      "type": "custom-search-results",
+      "name": "Custom search results",
+      "settings": {
+        "products_per_page": 24
       }
     },
     "main": {
@@ -70,6 +87,12 @@
             "enable_grid_density": true,
             "inherit_color_scheme": true,
             "color_scheme": "",
+            "typography_filter_title_preset": "h4",
+            "typography_filter_title_color": "var(--color-foreground)",
+            "typography_facets_label_preset": "",
+            "typography_facets_label_color": "var(--color-foreground)",
+            "typography_checkbox_label_preset": "",
+            "typography_checkbox_label_color": "var(--color-foreground)",
             "padding-block-start": 8,
             "padding-block-end": 8,
             "padding-inline-start": 0,
@@ -168,10 +191,13 @@
           ]
         }
       },
+      "disabled": true,
       "settings": {
         "layout_type": "grid",
         "product_card_size": "medium",
         "mobile_product_card_size": "small",
+        "enable_infinite_scroll": true,
+        "products_per_page": 24,
         "product_grid_width": "centered",
         "full_width_on_mobile": true,
         "columns_gap_horizontal": 16,
@@ -185,7 +211,9 @@
     }
   },
   "order": [
+    "search_page_hero_eWLPWD",
     "search",
+    "custom_search_results_BmTfyP",
     "main"
   ]
 }

@@ -116,23 +116,29 @@
             "image_bottom_right": "shopify://shop_images/Rectangle_453.jpg"
           }
         },
-        "collection_group_VBrAtj": {
+        "collection_group_BJLWpL": {
           "type": "collection_group",
           "settings": {
-            "tab_label": "Trucks & Cars"
+            "tab_label": "Trucks & Cars",
+            "image_left": "shopify://shop_images/Rectangle_451.jpg",
+            "image_top_right": "shopify://shop_images/Rectangle_452.jpg",
+            "image_bottom_right": "shopify://shop_images/Rectangle_453.jpg"
           }
         },
-        "collection_group_U76ytN": {
+        "collection_group_jGNmrx": {
           "type": "collection_group",
           "settings": {
-            "tab_label": "Marine & Boating"
+            "tab_label": "Marine & Boating",
+            "image_left": "shopify://shop_images/Rectangle_451.jpg",
+            "image_top_right": "shopify://shop_images/Rectangle_452.jpg",
+            "image_bottom_right": "shopify://shop_images/Rectangle_453.jpg"
           }
         }
       },
       "block_order": [
         "collection_group_qQ4mbq",
-        "collection_group_VBrAtj",
-        "collection_group_U76ytN"
+        "collection_group_BJLWpL",
+        "collection_group_jGNmrx"
       ],
       "name": "Gallery Showcase",
       "settings": {

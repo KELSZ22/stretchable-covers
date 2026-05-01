@@ -9,6 +9,22 @@
  */
 {
   "sections": {
+    "custom_breadcrumbs_ENh9yw": {
+      "type": "custom-breadcrumbs",
+      "name": "Custom breadcrumbs",
+      "settings": {
+        "show_on_homepage": false,
+        "full_width": false,
+        "separator": "/",
+        "font_size": 12,
+        "padding_top": 12,
+        "padding_bottom": 12,
+        "bg_color": "#ffffff",
+        "link_color": "#4a4a4a",
+        "current_color": "#000000",
+        "separator_color": "#666666"
+      }
+    },
     "main": {
       "type": "product-information",
       "blocks": {
@@ -20,7 +36,7 @@
             "media_columns": "two",
             "image_gap": 4,
             "large_first_image": false,
-            "icons_style": "none",
+            "icons_style": "chevron",
             "slideshow_controls_style": "thumbnails",
             "slideshow_mobile_controls_style": "thumbnails",
             "thumbnail_position": "bottom",
@@ -113,6 +129,7 @@
                   "name": "Product title",
                   "settings": {
                     "text": "<h1>{{ closest.product.title }}</h1>",
+                    "logo_image": "shopify://shop_images/fast_delivery.png",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -355,7 +372,7 @@
                     "text_Aaaty7": {
                       "type": "text",
                       "settings": {
-                        "text": "",
+                        "text": "<p>{{ closest.product.metafields.custom.important_printing_note | metafield_tag }}</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -394,7 +411,7 @@
                     "text_Dqpam9": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "text": "<p>{{ closest.product.metafields.custom.specification | metafield_tag }}</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -433,7 +450,7 @@
                     "text_dHtD7r": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "text": "<p>{{ closest.product.metafields.custom.how_to_measure | metafield_tag }}</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -472,7 +489,7 @@
                     "text_r8PefT": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "text": "<p>{{ closest.product.metafields.custom.materials_used | metafield_tag }}</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -557,67 +574,6 @@
         "padding-block-end": 0
       }
     },
-    "ups_icon_bar_rnHWap": {
-      "type": "ups-icon-bar",
-      "blocks": {
-        "item_ywXa8U": {
-          "type": "item",
-          "settings": {
-            "custom_icon": "shopify://shop_images/Vector.png",
-            "heading": "Fully Custom Covers",
-            "text": "Made to your exact size and specifications."
-          }
-        },
-        "item_fiXjHP": {
-          "type": "item",
-          "settings": {
-            "custom_icon": "shopify://shop_images/Vector_1.png",
-            "heading": "Fast Production",
-            "text": "Quick turnaround without compromising quality."
-          }
-        },
-        "item_7XayQD": {
-          "type": "item",
-          "settings": {
-            "custom_icon": "shopify://shop_images/Vector_2.png",
-            "heading": "Repeat Customers Worldwide",
-            "text": "Trusted by 50,000+ clients across the globe."
-          }
-        },
-        "item_LqQBX4": {
-          "type": "item",
-          "settings": {
-            "custom_icon": "shopify://shop_images/Vector_3.png",
-            "heading": "Order as Few as One",
-            "text": "No minimum order required."
-          }
-        },
-        "item_xBLrja": {
-          "type": "item",
-          "settings": {
-            "custom_icon": "shopify://shop_images/Vector_4.png",
-            "heading": "Made with Premium Microfiber",
-            "text": "Soft, durable, and stretchable material."
-          }
-        }
-      },
-      "block_order": [
-        "item_ywXa8U",
-        "item_fiXjHP",
-        "item_7XayQD",
-        "item_LqQBX4",
-        "item_xBLrja"
-      ],
-      "name": "USP Icon Bar",
-      "settings": {
-        "bg_color": "#f6f6f6",
-        "border_color": "#1a2438",
-        "border_width": 2,
-        "icon_color": "#223b63",
-        "heading_color": "#111111",
-        "text_color": "#333333"
-      }
-    },
     "image_row_7KNinV": {
       "type": "image-row",
       "blocks": {
@@ -683,6 +639,67 @@
         "spacer_size_desktop": 50
       }
     },
+    "ups_icon_bar_rnHWap": {
+      "type": "ups-icon-bar",
+      "blocks": {
+        "item_ywXa8U": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector.png",
+            "heading": "Fully Custom Covers",
+            "text": "Made to your exact size and specifications."
+          }
+        },
+        "item_fiXjHP": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_1.png",
+            "heading": "Fast Production",
+            "text": "Quick turnaround without compromising quality."
+          }
+        },
+        "item_7XayQD": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_2.png",
+            "heading": "Repeat Customers Worldwide",
+            "text": "Trusted by 50,000+ clients across the globe."
+          }
+        },
+        "item_LqQBX4": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_3.png",
+            "heading": "Order as Few as One",
+            "text": "No minimum order required."
+          }
+        },
+        "item_xBLrja": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_4.png",
+            "heading": "Made with Premium Microfiber",
+            "text": "Soft, durable, and stretchable material."
+          }
+        }
+      },
+      "block_order": [
+        "item_ywXa8U",
+        "item_fiXjHP",
+        "item_7XayQD",
+        "item_LqQBX4",
+        "item_xBLrja"
+      ],
+      "name": "USP Icon Bar",
+      "settings": {
+        "bg_color": "#f6f6f6",
+        "border_color": "#1a2438",
+        "border_width": 2,
+        "icon_color": "#223b63",
+        "heading_color": "#111111",
+        "text_color": "#333333"
+      }
+    },
     "image_swiper_n9ebDN": {
       "type": "image-swiper",
       "blocks": {
@@ -721,7 +738,7 @@
         "section_version": "version-2",
         "background": "#ffffff",
         "heading": "Trusted by Hundreds of Brands <br>Worldwide",
-        "description": "Personalize your cover in just a few clicks.",
+        "description": "",
         "rating": "Trusted by 50,000 + customers"
       }
     },
@@ -1279,7 +1296,6 @@
       ],
       "name": "FAQ Category Accordion",
       "settings": {
-        "side_label": "FAQS",
         "heading": "Frequently Asked Questions",
         "category_1": "Product & Materials",
         "category_2": "Artwork & Printing",
@@ -1291,7 +1307,6 @@
         "button_label": "Contact Us",
         "button_link": "",
         "section_bg": "#ffffff",
-        "side_label_color": "#1f1f1f",
         "heading_color": "#1f1f1f",
         "category_box_bg": "#ffffff",
         "category_divider_color": "#e7e7e7",
@@ -1375,10 +1390,11 @@
     }
   },
   "order": [
+    "custom_breadcrumbs_ENh9yw",
     "main",
-    "ups_icon_bar_rnHWap",
     "image_row_7KNinV",
     "spacer_cfBYhw",
+    "ups_icon_bar_rnHWap",
     "image_swiper_n9ebDN",
     "spacer_kpMBb4",
     "image_swiper_BqqLEK",

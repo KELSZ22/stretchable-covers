@@ -56,6 +56,12 @@ img {
   height: auto;
 }
 
+div#header-group {
+    position: sticky;
+    top: 0;
+    z-index: 99999;
+}
+
 input,
 textarea,
 select {
@@ -4216,7 +4222,7 @@ slideshow-arrows {
   display: flex;
   z-index: var(--layer-heightened);
   pointer-events: none;
-  mix-blend-mode: difference;
+  mix-blend-mode: normal; 
   align-items: flex-end;
 
   &[position='left'] {
@@ -4250,7 +4256,25 @@ slideshow-arrows .slideshow-control {
   min-height: var(--minimum-touch-target);
   min-width: var(--minimum-touch-target);
   padding: 0 var(--padding-xs);
-  color: var(--color-white);
+  color: #5F5F5F;
+}
+button.slideshow-control.slideshow-control--next.slideshow-control--style-chevron.button.button-unstyled.button-unstyled--transparent,
+button.slideshow-control.slideshow-control--previous.slideshow-control--style-chevron.button.button-unstyled.button-unstyled--transparent.flip-x {
+    color: #5F5F5F;
+    background: #F3F4F5;
+    border: 1px solid #C5C5C5;
+    padding: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    border-radius: 99999px;
+}
+button.slideshow-control.slideshow-control--next.slideshow-control--style-chevron.button.button-unstyled.button-unstyled--transparent svg,
+button.slideshow-control.slideshow-control--previous.slideshow-control--style-chevron.button.button-unstyled.button-unstyled--transparent.flip-x svg {
+      width: 15px;
+      height: 15px;
 }
 
 slideshow-arrows .slideshow-control.slideshow-control--style-none {

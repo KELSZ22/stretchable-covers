@@ -3,7 +3,7 @@
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap');
-
+  
   .header-search {
     width: 100%;
   }
@@ -83,6 +83,7 @@
     top: 0;
     z-index: 1000;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    background: #fff;
   }
 
   .custom-topbar-container {
@@ -126,7 +127,7 @@
   .topbar-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 57px;
   }
 
   .topbar-right a {
@@ -135,7 +136,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .topbar-right svg {
@@ -153,6 +154,147 @@
     color: #fff;
   }
 
+  /* Country / flag selector */
+  .topbar-country-form {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  .topbar-country-selector {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .topbar-country-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: transparent;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    line-height: 1;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .topbar-country-button:hover {
+    opacity: 0.85;
+  }
+
+  .topbar-country-flag,
+  .topbar-country-option-flag {
+    width: 22px !important;
+    height: 14px !important;
+    display: block !important;
+    flex: 0 0 22px;
+    object-fit: cover;
+    border-radius: 1px;
+  }
+
+  .topbar-country-code,
+  .topbar-country-arrow {
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .topbar-country-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 250px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+    padding: 8px;
+    z-index: 99999;
+  }
+
+  .topbar-country-dropdown[hidden] {
+    display: none !important;
+  }
+
+  .topbar-country-option {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: #0F2E53;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    line-height: 1.2;
+    text-align: left;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .topbar-country-option-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .topbar-country-option-left span {
+    color: #0F2E53;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+  }
+
+  .topbar-country-option small {
+    color: #0F2E53;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .topbar-country-option:hover {
+    background: #f2f2f2;
+    color: #0F2E53;
+  }
+
+  .topbar-country-option:hover span,
+  .topbar-country-option:hover small {
+    color: #0F2E53;
+  }
+
+  .topbar-country-option.is-active {
+    background: #f2f2f2;
+    color: #0F2E53;
+    font-weight: 700;
+  }
+
+  @media screen and (max-width: 768px) {
+    .topbar-country-button,
+    .topbar-country-code,
+    .topbar-country-arrow,
+    .topbar-country-option,
+    .topbar-country-option-left span,
+    .topbar-country-option small {
+      font-size: 12px;
+    }
+  }
+
   .custom-header-container {
     display: flex;
     justify-content: center;
@@ -165,6 +307,7 @@
     padding: 15px 70px;
     gap: 50px;
     width: 100%;
+    background: rgba(15, 46, 83, 0.06);
   }
 
   .header-logo a {
@@ -292,41 +435,64 @@
     cursor: grabbing;
   }
 
-  .header-nav-inner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    padding: 8px;
-    margin: 0;
-    width: max-content;
-    min-width: 100%;
-    position: relative;
-  }
+.header-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 8px;
+  margin: 0;
+  width: max-content;
+  min-width: 100%;
+  position: relative;
+}
 
-  .header-nav-inner > li {
-    list-style: none;
-    position: relative;
-    flex: 0 0 auto;
-  }
+.header-nav-inner > li {
+  list-style: none;
+  position: relative;
+  flex: 0 0 auto;
+}
 
-  .header-nav-inner > li > a {
-    display: block;
-    padding: 13px 14px;
-    font-size: 14px;
-    font-weight: 400;
-    color: #222;
-    text-decoration: none;
-    white-space: nowrap;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    transition: color 0.15s;
-    font-family: 'Lato', sans-serif;
-  }
+.header-nav-inner > li > a {
+  display: block;
+  position: relative;
+  padding: 13px 14px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #222;
+  text-decoration: none;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: color 0.15s ease;
+  font-family: 'Lato', sans-serif;
+}
 
-  .header-nav-inner > li > a:hover {
-    color: #e05a00;
-  }
+/* underline base for ALL nav items */
+.header-nav-inner > li > a::after {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 10px;
+    height: 3px;
+    background: #0F2E53;
+    border-radius: 999px;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s ease;
+    pointer-events: none;
+}
+
+/* hover on LI, not only A */
+.header-nav-inner > li:hover > a {
+  color: #0F2E53;
+}
+
+.header-nav-inner > li:hover > a::after {
+  transform: scaleX(1);
+}
+
 
   .custom-nav-item {
     position: relative;
@@ -408,19 +574,21 @@
     stroke-linecap: round;
   }
 
+  /* Mobile drawer - opens from the RIGHT side */
   .mobile-nav-drawer {
     display: none;
     position: fixed;
     top: 0;
-    left: 0;
-    width: 80%;
-    max-width: 430px;
-    height: 100%;
+    left: auto;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
     background: #fff;
     z-index: 9999;
     overflow-y: auto;
-    box-shadow: 4px 0 20px rgba(0,0,0,0.15);
-    transform: translateX(-100%);
+    box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+    transform: translateX(100%);
     transition: transform 0.3s ease;
   }
 
@@ -431,10 +599,7 @@
   .mobile-nav-overlay {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(0,0,0,0.4);
     z-index: 9998;
   }
@@ -486,7 +651,8 @@
     color: #e05a00;
   }
 
-  .mobile-nav-list .mobile-sub-toggle, li.mobile-nav-list__item a {
+  .mobile-nav-list .mobile-sub-toggle,
+  li.mobile-nav-list__item a {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -500,8 +666,6 @@
     color: #1F1F1F;
     font-weight: 400;
   }
-
-
 
   .mobile-sub-toggle .arrow {
     font-size: 12px;
@@ -529,12 +693,14 @@
   }
 
   @media (max-width: 900px) {
-    .custom-header-main{
+    .custom-header-main {
       gap: 0;
     }
-    .header-search form{
+
+    .header-search form {
       display: none;
     }
+
     .custom-header-nav {
       display: none;
     }
@@ -545,10 +711,6 @@
 
     .mobile-nav-drawer {
       display: block;
-    }
-
-    .topbar-promos {
-      font-size: 11px;
     }
   }
 
@@ -1019,7 +1181,6 @@
 
   .custom-cart-payments {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
   }
 
@@ -1057,10 +1218,13 @@
     font-family: Arial, sans-serif;
   } {% endcomment %}
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     .topbar-promos span {
       font-size: 12px !important;
     }
+    .topbar-right a {
+      font-size: 12px;
+  }
 
     .custom-topbar-container > .custom-header-topbar:not(.mobile) {
       display: none;
@@ -1340,10 +1504,93 @@
           </svg>
           <span>{{ section.settings.phone_number }}</span>
         </a>
-        <span class="topbar-flag">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="14" viewBox="0 0 22 14"><rect width="22" height="14" fill="#B22234"/><rect y="1.08" width="22" height="1.08" fill="#fff"/><rect y="3.23" width="22" height="1.08" fill="#fff"/><rect y="5.38" width="22" height="1.08" fill="#fff"/><rect y="7.54" width="22" height="1.08" fill="#fff"/><rect y="9.69" width="22" height="1.08" fill="#fff"/><rect y="11.85" width="22" height="1.08" fill="#fff"/><rect width="8.8" height="7.54" fill="#3C3B6E"/></svg>
-          ▾
-        </span>
+        {%- assign current_country_code = localization.country.iso_code | default: 'US' -%}
+        {%- assign current_country_code_downcase = current_country_code | downcase -%}
+        {%- assign current_country_name = localization.country.name | default: 'United States' -%}
+        {% comment %}
+        {% form 'localization', id: 'TopbarCountryForm', class: 'topbar-country-form' %}
+          <input
+            type="hidden"
+            name="country_code"
+            value="{{ current_country_code }}"
+            data-topbar-country-input
+          >
+
+          <div class="topbar-country-selector" data-topbar-country-selector>
+            <button
+              type="button"
+              class="topbar-country-button"
+              aria-expanded="false"
+              aria-label="Select country or region"
+              data-topbar-country-button
+            >
+              <img
+                class="topbar-country-flag"
+                src="https://flagcdn.com/w40/{{ current_country_code_downcase }}.png"
+                srcset="https://flagcdn.com/w40/{{ current_country_code_downcase }}.png 1x, https://flagcdn.com/w80/{{ current_country_code_downcase }}.png 2x"
+                width="22"
+                height="14"
+                alt="{{ current_country_name | escape }} flag"
+                loading="eager"
+                data-topbar-current-flag
+              >
+
+              <span class="topbar-country-arrow">▾</span>
+            </button>
+
+            <div class="topbar-country-dropdown" hidden data-topbar-country-dropdown>
+              {% if localization.available_countries.size > 0 %}
+                {% for country in localization.available_countries %}
+                  {%- assign country_code_downcase = country.iso_code | downcase -%}
+
+                  <button
+                    type="button"
+                    class="topbar-country-option {% if country.iso_code == localization.country.iso_code %}is-active{% endif %}"
+                    data-country-code="{{ country.iso_code }}"
+                    data-country-name="{{ country.name | escape }}"
+                    data-country-flag="https://flagcdn.com/w40/{{ country_code_downcase }}.png"
+                    data-country-flag-2x="https://flagcdn.com/w80/{{ country_code_downcase }}.png"
+                  >
+                    <span class="topbar-country-option-left">
+                      <img
+                        class="topbar-country-option-flag"
+                        src="https://flagcdn.com/w40/{{ country_code_downcase }}.png"
+                        srcset="https://flagcdn.com/w40/{{ country_code_downcase }}.png 1x, https://flagcdn.com/w80/{{ country_code_downcase }}.png 2x"
+                        width="22"
+                        height="14"
+                        alt="{{ country.name | escape }} flag"
+                        loading="lazy"
+                      >
+
+                      <span>{{ country.name }}</span>
+                    </span>
+
+                    <small>{{ country.currency.iso_code }}</small>
+                  </button>
+                {% endfor %}
+              {% else %}
+                <button type="button" class="topbar-country-option is-active">
+                  <span class="topbar-country-option-left">
+                    <img
+                      class="topbar-country-option-flag"
+                      src="https://flagcdn.com/w40/us.png"
+                      width="22"
+                      height="14"
+                      alt="United States flag"
+                      loading="lazy"
+                    >
+
+                    <span>United States</span>
+                  </span>
+
+                  <small>{{ shop.currency }}</small>
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        {% endform %}
+
+        {% endcomment %}
       </div>
       
     </div>
@@ -1389,18 +1636,15 @@
           search_placeholder: section.settings.search_placeholder,
           product_1: section.settings.search_product_1,
           product_2: section.settings.search_product_2,
-          featured_image: section.settings.search_image_featured,
-          featured_heading: section.settings.search_heading_featured,
-          featured_text: section.settings.search_text_featured
+          featured_product: section.settings.search_featured_product
         %}
       </div>
 
       <div class="header-icons">
         <a href="{{ routes.account_url }}" aria-label="Account">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="17" viewBox="0 0 14 17" fill="none">
+  <path d="M11.4211 9.88601C12.4865 9.8861 13.3635 10.763 13.3635 11.8284V12.3167C13.3635 13.5639 12.5729 14.6688 11.3948 15.4202C10.2155 16.1722 8.6087 16.6223 6.73657 16.6223C4.86425 16.6223 3.25678 16.1723 2.07739 15.4202C0.899255 14.6688 0.108643 13.5639 0.108643 12.3167V11.8284C0.108643 10.763 0.985696 9.88612 2.05103 9.88601H11.4211ZM2.05103 11.3264C1.76649 11.3265 1.54907 11.5438 1.54907 11.8284V12.3167C1.54907 12.9449 1.95423 13.6339 2.85181 14.2063C3.74764 14.7776 5.09569 15.1819 6.73657 15.1819C8.37724 15.1818 9.72462 14.7775 10.6204 14.2063C11.518 13.6339 11.9231 12.9449 11.9231 12.3167V11.8284C11.9231 11.5438 11.7057 11.3265 11.4211 11.3264H2.05103ZM6.73657 0.108665C9.03923 0.108922 10.9192 1.98955 10.9192 4.29226C10.919 6.59478 9.03909 8.47462 6.73657 8.47488C4.43384 8.47488 2.55321 6.59494 2.55298 4.29226C2.55298 1.98939 4.4337 0.108665 6.73657 0.108665ZM6.73657 1.5491C5.21461 1.5491 3.99341 2.7703 3.99341 4.29226C3.99363 5.81402 5.21475 7.03445 6.73657 7.03445C8.25817 7.03419 9.47854 5.81387 9.47876 4.29226C9.47876 2.77046 8.25831 1.54935 6.73657 1.5491Z" fill="#1E1E1E" stroke="#1E1E1E" stroke-width="0.218039"/>
+</svg>
         </a>
         {% comment %}
         <a href="#" aria-label="Wishlist">
@@ -1410,11 +1654,9 @@
         </a>
         {% endcomment %}
         <a href="{{ routes.cart_url }}" aria-label="Cart" id="customCartTrigger">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="9" cy="21" r="1"/>
-            <circle cx="20" cy="21" r="1"/>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="17" viewBox="0 0 19 17" fill="none">
+  <path d="M6.9259 13.9961C7.21121 13.9962 7.48484 14.1098 7.68665 14.3115C7.88858 14.5135 8.00208 14.7877 8.00208 15.0732C8.00206 15.3588 7.88856 15.633 7.68665 15.835C7.48485 16.0366 7.21118 16.1503 6.9259 16.1504C6.64045 16.1504 6.36609 16.0367 6.16418 15.835C5.96227 15.633 5.84877 15.3588 5.84875 15.0732C5.84875 14.7877 5.96225 14.5135 6.16418 14.3115C6.3661 14.1097 6.64041 13.9961 6.9259 13.9961ZM14.2579 13.9961C14.5434 13.9961 14.8177 14.1097 15.0197 14.3115C15.2216 14.5135 15.3351 14.7877 15.3351 15.0732C15.3351 15.3588 15.2216 15.633 15.0197 15.835C14.8177 16.0368 14.5434 16.1504 14.2579 16.1504C13.9726 16.1503 13.699 16.0366 13.4972 15.835C13.2953 15.633 13.1818 15.3588 13.1818 15.0732C13.1818 14.7877 13.2953 14.5135 13.4972 14.3115C13.699 14.1098 13.9726 13.9962 14.2579 13.9961ZM1.01672 0.145508H1.46399C2.09871 0.145508 2.68172 0.439811 3.07239 0.908203L3.11633 0.959961H17.7208C17.8508 0.959983 17.9795 0.988978 18.0968 1.04492C18.2142 1.10092 18.3177 1.18311 18.3995 1.28418C18.4813 1.38519 18.5391 1.50353 18.5695 1.62988C18.5998 1.75618 18.6023 1.88759 18.5753 2.01465L17.3829 7.64844C17.1388 8.79858 16.1096 9.63184 14.9327 9.63184H5.25305L5.29211 9.80859L5.45422 10.5342V10.5381L5.45813 10.5537C5.53613 10.9047 5.83572 11.1445 6.19543 11.1445H15.2784C15.3941 11.1429 15.509 11.1649 15.6163 11.208C15.7237 11.2512 15.822 11.3152 15.9044 11.3965C15.9866 11.4776 16.0522 11.5741 16.0968 11.6807C16.1414 11.7873 16.1642 11.902 16.1642 12.0176C16.1642 12.1332 16.1414 12.2478 16.0968 12.3545C16.0522 12.4612 15.9868 12.5584 15.9044 12.6396C15.822 12.7209 15.7237 12.785 15.6163 12.8281C15.5091 12.8712 15.394 12.8923 15.2784 12.8906H6.19543C5.02853 12.8906 4.0061 12.0713 3.75305 10.9316L1.80481 2.16504C1.7681 1.99912 1.63309 1.8916 1.46399 1.8916H1.01672C0.901188 1.89324 0.786069 1.87212 0.678833 1.8291C0.571481 1.78596 0.473135 1.72185 0.390747 1.64062C0.308352 1.55939 0.243022 1.46221 0.198364 1.35547C0.15374 1.24876 0.130982 1.13422 0.130981 1.01855C0.130981 0.902891 0.153741 0.788349 0.198364 0.681641C0.243022 0.574897 0.308352 0.477722 0.390747 0.396484C0.473136 0.315259 0.57148 0.251147 0.678833 0.208008C0.78607 0.164984 0.901187 0.143874 1.01672 0.145508ZM3.75208 2.88379L4.83899 7.77148L4.86438 7.88574H14.9327C15.2959 7.88574 15.5986 7.64026 15.674 7.28516L16.6056 2.88184L16.6437 2.70605H3.71301L3.75208 2.88379Z" fill="#1E1E1E" stroke="white" stroke-width="0.290718"/>
+</svg>
           {%- if cart.item_count > 0 -%}
             <span class="cart-count">{{ cart.item_count }}</span>
           {%- endif -%}
@@ -1435,7 +1677,7 @@
     <div class="custom-header-nav-scroll" id="CustomHeaderNavScroll">
       <ul class="header-nav-inner">
         {%- for link in linklists[header_menu].links -%}
-          <li class="custom-nav-item {% if link.links != blank %}has-dropdown{% endif %}">
+          <li class="custom-nav-item{% if link.links != blank %} has-dropdown{% endif %}{% if link.active or link.child_active %} is-active{% endif %}">
             <a
               href="{{ link.url }}"
               {% if link.links != blank %}
@@ -1451,12 +1693,8 @@
               {% render 'custom-header-dropdown',
                 link: link,
                 menu2: section.settings.menu2,
-                mega_image_1: section.settings.mega_image_1,
-                mega_heading_1: section.settings.mega_heading_1,
-                mega_description_1: section.settings.mega_description_1,
-                mega_image_2: section.settings.mega_image_2,
-                mega_heading_2: section.settings.mega_heading_2,
-                mega_description_2: section.settings.mega_description_2
+                mega_product_1: section.settings.mega_product_1,
+                mega_product_2: section.settings.mega_product_2
               %}
             {%- endif -%}
           </li>
@@ -1470,15 +1708,11 @@
   header_menu: header_menu,
   menu2: section.settings.menu2,
   search_placeholder: section.settings.search_placeholder,
-  mega_image_1: section.settings.mega_image_1,
-  mega_heading_1: section.settings.mega_heading_1,
-  mega_description_1: section.settings.mega_description_1,
-  mega_image_2: section.settings.mega_image_2,
-  mega_heading_2: section.settings.mega_heading_2,
-  mega_description_2: section.settings.mega_description_2,
-  featured_image: section.settings.search_image_featured,
-          featured_heading: section.settings.search_heading_featured,
-          featured_text: section.settings.search_text_featured
+  search_product_1: section.settings.search_product_1,
+  search_product_2: section.settings.search_product_2,
+  search_featured_product: section.settings.search_featured_product,
+  mega_product_1: section.settings.mega_product_1,
+  mega_product_2: section.settings.mega_product_2
 %}
 
 <div class="custom-cart-overlay" id="customCartOverlay"></div>
@@ -1587,6 +1821,98 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('resize', handleResize);
   });
 });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const selectors = document.querySelectorAll('[data-topbar-country-selector]');
+
+    function closeAllCountryDropdowns() {
+      document.querySelectorAll('[data-topbar-country-dropdown]').forEach(function (dropdown) {
+        dropdown.setAttribute('hidden', '');
+      });
+
+      document.querySelectorAll('[data-topbar-country-button]').forEach(function (button) {
+        button.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    selectors.forEach(function (selector) {
+      const form = selector.closest('form');
+      const button = selector.querySelector('[data-topbar-country-button]');
+      const dropdown = selector.querySelector('[data-topbar-country-dropdown]');
+      const countryInput = form ? form.querySelector('[data-topbar-country-input]') : null;
+      const currentFlag = selector.querySelector('[data-topbar-current-flag]');
+      const options = selector.querySelectorAll('.topbar-country-option[data-country-code]');
+
+      if (!form || !button || !dropdown || !countryInput) return;
+
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const isOpen = !dropdown.hasAttribute('hidden');
+
+        closeAllCountryDropdowns();
+
+        if (!isOpen) {
+          dropdown.removeAttribute('hidden');
+          button.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      dropdown.addEventListener('click', function (event) {
+        event.stopPropagation();
+      });
+
+      options.forEach(function (option) {
+        option.addEventListener('click', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          const countryCode = option.getAttribute('data-country-code');
+          const countryName = option.getAttribute('data-country-name') || countryCode;
+          const countryFlag = option.getAttribute('data-country-flag');
+          const countryFlag2x = option.getAttribute('data-country-flag-2x');
+
+          if (!countryCode) return;
+
+          countryInput.value = countryCode;
+
+          options.forEach(function (item) {
+            item.classList.remove('is-active');
+          });
+
+          option.classList.add('is-active');
+
+          if (currentFlag && countryFlag) {
+            currentFlag.src = countryFlag;
+            currentFlag.alt = countryName + ' flag';
+
+            if (countryFlag2x) {
+              currentFlag.srcset = countryFlag + ' 1x, ' + countryFlag2x + ' 2x';
+            }
+          }
+
+          closeAllCountryDropdowns();
+
+          setTimeout(function () {
+            form.submit();
+          }, 50);
+        });
+      });
+    });
+
+    document.addEventListener('click', function () {
+      closeAllCountryDropdowns();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeAllCountryDropdowns();
+      }
+    });
+  });
 </script>
 
 <script>
@@ -1748,29 +2074,65 @@ document.addEventListener('DOMContentLoaded', function () {
     var overlay = document.getElementById('mobileNavOverlay');
     var closeBtn = document.getElementById('mobileDrawerClose');
 
+    if (!btn || !drawer || !overlay) return;
+
+    drawer.setAttribute('aria-hidden', 'true');
+
     function openDrawer() {
       drawer.classList.add('open');
       overlay.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      btn.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
     }
 
     function closeDrawer() {
       drawer.classList.remove('open');
       overlay.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+      btn.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
     }
 
-    btn && btn.addEventListener('click', openDrawer);
-    closeBtn && closeBtn.addEventListener('click', closeDrawer);
-    overlay && overlay.addEventListener('click', closeDrawer);
+    btn.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      if (drawer.classList.contains('open')) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    });
+
+    overlay.addEventListener('click', closeDrawer);
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeDrawer);
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeDrawer();
+      }
+    });
 
     document.querySelectorAll('.mobile-sub-toggle').forEach(function(toggle) {
       toggle.addEventListener('click', function() {
         var targetId = this.getAttribute('data-target');
         var sub = document.getElementById(targetId);
+
+        if (!sub) return;
+
         var isOpen = sub.classList.contains('open');
-        document.querySelectorAll('.mobile-submenu.open').forEach(function(el) { el.classList.remove('open'); });
-        document.querySelectorAll('.mobile-sub-toggle.active').forEach(function(el) { el.classList.remove('active'); });
+
+        document.querySelectorAll('.mobile-submenu.open').forEach(function(el) {
+          el.classList.remove('open');
+        });
+
+        document.querySelectorAll('.mobile-sub-toggle.active').forEach(function(el) {
+          el.classList.remove('active');
+        });
+
         if (!isOpen) {
           sub.classList.add('open');
           this.classList.add('active');
@@ -2382,53 +2744,19 @@ function renderCartItems(cart) {
       "default": "main-menu"
     },
     {
-      "type": "image_picker",
-      "id": "mega_image_1",
-      "label": "Mega Menu Image 1"
+      "type": "product",
+      "id": "mega_product_1",
+      "label": "Mega menu product 1"
     },
     {
-      "type": "text",
-      "id": "mega_heading_1",
-      "label": "Mega Menu Heading 1",
-      "default": "Lorem ipsum dolor sit"
+      "type": "product",
+      "id": "mega_product_2",
+      "label": "Mega menu product 2"
     },
     {
-      "type": "textarea",
-      "id": "mega_description_1",
-      "label": "Mega Menu Description 1",
-      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore."
-    },
-    {
-      "type": "image_picker",
-      "id": "mega_image_2",
-      "label": "Mega Menu Image 2"
-    },
-    {
-      "type": "text",
-      "id": "mega_heading_2",
-      "label": "Mega Menu Heading 2",
-      "default": "Lorem ipsum dolor sit"
-    },
-    {
-      "type": "textarea",
-      "id": "mega_description_2",
-      "label": "Mega Menu Description 2",
-      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore."
-    },
-    {
-      "type": "image_picker",
-      "id": "search_image_featured",
-      "label":  "Search Featured Image"
-    },
-    {
-      "type": "text",
-      "id": "search_heading_featured",
-      "label": "Search Featured Heading"
-    },
-    {
-      "type": "textarea",
-      "id": "search_text_featured",
-      "label": "Search Featured Text"
+      "type": "product",
+      "id": "search_featured_product",
+      "label": "Search dropdown featured product"
     },
     {
       "type": "image_picker",

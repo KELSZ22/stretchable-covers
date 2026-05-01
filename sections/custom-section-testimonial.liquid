@@ -58,6 +58,7 @@
                       loading="lazy"
                       width="{{ block.settings.image.width }}"
                       height="{{ block.settings.image.height }}"
+                      draggable="false"
                     >
                   {% else %}
                     {{ 'image' | placeholder_svg_tag: 'cwt-section__card-placeholder' }}
@@ -104,9 +105,6 @@
     grid-template-columns: 500px minmax(0, 1fr);
     gap: 34px;
     align-items: center;
-  }
-
-  #shopify-section-{{ section.id }} .cwt-section__left {
   }
 
   #shopify-section-{{ section.id }} .cwt-section__rating {
@@ -164,10 +162,26 @@
     justify-content: center;
     padding: 0;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: none;
   }
 
-  #shopify-section-{{ section.id }} .cwt-section__arrow:hover {
+  #shopify-section-{{ section.id }} .cwt-section__arrow--next {
+    background: {{ section.settings.arrow_hover_bg }};
+    color: {{ section.settings.arrow_hover_color }};
+    border-color: {{ section.settings.arrow_hover_bg }};
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__arrow:hover,
+  #shopify-section-{{ section.id }} .cwt-section__arrow:focus,
+  #shopify-section-{{ section.id }} .cwt-section__arrow:active {
+    background: {{ section.settings.arrow_bg }};
+    color: {{ section.settings.arrow_color }};
+    border-color: {{ section.settings.arrow_border }};
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__arrow--next:hover,
+  #shopify-section-{{ section.id }} .cwt-section__arrow--next:focus,
+  #shopify-section-{{ section.id }} .cwt-section__arrow--next:active {
     background: {{ section.settings.arrow_hover_bg }};
     color: {{ section.settings.arrow_hover_color }};
     border-color: {{ section.settings.arrow_hover_bg }};
@@ -193,7 +207,7 @@
     left: 0;
     height: 100%;
     width: 0;
-    background: {{ section.settings.arrow_hover_bg }};
+    background: #000;
     transition: transform 0.45s ease, width 0.25s ease;
   }
 
@@ -204,6 +218,14 @@
   #shopify-section-{{ section.id }} .cwt-section__slider {
     overflow: hidden;
     padding: 20px;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    cursor: grab;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__slider.is-dragging {
+    cursor: grabbing;
   }
 
   #shopify-section-{{ section.id }} .cwt-section__track {
@@ -219,13 +241,18 @@
     border-radius: 4px;
     box-shadow: 0 4px 28.8px 0 rgba(0, 0, 0, 0.12);
     overflow: hidden;
-    margin: 10px 16px
+    margin: 10px 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    padding: 24px;
   }
 
   #shopify-section-{{ section.id }} .cwt-section__card-image-wrap {
     aspect-ratio: 1.8 / 1;
     overflow: hidden;
     background: #eaeaea;
+    margin-bottom: 20px;
+    border-radius: 6px;
   }
 
   #shopify-section-{{ section.id }} .cwt-section__card-image,
@@ -234,10 +261,10 @@
     height: 100%;
     display: block;
     object-fit: cover;
-  }
-
-  #shopify-section-{{ section.id }} .cwt-section__card-body {
-    padding: 24px;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
   }
 
   #shopify-section-{{ section.id }} .cwt-section__quote-icon {
@@ -330,8 +357,9 @@
 
   @media screen and (max-width: 768px) {
     #shopify-section-{{ section.id }} .cwt-section__controls {
-    display: none !important;
-}
+      display: none !important;
+    }
+
     #shopify-section-{{ section.id }} .cwt-section__inner {
       padding: 28px 16px 40px;
     }
@@ -397,9 +425,10 @@
 
   @media screen and (max-width: 500px) {
     #shopify-section-{{ section.id }} .cwt-section__card {
-      flex: 0 0 100%;
-      min-width: 100%;
+      flex: 0 0 calc(100% - 32px);
+      min-width: calc(100% - 32px);
     }
+
     #shopify-section-{{ section.id }} .cwt-section__heading {
       font-size: 20px;
     }
@@ -424,12 +453,15 @@
     var isAnimating = false;
     var resizeTimer = null;
 
-    var touchStartX = 0;
-    var touchStartY = 0;
-    var touchEndX = 0;
-    var touchEndY = 0;
-    var isTouching = false;
-    var swipeThreshold = 50;
+    var isDragging = false;
+    var dragStartX = 0;
+    var dragStartY = 0;
+    var dragCurrentX = 0;
+    var dragCurrentY = 0;
+    var activePointerId = null;
+    var swipeThreshold = 35;
+
+    var wheelLocked = false;
 
     function getOriginalCards() {
       return Array.prototype.slice.call(track.querySelectorAll('.cwt-section__card:not(.is-clone)'));
@@ -441,26 +473,38 @@
 
     function getOuterWidth(el) {
       if (!el) return 0;
+
       var styles = window.getComputedStyle(el);
       var marginLeft = parseFloat(styles.marginLeft) || 0;
       var marginRight = parseFloat(styles.marginRight) || 0;
+
       return el.getBoundingClientRect().width + marginLeft + marginRight;
     }
 
     function getVisibleCount() {
       var originals = getOriginalCards();
       var firstCard = originals[0];
+
       if (!firstCard) return 1;
 
       var cardOuterWidth = getOuterWidth(firstCard);
+
       if (!cardOuterWidth) return 1;
 
       return Math.max(1, Math.floor(slider.clientWidth / cardOuterWidth));
     }
 
+    function canSlide() {
+      var originals = getOriginalCards();
+      var visibleCount = getVisibleCount();
+
+      return originals.length > 1 && originals.length > visibleCount;
+    }
+
     function setTrackPosition(animate) {
       var cards = getAllCards();
       var targetCard = cards[currentIndex];
+
       if (!targetCard) return;
 
       var offset = targetCard.offsetLeft;
@@ -471,6 +515,7 @@
 
     function clearClones() {
       var clones = track.querySelectorAll('.cwt-section__card.is-clone');
+
       clones.forEach(function(clone) {
         clone.remove();
       });
@@ -478,8 +523,10 @@
 
     function makeClone(card) {
       var clone = card.cloneNode(true);
+
       clone.classList.add('is-clone');
       clone.setAttribute('aria-hidden', 'true');
+
       return clone;
     }
 
@@ -519,6 +566,9 @@
     function buildSlider() {
       clearClones();
       isAnimating = false;
+      isDragging = false;
+      activePointerId = null;
+      slider.classList.remove('is-dragging');
 
       var originals = getOriginalCards();
       var visibleCount = getVisibleCount();
@@ -560,11 +610,7 @@
 
     function goToSlide(index) {
       if (isAnimating) return;
-
-      var originals = getOriginalCards();
-      var visibleCount = getVisibleCount();
-
-      if (originals.length <= 1 || originals.length <= visibleCount) return;
+      if (!canSlide()) return;
 
       isAnimating = true;
       currentIndex = index;
@@ -597,9 +643,45 @@
       });
     }
 
-    function handleSwipe() {
-      var deltaX = touchEndX - touchStartX;
-      var deltaY = touchEndY - touchStartY;
+    function startDrag(x, y, pointerId) {
+      if (!canSlide()) return;
+      if (isAnimating) return;
+
+      isDragging = true;
+      activePointerId = pointerId || null;
+      dragStartX = x;
+      dragStartY = y;
+      dragCurrentX = x;
+      dragCurrentY = y;
+
+      slider.classList.add('is-dragging');
+    }
+
+    function moveDrag(x, y, event) {
+      if (!isDragging) return;
+
+      dragCurrentX = x;
+      dragCurrentY = y;
+
+      var deltaX = dragCurrentX - dragStartX;
+      var deltaY = dragCurrentY - dragStartY;
+
+      if (Math.abs(deltaX) > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (event && event.cancelable) {
+          event.preventDefault();
+        }
+      }
+    }
+
+    function endDrag() {
+      if (!isDragging) return;
+
+      var deltaX = dragCurrentX - dragStartX;
+      var deltaY = dragCurrentY - dragStartY;
+
+      isDragging = false;
+      activePointerId = null;
+      slider.classList.remove('is-dragging');
 
       if (Math.abs(deltaX) < swipeThreshold) return;
       if (Math.abs(deltaX) <= Math.abs(deltaY)) return;
@@ -624,35 +706,106 @@
       handleLoopReset();
     });
 
-    slider.addEventListener('touchstart', function(e) {
-      if (!e.touches || !e.touches.length) return;
-      isTouching = true;
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      touchEndX = touchStartX;
-      touchEndY = touchStartY;
-    }, { passive: true });
+    if (window.PointerEvent) {
+      slider.addEventListener('pointerdown', function(event) {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
 
-    slider.addEventListener('touchmove', function(e) {
-      if (!isTouching || !e.touches || !e.touches.length) return;
-      touchEndX = e.touches[0].clientX;
-      touchEndY = e.touches[0].clientY;
-    }, { passive: true });
+        startDrag(event.clientX, event.clientY, event.pointerId);
 
-    slider.addEventListener('touchend', function() {
-      if (!isTouching) return;
-      isTouching = false;
-      handleSwipe();
-    }, { passive: true });
+        if (slider.setPointerCapture) {
+          try {
+            slider.setPointerCapture(event.pointerId);
+          } catch (error) {}
+        }
+      });
+
+      slider.addEventListener('pointermove', function(event) {
+        if (activePointerId !== null && event.pointerId !== activePointerId) return;
+        moveDrag(event.clientX, event.clientY, event);
+      }, { passive: false });
+
+      slider.addEventListener('pointerup', function(event) {
+        if (activePointerId !== null && event.pointerId !== activePointerId) return;
+        endDrag();
+      });
+
+      slider.addEventListener('pointercancel', function(event) {
+        if (activePointerId !== null && event.pointerId !== activePointerId) return;
+
+        isDragging = false;
+        activePointerId = null;
+        slider.classList.remove('is-dragging');
+      });
+    } else {
+      slider.addEventListener('touchstart', function(event) {
+        if (!event.touches || !event.touches.length) return;
+
+        startDrag(
+          event.touches[0].clientX,
+          event.touches[0].clientY,
+          null
+        );
+      }, { passive: true });
+
+      slider.addEventListener('touchmove', function(event) {
+        if (!event.touches || !event.touches.length) return;
+
+        moveDrag(
+          event.touches[0].clientX,
+          event.touches[0].clientY,
+          event
+        );
+      }, { passive: false });
+
+      slider.addEventListener('touchend', function() {
+        endDrag();
+      }, { passive: true });
+
+      slider.addEventListener('touchcancel', function() {
+        isDragging = false;
+        activePointerId = null;
+        slider.classList.remove('is-dragging');
+      }, { passive: true });
+    }
+
+    slider.addEventListener('wheel', function(event) {
+      if (!canSlide()) return;
+
+      var absX = Math.abs(event.deltaX);
+      var absY = Math.abs(event.deltaY);
+
+      if (absX <= absY) return;
+      if (absX < 10) return;
+
+      if (event.cancelable) {
+        event.preventDefault();
+      }
+
+      if (wheelLocked) return;
+
+      wheelLocked = true;
+
+      if (event.deltaX > 0) {
+        goToSlide(currentIndex + 1);
+      } else {
+        goToSlide(currentIndex - 1);
+      }
+
+      setTimeout(function() {
+        wheelLocked = false;
+      }, 650);
+    }, { passive: false });
 
     window.addEventListener('resize', function() {
       clearTimeout(resizeTimer);
+
       resizeTimer = setTimeout(function() {
         buildSlider();
       }, 200);
     });
 
     var images = section.querySelectorAll('img');
+
     images.forEach(function(img) {
       if (!img.complete) {
         img.addEventListener('load', function() {
@@ -662,6 +815,11 @@
     });
 
     window.addEventListener('load', function() {
+      buildSlider();
+    });
+
+    document.addEventListener('shopify:section:load', function(event) {
+      if (!event.target || event.target.id !== 'shopify-section-{{ section.id }}') return;
       buildSlider();
     });
 
@@ -776,31 +934,31 @@
     {
       "type": "color",
       "id": "arrow_bg",
-      "label": "Arrow background",
+      "label": "Left arrow background",
       "default": "#F3F3F3"
     },
     {
       "type": "color",
       "id": "arrow_color",
-      "label": "Arrow color",
+      "label": "Left arrow color",
       "default": "#7A7A7A"
     },
     {
       "type": "color",
       "id": "arrow_border",
-      "label": "Arrow border color",
+      "label": "Left arrow border color",
       "default": "#D5D5D5"
     },
     {
       "type": "color",
       "id": "arrow_hover_bg",
-      "label": "Arrow hover background",
+      "label": "Right arrow background",
       "default": "#0F2E53"
     },
     {
       "type": "color",
       "id": "arrow_hover_color",
-      "label": "Arrow hover color",
+      "label": "Right arrow color",
       "default": "#FFFFFF"
     },
     {

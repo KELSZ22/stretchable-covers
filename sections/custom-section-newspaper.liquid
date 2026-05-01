@@ -1,8 +1,8 @@
 {% comment %}
-  Section: Newsletter Subscribe Bar
+  Section: Newsletter Subscribe Bar - AJAX No Reload
 {% endcomment %}
 
-<section id="shopify-section-{{ section.id }}" class="newsletter-bar">
+<section id="newsletter-bar-{{ section.id }}" class="newsletter-bar">
   <div class="newsletter-bar__inner page-width">
     <div class="newsletter-bar__content">
       <div class="newsletter-bar__text">
@@ -16,7 +16,16 @@
       </div>
 
       <div class="newsletter-bar__form-wrap">
-        {% form 'customer', class: 'newsletter-bar__form' %}
+        <form
+          method="post"
+          action="/contact"
+          accept-charset="UTF-8"
+          class="newsletter-bar__form"
+          data-newsletter-ajax-form
+          novalidate
+        >
+          <input type="hidden" name="form_type" value="customer">
+          <input type="hidden" name="utf8" value="✓">
           <input type="hidden" name="contact[tags]" value="newsletter">
 
           <div class="newsletter-bar__field">
@@ -24,58 +33,66 @@
               type="email"
               name="contact[email]"
               class="newsletter-bar__input"
-              value="{% if form.email %}{{ form.email }}{% endif %}"
               placeholder="{{ section.settings.placeholder }}"
               autocorrect="off"
               autocapitalize="off"
               autocomplete="email"
-              {% if form.errors %}aria-invalid="true"{% endif %}
               required
             >
 
             <button type="submit" class="newsletter-bar__button">
-              {{ section.settings.button_label }}
+              <span class="newsletter-bar__button-text">
+                {{ section.settings.button_label }}
+              </span>
+
+              <span class="newsletter-bar__button-loading" hidden>
+                Sending...
+              </span>
             </button>
           </div>
 
-          {% if form.posted_successfully? %}
-            <p class="newsletter-bar__message newsletter-bar__message--success">
-              {{ section.settings.success_text }}
-            </p>
-          {% endif %}
+          <p
+            class="newsletter-bar__message newsletter-bar__message--success"
+            data-newsletter-success
+            hidden
+          >
+            {{ section.settings.success_text }}
+          </p>
 
-          {% if form.errors %}
-            <p class="newsletter-bar__message newsletter-bar__message--error">
-              {{ form.errors | default_errors }}
-            </p>
-          {% endif %}
-        {% endform %}
+          <p
+            class="newsletter-bar__message newsletter-bar__message--error"
+            data-newsletter-error
+            hidden
+          >
+            Please enter a valid email address.
+          </p>
+        </form>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  #shopify-section-{{ section.id }}.newsletter-bar {
+  #newsletter-bar-{{ section.id }}.newsletter-bar {
     background: {{ section.settings.section_bg }};
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__inner {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__inner {
     padding: 60px 70px;
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__content {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__content {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__text {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__text {
     flex: 0 0 50%;
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__heading {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__heading {
     margin: 0 0 4px;
     font-size: 32px;
     line-height: 36px;
@@ -83,28 +100,28 @@
     color: {{ section.settings.heading_color }};
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__subheading {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__subheading {
     font-size: 16px;
     line-height: 16px;
     font-weight: 400;
     color: {{ section.settings.subheading_color }};
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__form-wrap {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__form-wrap {
     flex: 1 1 50%;
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__form {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__form {
     margin: 0;
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__field {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__field {
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__input {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__input {
     width: 100%;
     min-width: 0;
     height: 44px;
@@ -119,116 +136,251 @@
     box-shadow: none;
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__input::placeholder {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__input::placeholder {
     color: {{ section.settings.placeholder_color }};
     opacity: 1;
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__button {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__button {
     flex: 0 0 auto;
     height: 44px;
     min-width: 94px;
     padding: 0 20px;
     border: 0;
     border-radius: 999px;
-    background: #f39a1e;
-    color: #ffffff;
-    font-size: 10px;
+    background: {{ section.settings.button_bg }};
+    color: {{ section.settings.button_text }};
     line-height: 14px;
     font-weight: 400;
     text-transform: uppercase;
     cursor: pointer;
-    font-family: 'Lato';
+    font-family: Lato, sans-serif;
     font-size: 14px;
-}
+  }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__message {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__button[disabled] {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+
+  #newsletter-bar-{{ section.id }} .newsletter-bar__message {
     margin: 10px 0 0;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 16px;
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__message--success {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__message--success {
     color: {{ section.settings.success_color }};
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__message--error {
+  #newsletter-bar-{{ section.id }} .newsletter-bar__message--error {
     color: {{ section.settings.error_color }};
   }
 
-  #shopify-section-{{ section.id }} .newsletter-bar__message ul {
-    margin: 0;
-    padding-left: 16px;
+  #newsletter-bar-{{ section.id }} .newsletter-bar__message[hidden] {
+    display: none !important;
   }
-  @media screen and (max-width: 989px){
-    #shopify-section-{{ section.id }} .newsletter-bar__content {
+
+  @media screen and (max-width: 989px) {
+    #newsletter-bar-{{ section.id }} .newsletter-bar__content {
       flex-direction: column;
-}
-  #shopify-section-{{ section.id }} .newsletter-bar__form-wrap {
-    flex: unset;
-    width: 100%;
-}
-#shopify-section-{{ section.id }} .newsletter-bar__text {
-    flex: unset;
-    width: 100%;
-}
-#shopify-section-{{ section.id }} .newsletter-bar__heading {
-    text-align: center;
-}
-#shopify-section-{{ section.id }} .newsletter-bar__subheading {
-    text-align: center;
-}
-#shopify-section-{{ section.id }} .newsletter-bar__field {
-    flex-direction: row;
-}
-#shopify-section-{{ section.id }} .newsletter-bar__input {
-    width: 70%;
-}
-#shopify-section-{{ section.id }} .newsletter-bar__button {
-    width: 30%;
-}
+    }
+
+    #newsletter-bar-{{ section.id }} .newsletter-bar__form-wrap {
+      flex: unset;
+      width: 100%;
+    }
+
+    #newsletter-bar-{{ section.id }} .newsletter-bar__text {
+      flex: unset;
+      width: 100%;
+    }
+
+    #newsletter-bar-{{ section.id }} .newsletter-bar__heading {
+      text-align: center;
+    }
+
+    #newsletter-bar-{{ section.id }} .newsletter-bar__subheading {
+      text-align: center;
+    }
+
+    #newsletter-bar-{{ section.id }} .newsletter-bar__field {
+      flex-direction: row;
+    }
+
+    #newsletter-bar-{{ section.id }} .newsletter-bar__input {
+      width: 70%;
+    }
+
+    #newsletter-bar-{{ section.id }} .newsletter-bar__button {
+      width: 30%;
+    }
   }
+
   @media screen and (max-width: 768px) {
-    #shopify-section-{{ section.id }} .newsletter-bar__inner {
+    #newsletter-bar-{{ section.id }} .newsletter-bar__inner {
       padding: 60px 16px;
-}
+    }
 
-
-    #shopify-section-{{ section.id }} .newsletter-bar__content {
+    #newsletter-bar-{{ section.id }} .newsletter-bar__content {
       flex-direction: column;
       align-items: flex-start;
     }
 
-    #shopify-section-{{ section.id }} .newsletter-bar__text {
+    #newsletter-bar-{{ section.id }} .newsletter-bar__text {
       max-width: 100%;
     }
 
-    #shopify-section-{{ section.id }} .newsletter-bar__form-wrap {
+    #newsletter-bar-{{ section.id }} .newsletter-bar__form-wrap {
       width: 100%;
       max-width: 100%;
     }
 
-    #shopify-section-{{ section.id }} .newsletter-bar__field {
+    #newsletter-bar-{{ section.id }} .newsletter-bar__field {
       flex-direction: row;
       align-items: stretch;
     }
-    #shopify-section-{{ section.id }} h2.newsletter-bar__heading{
+
+    #newsletter-bar-{{ section.id }} h2.newsletter-bar__heading {
       font-size: 20px;
       line-height: 27px;
     }
-    #shopify-section-{{ section.id }} .newsletter-bar__subheading{
+
+    #newsletter-bar-{{ section.id }} .newsletter-bar__subheading {
       font-size: 14px;
     }
   }
-  @media screen and (max-width: 450px){
-    #shopify-section-{{ section.id }} .newsletter-bar__input {
-    width: 60%;
-}
-#shopify-section-{{ section.id }} .newsletter-bar__button {
-    width: 40%;
-}
+
+  @media screen and (max-width: 450px) {
+    #newsletter-bar-{{ section.id }} .newsletter-bar__input {
+      width: 60%;
+    }
+
+    #newsletter-bar-{{ section.id }} .newsletter-bar__button {
+      width: 40%;
+    }
   }
 </style>
+
+<script>
+  (function() {
+    var section = document.getElementById('newsletter-bar-{{ section.id }}');
+
+    if (!section) return;
+
+    var form = section.querySelector('[data-newsletter-ajax-form]');
+    var input = section.querySelector('.newsletter-bar__input');
+    var button = section.querySelector('.newsletter-bar__button');
+    var buttonText = section.querySelector('.newsletter-bar__button-text');
+    var buttonLoading = section.querySelector('.newsletter-bar__button-loading');
+    var successMessage = section.querySelector('[data-newsletter-success]');
+    var errorMessage = section.querySelector('[data-newsletter-error]');
+
+    if (!form || !input || !button) return;
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function hideMessages() {
+      if (successMessage) {
+        successMessage.hidden = true;
+      }
+
+      if (errorMessage) {
+        errorMessage.hidden = true;
+      }
+    }
+
+    function showSuccess(message) {
+      if (errorMessage) {
+        errorMessage.hidden = true;
+      }
+
+      if (successMessage) {
+        successMessage.textContent = message || '{{ section.settings.success_text | escape }}';
+        successMessage.hidden = false;
+      }
+    }
+
+    function showError(message) {
+      if (successMessage) {
+        successMessage.hidden = true;
+      }
+
+      if (errorMessage) {
+        errorMessage.textContent = message || 'Please enter a valid email address.';
+        errorMessage.hidden = false;
+      }
+    }
+
+    function setLoading(isLoading) {
+      button.disabled = isLoading;
+
+      if (buttonText) {
+        buttonText.hidden = isLoading;
+      }
+
+      if (buttonLoading) {
+        buttonLoading.hidden = !isLoading;
+      }
+    }
+
+    function submitNewsletterAjax(email) {
+      var formData = new FormData();
+
+      formData.append('form_type', 'customer');
+      formData.append('utf8', '✓');
+      formData.append('contact[tags]', 'newsletter');
+      formData.append('contact[email]', email);
+
+      return fetch('/contact', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+        headers: {
+          'Accept': 'text/html, */*'
+        }
+      });
+    }
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      hideMessages();
+
+      var email = input.value.trim();
+
+      if (!email || !isValidEmail(email)) {
+        showError('Please enter a valid email address.');
+        return false;
+      }
+
+      setLoading(true);
+
+      submitNewsletterAjax(email)
+        .then(function(response) {
+          /*
+            Shopify customer forms return HTML, not clean JSON.
+            If the request finishes, we show success without reloading.
+            This prevents the ugly page refresh / redirect behavior.
+          */
+          input.value = '';
+          showSuccess('{{ section.settings.success_text | escape }}');
+        })
+        .catch(function(error) {
+          showError('Something went wrong. Please try again.');
+        })
+        .finally(function() {
+          setLoading(false);
+        });
+
+      return false;
+    }, true);
+  })();
+</script>
 
 {% schema %}
 {

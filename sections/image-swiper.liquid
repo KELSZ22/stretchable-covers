@@ -4,7 +4,7 @@
 />
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
-<div class="image-swiper {{ section.settings.section_version }}" style="--section-background: {{ section.settings.background }};">
+<div class="image-swiper image-swiper--{{ section.id }} {{ section.settings.section_version }}" style="--section-background: {{ section.settings.background }};">
   <div class="image-swiper-heading">
     {% if section.settings.rating != blank %}
       <div class="image-swiper-rating">
@@ -27,7 +27,9 @@
     <div class="swiper-wrapper">
       {% for block in section.blocks %}
         <div class="swiper-slide">
-          <img src="{{ block.settings.image | image_url }}" width="512" height="512">
+          {% if block.settings.image != blank %}
+            <img src="{{ block.settings.image | image_url }}" width="512" height="512" loading="lazy">
+          {% endif %}
 
           {% if section.settings.section_version == 'version-1' %}
             <p>{{ block.settings.subheading }}</p>
@@ -41,84 +43,99 @@
     </div>
 
     <div class="swiper-interactives">
-      <div class="custom-swiper-button-prev">
+      <button type="button" class="custom-swiper-button-prev" aria-label="Previous slide">
         <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="30.5722" y="30.5722" width="30.1851" height="30.1851" rx="15.0926" transform="rotate(180 30.5722 30.5722)" fill="#0F2E53"/>
           <rect x="30.5722" y="30.5722" width="30.1851" height="30.1851" rx="15.0926" transform="rotate(180 30.5722 30.5722)" stroke="#0F2E53" stroke-width="0.773978"/>
           <path d="M17.0276 11.2228L12.3837 15.8666L17.0276 20.5105" stroke="white" stroke-width="1.54796" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-      </div>
+      </button>
 
       <div class="swiper-pagination"></div>
 
-      <div class="custom-swiper-button-next">
+      <button type="button" class="custom-swiper-button-next" aria-label="Next slide">
         <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="0.386989" y="-0.386989" width="30.1851" height="30.1851" rx="15.0926" transform="matrix(1 0 0 -1 0 30.1853)" fill="#0F2E53"/>
           <rect x="0.386989" y="-0.386989" width="30.1851" height="30.1851" rx="15.0926" transform="matrix(1 0 0 -1 0 30.1853)" stroke="#0F2E53" stroke-width="0.773978"/>
           <path d="M13.9316 11.2228L18.5755 15.8666L13.9316 20.5105" stroke="white" stroke-width="1.54796" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-      </div>
+      </button>
     </div>
   </div>
 </div>
 
 {% style %}
-.image-swiper {
+.image-swiper--{{ section.id }} .swiper.swiper-initialized.swiper-horizontal.swiper-backface-hidden {
+    margin-top: 30px !important;
+}
+.image-swiper--{{ section.id }} {
   background: var(--section-background);
   padding: 60px 70px;
 }
 
-.image-swiper .image-swiper-rating {
+.image-swiper--{{ section.id }} .image-swiper-rating {
   display: inline-flex;
   gap: 5px;
 }
 
-.image-swiper .image-swiper-rating p {
+.image-swiper--{{ section.id }} .image-swiper-rating p {
   margin: auto;
   margin-left: 2px;
 }
 
-.image-swiper .image-swiper-stars {
+.image-swiper--{{ section.id }} .image-swiper-stars {
   display: flex;
   gap: 2px;
   align-items: center;
   justify-content: center;
 }
 
-.image-swiper .swiper-interactives > * {
+.image-swiper--{{ section.id }} .swiper-interactives > * {
   position: unset !important;
 }
 
-.swiper-interactives {
+.image-swiper--{{ section.id }} .swiper-interactives {
   margin-top: 5px;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
 }
 
-/* FIXED: hide controls only from 640px and up */
+.image-swiper--{{ section.id }} .custom-swiper-button-prev,
+.image-swiper--{{ section.id }} .custom-swiper-button-next {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  line-height: 0;
+}
+
 @media screen and (min-width: 640px) {
-  .swiper-interactives {
+  .image-swiper--{{ section.id }} .swiper-interactives {
     display: none;
   }
 }
 
-.image-swiper .image-swiper-heading > * {
+.image-swiper--{{ section.id }} .image-swiper-heading > * {
   margin: auto;
   margin-bottom: 10px;
 }
 
-.image-swiper.version-2 .swiper-slide > h4,
-.image-swiper.version-2 .swiper-slide > p {
+.image-swiper--{{ section.id }}.version-2 .swiper-slide > h4 {
+  max-width: 400px;
+}
+
+.image-swiper--{{ section.id }}.version-2 .swiper-slide > p {
   max-width: 300px;
 }
 
-.image-swiper .swiper-slide > * {
+.image-swiper--{{ section.id }} .swiper-slide > * {
   margin: auto;
   margin-bottom: 5px;
 }
 
-.image-swiper .swiper-slide > p {
+.image-swiper--{{ section.id }} .swiper-slide > p {
   font-family: Lato;
   font-weight: 500;
   font-size: 16px;
@@ -128,7 +145,7 @@
   color: #5F5F5F;
 }
 
-.image-swiper .swiper-slide > h4 {
+.image-swiper--{{ section.id }} .swiper-slide > h4 {
   font-family: Raleway;
   font-weight: 800;
   font-size: 24px;
@@ -137,89 +154,171 @@
   text-align: center;
 }
 
-.image-swiper .image-swiper-heading {
+.image-swiper--{{ section.id }} .image-swiper-heading {
   text-align: center;
 }
 
-.image-swiper .swiper-slide {
+.image-swiper--{{ section.id }} .swiper-slide {
   text-align: center;
 }
 
-.image-swiper .swiper-slide img {
+.image-swiper--{{ section.id }} .swiper-slide img {
   margin-bottom: 20px;
   width: 100%;
   height: auto;
 }
 
-.image-swiper.version-1 .swiper-slide img {
+.image-swiper--{{ section.id }}.version-1 .swiper-slide img {
   overflow: hidden;
   border-radius: 12px;
   border: 1px solid #C5C5C5;
 }
 
-.image-swiper.version-2 .swiper-slide img {
+.image-swiper--{{ section.id }}.version-2 .swiper-slide img {
   max-width: 150px;
 }
 
-.image-swiper .swiper {
+.image-swiper--{{ section.id }} .swiper {
   margin: 0 !important;
-  --swiper-pagination-color: #EB891B;
 }
 
-.swiper-pagination-bullet {
-  padding: 1px;
+/* DEFAULT DESKTOP/TABLET BULLETS */
+.image-swiper--{{ section.id }} .swiper-pagination {
+  position: static !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-.image-swiper-heading h2 {
+.image-swiper--{{ section.id }} .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 1;
+  background: #ffffff;
+}
+
+.image-swiper--{{ section.id }} .swiper-pagination-bullet-active {
+  background: #EB891B;
+}
+
+.image-swiper--{{ section.id }} .image-swiper-heading h2 {
   font-size: 32px !important;
 }
 
-/* FIXED: mobile styles should go up to 639px */
+/* ONLY 639PX BELOW: DOT STYLE FROM SECOND CODE */
 @media screen and (max-width: 639px) {
-  .image-swiper .swiper {
+  .image-swiper--{{ section.id }} .swiper {
     margin: 2rem;
   }
 
-  
+  .image-swiper--{{ section.id }} .swiper-pagination {
+    position: static !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: auto !important;
+  }
+
+  .image-swiper--{{ section.id }} .swiper-pagination-bullet {
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 50%;
+    border: 0 !important;
+    background: transparent !important;
+    opacity: 1 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    transition: all 0.25s ease;
+    position: relative;
+  }
+
+  .image-swiper--{{ section.id }} .swiper-pagination-bullet::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #C5C5C5;
+    transition: all 0.25s ease;
+  }
+
+  .image-swiper--{{ section.id }} .swiper-pagination-bullet-active {
+    width: 20px !important;
+    height: 20px !important;
+    border: 2px solid #EB891B !important;
+    background: transparent !important;
+  }
+
+  .image-swiper--{{ section.id }} .swiper-pagination-bullet-active::before {
+    width: 10px;
+    height: 10px;
+    background: #EB891B;
+  }
 }
 
 @media screen and (max-width: 768px) {
-  .image-swiper {
-    padding: 0 16px;
+  .image-swiper--{{ section.id }} {
+    padding: 40px 16px;
   }
 
-  .image-swiper-heading h2 {
+  .image-swiper--{{ section.id }} .image-swiper-heading h2 {
     font-size: 28px !important;
   }
 }
 
-@media screen and (max-width: 500px){
-    .image-swiper-heading h2 {
+@media screen and (max-width: 500px) {
+  .image-swiper--{{ section.id }} .image-swiper-heading h2 {
     font-size: 20px !important;
   }
 }
 {% endstyle %}
 
-{% javascript %}
-const swiper = new Swiper('.image-swiper .swiper', {
-  loop: true,
-  pagination: {
-    el: '.swiper-pagination',
-    clickable: true,
-  },
-  navigation: {
-    nextEl: '.custom-swiper-button-next',
-    prevEl: '.custom-swiper-button-prev',
-  },
-  slidesPerView: 1,
-  spaceBetween: 20,
-  breakpoints: {
-    640: {
-      slidesPerView: 3,
+<script>
+  (function () {
+    function initImageSwiper{{ section.id | replace: '-', '_' }}() {
+      var section = document.querySelector('.image-swiper--{{ section.id }}');
+
+      if (!section || section.dataset.swiperInitialized === 'true') return;
+
+      var swiperEl = section.querySelector('.swiper');
+      var paginationEl = section.querySelector('.swiper-pagination');
+      var nextEl = section.querySelector('.custom-swiper-button-next');
+      var prevEl = section.querySelector('.custom-swiper-button-prev');
+
+      if (!swiperEl) return;
+
+      section.dataset.swiperInitialized = 'true';
+
+      new Swiper(swiperEl, {
+        loop: true,
+        pagination: {
+          el: paginationEl,
+          clickable: true
+        },
+        navigation: {
+          nextEl: nextEl,
+          prevEl: prevEl
+        },
+        slidesPerView: 1,
+        spaceBetween: 20,
+        breakpoints: {
+          640: {
+            slidesPerView: 3
+          }
+        }
+      });
     }
-  }
-});
-{% endjavascript %}
+
+    document.addEventListener('DOMContentLoaded', initImageSwiper{{ section.id | replace: '-', '_' }});
+    document.addEventListener('shopify:section:load', initImageSwiper{{ section.id | replace: '-', '_' }});
+  })();
+</script>
 
 {% schema %}
 {

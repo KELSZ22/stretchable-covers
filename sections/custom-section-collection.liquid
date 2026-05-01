@@ -90,7 +90,7 @@
 <style>
   #shopify-section-{{ section.id }}.acs-section {
     background: {{ section.settings.section_bg }}0A;
-    padding: 70px 60px;
+    padding: 0px 60px 70px;
     overflow: hidden;
   }
 
@@ -254,7 +254,7 @@
 
   @media screen and (max-width: 767px) {
     #shopify-section-{{ section.id }}.acs-section {
-      padding: 60px 16px;
+      padding: 0px 16px;
       overflow: visible;
     }
 
@@ -295,6 +295,11 @@
       flex: none;
       min-width: 0;
       width: 100%;
+      display: block;
+    }
+
+    #shopify-section-{{ section.id }} .acs-card:nth-child(n + 5) {
+      display: none !important;
     }
   }
 </style>

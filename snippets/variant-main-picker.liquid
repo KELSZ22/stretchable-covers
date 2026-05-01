@@ -6,15 +6,11 @@
 {%- enddoc -%}
 
 {% assign block_settings = block.settings %}
-{% assign has_size_option = false %}
 
-{%- for product_option in product_resource.options_with_values -%}
-  {% assign option_name_downcase = product_option.name | downcase %}
-  {% if option_name_downcase contains 'size' %}
-    {% assign has_size_option = true %}
-    {% break %}
-  {% endif %}
-{%- endfor -%}
+{% assign has_size_option = false %}
+{% if product_resource.options_with_values.size > 0 %}
+  {% assign has_size_option = true %}
+{% endif %}
 
 {% unless product_resource.has_only_default_variant %}
   {% liquid
@@ -50,6 +46,9 @@
         {%- liquid
           assign swatch_count = product_option.values | map: 'swatch' | compact | size
           assign variant_style = block_settings.variant_style
+          assign option_id_attribute = blank
+          assign fieldset_id = blank
+          assign longest_value = 0
 
           if swatch_count > 0 and block_settings.show_swatches
             if block_settings.variant_style == 'dropdown'
@@ -62,18 +61,23 @@
           if variant_style == 'buttons' and settings.variant_button_width == 'equal-width-buttons'
             assign fieldset_id = section.id | append: '-' | append: product_resource.id | append: '-' | append: product_option.name | handleize
             assign option_id_attribute = 'data-option-id="' | append: fieldset_id | append: '"'
-            assign longest_value = 0
           endif
 
-          assign option_name_downcase = product_option.name | downcase
           assign show_sizing_guide = false
-          if option_name_downcase contains 'size'
+          assign guide_display_type = blank
+
+          if forloop.index == 1
             assign show_sizing_guide = true
+            assign guide_display_type = 'icon'
+          elsif forloop.index == 2
+            assign show_sizing_guide = true
+            assign guide_display_type = 'text'
           endif
         -%}
 
         {%- if variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
           {%- assign fieldset_index = forloop.index0 -%}
+
           <fieldset
             class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
@@ -175,17 +179,28 @@
 
           <div class="variant-option variant-option--dropdowns">
             <div class="varian-option-container">
-              <label for="Option-{{ block.id }}-{{ forloop.index0 }}">{{ product_option.name | escape }}</label>
+              <label for="Option-{{ block.id }}-{{ forloop.index0 }}">
+                {{ product_option.name | escape }}
+              </label>
 
               {% if show_sizing_guide %}
                 <button
                   type="button"
-                  class="variant-option__size-guide"
+                  class="variant-option__size-guide variant-option__size-guide--{{ guide_display_type }}"
                   data-size-guide-open
                   aria-haspopup="dialog"
                   aria-controls="{{ size_guide_modal_id }}"
+                  aria-label="Sizing guide"
                 >
-                  Sizing Guide
+                  {% if guide_display_type == 'icon' %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+                      <path d="M9.08333 17.4167C13.6857 17.4167 17.4167 13.6857 17.4167 9.08333C17.4167 4.48096 13.6857 0.75 9.08333 0.75C4.48096 0.75 0.75 4.48096 0.75 9.08333C0.75 13.6857 4.48096 17.4167 9.08333 17.4167Z" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  {% elsif guide_display_type == 'text' %}
+                    Sizing guide
+                  {% endif %}
                 </button>
               {% endif %}
             </div>
@@ -264,14 +279,43 @@
             &times;
           </button>
 
-          <div class="variant-size-guide-modal__content">
+          <div class="variant-size-guide-modal__content variant-size-guide-modal__content--printing-note">
             <h3 id="{{ size_guide_title_id }}" class="variant-size-guide-modal__title">
-              Sizing Guide
+              Important Printing Note!
             </h3>
 
-            <div class="variant-size-guide-modal__body">
-              <p>Add your sizing guide content here.</p>
-              <p>You can replace this with your actual size chart image, table, or text.</p>
+            <div class="variant-size-guide-modal__body variant-size-guide-modal__body--printing-note">
+              <p class="variant-size-guide-modal__intro">
+                <strong>(Kindly Read all the notes before proceeding.)</strong>
+              </p>
+
+              <ol class="variant-size-guide-modal__list">
+                <li>
+                  Sublimation imprinting does not allow for white imprints on colors.
+                </li>
+
+                <li>
+                  IF your design requires white, please order WHITE COVERS ONLY.
+                </li>
+
+                <li>
+                  Please keep in mind that colors printed on material other than white, may mix to change the final printed color. Since we cannot print white we cannot produce a white underlay to keep colors from mixing together.
+                </li>
+              </ol>
+
+              <p class="variant-size-guide-modal__example">
+                <em>(Example: blue on safety yellow may appear more green.)</em>
+              </p>
+
+              <ol class="variant-size-guide-modal__list" start="4">
+                <li>
+                  Maximum imprint size is 19" in diameter for all cover sizes. (We are sourcing new equipment for larger imprints in the near future.)
+                </li>
+
+                <li>
+                  Safety Orange Covers work best with dark imprint colors like black or navy blue.
+                </li>
+              </ol>
             </div>
           </div>
         </div>
@@ -372,12 +416,28 @@
 {% stylesheet %}
   .varian-option-container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .varian-option-container > label {
+    flex: 0 0 70%;
+    max-width: 70%;
+    min-width: 0;
+    padding-right: 12px;
+  }
+
+  .varian-option-container > .variant-option__size-guide {
+    flex: 0 0 30%;
+    max-width: 30%;
+    min-width: 0;
+    justify-content: flex-end;
+    text-align: right;
   }
 
   .variant-option__size-guide {
+    display: inline-flex;
+    align-items: center;
     background: none;
     border: 0;
     padding: 0;
@@ -386,11 +446,24 @@
     color: #7a7a7a;
     cursor: pointer;
     line-height: 1;
+  }
+
+  .variant-option__size-guide--icon {
     text-decoration: none;
   }
 
-  .variant-option__size-guide:hover {
+  .variant-option__size-guide--icon svg {
+    display: block;
+    width: 19px;
+    height: 19px;
+  }
+
+  .variant-option__size-guide--text {
     text-decoration: underline;
+  }
+
+  .variant-option__size-guide:hover {
+    opacity: 0.75;
   }
 
   .variant-size-guide-modal {
@@ -417,43 +490,112 @@
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 700px;
+    max-width: 790px;
     max-height: calc(100vh - 40px);
     overflow: auto;
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: 10px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-  }
-
-  .variant-size-guide-modal__content {
-    padding: 32px;
-  }
-
-  .variant-size-guide-modal__title {
-    margin: 0 0 16px;
-    text-align: center;
-  }
-
-  .variant-size-guide-modal__body p {
-    margin: 0 0 12px;
-  }
-
-  .variant-size-guide-modal__body p:last-child {
-    margin-bottom: 0;
   }
 
   .variant-size-guide-modal__close {
     position: absolute;
-    top: 12px;
-    right: 14px;
-    width: 40px;
-    height: 40px;
+    top: 18px;
+    right: 22px;
+    width: 24px;
+    height: 24px;
     border: 0;
     background: transparent;
-    font-size: 28px;
+    color: #1f1f1f;
+    font-size: 30px;
     line-height: 1;
     cursor: pointer;
     z-index: 3;
+  }
+
+  .variant-size-guide-modal__content {
+    padding: 38px 46px 34px;
+  }
+
+  .variant-size-guide-modal__content--printing-note {
+    padding: 38px 46px 34px;
+  }
+
+  .variant-size-guide-modal__title {
+    margin: 0 0 42px;
+    color: #1f1f1f;
+    text-align: center;
+    font-family: Raleway, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 27px;
+  }
+
+  .variant-size-guide-modal__body {
+    color: #1f1f1f;
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+  }
+
+  .variant-size-guide-modal__body--printing-note {
+    color: #1f1f1f;
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+  }
+
+  .variant-size-guide-modal__intro {
+    margin: 0 0 16px;
+    color: #1f1f1f;
+    font-family: Lato, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+  }
+
+  .variant-size-guide-modal__intro strong {
+    font: inherit;
+    color: inherit;
+  }
+
+  .variant-size-guide-modal__list {
+    margin: 0;
+    padding-left: 20px;
+    color: #1f1f1f;
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+  }
+
+  .variant-size-guide-modal__list li {
+    margin: 0 0 8px;
+    padding-left: 0;
+  }
+
+  .variant-size-guide-modal__example {
+    margin: 0 0 8px;
+    color: #1f1f1f;
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 18px;
+  }
+
+  .variant-size-guide-modal__body p:last-child,
+  .variant-size-guide-modal__body li:last-child,
+  .variant-size-guide-modal__body--printing-note p:last-child,
+  .variant-size-guide-modal__body--printing-note li:last-child {
+    margin-bottom: 0;
   }
 
   body.variant-size-guide-modal-open {
@@ -544,15 +686,53 @@
 
   @media screen and (max-width: 767px) {
     .variant-size-guide-modal {
-      padding: 16px;
+      padding: 14px;
     }
 
     .variant-size-guide-modal__dialog {
-      max-height: calc(100vh - 32px);
+      max-width: 365px;
+      max-height: calc(100vh - 28px);
+      border-radius: 8px;
     }
 
-    .variant-size-guide-modal__content {
-      padding: 24px 20px;
+    .variant-size-guide-modal__close {
+      top: 12px;
+      right: 14px;
+      width: 24px;
+      height: 24px;
+      font-size: 28px;
+    }
+
+    .variant-size-guide-modal__content,
+    .variant-size-guide-modal__content--printing-note {
+      padding: 38px 28px 32px;
+    }
+
+    .variant-size-guide-modal__title {
+      margin-bottom: 42px;
+      font-size: 20px;
+      line-height: 27px;
+    }
+
+    .variant-size-guide-modal__intro {
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .variant-size-guide-modal__body,
+    .variant-size-guide-modal__body--printing-note,
+    .variant-size-guide-modal__list,
+    .variant-size-guide-modal__example {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .variant-size-guide-modal__list {
+      padding-left: 20px;
+    }
+
+    .variant-size-guide-modal__list li {
+      margin-bottom: 8px;
     }
   }
 {% endstylesheet %}
