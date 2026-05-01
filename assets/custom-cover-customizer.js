@@ -74,6 +74,12 @@ class CustomCoverCustomizer extends HTMLElement {
     this._shareTooltipTimer = null;
     this._canvasViewportMq = null;
     this._onCanvasViewportChange = null;
+    /** @type {boolean} */
+    this._suppressImprintVariantResolution = false;
+    /** @type {string | null} */
+    this._imprintSizeInnerTemplate = null;
+    /** @type {string | null} */
+    this._imprintTypeInnerTemplate = null;
   }
 
   connectedCallback() {
@@ -100,7 +106,10 @@ class CustomCoverCustomizer extends HTMLElement {
         this.render();
       }
     };
-    this._canvasViewportMq.addEventListener("change", this._onCanvasViewportChange);
+    this._canvasViewportMq.addEventListener(
+      "change",
+      this._onCanvasViewportChange,
+    );
 
     this.setupMoneyFormatter();
     this.bindFields();
@@ -287,6 +296,603 @@ class CustomCoverCustomizer extends HTMLElement {
     this.updateHiddenProperties();
   }
 
+  _captureImprintControlTemplatesIfNeeded() {
+    if (this._imprintSizeInnerTemplate == null) {
+      const el = this.querySelector("[data-imprint-size]");
+      if (el) {
+        this._imprintSizeInnerTemplate = el.innerHTML;
+      }
+    }
+    if (this._imprintTypeInnerTemplate == null) {
+      const el = this.querySelector("[data-imprint-text]");
+      if (el) {
+        this._imprintTypeInnerTemplate = el.innerHTML;
+      }
+    }
+  }
+
+  _toVariantOptionNameIndexSet(excludeIndices) {
+    if (excludeIndices instanceof Set) {
+      return excludeIndices;
+    }
+    return new Set(
+      Array.isArray(excludeIndices)
+        ? excludeIndices.filter((i) => typeof i === "number" && i >= 0)
+        : [],
+    );
+  }
+
+  /**
+   * Match a theme-configured label to `product.optionNames` index.
+   * Excludes indices already used (e.g. never map "Imprint" to "Imprint Size").
+   */
+  _matchVariantOptionNameIndex(optionNames, label, excludeIndices) {
+    const raw = String(label || "").trim();
+    if (!raw || !Array.isArray(optionNames) || !optionNames.length) {
+      return -1;
+    }
+    const ex = this._toVariantOptionNameIndexSet(excludeIndices);
+    const n = raw.toLowerCase();
+    let i = optionNames.findIndex(
+      (x, idx) =>
+        !ex.has(idx) && String(x || "").trim().toLowerCase() === n,
+    );
+    if (i >= 0) {
+      return i;
+    }
+    i = optionNames.findIndex((x, idx) => {
+      if (ex.has(idx)) {
+        return false;
+      }
+      const t = String(x || "").trim().toLowerCase();
+      if (!t) {
+        return false;
+      }
+      if (t.includes(n)) {
+        if (t !== n && t.startsWith(`${n} `)) {
+          return false;
+        }
+        return true;
+      }
+      if (n.includes(t) && t.length >= 4) {
+        return true;
+      }
+      return false;
+    });
+    return i;
+  }
+
+  _resolvedColorOptionIndex(optionNames, colorLabelConfigured, excludeIndices) {
+    if (!Array.isArray(optionNames) || optionNames.length === 0) {
+      return -1;
+    }
+    const ex = this._toVariantOptionNameIndexSet(excludeIndices);
+    const fromCfg = this._matchVariantOptionNameIndex(
+      optionNames,
+      colorLabelConfigured,
+      ex,
+    );
+    if (fromCfg >= 0) {
+      return fromCfg;
+    }
+    let i = optionNames.findIndex(
+      (x, idx) =>
+        !ex.has(idx) && /\bcolor\b|\bcolour\b/i.test(String(x || "")),
+    );
+    if (i >= 0) {
+      return i;
+    }
+    for (let k = optionNames.length - 1; k >= 0; k--) {
+      if (!ex.has(k)) {
+        return k;
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * @param {Record<string, unknown>} product Normalized catalog product
+   */
+  resolveImprintOptionIndices(product) {
+    const names = Array.isArray(product?.optionNames) ? product.optionNames : [];
+    const sizeLbl = String(
+      this.dataset.imprintVariantSizeOption || "Imprint Size",
+    ).trim();
+    const typeLbl = String(
+      this.dataset.imprintVariantTypeOption || "Imprint",
+    ).trim();
+    const colorLbl = String(
+      this.dataset.imprintVariantColorOption || "Color",
+    ).trim();
+    let sizeIdx = this._matchVariantOptionNameIndex(names, sizeLbl);
+    const sizeTaken =
+      typeof sizeIdx === "number" && sizeIdx >= 0 ? new Set([sizeIdx]) : new Set();
+    let typeIdx = this._matchVariantOptionNameIndex(
+      names,
+      typeLbl,
+      sizeTaken,
+    );
+    if (
+      sizeIdx >= 0 &&
+      typeIdx >= 0 &&
+      sizeIdx === typeIdx &&
+      names.length >= 2
+    ) {
+      typeIdx = -1;
+    }
+    const reservedForColor = new Set(
+      [sizeIdx, typeIdx].filter((i) => typeof i === "number" && i >= 0),
+    );
+    const colorIdx =
+      names.length > 0
+        ? this._resolvedColorOptionIndex(names, colorLbl, reservedForColor)
+        : -1;
+
+    const variants =
+      Array.isArray(product?.variants) && product.variants.length
+        ? product.variants
+        : [];
+    if (
+      variants.length > 4 &&
+      sizeIdx >= 0 &&
+      typeIdx >= 0 &&
+      sizeIdx !== typeIdx &&
+      colorIdx >= 0
+    ) {
+      const rSize = this._variantColumnDimensionalRatio(variants, sizeIdx);
+      const rType = this._variantColumnDimensionalRatio(variants, typeIdx);
+      if (rType - rSize >= 0.12) {
+        const swap = sizeIdx;
+        sizeIdx = typeIdx;
+        typeIdx = swap;
+      }
+    }
+
+    return { names, sizeIdx, typeIdx, colorIdx };
+  }
+
+  /**
+   * Heuristic for routing bare `imprint=` URL params: diameters/inches vs imprint style strings.
+   * "Standard Cover Imprint" → false ; "29.5\" " or "12 in" → true
+   */
+  looksLikeDimensionalImprintSize(raw) {
+    const t = String(raw || "").trim();
+    if (!t) return false;
+    const s = t.toLowerCase();
+    if (/\b(inch|inches|in\.?|cm\b|mm\b|diameter|dia\.?|ø|dia\b)\b/.test(s)) {
+      return true;
+    }
+    if (/\d/.test(s) && /["\u2033\u2032]/.test(t)) return true;
+    if (/^\d+(\.\d+)?\s*$/.test(t.trim())) return true;
+    const plainNum = /^(\d+(\.\d+)?)(\"|'|\u2033|\u2032)?\s*$/i.test(t.trim());
+    if (plainNum) return true;
+    return false;
+  }
+
+  _variantColumnDimensionalRatio(variants, colIdx) {
+    if (!Array.isArray(variants) || colIdx < 0 || colIdx > 2) return 0;
+    let total = 0;
+    let dim = 0;
+    for (const v of variants) {
+      const val = String(this.variantOptionTriple(v)[colIdx] || "").trim();
+      if (!val) continue;
+      total += 1;
+      if (this.looksLikeDimensionalImprintSize(val)) {
+        dim += 1;
+      }
+    }
+    return total ? dim / total : 0;
+  }
+
+  variantOptionTriple(variant) {
+    return [
+      String(variant?.option1 ?? "").trim(),
+      String(variant?.option2 ?? "").trim(),
+      String(variant?.option3 ?? "").trim(),
+    ];
+  }
+
+  /** Normalize option text for comparison (quotes, spacing, case). */
+  normalizeComparableOptionValue(val) {
+    return String(val == null ? "" : val)
+      .trim()
+      .toLowerCase()
+      .replace(/\u2033|\u2032/g, '"')
+      .replace(/[\u201c\u201d\u201e\u00ab\u00bb]/g, '"')
+      .replace(/\s+/g, " ");
+  }
+
+  /** Size values: 18.0" vs 18.0 in admin, minor quote/whitespace drift, or same numeric core. */
+  imprintSizeStringsMatch(a, b) {
+    const na = this.normalizeComparableOptionValue(a);
+    const nb = this.normalizeComparableOptionValue(b);
+    if (na && nb && na === nb) {
+      return true;
+    }
+    const fa = Number.parseFloat(String(a).replace(/[^\d.-]/g, ""));
+    const fb = Number.parseFloat(String(b).replace(/[^\d.-]/g, ""));
+    if (
+      Number.isFinite(fa) &&
+      Number.isFinite(fb) &&
+      Math.abs(fa - fb) < 1e-4
+    ) {
+      return true;
+    }
+    if (!na || !nb) {
+      return false;
+    }
+    return na.includes(nb) || nb.includes(na);
+  }
+
+  /** Imprint type / color: allow "Navy" vs "Navy Blue" style drift. */
+  literalOptionStringsMatch(a, b) {
+    const na = this.normalizeComparableOptionValue(a);
+    const nb = this.normalizeComparableOptionValue(b);
+    if (!na || !nb) {
+      return false;
+    }
+    if (na === nb) {
+      return true;
+    }
+    return na.includes(nb) || nb.includes(na);
+  }
+
+  _assignImprintSelectFromVariantValue(selectEl, rawValue, axis) {
+    if (!selectEl || rawValue == null) {
+      return false;
+    }
+    const desired = String(rawValue).trim();
+    if (!desired) {
+      return false;
+    }
+    const match = [...selectEl.options].find((o) => {
+      const ov = String(o.value ?? "").trim();
+      if (!ov) {
+        return false;
+      }
+      if (axis === "size") {
+        return (
+          ov === desired || this.imprintSizeStringsMatch(ov, desired)
+        );
+      }
+      return ov === desired || this.literalOptionStringsMatch(ov, desired);
+    });
+    if (!match) {
+      return false;
+    }
+    selectEl.value = match.value;
+    return true;
+  }
+
+  imprintSizeSortDesc(a, b) {
+    const pa = Number.parseFloat(String(a).replace(/[^\d.+-]/g, ""));
+    const pb = Number.parseFloat(String(b).replace(/[^\d.+-]/g, ""));
+    const na = Number.isFinite(pa);
+    const nb = Number.isFinite(pb);
+    if (na && nb && pa !== pb) return pb - pa;
+    return String(a).localeCompare(String(b), undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
+  }
+
+  _uniqueSortedStrings(values, sortFn) {
+    const seen = new Set();
+    const out = [];
+    for (const val of values) {
+      const s = String(val || "").trim();
+      if (!s || seen.has(s)) continue;
+      seen.add(s);
+      out.push(s);
+    }
+    out.sort(sortFn);
+    return out;
+  }
+
+  /**
+   * Rebuild imprint size / imprint type selects from variant option values.
+   * @returns {boolean} true when at least one axis was driven by variants
+   */
+  syncVariantImprintSelectors(product) {
+    this._captureImprintControlTemplatesIfNeeded();
+    const sizeSel = this.querySelector("[data-imprint-size]");
+    const typeSel = this.querySelector("[data-imprint-text]");
+    if (!sizeSel) {
+      return false;
+    }
+    const ix = this.resolveImprintOptionIndices(product);
+    const variants = Array.isArray(product?.variants) ? product.variants : [];
+    let used = false;
+
+    if (ix.sizeIdx >= 0 && variants.length) {
+      const rawVals = variants.map((v) => this.variantOptionTriple(v)[ix.sizeIdx]);
+      const uniq = this._uniqueSortedStrings(rawVals, (a, b) =>
+        this.imprintSizeSortDesc(a, b),
+      );
+      if (uniq.length) {
+        const ph =
+          [...sizeSel.querySelectorAll("option")].find(
+            (o) => o.disabled && String(o.value || "") === "",
+          )?.textContent || "Select imprint size";
+        sizeSel.innerHTML = "";
+        const p = document.createElement("option");
+        p.value = "";
+        p.disabled = true;
+        p.selected = true;
+        p.textContent = ph.trim();
+        sizeSel.append(p);
+        for (const val of uniq) {
+          const o = document.createElement("option");
+          o.value = val;
+          o.textContent = val;
+          sizeSel.append(o);
+        }
+        sizeSel.setAttribute("data-variant-driven", "");
+        used = true;
+      }
+    } else if (this._imprintSizeInnerTemplate != null) {
+      sizeSel.innerHTML = this._imprintSizeInnerTemplate;
+      sizeSel.removeAttribute("data-variant-driven");
+    }
+
+    if (typeSel) {
+      if (ix.typeIdx >= 0 && variants.length) {
+        const rawVals = variants.map(
+          (v) => this.variantOptionTriple(v)[ix.typeIdx],
+        );
+        const uniq = this._uniqueSortedStrings(rawVals, (a, b) =>
+          String(a).localeCompare(String(b), undefined, {
+            sensitivity: "base",
+          }),
+        );
+        if (uniq.length) {
+          const ph =
+            [...typeSel.querySelectorAll("option")].find(
+              (o) => o.disabled && String(o.value || "") === "",
+            )?.textContent || "Select imprint";
+          typeSel.innerHTML = "";
+          const p = document.createElement("option");
+          p.value = "";
+          p.disabled = true;
+          p.selected = true;
+          p.textContent = ph.trim();
+          typeSel.append(p);
+          for (const val of uniq) {
+            const o = document.createElement("option");
+            o.value = val;
+            o.textContent = val;
+            typeSel.append(o);
+          }
+          typeSel.setAttribute("data-variant-driven", "");
+          used = true;
+        }
+      } else if (this._imprintTypeInnerTemplate != null) {
+        typeSel.innerHTML = this._imprintTypeInnerTemplate;
+        typeSel.removeAttribute("data-variant-driven");
+      }
+    }
+
+    return used;
+  }
+
+  primeImprintSelectsFromVariant(product, variant) {
+    if (!product || !variant) {
+      return;
+    }
+    const ix = this.resolveImprintOptionIndices(product);
+    const triple = this.variantOptionTriple(variant);
+    const sizeSel = this.querySelector("[data-imprint-size]");
+    const typeSel = this.querySelector("[data-imprint-text]");
+    if (ix.sizeIdx >= 0 && sizeSel) {
+      const v = triple[ix.sizeIdx];
+      this._assignImprintSelectFromVariantValue(sizeSel, v, "size");
+    }
+    if (ix.typeIdx >= 0 && typeSel) {
+      const v = triple[ix.typeIdx];
+      this._assignImprintSelectFromVariantValue(typeSel, v, "imprint");
+    }
+  }
+
+  syncImprintSelectsOnlyFromVariantId(product, variantId) {
+    if (!product || variantId == null || variantId === "") {
+      return;
+    }
+    const variant = (Array.isArray(product.variants) ? product.variants : []).find(
+      (v) => String(v?.id ?? "") === String(variantId),
+    );
+    if (!variant) {
+      return;
+    }
+    const ix = this.resolveImprintOptionIndices(product);
+    const triple = this.variantOptionTriple(variant);
+    const sizeSel = this.querySelector("[data-imprint-size]");
+    const typeSel = this.querySelector("[data-imprint-text]");
+    if (sizeSel && ix.sizeIdx >= 0) {
+      const v = triple[ix.sizeIdx];
+      this._assignImprintSelectFromVariantValue(sizeSel, v, "size");
+    }
+    if (typeSel && ix.typeIdx >= 0) {
+      const v = triple[ix.typeIdx];
+      this._assignImprintSelectFromVariantValue(typeSel, v, "imprint");
+    }
+  }
+
+  /** Find variant matching imprint picks; relax color match if none. */
+  pickVariantMatchingImprints(product) {
+    if (!product) {
+      return null;
+    }
+    const ix = this.resolveImprintOptionIndices(product);
+    const variants = Array.isArray(product.variants) ? product.variants : [];
+    const sizeSel = this.querySelector("[data-imprint-size]");
+    const typeSel = this.querySelector("[data-imprint-text]");
+    const sizeVal =
+      ix.sizeIdx >= 0 ? String(sizeSel?.value || "").trim() : "";
+    const imprintVal =
+      ix.typeIdx >= 0 ? String(typeSel?.value || "").trim() : "";
+    const sizeNeed = ix.sizeIdx >= 0 && Boolean(sizeVal);
+    const imprintNeed = ix.typeIdx >= 0 && Boolean(imprintVal);
+    const colorHint = String(this.dataset.productColor || "").trim();
+
+    const pools = variants.filter((v) => Boolean(v.available));
+    const candidates = pools.length ? pools : variants.slice();
+
+    const matches = (subset, { requireColor }) => {
+      return subset.filter((v) => {
+        const t = this.variantOptionTriple(v);
+        if (
+          sizeNeed &&
+          sizeVal &&
+          !this.imprintSizeStringsMatch(String(t[ix.sizeIdx] || ""), sizeVal)
+        ) {
+          return false;
+        }
+        if (
+          imprintNeed &&
+          imprintVal &&
+          !this.literalOptionStringsMatch(
+            String(t[ix.typeIdx] || ""),
+            imprintVal,
+          )
+        ) {
+          return false;
+        }
+        if (
+          requireColor &&
+          colorHint &&
+          ix.colorIdx >= 0 &&
+          !this.literalOptionStringsMatch(
+            String(t[ix.colorIdx] || ""),
+            colorHint,
+          )
+        ) {
+          return false;
+        }
+        return true;
+      });
+    };
+
+    let pick =
+      matches(candidates, { requireColor: true })[0] ||
+      matches(candidates, { requireColor: false })[0] ||
+      null;
+    return pick?.id ?? null;
+  }
+
+  /**
+   * HTMLSelectElement rejects setting `value` to a disabled `<option>`; PDP links can
+   * target unavailable variants programmatically — enable the option briefly so hydration works.
+   * @returns {boolean} Whether the DOM select now reflects `variantId`.
+   */
+  _setVariantSelectorValueAllowDisabled(variantSel, variantId) {
+    if (!variantSel || variantId == null || variantId === "") {
+      return false;
+    }
+    const want = String(variantId).trim();
+    const opt =
+      [...variantSel.options].find((o) => String(o.value || "") === want) ||
+      null;
+    if (!opt?.value) {
+      return false;
+    }
+    if (opt.disabled) {
+      opt.disabled = false;
+    }
+    variantSel.value = opt.value;
+    return String(variantSel.value || "") === want;
+  }
+
+  resolveVariantFromImprintSelections() {
+    if (this._suppressImprintVariantResolution) {
+      return;
+    }
+    const variantSel = this.querySelector("[data-variant-selector]");
+    const pid = String(this.dataset.productId || "").trim();
+    const productCatalog =
+      typeof this._getProductCatalog === "function"
+        ? this._getProductCatalog()
+        : [];
+    if (!pid || !Array.isArray(productCatalog) || !variantSel) {
+      return;
+    }
+    const product = productCatalog.find((p) => String(p?.id ?? "") === pid);
+    if (!product) {
+      return;
+    }
+    const pickId = this.pickVariantMatchingImprints(product);
+    if (pickId == null) {
+      return;
+    }
+    const match = [...variantSel.options].find(
+      (o) => String(o.value || "") === String(pickId),
+    );
+    if (!match?.value) {
+      return;
+    }
+    const cur = variantSel.value;
+    if (String(cur || "") === String(pickId)) {
+      this.updateHiddenProperties();
+      return;
+    }
+    // Do not copy `dataset.productColor` from the *previous* selection here —
+    // before applying `pickId` that clobbered PDP `color=` hints off the Orange row.
+    this._suppressImprintVariantResolution = true;
+    this._setVariantSelectorValueAllowDisabled(variantSel, pickId);
+    this._suppressImprintVariantResolution = false;
+    variantSel.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  /**
+   * Select the "Other" imprint option when nothing was URL-prefilled and the
+   * UI is still on the disabled placeholder — legacy manual lists only.
+   */
+  ensureImprintSizeDefaultToOther(urlHadImprintPrefill) {
+    if (urlHadImprintPrefill) {
+      return;
+    }
+    const sel = this.querySelector("[data-imprint-size]");
+    if (!sel || sel.hasAttribute("data-variant-driven")) {
+      return;
+    }
+    const idx = sel.selectedIndex;
+    const chosen = idx >= 0 ? sel.options[idx] : null;
+    const placeholder =
+      chosen && chosen.disabled && String(chosen.value || "") === "";
+
+    let noRealChoice = placeholder;
+    if (!noRealChoice && String(sel.value || "").trim() === "") {
+      noRealChoice = true;
+    }
+
+    if (!noRealChoice) {
+      return;
+    }
+    const other = [...sel.options].find((o) =>
+      o.hasAttribute("data-imprint-other-option"),
+    );
+    if (!other?.value) {
+      return;
+    }
+    sel.value = other.value;
+    sel.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  resolveImprintSizeForPayload() {
+    const sel = this.querySelector("[data-imprint-size]");
+    if (!sel) {
+      return "";
+    }
+    const val = String(sel.value || "").trim();
+    const opt = sel.selectedOptions?.[0];
+    if (
+      opt?.hasAttribute?.("data-imprint-other-option") &&
+      val === "__custom_imprint_size__"
+    ) {
+      return String(opt.textContent || "").trim() || val;
+    }
+    return val;
+  }
+
   bindFields() {
     const sectionRoot = this.closest(".custom-cover-customizer");
     const uploadInput = this.querySelector("[data-upload-input]");
@@ -301,6 +907,8 @@ class CustomCoverCustomizer extends HTMLElement {
     const productSelector = this.querySelector("[data-product-selector]");
     const variantSelector = this.querySelector("[data-variant-selector]");
     const imprintSizeSelector = this.querySelector("[data-imprint-size]");
+    const imprintTextInput = this.querySelector("[data-imprint-text]");
+    const imprintTextHelper = this.querySelector("[data-imprint-text-helper]");
     const variantSizeHelper = this.querySelector(
       '[data-size-helper="variant"]',
     );
@@ -308,6 +916,12 @@ class CustomCoverCustomizer extends HTMLElement {
       '[data-size-helper="imprint"]',
     );
     const idField = this.form.querySelector('input[name="id"]');
+    const imprintSizeProperty = this.form.querySelector(
+      "[data-imprint-size-property]",
+    );
+    const imprintTextProperty = this.form.querySelector(
+      "[data-imprint-text-property]",
+    );
     const fontInput = this.querySelector("[data-font-input]");
     const fontSizeInput = this.querySelector("[data-font-size-input]");
     const textInput = this.querySelector("[data-text-input]");
@@ -324,16 +938,21 @@ class CustomCoverCustomizer extends HTMLElement {
     const copyBtns = sectionRoot?.querySelectorAll("[data-design-copy]") ?? [];
     const undoBtns = sectionRoot?.querySelectorAll("[data-design-undo]") ?? [];
     const redoBtns = sectionRoot?.querySelectorAll("[data-design-redo]") ?? [];
-    const deleteBtns = sectionRoot?.querySelectorAll("[data-design-delete]") ?? [];
-    const downloadBtns = sectionRoot?.querySelectorAll("[data-design-download]") ?? [];
+    const deleteBtns =
+      sectionRoot?.querySelectorAll("[data-design-delete]") ?? [];
+    const downloadBtns =
+      sectionRoot?.querySelectorAll("[data-design-download]") ?? [];
     const loadBtns = sectionRoot?.querySelectorAll("[data-design-load]") ?? [];
     const shareBtn = sectionRoot?.querySelector("[data-design-share]");
-    const saveDraftBtns = sectionRoot?.querySelectorAll("[data-save-draft]") ?? [];
+    const saveDraftBtns =
+      sectionRoot?.querySelectorAll("[data-save-draft]") ?? [];
     const draftsList = this.querySelector("[data-drafts-list]");
     const draftsEmpty = this.querySelector("[data-drafts-empty]");
     const draftsNotice = this.querySelector("[data-drafts-notice]");
     const drawerRoot = this.querySelector("[data-customizer-drawer]");
-    const drawerBackdrop = this.querySelector("[data-customizer-drawer-backdrop]");
+    const drawerBackdrop = this.querySelector(
+      "[data-customizer-drawer-backdrop]",
+    );
     const drawerClose = this.querySelector("[data-customizer-drawer-close]");
     const drawerTitleEl = this.querySelector("[data-customizer-drawer-title]");
     const drawerMq = window.matchMedia("(max-width: 989px)");
@@ -375,8 +994,7 @@ class CustomCoverCustomizer extends HTMLElement {
       drawerRoot.setAttribute("aria-hidden", "true");
       setDrawerScrollLock(false);
       const returnEl =
-        lastModeTabForFocus ||
-        this.querySelector("[data-mode-tab].is-active");
+        lastModeTabForFocus || this.querySelector("[data-mode-tab].is-active");
       returnEl?.focus({ preventScroll: true });
     };
 
@@ -654,6 +1272,293 @@ class CustomCoverCustomizer extends HTMLElement {
     });
 
     let productCatalog = this.readProductCatalog();
+    this._getProductCatalog = () => productCatalog;
+    this._captureImprintControlTemplatesIfNeeded();
+    const urlParams = new URLSearchParams(window.location.search || "");
+    const prefillVariantId = (
+      urlParams.get("variant") ||
+      urlParams.get("variant_id") ||
+      ""
+    ).trim();
+    const prefillProductId = (
+      urlParams.get("product") ||
+      urlParams.get("product_id") ||
+      ""
+    ).trim();
+    const prefillSizeExplicit = (
+      urlParams.get("imprint_size") ||
+      urlParams.get("imprintSize") ||
+      ""
+    ).trim();
+    const prefillStyleExplicit = (
+      urlParams.get("imprint_text") ||
+      urlParams.get("imprintText") ||
+      urlParams.get("imprint_type") ||
+      urlParams.get("imprintStyle") ||
+      ""
+    ).trim();
+    const rawLegacyImprintParam = (urlParams.get("imprint") || "").trim();
+
+    /** Parse `imprint=` only when dedicated params are absent (backward compatible). */
+    const legacyImprintAlone =
+      Boolean(rawLegacyImprintParam) &&
+      !prefillSizeExplicit &&
+      !prefillStyleExplicit;
+
+    const prefillSizeFromUrl =
+      prefillSizeExplicit ||
+      (legacyImprintAlone &&
+      this.looksLikeDimensionalImprintSize(rawLegacyImprintParam)
+        ? rawLegacyImprintParam
+        : "");
+
+    const prefillStyleFromUrl =
+      prefillStyleExplicit ||
+      (legacyImprintAlone &&
+      !this.looksLikeDimensionalImprintSize(rawLegacyImprintParam)
+        ? rawLegacyImprintParam
+        : "");
+    const prefillColor = (urlParams.get("color") || "").trim();
+    let didPrefillVariant = false;
+
+    const getColorNameFromVariantTitle = (title) => {
+      const raw = String(title || "").trim();
+      if (!raw) return "";
+      const parts = raw
+        .split("/")
+        .map((p) => p.trim())
+        .filter(Boolean);
+      return parts.length ? parts[parts.length - 1] : raw;
+    };
+
+    /** Match PDP `color=` (swatch legend) to a variant ID using Shopify option values, not variant title substring rules alone. */
+    const findVariantIdMatchingUrlColor = (product, urlColorRaw) => {
+      const desired = String(urlColorRaw || "").trim();
+      if (!product || !desired || !Array.isArray(product?.variants)) {
+        return "";
+      }
+      const variants = product.variants.filter(Boolean);
+      if (!variants.length) {
+        return "";
+      }
+      const ix = this.resolveImprintOptionIndices(product);
+      const matchesColor = (v) => {
+        const triple = this.variantOptionTriple(v);
+        const fromOpt =
+          ix.colorIdx >= 0 ? String(triple[ix.colorIdx] || "").trim() : "";
+        const tail = getColorNameFromVariantTitle(String(v?.title || ""));
+        const fullTitle = String(v?.title || "").trim();
+        if (fromOpt && this.literalOptionStringsMatch(fromOpt, desired)) {
+          return true;
+        }
+        if (tail && this.literalOptionStringsMatch(tail, desired)) {
+          return true;
+        }
+        if (
+          fullTitle &&
+          this.literalOptionStringsMatch(fullTitle, desired)
+        ) {
+          return true;
+        }
+        return false;
+      };
+      const availableOnes = variants.filter((v) => Boolean(v.available));
+      const bucket = availableOnes.length ? availableOnes : variants.slice();
+      let hit = bucket.find(matchesColor);
+      if (!hit && availableOnes.length) {
+        hit = variants.find(matchesColor);
+      }
+      return hit?.id != null ? String(hit.id) : "";
+    };
+
+    const getSwatchBgForColorName = (name) => {
+      const n = String(name || "")
+        .trim()
+        .toLowerCase();
+      if (!n) return "";
+      const map = {
+        "safety orange": "#f57c00",
+        orange: "#f57c00",
+        "safety yellow": "#f4ea00",
+        yellow: "#f4ea00",
+        white: "#ffffff",
+        black: "#111111",
+        navy: "#0f2e53",
+        blue: "#1e73d8",
+        red: "#d32f2f",
+        green: "#2e7d32",
+        gray: "#9e9e9e",
+        grey: "#9e9e9e",
+        silver: "#c0c0c0",
+      };
+      return map[n] || "";
+    };
+
+    const renderVariantSwatches = (productForSwatches) => {
+      const root = this.querySelector("[data-variant-swatches]");
+      const selectedColorLabel = this.querySelector(
+        "[data-selected-color-label]",
+      );
+      if (!root || !variantSelector) {
+        return;
+      }
+
+      const ixResolved =
+        productForSwatches &&
+        typeof productForSwatches === "object" &&
+        Array.isArray(productForSwatches.optionNames)
+          ? this.resolveImprintOptionIndices(productForSwatches)
+          : null;
+
+      root.innerHTML = "";
+      if (selectedColorLabel) {
+        selectedColorLabel.textContent = "Select color";
+      }
+
+      const variantsRaw =
+        productForSwatches &&
+        typeof productForSwatches === "object" &&
+        Array.isArray(productForSwatches.variants)
+          ? productForSwatches.variants
+          : Array.isArray(productForSwatches)
+            ? productForSwatches
+            : [];
+
+      const seen = new Set();
+      const items = variantsRaw
+        .map((v) => {
+          const title = String(v?.title || "").trim();
+          const triple = this.variantOptionTriple(v);
+          let colorCanonical =
+            ixResolved && ixResolved.colorIdx >= 0
+              ? String(triple[ixResolved.colorIdx] || "").trim()
+              : "";
+          if (!colorCanonical) {
+            colorCanonical = getColorNameFromVariantTitle(title);
+          }
+          const variantId = String(v?.id || "").trim();
+          const available = Boolean(v?.available);
+          return { title, colorCanonical, variantId, available };
+        })
+        .filter((x) => x.variantId && x.colorCanonical);
+
+      items.forEach((item) => {
+        const key = this.normalizeComparableOptionValue(item.colorCanonical);
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "custom-cover-customizer__swatch";
+        btn.setAttribute("role", "listitem");
+        btn.setAttribute("aria-label", item.colorCanonical);
+        btn.setAttribute("data-color-name", item.colorCanonical);
+        btn.disabled = !item.available;
+
+        const bg = getSwatchBgForColorName(item.colorCanonical);
+        if (bg) {
+          btn.style.setProperty("--swatch-bg", bg);
+        } else {
+          btn.classList.add("is-empty");
+        }
+
+        btn.addEventListener("click", () => {
+          if (
+            !productForSwatches ||
+            typeof productForSwatches !== "object" ||
+            !productForSwatches.id
+          ) {
+            const normalized = item.colorCanonical.toLowerCase();
+            const fallbackOpt = [...variantSelector.options].find((opt) => {
+              const text = String(opt.textContent || "").toLowerCase();
+              return text.includes(normalized);
+            });
+            if (fallbackOpt?.value) {
+              this.dataset.productColor = item.colorCanonical;
+              variantSelector.value = fallbackOpt.value;
+              variantSelector.dispatchEvent(
+                new Event("change", { bubbles: true }),
+              );
+            }
+            return;
+          }
+          this.dataset.productColor = item.colorCanonical;
+          const pickId = this.pickVariantMatchingImprints(productForSwatches);
+          if (pickId != null) {
+            const row = [...variantSelector.options].find(
+              (opt) => String(opt.value || "") === String(pickId),
+            );
+            if (row?.value) {
+              variantSelector.value = row.value;
+              variantSelector.dispatchEvent(
+                new Event("change", { bubbles: true }),
+              );
+              return;
+            }
+          }
+          const normalized = item.colorCanonical.toLowerCase();
+          const match = [...variantSelector.options].find((opt) => {
+            const text = String(opt.textContent || "").toLowerCase();
+            return text.includes(normalized);
+          });
+          if (match?.value) {
+            variantSelector.value = match.value;
+            variantSelector.dispatchEvent(
+              new Event("change", { bubbles: true }),
+            );
+          }
+        });
+
+        root.appendChild(btn);
+      });
+
+      const syncSelected = () => {
+        const selectedOpt =
+          variantSelector.options[variantSelector.selectedIndex];
+        const vid = String(selectedOpt?.value || "").trim();
+
+        let selectedColorName = "";
+        if (
+          vid &&
+          productForSwatches &&
+          typeof productForSwatches === "object" &&
+          Array.isArray(productForSwatches.variants)
+        ) {
+          const ixSel = this.resolveImprintOptionIndices(productForSwatches);
+          const hit = productForSwatches.variants.find(
+            (vv) => String(vv?.id ?? "") === vid,
+          );
+          if (hit && ixSel.colorIdx >= 0) {
+            selectedColorName = String(
+              this.variantOptionTriple(hit)[ixSel.colorIdx] || "",
+            ).trim();
+          }
+        }
+        if (!selectedColorName) {
+          const selectedText = String(selectedOpt?.textContent || "");
+          selectedColorName =
+            getColorNameFromVariantTitle(selectedText) || "";
+        }
+
+        root.querySelectorAll(".custom-cover-customizer__swatch").forEach(
+          (el) => {
+            const sw = String(el.getAttribute("data-color-name") || "").trim();
+            el.classList.toggle(
+              "is-selected",
+              Boolean(sw) &&
+                Boolean(selectedColorName) &&
+                this.literalOptionStringsMatch(sw, selectedColorName),
+            );
+          },
+        );
+        if (selectedColorLabel) {
+          selectedColorLabel.textContent =
+            selectedColorName || "Select color";
+        }
+      };
+      syncSelected();
+      variantSelector.addEventListener("change", syncSelected);
+    };
 
     const populateVariantsForProduct = (productId) => {
       if (!variantSelector) {
@@ -665,7 +1570,7 @@ class CustomCoverCustomizer extends HTMLElement {
       variantSelector.innerHTML = "";
       const placeholderOption = document.createElement("option");
       placeholderOption.value = "";
-      placeholderOption.textContent = "Select product size";
+      placeholderOption.textContent = "Select color";
       placeholderOption.disabled = true;
       placeholderOption.selected = true;
       variantSelector.append(placeholderOption);
@@ -676,6 +1581,20 @@ class CustomCoverCustomizer extends HTMLElement {
         this.variantPriceCents = 0;
         this.dataset.productId = "";
         this.updatePrice();
+        const swatchesRoot = this.querySelector("[data-variant-swatches]");
+        if (swatchesRoot) {
+          swatchesRoot.innerHTML = "";
+        }
+        const sizeEl = this.querySelector("[data-imprint-size]");
+        const typeEl = this.querySelector("[data-imprint-text]");
+        if (sizeEl && this._imprintSizeInnerTemplate != null) {
+          sizeEl.innerHTML = this._imprintSizeInnerTemplate;
+          sizeEl.removeAttribute("data-variant-driven");
+        }
+        if (typeEl && this._imprintTypeInnerTemplate != null) {
+          typeEl.innerHTML = this._imprintTypeInnerTemplate;
+          typeEl.removeAttribute("data-variant-driven");
+        }
         return;
       }
       this.dataset.productId = String(selectedProduct.id);
@@ -689,19 +1608,65 @@ class CustomCoverCustomizer extends HTMLElement {
           : `${variant.title} - Unavailable`;
         variantSelector.append(option);
       });
+
+      this.syncVariantImprintSelectors(selectedProduct);
+
+      const firstAvailableVariant =
+        selectedProduct.variants.find((variant) => variant.available) ||
+        selectedProduct.variants[0];
+
+      const ixEarly = this.resolveImprintOptionIndices(selectedProduct);
+      const urlPinnedColor =
+        typeof prefillColor === "string" && prefillColor.trim() !== "";
+      if (
+        firstAvailableVariant &&
+        ixEarly.colorIdx >= 0 &&
+        !urlPinnedColor
+      ) {
+        const tripleEarly = this.variantOptionTriple(firstAvailableVariant);
+        const col = String(tripleEarly[ixEarly.colorIdx] || "").trim();
+        if (col) {
+          this.dataset.productColor = col;
+        }
+      } else if (firstAvailableVariant && !urlPinnedColor) {
+        const colorNameFallback = getColorNameFromVariantTitle(
+          firstAvailableVariant.title || "",
+        );
+        if (colorNameFallback) {
+          this.dataset.productColor = colorNameFallback;
+        }
+      }
+
       if (idField) {
         idField.value = "";
       }
-      const firstAvailableVariant = selectedProduct.variants.find(
-        (variant) => variant.available,
-      );
+
+      if (firstAvailableVariant?.id) {
+        variantSelector.value = String(firstAvailableVariant.id);
+      }
+
+      renderVariantSwatches(selectedProduct);
+
+      if (firstAvailableVariant?.id) {
+        this.syncImprintSelectsOnlyFromVariantId(
+          selectedProduct,
+          firstAvailableVariant.id,
+        );
+      }
+
       // Keep Product size unselected in UI, but preserve previous temporary pricing behavior.
       this.variantPriceCents = Number(firstAvailableVariant?.price || 0);
       this.updatePrice();
+
+      if (variantSelector?.value) {
+        variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
+      }
     };
 
     productSelector?.addEventListener("change", () => {
       populateVariantsForProduct(productSelector.value);
+      applyUrlPrefill();
+      this.ensureImprintSizeDefaultToOther(Boolean(prefillSizeFromUrl));
     });
 
     const populateProductSelector = (products) => {
@@ -723,6 +1688,259 @@ class CustomCoverCustomizer extends HTMLElement {
       });
     };
 
+    const syncVariantPickFromSelections = (
+      prod,
+      { dispatchVariantChange } = {},
+    ) => {
+      if (!variantSelector || !prod) {
+        return false;
+      }
+      const pickCombined = this.pickVariantMatchingImprints(prod);
+      if (pickCombined == null) {
+        return false;
+      }
+      const ok = this._setVariantSelectorValueAllowDisabled(
+        variantSelector,
+        pickCombined,
+      );
+      if (ok && dispatchVariantChange) {
+        variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      return ok;
+    };
+
+    const applyUrlPrefill = () => {
+      if (prefillColor) {
+        this.dataset.productColor = prefillColor;
+      }
+
+      if (productSelector && prefillProductId) {
+        productSelector.value = prefillProductId;
+        productSelector.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+
+      /** After product + variant hydrate imprint lists from Shopify options. */
+      if (!String(this.dataset.productId || "").trim()) {
+        return;
+      }
+
+      const applyImprintSizeFromUrlIfAny = () => {
+        if (!imprintSizeSelector || !prefillSizeFromUrl) {
+          return;
+        }
+        const imprintNorm = String(prefillSizeFromUrl || "")
+          .trim()
+          .replace(/\s+/g, " ");
+        const imprintKey = imprintNorm.toLowerCase();
+        const normLoose = (s) =>
+          String(s || "")
+            .trim()
+            .replace(/\s+/g, " ")
+            .toLowerCase();
+
+        const opts = [...imprintSizeSelector.options];
+        const existingExact =
+          opts.find((opt) => {
+            const ov = normLoose(opt.value || "");
+            const ot = normLoose(opt.textContent || "");
+            return ov === imprintKey || ot === imprintKey;
+          }) || null;
+        const fuzzy =
+          existingExact ||
+          opts.find((opt) => {
+            const v = normLoose(opt.value || "");
+            if (!v || v === imprintKey) {
+              return false;
+            }
+            return (
+              this.imprintSizeStringsMatch(opt.value || "", imprintNorm) ||
+              this.imprintSizeStringsMatch(
+                opt.textContent || "",
+                imprintNorm,
+              )
+            );
+          }) ||
+          null;
+        /**
+         * List value is prefix of PDP string (merchant uses longer SKU-style names on PDP),
+         * bounded so "large" doesn't hitch on "xlarge".
+         */
+        const prefixMatch =
+          fuzzy ||
+          opts.find((opt) => {
+            const v = normLoose(opt.value);
+            if (!v || v === imprintKey) return false;
+            if (!imprintKey.startsWith(v)) return false;
+            if (imprintKey.length === v.length) return true;
+            var boundary = imprintKey[v.length];
+            return /[\s,./|(-–—:]/.test(boundary || "") || imprintKey.includes(v + " ");
+          }) ||
+          null;
+
+        let chosenOpt = prefixMatch;
+        const allowSynthetic =
+          !imprintSizeSelector.hasAttribute("data-variant-driven");
+
+        if (!chosenOpt && allowSynthetic) {
+          const option = document.createElement("option");
+          option.value = imprintNorm;
+          option.textContent = imprintNorm;
+          imprintSizeSelector.append(option);
+          chosenOpt = option;
+        }
+        if (chosenOpt?.value != null && String(chosenOpt.value).trim()) {
+          imprintSizeSelector.value = chosenOpt.value;
+          imprintSizeSelector.dispatchEvent(
+            new Event("change", { bubbles: true }),
+          );
+        }
+      };
+
+      const applyImprintStyleFromUrlIfAny = () => {
+        if (!imprintTextInput || !prefillStyleFromUrl) {
+          return;
+        }
+        const want = String(prefillStyleFromUrl || "").trim();
+        if (!want) {
+          return;
+        }
+        const wantLo = want.toLowerCase();
+        const tag =
+          imprintTextInput.tagName && imprintTextInput.tagName.toUpperCase();
+        if (tag === "SELECT") {
+          let opt = [...imprintTextInput.options].find(
+            (o) =>
+              String(o.value || "").toLowerCase() === wantLo ||
+              this.literalOptionStringsMatch(String(o.value || ""), want) ||
+              this.literalOptionStringsMatch(
+                String(o.textContent || ""),
+                want,
+              ),
+          );
+          const allowSynthType = !imprintTextInput.hasAttribute(
+            "data-variant-driven",
+          );
+          if (!opt && allowSynthType) {
+            opt = document.createElement("option");
+            opt.value = want;
+            opt.textContent = want;
+            imprintTextInput.append(opt);
+          }
+          if (opt?.value != null && opt.value !== "") {
+            imprintTextInput.value = opt.value;
+          }
+        } else {
+          imprintTextInput.value = want;
+        }
+        const tagAfter =
+          imprintTextInput.tagName && imprintTextInput.tagName.toUpperCase();
+        const hasVal =
+          tagAfter !== "SELECT" ||
+          (String(imprintTextInput.value || "").trim() !== "" &&
+            imprintTextInput.selectedIndex > -1 &&
+            imprintTextInput.options[imprintTextInput.selectedIndex] &&
+            !imprintTextInput.options[imprintTextInput.selectedIndex].disabled);
+        if (hasVal) {
+          imprintTextInput.dispatchEvent(new Event("input", { bubbles: true }));
+          imprintTextInput.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      };
+
+      applyImprintSizeFromUrlIfAny();
+      applyImprintStyleFromUrlIfAny();
+
+      if (prefillColor) {
+        this.dataset.productColor = prefillColor;
+      }
+
+      const pidLo = String(this.dataset.productId || "").trim();
+      const prod =
+        pidLo && Array.isArray(productCatalog)
+          ? productCatalog.find((p) => String(p?.id ?? "") === pidLo)
+          : null;
+      const hasUrlImprintOrColor =
+        Boolean(prefillColor) ||
+        Boolean(prefillSizeFromUrl) ||
+        Boolean(prefillStyleFromUrl);
+
+      if (variantSelector && !didPrefillVariant && prod && hasUrlImprintOrColor) {
+        if (syncVariantPickFromSelections(prod, { dispatchVariantChange: true })) {
+          didPrefillVariant = true;
+        }
+      }
+
+      if (variantSelector && !didPrefillVariant && prefillColor) {
+        const vid = prod
+          ? findVariantIdMatchingUrlColor(prod, prefillColor)
+          : "";
+        const options = [...variantSelector.options];
+        let colorMatch =
+          vid &&
+          options.find((opt) => String(opt.value || "") === String(vid));
+        if (!colorMatch?.value) {
+          colorMatch =
+            options.find((opt) => {
+              if (!opt.value) return false;
+              const cn = getColorNameFromVariantTitle(
+                String(opt.textContent || ""),
+              );
+              return this.literalOptionStringsMatch(cn, prefillColor);
+            }) || null;
+        }
+        if (!colorMatch?.value) {
+          colorMatch =
+            options.find((opt) => {
+              if (!opt.value) return false;
+              return this.literalOptionStringsMatch(
+                String(opt.textContent || ""),
+                prefillColor,
+              );
+            }) || null;
+        }
+        if (
+          colorMatch?.value &&
+          this._setVariantSelectorValueAllowDisabled(
+            variantSelector,
+            colorMatch.value,
+          )
+        ) {
+          variantSelector.dispatchEvent(
+            new Event("change", { bubbles: true }),
+          );
+          didPrefillVariant = true;
+        }
+      }
+      if (variantSelector && !didPrefillVariant && prefillVariantId) {
+        if (
+          this._setVariantSelectorValueAllowDisabled(
+            variantSelector,
+            prefillVariantId,
+          )
+        ) {
+          variantSelector.dispatchEvent(
+            new Event("change", { bubbles: true }),
+          );
+          didPrefillVariant = true;
+        }
+      }
+
+      if (variantSelector && !variantSelector.value) {
+        const firstAvailable = [...variantSelector.options].find(
+          (opt) => Boolean(opt.value) && !opt.disabled,
+        );
+        if (firstAvailable && firstAvailable.value) {
+          const colorName = getColorNameFromVariantTitle(
+            firstAvailable.textContent || "",
+          );
+          if (colorName) {
+            this.dataset.productColor = colorName;
+          }
+          variantSelector.value = firstAvailable.value;
+          variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      }
+    };
+
     variantSelector?.addEventListener("change", () => {
       const selected = variantSelector.options[variantSelector.selectedIndex];
       if (!selected || !selected.value) {
@@ -733,22 +1951,89 @@ class CustomCoverCustomizer extends HTMLElement {
         this.updatePrice();
         return;
       }
+      const selectedProduct = productCatalog.find(
+        (p) => String(p.id) === String(this.dataset.productId),
+      );
+      if (selectedProduct) {
+        const ixLive = this.resolveImprintOptionIndices(selectedProduct);
+        const vCur = (
+          Array.isArray(selectedProduct.variants)
+            ? selectedProduct.variants
+            : []
+        ).find((vv) => String(vv?.id ?? "") === String(selected.value));
+        if (vCur && ixLive.colorIdx >= 0) {
+          const col = String(
+            this.variantOptionTriple(vCur)[ixLive.colorIdx] || "",
+          ).trim();
+          if (col) {
+            this.dataset.productColor = col;
+          }
+        }
+      }
+      if (
+        selectedProduct &&
+        !this._suppressImprintVariantResolution
+      ) {
+        this.syncImprintSelectsOnlyFromVariantId(
+          selectedProduct,
+          selected.value,
+        );
+      }
       if (idField) {
         idField.value = selected.value;
       }
       this.variantPriceCents = Number(selected.getAttribute("data-price") || 0);
       this.updatePrice();
     });
-    imprintSizeSelector?.addEventListener("change", () =>
+    imprintSizeSelector?.addEventListener("change", () => {
+      this.resolveVariantFromImprintSelections();
+      this.updateHiddenProperties();
+    });
+    imprintTextInput?.addEventListener("input", () =>
       this.updateHiddenProperties(),
     );
+    imprintTextInput?.addEventListener("change", () => {
+      this.resolveVariantFromImprintSelections();
+      this.updateHiddenProperties();
+    });
+
+    imprintTextHelper?.addEventListener("click", () => {
+      if (!imprintTextInput) {
+        return;
+      }
+      const raw = window.prompt("Enter imprint style (e.g. Full Cover Imprint).");
+      const requested = String(raw || "").trim();
+      if (!requested) {
+        return;
+      }
+      const tag =
+        imprintTextInput.tagName && imprintTextInput.tagName.toUpperCase();
+      if (tag === "SELECT") {
+        let opt = [...imprintTextInput.options].find(
+          (o) =>
+            String(o.value || "").toLowerCase() === requested.toLowerCase(),
+        );
+        if (!opt) {
+          opt = document.createElement("option");
+          opt.value = requested;
+          opt.textContent = requested;
+          imprintTextInput.append(opt);
+        }
+        imprintTextInput.value = opt.value;
+      } else {
+        imprintTextInput.value = requested;
+      }
+      imprintTextInput.dispatchEvent(new Event("input", { bubbles: true }));
+      imprintTextInput.dispatchEvent(new Event("change", { bubbles: true }));
+      this.setWarning("");
+    });
 
     variantSizeHelper?.addEventListener("click", () => {
       if (!variantSelector) {
         return;
       }
       const raw = window.prompt(
-        "Enter a product size to find (example: 12x18 or Large).",
+        "Enter a color to find (example: Black or Blue).",
       );
       const requested = String(raw || "").trim();
       if (!requested) {
@@ -761,9 +2046,7 @@ class CustomCoverCustomizer extends HTMLElement {
         return text.includes(normalized);
       });
       if (!match) {
-        this.setWarning(
-          "No matching product size found. Please pick from the list.",
-        );
+        this.setWarning("No matching color found. Please pick from the list.");
         return;
       }
       variantSelector.value = match.value;
@@ -1037,9 +2320,13 @@ class CustomCoverCustomizer extends HTMLElement {
         }
         productCatalog = fallbackProducts;
         populateProductSelector(productCatalog);
+        applyUrlPrefill();
+        this.ensureImprintSizeDefaultToOther(Boolean(prefillSizeFromUrl));
       });
     }
     populateVariantsForProduct(productSelector?.value || "");
+    applyUrlPrefill();
+    this.ensureImprintSizeDefaultToOther(Boolean(prefillSizeFromUrl));
     this.syncFormatToolbars();
     this.syncAlignmentControls(this.textDefaults.textAlign);
     this.updateColorChrome();
@@ -1118,12 +2405,29 @@ class CustomCoverCustomizer extends HTMLElement {
         .map((product) => ({
           id: product?.id,
           title: String(product?.title || "").trim(),
+          optionNames: Array.isArray(product?.optionNames)
+            ? product.optionNames
+                .map((n) => String(n == null ? "" : n).trim())
+                .filter(Boolean)
+            : [],
           variants: Array.isArray(product?.variants)
             ? product.variants.map((variant) => ({
                 id: variant?.id,
                 title: String(variant?.title || "").trim(),
                 price: Number(variant?.price || 0),
                 available: Boolean(variant?.available),
+                option1:
+                  variant?.option1 != null
+                    ? String(variant.option1).trim()
+                    : "",
+                option2:
+                  variant?.option2 != null
+                    ? String(variant.option2).trim()
+                    : "",
+                option3:
+                  variant?.option3 != null
+                    ? String(variant.option3).trim()
+                    : "",
               }))
             : [],
         }))
@@ -1154,6 +2458,15 @@ class CustomCoverCustomizer extends HTMLElement {
         .map((product) => ({
           id: product?.id,
           title: String(product?.title || "").trim(),
+          optionNames: Array.isArray(product?.options)
+            ? product.options
+                .map((o) =>
+                  typeof o === "string"
+                    ? o.trim()
+                    : String(o?.name || "").trim(),
+                )
+                .filter(Boolean)
+            : [],
           variants: Array.isArray(product?.variants)
             ? product.variants.map((variant) => ({
                 id: variant?.id,
@@ -1162,6 +2475,18 @@ class CustomCoverCustomizer extends HTMLElement {
                 available:
                   variant?.available !== false &&
                   variant?.inventory_quantity !== 0,
+                option1:
+                  variant?.option1 != null
+                    ? String(variant.option1).trim()
+                    : "",
+                option2:
+                  variant?.option2 != null
+                    ? String(variant.option2).trim()
+                    : "",
+                option3:
+                  variant?.option3 != null
+                    ? String(variant.option3).trim()
+                    : "",
               }))
             : [],
         }))
@@ -3125,7 +4450,10 @@ class CustomCoverCustomizer extends HTMLElement {
       return null;
     }
     const variantSelector = this.querySelector("[data-variant-selector]");
-    const imprintSize = this.querySelector("[data-imprint-size]")?.value || "";
+    const imprintSize = this.resolveImprintSizeForPayload();
+    const imprintText = (
+      this.querySelector("[data-imprint-text]")?.value || ""
+    ).trim();
     const designTitleInput = this.closest(
       ".custom-cover-customizer",
     )?.querySelector("[data-design-title-input]");
@@ -3139,6 +4467,7 @@ class CustomCoverCustomizer extends HTMLElement {
       productId: this.dataset.productId || "",
       variantId: variantSelector?.value || "",
       imprintSize,
+      imprintText,
       customizerPayload: payload,
       previewDataUrl: this.canvas.toDataURL("image/png", 0.8),
       sourceTemplate: this.lastTemplateSelection
@@ -3171,27 +4500,71 @@ class CustomCoverCustomizer extends HTMLElement {
     this.selectedElementId =
       this.elements[this.elements.length - 1]?.id || null;
     const variantSelector = this.querySelector("[data-variant-selector]");
-    if (variantSelector && draft.variantId) {
-      const existing = [...variantSelector.options].find(
-        (opt) => opt.value === draft.variantId,
-      );
-      if (existing) {
-        variantSelector.value = draft.variantId;
-        variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
-      }
-    }
     const imprintSizeSelector = this.querySelector("[data-imprint-size]");
     if (imprintSizeSelector && draft.imprintSize) {
-      const existing = [...imprintSizeSelector.options].find(
-        (opt) => opt.value === draft.imprintSize,
-      );
-      if (!existing) {
-        const option = document.createElement("option");
-        option.value = draft.imprintSize;
-        option.textContent = draft.imprintSize;
-        imprintSizeSelector.append(option);
+      const opts = [...imprintSizeSelector.options];
+      const normLoose = (s) =>
+        String(s || "")
+          .trim()
+          .replace(/\s+/g, " ")
+          .toLowerCase();
+      const key = normLoose(draft.imprintSize);
+      const exact = opts.find((opt) => opt.value === draft.imprintSize);
+      const standardMatch =
+        exact && !exact.hasAttribute("data-imprint-other-option")
+          ? exact
+          : opts.find((opt) => {
+              if (!opt.value || opt.hasAttribute("data-imprint-other-option")) {
+                return false;
+              }
+              const vLo = normLoose(opt.value);
+              const tLo = normLoose(opt.textContent);
+              return vLo === key || tLo === key;
+            }) || null;
+
+      if (standardMatch) {
+        imprintSizeSelector.value = standardMatch.value;
+      } else {
+        let existing = opts.find((opt) => opt.value === draft.imprintSize);
+        if (!existing) {
+          const option = document.createElement("option");
+          option.value = draft.imprintSize;
+          option.textContent = draft.imprintSize;
+          imprintSizeSelector.append(option);
+          existing = option;
+        }
+        imprintSizeSelector.value = existing.value;
       }
-      imprintSizeSelector.value = draft.imprintSize;
+    }
+    const imprintTextInput = this.querySelector("[data-imprint-text]");
+    if (imprintTextInput) {
+      const v = draft.imprintText || "";
+      const tag =
+        imprintTextInput.tagName && imprintTextInput.tagName.toUpperCase();
+      if (tag === "SELECT" && v) {
+        let opt = [...imprintTextInput.options].find(
+          (o) => String(o.value || "") === v,
+        );
+        if (!opt) {
+          opt = document.createElement("option");
+          opt.value = v;
+          opt.textContent = v;
+          imprintTextInput.append(opt);
+        }
+        imprintTextInput.value = v;
+      } else {
+        imprintTextInput.value = v;
+      }
+    }
+    this.resolveVariantFromImprintSelections();
+    if (variantSelector && draft.variantId) {
+      const existing = [...variantSelector.options].find(
+        (opt) => String(opt.value) === String(draft.variantId),
+      );
+      if (existing) {
+        variantSelector.value = existing.value;
+        variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
+      }
     }
     const designTitleInput = this.closest(
       ".custom-cover-customizer",
@@ -3349,13 +4722,28 @@ class CustomCoverCustomizer extends HTMLElement {
     const statusTarget = this.form.querySelector("[data-safe-area-status]");
     const previewTarget = this.form.querySelector("[data-preview-image]");
     const previewTokenTarget = this.form.querySelector("[data-preview-token]");
+    const imprintSizeProperty = this.form.querySelector(
+      "[data-imprint-size-property]",
+    );
+    const imprintTextProperty = this.form.querySelector(
+      "[data-imprint-text-property]",
+    );
 
     const safeShape = this.getSafeAreaShape();
     const circleMetrics =
       safeShape === "circle" ? this.getCircleSafeMetrics() : null;
 
+    const imprintTextRaw = (
+      this.querySelector("[data-imprint-text]")?.value || ""
+    ).trim();
+    const imprintSizeResolved = this.resolveImprintSizeForPayload();
+    /** Cart line props: imprint text when set; otherwise same measured size so both fields stay dimensional. */
+    const imprintLineItemText = imprintTextRaw || imprintSizeResolved;
+
     const payload = {
-      imprintSize: this.querySelector("[data-imprint-size]")?.value || "",
+      imprintSize: imprintSizeResolved,
+      imprintText: imprintTextRaw,
+      productColor: (this.dataset.productColor || "").trim(),
       elements: this.elements.map((element) => ({
         id: element.id,
         type: element.type,
@@ -3416,6 +4804,12 @@ class CustomCoverCustomizer extends HTMLElement {
     if (jsonTarget) {
       jsonTarget.value = JSON.stringify(payload);
     }
+    if (imprintSizeProperty) {
+      imprintSizeProperty.value = payload.imprintSize || "";
+    }
+    if (imprintTextProperty) {
+      imprintTextProperty.value = imprintLineItemText || "";
+    }
     if (statusTarget) {
       statusTarget.value = payload.safeAreaPass ? "PASS" : "FAIL";
     }
@@ -3434,7 +4828,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const variantSelector = this.querySelector("[data-variant-selector]");
     if (!variantSelector?.value) {
       event.preventDefault();
-      this.setWarning("Please select a product size before saving.");
+      this.setWarning("Please select a color before saving.");
       return;
     }
     const blockOutside = this.dataset.blockOutsideSafeArea === "true";

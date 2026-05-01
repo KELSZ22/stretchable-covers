@@ -154,7 +154,10 @@
           {% endif %}
           data-currency-code="{{ cart.currency.iso_code }}"
           data-money-format="{{ shop.money_format | escape }}"
-          data-include-preview="{{ section.settings.include_preview_data }}">
+          data-include-preview="{{ section.settings.include_preview_data }}"
+          data-imprint-variant-size-option="{{ section.settings.variant_imprint_size_option | escape }}"
+          data-imprint-variant-type-option="{{ section.settings.variant_imprint_type_option | escape }}"
+          data-imprint-variant-color-option="{{ section.settings.variant_imprint_color_option | escape }}">
 
           <script type="application/json" data-product-catalog>
             [
@@ -162,13 +165,22 @@
                 {
                   "id": {{ product.id | json }},
                   "title": {{ product.title | strip | json }},
+                  "optionNames": [
+                    {%- for option in product.options_with_values -%}
+                      {{ option.name | json }}
+                      {%- unless forloop.last -%},{%- endunless -%}
+                    {%- endfor -%}
+                  ],
                   "variants": [
                     {%- for variant in product.variants -%}
                       {
                         "id": {{ variant.id | json }},
                         "title": {{ variant.title | strip | json }},
                         "price": {{ variant.price | json }},
-                        "available": {{ variant.available | json }}
+                        "available": {{ variant.available | json }},
+                        "option1": {{ variant.option1 | json }},
+                        "option2": {{ variant.option2 | json }},
+                        "option3": {{ variant.option3 | json }}
                       }{%- unless forloop.last -%},{%- endunless -%}
                     {%- endfor -%}
                   ]
@@ -206,6 +218,14 @@
               type="hidden"
               name="properties[_Customizer Preview Token]"
               data-preview-token>
+            <input
+              type="hidden"
+              name="properties[Imprint size]"
+              data-imprint-size-property>
+            <input
+              type="hidden"
+              name="properties[Imprint]"
+              data-imprint-text-property>
 
             <div
               class="custom-cover-customizer__mode-tabs"
@@ -304,54 +324,114 @@
                         </select>
                       </div>
                       <div class="custom-cover-customizer__group">
-                        <label class="custom-cover-customizer__label" for="CustomizerVariant-{{ section.id }}">Product size</label>
+                        <label class="custom-cover-customizer__label" for="CustomizerImprint-{{ section.id }}">Imprint size</label>
                         <div class="custom-cover-customizer__input-action-row">
-                          <select
-                            id="CustomizerVariant-{{ section.id }}"
-                            class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                            name="variant_selector"
-                            data-variant-selector>
-                            <option
-                              value=""
-                              selected
-                              disabled>Select product size</option>
+                        <select
+                          id="CustomizerImprint-{{ section.id }}"
+                          class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
+                          data-imprint-size>
+                            <option value="" disabled>Select imprint size</option>
+                            {% assign imprint_sizes = section.settings.imprint_sizes | newline_to_br | split: '<br />' %}
+                            {% assign imprint_list_has_plain_other = false %}
+                            {% for imprint_size in imprint_sizes %}
+                              {% assign trimmed_imprint_size = imprint_size | strip %}
+                              {% if trimmed_imprint_size != blank %}
+                                {% assign imprint_line_lc = trimmed_imprint_size | downcase %}
+                                {% if imprint_line_lc == 'other' %}
+                                  {% assign imprint_list_has_plain_other = true %}
+                                {% endif %}
+                                <option
+                                  value="{{ trimmed_imprint_size | escape }}"
+                                  {% if imprint_line_lc == 'other' %}
+                                  selected
+                                  data-imprint-other-option{% endif %}>{{ trimmed_imprint_size | escape }}</option>
+                              {% endif %}
+                            {% endfor %}
+                            {% unless imprint_list_has_plain_other %}
+                              <option
+                                value="__custom_imprint_size__"
+                                selected
+                                data-imprint-other-option>
+                                {{- section.settings.imprint_other_option_label | default: 'Other' | escape -}}
+                              </option>
+                            {% endunless %}
                           </select>
                           <button
                             type="button"
                             class="custom-cover-customizer__round-action"
-                            data-size-helper="variant"
-                            aria-label="Find product size">
+                            data-size-guide-open
+                            aria-haspopup="dialog"
+                            aria-controls="SizingGuideModal-{{ section.id }}-customizer"
+                            aria-label="Sizing guide">
                             <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">{{- 'custom-icon-size-helper.svg' | inline_asset_content -}}</span>
                           </button>
                         </div>
                       </div>
                       <div class="custom-cover-customizer__group">
-                        <label class="custom-cover-customizer__label" for="CustomizerImprint-{{ section.id }}">Imprint size</label>
+                        <label class="custom-cover-customizer__label" for="CustomizerImprintText-{{ section.id }}">
+                          {{- section.settings.imprint_text_label | default: 'Imprint' | escape -}}
+                        </label>
                         <div class="custom-cover-customizer__input-action-row">
                           <select
-                            id="CustomizerImprint-{{ section.id }}"
+                            id="CustomizerImprintText-{{ section.id }}"
                             class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                            data-imprint-size>
-                            <option
-                              value=""
-                              selected
-                              disabled>Select imprint size</option>
-                            {% assign imprint_sizes = section.settings.imprint_sizes | newline_to_br | split: '<br />' %}
-                            {% for imprint_size in imprint_sizes %}
-                              {% assign trimmed_imprint_size = imprint_size | strip %}
-                              {% if trimmed_imprint_size != blank %}
-                                <option value="{{ trimmed_imprint_size | escape }}">{{ trimmed_imprint_size | escape }}</option>
+                            data-imprint-text
+                            autocomplete="off"
+                            aria-label="{{ section.settings.imprint_text_placeholder | default: 'Select imprint' | escape }}">
+                            <option value="" disabled selected>
+                              {{- section.settings.imprint_text_placeholder | default: 'Select imprint' | escape -}}
+                            </option>
+                            {% assign imprint_types = section.settings.imprint_types | newline_to_br | split: '<br />' %}
+                            {% for imprint_type in imprint_types %}
+                              {% assign trimmed_imprint_type = imprint_type | strip %}
+                              {% if trimmed_imprint_type != blank %}
+                                <option value="{{ trimmed_imprint_type | escape }}">
+                                  {{- trimmed_imprint_type | escape -}}
+                                </option>
                               {% endif %}
                             {% endfor %}
                           </select>
                           <button
                             type="button"
                             class="custom-cover-customizer__round-action"
-                            data-size-helper="imprint"
-                            aria-label="Add custom imprint size">
-                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">{{- 'custom-icon-size-helper.svg' | inline_asset_content -}}</span>
+                            data-size-guide-open
+                            aria-haspopup="dialog"
+                            aria-controls="SizingGuideModal-{{ section.id }}-customizer"
+                            aria-label="Sizing guide">
+                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+                                <g transform="translate(9.5 9.5) scale(1.35) translate(-9.5 -9.5)">
+                                  <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </g>
+                              </svg>
+                            </span>
                           </button>
                         </div>
+                      </div>
+                      <div class="custom-cover-customizer__group">
+                        <label class="custom-cover-customizer__label" for="CustomizerVariant-{{ section.id }}">
+                          <span>Color:</span>
+                          <span data-selected-color-label>—</span>
+                        </label>
+                        <select
+                          id="CustomizerVariant-{{ section.id }}"
+                          class="custom-cover-customizer__input custom-cover-customizer__input--select-like custom-cover-customizer__variant-select"
+                          name="variant_selector"
+                          data-variant-selector
+                          hidden
+                          aria-hidden="true"
+                          tabindex="-1">
+                          <option
+                            value=""
+                            selected
+                            disabled>Select color</option>
+                        </select>
+                        <div
+                          class="custom-cover-customizer__swatches"
+                          data-variant-swatches
+                          aria-label="Color swatches"
+                          role="list"></div>
                       </div>
                     </div>
 
@@ -855,6 +935,156 @@
                 </div>
               </div>
             </div>
+
+            <div
+              id="SizingGuideModal-{{ section.id }}-customizer"
+              class="variant-size-guide-modal"
+              aria-hidden="true">
+              <div class="variant-size-guide-modal__overlay" data-size-guide-close></div>
+
+              <div
+                class="variant-size-guide-modal__dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="SizingGuideTitle-{{ section.id }}-customizer">
+                <button
+                  type="button"
+                  class="variant-size-guide-modal__close"
+                  aria-label="Close sizing guide"
+                  data-size-guide-close>
+                  &times;
+                </button>
+
+                <div class="variant-size-guide-modal__content variant-size-guide-modal__content--printing-note">
+                  <h3 id="SizingGuideTitle-{{ section.id }}-customizer" class="variant-size-guide-modal__title">
+                    Important Printing Note!
+                  </h3>
+
+                  <div class="variant-size-guide-modal__body variant-size-guide-modal__body--printing-note">
+                    <p class="variant-size-guide-modal__intro">
+                      <strong>(Kindly Read all the notes before proceeding.)</strong>
+                    </p>
+
+                    <ol class="variant-size-guide-modal__list">
+                      <li>
+                        Sublimation imprinting does not allow for white imprints on colors.
+                      </li>
+
+                      <li>
+                        IF your design requires white, please order WHITE COVERS ONLY.
+                      </li>
+
+                      <li>
+                        Please keep in mind that colors printed on material other than white, may mix to change the final printed color. Since we cannot print white we cannot produce a white underlay to keep colors from mixing together.
+                      </li>
+                    </ol>
+
+                    <p class="variant-size-guide-modal__example">
+                      <em>(Example: blue on safety yellow may appear more green.)</em>
+                    </p>
+
+                    <ol class="variant-size-guide-modal__list" start="4">
+                      <li>
+                        Maximum imprint size is 19" in diameter for all cover sizes. (We are sourcing new equipment for larger imprints in the near future.)
+                      </li>
+
+                      <li>
+                        Safety Orange Covers work best with dark imprint colors like black or navy blue.
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <script>
+              if (!window.variantSizeGuideModalInit) {
+                window.variantSizeGuideModalInit = true;
+
+                function moveModalToBody(modal) {
+                  if (!modal || modal.dataset.movedToBody === 'true') return;
+                  document.body.appendChild(modal);
+                  modal.dataset.movedToBody = 'true';
+                }
+
+                function openSizeGuideModal(modal, triggerButton) {
+                  if (!modal) return;
+
+                  moveModalToBody(modal);
+
+                  modal.classList.add('is-active');
+                  modal.setAttribute('aria-hidden', 'false');
+                  modal._triggerButton = triggerButton || null;
+                  document.body.classList.add('variant-size-guide-modal-open');
+
+                  var closeButton = modal.querySelector('.variant-size-guide-modal__close');
+                  if (closeButton) {
+                    closeButton.focus();
+                  }
+                }
+
+                function closeSizeGuideModal(modal) {
+                  if (!modal) return;
+
+                  modal.classList.remove('is-active');
+                  modal.setAttribute('aria-hidden', 'true');
+
+                  if (!document.querySelector('.variant-size-guide-modal.is-active')) {
+                    document.body.classList.remove('variant-size-guide-modal-open');
+                  }
+
+                  if (modal._triggerButton) {
+                    modal._triggerButton.focus();
+                  }
+                }
+
+                function prepareAllSizeGuideModals() {
+                  document.querySelectorAll('.variant-size-guide-modal').forEach(function(modal) {
+                    moveModalToBody(modal);
+                  });
+                }
+
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', prepareAllSizeGuideModals);
+                } else {
+                  prepareAllSizeGuideModals();
+                }
+
+                document.addEventListener('shopify:section:load', function () {
+                  prepareAllSizeGuideModals();
+                });
+
+                document.addEventListener('click', function (event) {
+                  var openButton = event.target.closest('[data-size-guide-open]');
+                  if (openButton) {
+                    event.preventDefault();
+
+                    var modalId = openButton.getAttribute('aria-controls');
+                    var modal = modalId ? document.getElementById(modalId) : null;
+
+                    openSizeGuideModal(modal, openButton);
+                    return;
+                  }
+
+                  var closeButton = event.target.closest('[data-size-guide-close]');
+                  if (closeButton) {
+                    event.preventDefault();
+
+                    var modal = closeButton.closest('.variant-size-guide-modal');
+                    closeSizeGuideModal(modal);
+                  }
+                });
+
+                document.addEventListener('keydown', function (event) {
+                  if (event.key !== 'Escape') return;
+
+                  var activeModal = document.querySelector('.variant-size-guide-modal.is-active');
+                  if (activeModal) {
+                    closeSizeGuideModal(activeModal);
+                  }
+                });
+              }
+            </script>
           </form>
         </custom-cover-customizer-component>
       </div>
@@ -1192,11 +1422,63 @@
         "label": "Draft API endpoint",
         "default": "/apps/customizer-drafts",
         "info": "Endpoint used to save customer drafts in account storage. Leave default unless your app uses a different path."
-      }, {
+      },       {
         "type": "textarea",
         "id": "imprint_sizes",
-        "label": "Imprint sizes (one per line)",
-        "default": "Small\nMedium\nLarge"
+        "label": "Imprint sizes (fallback, one per line)",
+        "default": "18.0\"\n17.5\"\n17.0\"\n16.5\"\n16.0\"\n15.5\"\n15.0\"\n14.5\"\n14.0\"\n13.5\"\n13.0\"\n12.5\"\n12.0\"\n11.5\"\n11.0\"\n10.5\"\n10.0\"",
+        "info": "Fallback list when products do not expose an \"Imprint Size\" variant option (see Matching names below). When options match the product variant, shoppers see values from Shopify."
+      }, {
+        "type": "header",
+        "content": "Variant option matching (Imprint)"
+      }, {
+        "type": "text",
+        "id": "variant_imprint_size_option",
+        "label": "Imprint size option name",
+        "default": "Imprint Size",
+        "info": "Must match the product option label in Shopify admin (e.g. Imprint Size). Used to populate the Imprint size control from variants."
+      }, {
+        "type": "text",
+        "id": "variant_imprint_type_option",
+        "label": "Imprint type option name",
+        "default": "Imprint",
+        "info": "Must match the product option label (e.g. Imprint). Values like Standard Center Imprint come from variants."
+      }, {
+        "type": "text",
+        "id": "variant_imprint_color_option",
+        "label": "Color option name",
+        "default": "Color",
+        "info": "Used together with imprint options to pick the matching variant ID. Fallback: last variant option."
+      }, {
+        "type": "textarea",
+        "id": "imprint_types",
+        "label": "Imprint types (fallback, one per line)",
+        "default": "Standard Center Imprint\nFull Cover Imprint\nNo Imprint (Blank)",
+        "info": "Shown when variants do not include a matching imprint type option."
+      }, {
+        "type": "text",
+        "id": "imprint_other_option_label",
+        "label": "\"Other\" option label",
+        "default": "Other",
+        "info": "Shown only when \"Other\" is not already one of your imprint sizes (one-per-line)."
+      }, {
+        "type": "text",
+        "id": "imprint_text_label",
+        "label": "Imprint text label",
+        "default": "Imprint"
+      }, {
+        "type": "text",
+        "id": "imprint_text_placeholder",
+        "label": "Imprint type placeholder label",
+        "default": "Select imprint"
+      }, {
+        "type": "range",
+        "id": "imprint_text_maxlength",
+        "label": "Imprint text max length",
+        "min": 10,
+        "max": 200,
+        "step": 5,
+        "default": 80
       }, {
         "type": "header",
         "content": "Safe area and validation"

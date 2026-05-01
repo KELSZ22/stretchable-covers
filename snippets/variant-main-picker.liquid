@@ -41,7 +41,7 @@
       data-shopify-visual-preview
     {% endif %}
   >
-    <form class="variant-picker__form">
+    <form class="variant-picker__form{% if product_resource.options_with_values.size == 1 %} variant-picker__form--single-option{% endif %}">
       {%- for product_option in product_resource.options_with_values -%}
         {%- liquid
           assign swatch_count = product_option.values | map: 'swatch' | compact | size
@@ -49,6 +49,13 @@
           assign option_id_attribute = blank
           assign fieldset_id = blank
           assign longest_value = 0
+
+          assign product_option_name_downcase = product_option.name | downcase | strip
+          assign is_color_option = false
+
+          if product_option_name_downcase == 'color'
+            assign is_color_option = true
+          endif
 
           if swatch_count > 0 and block_settings.show_swatches
             if block_settings.variant_style == 'dropdown'
@@ -66,7 +73,7 @@
           assign show_sizing_guide = false
           assign guide_display_type = blank
 
-          if forloop.index == 1
+          if forloop.index == 1 and product_resource.options_with_values.size > 1
             assign show_sizing_guide = true
             assign guide_display_type = 'icon'
           elsif forloop.index == 2
@@ -75,7 +82,120 @@
           endif
         -%}
 
-        {%- if variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
+        {%- if is_color_option and product_resource.options_with_values.size > 1 -%}
+          {%- assign fieldset_index = forloop.index0 -%}
+
+          <fieldset
+            class="variant-option variant-option--color-swatches"
+            data-fieldset-index="{{ fieldset_index }}"
+            ref="fieldsets[]"
+          >
+            <legend class="variant-color-swatch__legend">
+              <span>{{ product_option.name | escape }}:</span>
+              <strong data-color-swatch-selected>{{ product_option.selected_value }}</strong>
+            </legend>
+
+            <div class="variant-color-swatch__list">
+              {%- for product_option_value in product_option.values -%}
+                {%- liquid
+                  assign swatch_name = product_option_value | downcase | strip
+                  assign swatch_color = '#cccccc'
+
+                  case swatch_name
+                    when 'safety orange'
+                      assign swatch_color = '#ff8500'
+                    when 'safety yellow'
+                      assign swatch_color = '#f4e600'
+                    when 'white'
+                      assign swatch_color = '#ffffff'
+                    when 'black'
+                      assign swatch_color = '#000000'
+                    when 'red'
+                      assign swatch_color = '#ff0000'
+                    when 'blue'
+                      assign swatch_color = '#0057ff'
+                    when 'green'
+                      assign swatch_color = '#008000'
+                    when 'gray'
+                      assign swatch_color = '#808080'
+                    when 'grey'
+                      assign swatch_color = '#808080'
+                  endcase
+                -%}
+
+                <label
+                  class="variant-color-swatch{% if product_option_value.available == false %} variant-color-swatch--unavailable{% endif %}"
+                  title="{{ product_option_value | escape }}"
+                  aria-label="{{ product_option_value | escape }}"
+                >
+                  <input
+                    class="variant-color-swatch__input"
+                    type="radio"
+                    name="{{ product_option.name | escape }}-{{ block.id }}-{{ product_resource.id }}"
+                    value="{{ product_option_value | escape }}"
+                    aria-label="{{ product_option_value.name }}"
+                    {% if product_option_value.available == false %}
+                      aria-disabled="true"
+                    {% endif %}
+                    data-previous-checked="false"
+                    data-fieldset-index="{{ fieldset_index }}"
+                    data-input-index="{{ forloop.index0 }}"
+                    data-input-id="{{ product_option.position }}-{{ forloop.index0 }}"
+                    data-option-value-id="{{ product_option_value.id }}"
+                    data-option-available="{{ product_option_value.available }}"
+                    data-connected-product-url="{{ product_option_value.product_url }}"
+                    {% if product_option_value.variant.id %}
+                      data-variant-id="{{ product_option_value.variant.id }}"
+                    {% endif %}
+                    {% if product_option_value.selected %}
+                      data-current-checked="true"
+                      checked
+                    {% else %}
+                      data-current-checked="false"
+                    {% endif %}
+                  >
+
+                  <span
+                    class="variant-color-swatch__circle"
+                    style="--variant-color-swatch-bg: {{ swatch_color }};"
+                  ></span>
+
+                  <span class="variant-color-swatch__text">
+                    {{- product_option_value | escape -}}
+                  </span>
+
+                  {% render 'strikethrough-variant', product_option: product_option_value %}
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+
+        {%- elsif product_resource.options_with_values.size == 1 -%}
+          <div class="variant-option variant-option--text-mode">
+            <div class="varian-option-container varian-option-container--single">
+              <label for="OptionText-{{ block.id }}-{{ forloop.index0 }}">
+                {{ product_option.name | escape }}
+              </label>
+            </div>
+
+            <div class="variant-option__text-input-wrapper">
+              <input
+                id="OptionText-{{ block.id }}-{{ forloop.index0 }}"
+                type="text"
+                class="variant-option__text-input"
+                name="properties[Diameter]"
+                value=""
+                placeholder="{{ product_option.selected_value | escape }}"
+                autocomplete="off"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                data-number-only-input
+                data-line-item-property-input
+              >
+            </div>
+          </div>
+
+        {%- elsif variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
           {%- assign fieldset_index = forloop.index0 -%}
 
           <fieldset
@@ -324,6 +444,48 @@
   </variant-picker>
 
   <script>
+    if (!window.variantColorSwatchesInit) {
+      window.variantColorSwatchesInit = true;
+
+      function updateColorSwatchText(fieldset) {
+        if (!fieldset) return;
+
+        var selectedText = fieldset.querySelector('[data-color-swatch-selected]');
+        var checkedInput = fieldset.querySelector('.variant-color-swatch__input:checked');
+
+        if (selectedText && checkedInput) {
+          selectedText.textContent = checkedInput.value;
+        }
+      }
+
+      function updateAllColorSwatchTexts() {
+        document.querySelectorAll('.variant-option--color-swatches').forEach(function(fieldset) {
+          updateColorSwatchText(fieldset);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateAllColorSwatchTexts);
+      } else {
+        updateAllColorSwatchTexts();
+      }
+
+      document.addEventListener('shopify:section:load', function () {
+        updateAllColorSwatchTexts();
+      });
+
+      document.addEventListener('change', function(event) {
+        var input = event.target.closest('.variant-color-swatch__input');
+
+        if (!input) return;
+
+        var fieldset = input.closest('.variant-option--color-swatches');
+        updateColorSwatchText(fieldset);
+      });
+    }
+  </script>
+
+  <script>
     if (!window.variantSizeGuideModalInit) {
       window.variantSizeGuideModalInit = true;
 
@@ -411,6 +573,116 @@
       });
     }
   </script>
+
+  <script>
+    if (!window.variantNumberOnlyInputInit) {
+      window.variantNumberOnlyInputInit = true;
+
+      function cleanNumberOnlyValue(input) {
+        if (!input) return;
+        input.value = input.value.replace(/[^0-9]/g, '');
+      }
+
+      function findProductForm(input) {
+        if (!input) return null;
+
+        var picker = input.closest('variant-picker');
+        var sectionId = picker ? picker.getAttribute('data-section-id') : null;
+
+        if (sectionId) {
+          var shopifySection = document.getElementById('shopify-section-' + sectionId);
+          if (shopifySection) {
+            var sectionForm = shopifySection.querySelector('form[action*="/cart/add"]');
+            if (sectionForm) return sectionForm;
+          }
+
+          var matchingSection = document.querySelector('[data-section-id="' + sectionId + '"]');
+          if (matchingSection) {
+            var matchingSectionForm = matchingSection.querySelector('form[action*="/cart/add"]');
+            if (matchingSectionForm) return matchingSectionForm;
+          }
+        }
+
+        var closestSection = input.closest('section, .shopify-section, [data-section-id]');
+        if (closestSection) {
+          var closestForm = closestSection.querySelector('form[action*="/cart/add"]');
+          if (closestForm) return closestForm;
+        }
+
+        return document.querySelector('form[action*="/cart/add"]');
+      }
+
+      function syncLineItemProperty(input) {
+        if (!input) return;
+
+        cleanNumberOnlyValue(input);
+
+        var form = findProductForm(input);
+        if (!form) return;
+
+        var hiddenInput = form.querySelector('input[data-linked-line-item-property="' + input.id + '"]');
+
+        if (!input.value) {
+          if (hiddenInput) hiddenInput.remove();
+          return;
+        }
+
+        if (!hiddenInput) {
+          hiddenInput = document.createElement('input');
+          hiddenInput.type = 'hidden';
+          hiddenInput.setAttribute('data-linked-line-item-property', input.id);
+          form.appendChild(hiddenInput);
+        }
+
+        hiddenInput.name = 'properties[Diameter]';
+        hiddenInput.value = input.value;
+      }
+
+      function syncAllLineItemProperties() {
+        document.querySelectorAll('[data-line-item-property-input]').forEach(function(input) {
+          syncLineItemProperty(input);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', syncAllLineItemProperties);
+      } else {
+        syncAllLineItemProperties();
+      }
+
+      document.addEventListener('shopify:section:load', function () {
+        syncAllLineItemProperties();
+      });
+
+      document.addEventListener('input', function(event) {
+        var input = event.target.closest('[data-number-only-input]');
+        if (!input) return;
+
+        syncLineItemProperty(input);
+      });
+
+      document.addEventListener('change', function(event) {
+        var input = event.target.closest('[data-number-only-input]');
+        if (!input) return;
+
+        syncLineItemProperty(input);
+      });
+
+      document.addEventListener('click', function(event) {
+        var addToCartButton = event.target.closest('button[type="submit"], [name="add"], [data-add-to-cart], .product-form__submit');
+        if (!addToCartButton) return;
+
+        syncAllLineItemProperties();
+      }, true);
+
+      document.addEventListener('submit', function(event) {
+        var form = event.target;
+        if (!form || !form.matches('form[action*="/cart/add"]')) return;
+
+        syncAllLineItemProperties();
+      }, true);
+    }
+  </script>
 {% endunless %}
 
 {% stylesheet %}
@@ -433,6 +705,67 @@
     min-width: 0;
     justify-content: flex-end;
     text-align: right;
+  }
+
+  .variant-option--text-mode {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .variant-option--text-mode .varian-option-container--single {
+    display: block !important;
+    flex: 0 0 calc(50% - 8px) !important;
+    width: calc(50% - 8px) !important;
+    max-width: calc(50% - 8px) !important;
+    min-width: 0 !important;
+  }
+
+  .variant-option--text-mode .varian-option-container--single > label {
+    display: block !important;
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+  }
+
+  .variant-option--text-mode .variant-option__text-input-wrapper {
+    display: block !important;
+    position: relative !important;
+    flex: 0 0 calc(50% - 8px) !important;
+    width: calc(50% - 8px) !important;
+    max-width: calc(50% - 8px) !important;
+    min-width: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .variant-option__text-input {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 48px;
+    padding-block: var(--padding-md);
+    padding-inline: var(--padding-lg);
+    border: var(--style-border-width-inputs) solid var(--color-border);
+    border-radius: var(--style-border-radius-inputs);
+    appearance: none;
+    background: transparent;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    box-sizing: border-box;
+  }
+
+  .variant-option__text-input:hover {
+    border-color: var(--color-variant-hover-border);
+  }
+
+  .variant-option__text-input:focus-visible {
+    outline: var(--focus-outline-width) solid currentcolor;
+    outline-offset: var(--focus-outline-offset);
   }
 
   .variant-option__size-guide {
@@ -464,6 +797,101 @@
 
   .variant-option__size-guide:hover {
     opacity: 0.75;
+  }
+
+  .variant-option--color-swatches {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .variant-color-swatch__legend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 8px;
+    padding: 0;
+    color: #1f1f1f;
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  .variant-color-swatch__legend strong {
+    color: #1f1f1f;
+    font: inherit;
+    font-weight: 800;
+  }
+
+  .variant-color-swatch__list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .variant-color-swatch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .variant-color-swatch__input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+  }
+
+  .variant-color-swatch__circle {
+    display: block;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--variant-color-swatch-bg);
+    border: 1.5px solid #D9DBDF;
+    transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  .variant-color-swatch__input:checked + .variant-color-swatch__circle {
+    border-color: #1f1f1f;
+    box-shadow: 0 0 0 2px #1f1f1f;
+  }
+
+  .variant-color-swatch:hover .variant-color-swatch__circle {
+    transform: scale(1.04);
+  }
+
+  .variant-color-swatch__input:focus-visible + .variant-color-swatch__circle {
+    outline: 2px solid #6c3cff;
+    outline-offset: 3px;
+  }
+
+  .variant-color-swatch--unavailable {
+    opacity: 0.45;
+  }
+
+  .variant-color-swatch__text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .variant-size-guide-modal {
@@ -610,6 +1038,16 @@
     width: 100%;
   }
 
+  .variant-picker__form--single-option {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .variant-picker__form--single-option > .variant-option {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
   .variant-picker[data-shopify-visual-preview] {
     min-width: 300px;
     padding-inline-start: max(4px, var(--padding-inline-start));
@@ -685,6 +1123,36 @@
   }
 
   @media screen and (max-width: 767px) {
+    .variant-option--text-mode {
+      gap: 10px !important;
+    }
+
+    .variant-option--text-mode .varian-option-container--single {
+      flex: 0 0 calc(50% - 5px) !important;
+      width: calc(50% - 5px) !important;
+      max-width: calc(50% - 5px) !important;
+    }
+
+    .variant-option--text-mode .variant-option__text-input-wrapper {
+      flex: 0 0 calc(50% - 5px) !important;
+      width: calc(50% - 5px) !important;
+      max-width: calc(50% - 5px) !important;
+    }
+
+    .variant-color-swatch__legend {
+      font-size: 16px;
+    }
+
+    .variant-color-swatch {
+      width: 36px;
+      height: 36px;
+    }
+
+    .variant-color-swatch__circle {
+      width: 32px;
+      height: 32px;
+    }
+
     .variant-size-guide-modal {
       padding: 14px;
     }

@@ -821,6 +821,44 @@
   padding-right: var(--padding-lg);
 }
 
+/* Variant swatches (customizer color picker) */
+.custom-cover-customizer .custom-cover-customizer__variant-select {
+  /* Keep in DOM for existing JS/add-to-cart logic, but never show in UI. */
+  display: none !important;
+}
+
+.custom-cover-customizer .custom-cover-customizer__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.custom-cover-customizer .custom-cover-customizer__swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 3px solid #c5c5c5;
+  background: var(--swatch-bg, #ffffff);
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.custom-cover-customizer .custom-cover-customizer__swatch.is-selected {
+  border-color: #000000;
+}
+
+.custom-cover-customizer .custom-cover-customizer__swatch:focus-visible {
+  outline: 2px solid rgb(var(--color-button-rgb));
+  outline-offset: 2px;
+}
+
+.custom-cover-customizer .custom-cover-customizer__swatch.is-empty {
+  background: #ffffff;
+}
+
 .custom-cover-customizer .custom-cover-customizer__input-action-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
