@@ -140,10 +140,10 @@
             "typography_checkbox_label_color": "var(--color-foreground)",
             "padding-block-start": 8,
             "padding-block-end": 8,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0,
+            "padding-inline-start": 8,
+            "padding-inline-end": 8,
             "facets_margin_bottom": 8,
-            "facets_margin_right": 20
+            "facets_margin_right": 0
           },
           "blocks": {}
         },
@@ -160,8 +160,8 @@
             "border_radius": 0,
             "padding-block-start": 0,
             "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "padding-inline-start": 15,
+            "padding-inline-end": 15
           },
           "blocks": {
             "card-gallery": {
@@ -204,6 +204,14 @@
               },
               "blocks": {}
             },
+            "custom_liquid_ANcnNU": {
+              "type": "custom-liquid",
+              "name": "t:names.custom_liquid",
+              "settings": {
+                "custom_liquid": "{% assign card_variant = closest.product.selected_or_first_available_variant %}\n{% assign variant_diameter = card_variant.metafields.custom.product_variant_diameter.value %}\n{% assign product_diameter = closest.product.metafields.custom.product_diameter.value %}\n\n{% if variant_diameter != blank %}\n  <p class=\"product-card__diameter\">Diameter <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\">\n  <path d=\"M12 3C7.03711 3 3 7.03711 3 12C3 16.9629 7.03711 21 12 21C16.9629 21 21 16.9629 21 12C21 7.03711 16.9629 3 12 3ZM12 4.5C16.1514 4.5 19.5 7.84863 19.5 12C19.5 16.1514 16.1514 19.5 12 19.5C7.84863 19.5 4.5 16.1514 4.5 12C4.5 7.84863 7.84863 4.5 12 4.5ZM12.75 7.5L14.0947 8.84473L8.84473 14.0947L7.5 12.75V16.5H11.25L9.90527 15.1553L15.1553 9.90527L16.5 11.25V7.5H12.75Z\" fill=\"#5F5F5F\"/>\n</svg> {{ variant_diameter }}</p>\n{% elsif product_diameter != blank %}\n  <p class=\"product-card__diameter\">Diameter <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\">\n  <path d=\"M12 3C7.03711 3 3 7.03711 3 12C3 16.9629 7.03711 21 12 21C16.9629 21 21 16.9629 21 12C21 7.03711 16.9629 3 12 3ZM12 4.5C16.1514 4.5 19.5 7.84863 19.5 12C19.5 16.1514 16.1514 19.5 12 19.5C7.84863 19.5 4.5 16.1514 4.5 12C4.5 7.84863 7.84863 4.5 12 4.5ZM12.75 7.5L14.0947 8.84473L8.84473 14.0947L7.5 12.75V16.5H11.25L9.90527 15.1553L15.1553 9.90527L16.5 11.25V7.5H12.75Z\" fill=\"#5F5F5F\"/>\n</svg> {{ product_diameter }}</p>\n{% endif %}"
+              },
+              "blocks": {}
+            },
             "price_EzJzMm": {
               "type": "price",
               "settings": {
@@ -230,10 +238,16 @@
           "block_order": [
             "card-gallery",
             "product_title_4nY4eT",
+            "custom_liquid_ANcnNU",
             "price_EzJzMm"
           ]
         }
       },
+      "custom_css": [
+        "slideshow-container {background: #fcfdfc; border-radius: 8px; display: flex; padding: 18.679px 15.383px; flex-direction: column; align-self: stretch;}",
+        "@media screen and (min-width: 750px) {.facets-toggle {display: none !important; }}",
+        ".field__input.price-facet__input {text-align: start;}"
+      ],
       "settings": {
         "layout_type": "grid",
         "product_card_size": "large",
@@ -241,7 +255,7 @@
         "enable_infinite_scroll": true,
         "products_per_page": 24,
         "show_products_count": false,
-        "show_sorting": false,
+        "show_sorting": true,
         "show_column_options": false,
         "product_grid_width": "centered",
         "full_width_on_mobile": true,

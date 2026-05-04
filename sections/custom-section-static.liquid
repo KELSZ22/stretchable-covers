@@ -1,0 +1,567 @@
+{% comment %}
+  Section: Customer Gallery Mosaic
+{% endcomment %}
+
+<section id="shopify-section-{{ section.id }}" class="cgm-section">
+  <div class="cgm-container page-width">
+    <div class="cgm-header">
+      {% if section.settings.stars_text != blank or section.settings.trusted_text != blank %}
+        <div class="cgm-rating">
+          {% if section.settings.stars_text != blank %}
+            <div class="cgm-stars">{{ section.settings.stars_text }}</div>
+          {% endif %}
+          {% if section.settings.trusted_text != blank %}
+            <div class="cgm-trusted-text">{{ section.settings.trusted_text }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="cgm-heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="cgm-description">{{ section.settings.description }}</div>
+      {% endif %}
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <div class="cgm-slider-wrap">
+        <div class="cgm-grid" data-cgm-track>
+          {% for block in section.blocks %}
+            {% assign image_alt = block.settings.alt_text | default: block.settings.image.alt | default: section.settings.heading %}
+            <div
+              class="cgm-item"
+              style="
+                --desktop-span: {{ block.settings.desktop_span }};
+                --mobile-span: {{ block.settings.mobile_span }};
+              "
+              {{ block.shopify_attributes }}
+            >
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}" class="cgm-item__link">
+              {% else %}
+                <div class="cgm-item__link">
+              {% endif %}
+
+                {% if block.settings.image != blank %}
+                  <img
+                    src="{{ block.settings.image | image_url: width: 2000 }}"
+                    alt="{{ image_alt | escape }}"
+                    class="cgm-item__image"
+                    loading="lazy"
+                    width="{{ block.settings.image.width }}"
+                    height="{{ block.settings.image.height }}"
+                  >
+                {% else %}
+                  {{ 'image' | placeholder_svg_tag: 'cgm-item__placeholder' }}
+                {% endif %}
+
+              {% if block.settings.link != blank %}
+                </a>
+              {% else %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="cgm-scrollbar" data-cgm-bar aria-hidden="true">
+          <span class="cgm-scrollbar__thumb" data-cgm-thumb></span>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }}.cgm-section {
+    background: {{ section.settings.section_bg }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-container {
+    padding: 0 70px;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-header {
+    max-width: 900px;
+    margin: 0 auto 28px;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-stars {
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 2px;
+    color: {{ section.settings.stars_color }};
+  }
+
+  #shopify-section-{{ section.id }} .cgm-trusted-text {
+    font-size: 14px;
+    line-height: 18px;
+    color: {{ section.settings.trusted_text_color }};
+  }
+
+  #shopify-section-{{ section.id }} .cgm-heading {
+    margin: 0 0 8px;
+    font-size: 32px;
+    line-height: 36px;
+    font-weight: 800;
+    color: {{ section.settings.heading_color }};
+  }
+
+  #shopify-section-{{ section.id }} .cgm-description {
+    font-size: 16px;
+    line-height: 18px;
+    color: {{ section.settings.description_color }};
+    margin: 0 auto;
+    font-weight: 400;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-slider-wrap {
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: {{ section.settings.grid_gap }}px;
+    align-items: stretch;
+    grid-auto-rows: {{ section.settings.row_height }}px;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-item {
+    grid-column: span var(--desktop-span);
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-item__link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-item__image,
+  #shopify-section-{{ section.id }} .cgm-item__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    border-radius: {{ section.settings.image_radius }}px;
+    overflow: hidden;
+    background: #e9e9e9;
+  }
+
+  #shopify-section-{{ section.id }} .cgm-scrollbar {
+    display: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .cgm-container {
+      padding: 0 16px;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-header {
+      max-width: 100%;
+      margin: 0 auto 20px;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-rating {
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-stars {
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-trusted-text {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-heading {
+      font-size: 20px;
+      line-height: 24px;
+      margin: 0 0 8px;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-description {
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-grid {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      grid-template-columns: none;
+      grid-auto-rows: unset;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-item {
+      flex: 0 0 88%;
+      max-width: 88%;
+      min-width: 88%;
+      grid-column: unset !important;
+      scroll-snap-align: start;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-item__link {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-item__image,
+    #shopify-section-{{ section.id }} .cgm-item__placeholder {
+      width: 100%;
+      height: 500px;
+      aspect-ratio: auto;
+      object-fit: cover;
+      object-position: center center;
+      border-radius: {{ section.settings.image_radius }}px;
+      display: block;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-scrollbar {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: rgba(0, 0, 0, 0.18);
+      border-radius: 999px;
+      margin-top: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #shopify-section-{{ section.id }} .cgm-scrollbar__thumb {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 60px;
+      background: #2b2b2b;
+      border-radius: 999px;
+      transform: translateX(0);
+      will-change: transform, width;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const script = document.currentScript;
+    const root = script.closest('.shopify-section') || document.getElementById('shopify-section-{{ section.id }}');
+    if (!root) return;
+
+    const track = root.querySelector('[data-cgm-track]');
+    const bar = root.querySelector('[data-cgm-bar]');
+    const thumb = root.querySelector('[data-cgm-thumb]');
+
+    if (!track || !bar || !thumb) return;
+
+    function updateIndicator() {
+      if (window.innerWidth > 768) return;
+
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      const barWidth = bar.clientWidth;
+
+      if (barWidth <= 0) return;
+
+      if (maxScroll <= 0) {
+        thumb.style.width = barWidth + 'px';
+        thumb.style.transform = 'translateX(0px)';
+        return;
+      }
+
+      const visibleRatio = track.clientWidth / track.scrollWidth;
+      const thumbWidth = Math.max(barWidth * visibleRatio, 60);
+      const maxThumbX = barWidth - thumbWidth;
+      const scrollRatio = track.scrollLeft / maxScroll;
+      const thumbX = maxThumbX * scrollRatio;
+
+      thumb.style.width = thumbWidth + 'px';
+      thumb.style.transform = 'translateX(' + thumbX + 'px)';
+    }
+
+    updateIndicator();
+    track.addEventListener('scroll', updateIndicator, { passive: true });
+    window.addEventListener('resize', updateIndicator);
+
+    document.addEventListener('shopify:section:load', function (event) {
+      if (root.contains(event.target) || event.target === root) {
+        updateIndicator();
+      }
+    });
+
+    setTimeout(updateIndicator, 150);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Customer Gallery Mosaic",
+  "settings": [
+    {
+      "type": "text",
+      "id": "stars_text",
+      "label": "Stars text",
+      "default": "★★★★★"
+    },
+    {
+      "type": "text",
+      "id": "trusted_text",
+      "label": "Trusted text",
+      "default": "Trusted by 50,000 + customers"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Thousands of customers and repeated use."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Trusted by thousands of customers and proven through years of repeated, real-world use across multiple industries."
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Background color",
+      "default": "#F4F4F4"
+    },
+    {
+      "type": "color",
+      "id": "stars_color",
+      "label": "Stars color",
+      "default": "#F5A623"
+    },
+    {
+      "type": "color",
+      "id": "trusted_text_color",
+      "label": "Trusted text color",
+      "default": "#555555"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1F1F1F"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#444444"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap",
+      "min": 4,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "row_height",
+      "label": "Desktop row height",
+      "min": 120,
+      "max": 320,
+      "step": 5,
+      "unit": "px",
+      "default": 140
+    },
+    {
+      "type": "range",
+      "id": "row_height_mobile",
+      "label": "Mobile row height",
+      "min": 100,
+      "max": 240,
+      "step": 5,
+      "unit": "px",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image radius",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 20,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 20,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image_item",
+      "name": "Image item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt text"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "desktop_span",
+          "label": "Desktop width",
+          "default": "2",
+          "options": [
+            {
+              "value": "1",
+              "label": "1 column"
+            },
+            {
+              "value": "2",
+              "label": "2 columns"
+            },
+            {
+              "value": "3",
+              "label": "3 columns"
+            },
+            {
+              "value": "4",
+              "label": "4 columns"
+            },
+            {
+              "value": "5",
+              "label": "5 columns"
+            },
+            {
+              "value": "6",
+              "label": "6 columns"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "mobile_span",
+          "label": "Mobile width",
+          "default": "1",
+          "options": [
+            {
+              "value": "1",
+              "label": "Half width"
+            },
+            {
+              "value": "2",
+              "label": "Full width"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer Gallery Mosaic",
+      "blocks": [
+        {
+          "type": "image_item",
+          "settings": {
+            "desktop_span": "3",
+            "mobile_span": "2"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "desktop_span": "2",
+            "mobile_span": "1"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "desktop_span": "1",
+            "mobile_span": "1"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "desktop_span": "1",
+            "mobile_span": "1"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "desktop_span": "3",
+            "mobile_span": "1"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "desktop_span": "2",
+            "mobile_span": "2"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

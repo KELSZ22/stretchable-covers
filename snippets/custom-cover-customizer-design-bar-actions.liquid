@@ -1,0 +1,101 @@
+{%- comment -%}
+  Shared design bar tool buttons + CTAs for desktop inline bar and mobile overflow menu.
+  @param section_id {String} Section id for submit button form attribute
+  @param menu_variant {String} "inline" | "menu" | "preview-footer" — BEM modifiers; preview-footer is CTAs only (mobile under price)
+{%- endcomment -%}
+{%- liquid
+  assign show_design_tools = true
+  assign tools_class = 'custom-cover-customizer__design-tools'
+  assign cta_class = 'custom-cover-customizer__design-cta'
+  if menu_variant == 'menu'
+    assign tools_class = tools_class | append: ' custom-cover-customizer__design-tools--menu'
+    assign cta_class = cta_class | append: ' custom-cover-customizer__design-cta--menu'
+  elsif menu_variant == 'preview-footer'
+    assign show_design_tools = false
+    assign cta_class = cta_class | append: ' custom-cover-customizer__design-cta--preview-footer'
+  endif
+-%}
+{%- if show_design_tools -%}
+<div class="{{ tools_class }}" aria-label="Design actions">
+  <button
+    type="button"
+    class="custom-cover-customizer__design-tool"
+    data-design-copy
+    data-tooltip="Duplicate"
+    aria-label="Duplicate design element">
+    <span class="custom-cover-customizer__design-tool-icon" aria-hidden="true">
+      {{- 'custom-icon-design-copy.svg' | inline_asset_content -}}
+    </span>
+    <span class="custom-cover-customizer__design-tool-label">Duplicate</span>
+  </button>
+  <button
+    type="button"
+    class="custom-cover-customizer__design-tool"
+    data-design-undo
+    data-tooltip="Undo"
+    aria-label="Undo">
+    <span class="custom-cover-customizer__design-tool-icon" aria-hidden="true">
+      {{- 'custom-icon-design-undo.svg' | inline_asset_content -}}
+    </span>
+    <span class="custom-cover-customizer__design-tool-label">Undo</span>
+  </button>
+  <button
+    type="button"
+    class="custom-cover-customizer__design-tool"
+    data-design-redo
+    data-tooltip="Redo"
+    aria-label="Redo">
+    <span class="custom-cover-customizer__design-tool-icon" aria-hidden="true">
+      {{- 'custom-icon-design-redo.svg' | inline_asset_content -}}
+    </span>
+    <span class="custom-cover-customizer__design-tool-label">Redo</span>
+  </button>
+  <button
+    type="button"
+    class="custom-cover-customizer__design-tool"
+    data-design-delete
+    data-tooltip="Delete"
+    aria-label="Delete selected element">
+    <span class="custom-cover-customizer__design-tool-icon" aria-hidden="true">
+      {{- 'custom-icon-design-delete.svg' | inline_asset_content -}}
+    </span>
+    <span class="custom-cover-customizer__design-tool-label">Delete</span>
+  </button>
+  <button
+    type="button"
+    class="custom-cover-customizer__design-tool"
+    data-design-download
+    data-tooltip="Download"
+    aria-label="Download design">
+    <span class="custom-cover-customizer__design-tool-icon" aria-hidden="true">
+      {{- 'custom-icon-design-download.svg' | inline_asset_content -}}
+    </span>
+    <span class="custom-cover-customizer__design-tool-label">Download</span>
+  </button>
+  <button
+    type="button"
+    class="custom-cover-customizer__design-tool"
+    data-design-load
+    data-tooltip="Load File"
+    aria-label="Load image file">
+    <span class="custom-cover-customizer__design-tool-icon" aria-hidden="true">
+      {{- 'custom-icon-design-folder.svg' | inline_asset_content -}}
+    </span>
+    <span class="custom-cover-customizer__design-tool-label">Load File</span>
+  </button>
+</div>
+{%- endif -%}
+<div class="{{ cta_class }}">
+  <button
+    type="button"
+    class="custom-cover-customizer__design-action custom-cover-customizer__design-action--secondary"
+    data-save-draft>
+    Save as Draft
+  </button>
+  <button
+    type="submit"
+    class="custom-cover-customizer__design-action custom-cover-customizer__design-action--primary"
+    form="CustomizerProductForm-{{ section_id }}">
+    Save and Purchase
+  </button>
+</div>

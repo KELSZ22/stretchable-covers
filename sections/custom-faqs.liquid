@@ -1,0 +1,1161 @@
+{% liquid
+  assign section_id = 'faq-categories-' | append: section.id
+  assign category_blocks = section.blocks | where: 'type', 'category'
+  assign faq_blocks = section.blocks | where: 'type', 'faq'
+
+  assign first_category_key = ''
+  for block in category_blocks
+    assign first_category_key = block.settings.category_key
+    break
+  endfor
+%}
+
+<section
+  id="{{ section_id }}"
+  class="faq-categories section-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  data-initial-category="{{ first_category_key | escape }}"
+>
+  <div class="faq-categories__container page-width">
+    {% if section.settings.heading != blank %}
+      <div class="faq-categories__header">
+        <h2 class="faq-categories__heading">{{ section.settings.heading }}</h2>
+      </div>
+    {% endif %}
+
+    <div class="faq-categories__layout">
+      <aside class="faq-categories__sidebar">
+        <div class="faq-categories__sidebar-inner">
+          {% if section.settings.sidebar_title != blank %}
+            <h3 class="faq-categories__sidebar-title">{{ section.settings.sidebar_title }}</h3>
+          {% endif %}
+
+          <div class="faq-categories__category-picker">
+            <button
+              type="button"
+              class="faq-categories__mobile-trigger"
+              data-category-dropdown-toggle
+              aria-expanded="false"
+              aria-controls="faq-category-dropdown-{{ section.id }}"
+            >
+              <span class="faq-categories__mobile-trigger-label" data-active-category-label>
+                {% if category_blocks.size > 0 %}
+                  {{ category_blocks.first.settings.category_label }}
+                {% endif %}
+              </span>
+              <span class="faq-categories__mobile-trigger-icon" aria-hidden="true"></span>
+            </button>
+
+            <div
+              id="faq-category-dropdown-{{ section.id }}"
+              class="faq-categories__category-list"
+              role="tablist"
+              aria-label="FAQ Categories"
+              data-category-dropdown
+            >
+              {% for block in category_blocks %}
+                <button
+                  type="button"
+                  class="faq-categories__category-button{% if forloop.first %} faq-categories__category-button--active{% endif %}"
+                  data-category-trigger
+                  data-category-label="{{ block.settings.category_label | escape }}"
+                  data-category-key="{{ block.settings.category_key | escape }}"
+                  role="tab"
+                  aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                  {{ block.shopify_attributes }}
+                >
+                  {{ block.settings.category_label }}
+                </button>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="faq-categories__content">
+        <div class="faq-categories__accordion-list">
+          {% for block in faq_blocks %}
+            <details
+              class="faq-categories__item"
+              data-faq-item
+              data-category-key="{{ block.settings.category_key | escape }}"
+              {% if block.settings.category_key == first_category_key and forloop.first %}
+                open
+              {% endif %}
+              {{ block.shopify_attributes }}
+            >
+              <summary class="faq-categories__question">
+                <span class="faq-categories__question-text">{{ block.settings.question }}</span>
+                <span class="faq-categories__icon" aria-hidden="true"></span>
+              </summary>
+
+              <div class="faq-categories__content-inner">
+                <div class="faq-categories__answer rte">
+                  {{ block.settings.answer }}
+                </div>
+              </div>
+            </details>
+          {% endfor %}
+        </div>
+
+        {% if section.settings.contact_text != blank or section.settings.contact_button_label != blank %}
+          <div class="faq-categories__footer">
+            {% if section.settings.contact_text != blank %}
+              <p class="faq-categories__footer-text">{{ section.settings.contact_text }}</p>
+            {% endif %}
+
+            {% if section.settings.contact_button_label != blank and section.settings.contact_button_link != blank %}
+              <a
+                href="{{ section.settings.contact_button_link }}"
+                class="faq-categories__footer-button"
+              >
+                {{ section.settings.contact_button_label }}
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .section-{{ section.id }} {
+      background: {{ section.settings.section_bg_color }};
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      padding-left: 80px;
+      padding-right: 80px;
+    }
+
+    .section-{{ section.id }} .faq-categories__container {
+      max-width: {{ section.settings.max_width }}px;
+      margin: 0 auto;
+    }
+
+    .section-{{ section.id }} .faq-categories__header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .section-{{ section.id }} .faq-categories__heading {
+      margin: 0;
+      color: {{ section.settings.heading_color }};
+      font-size: {{ section.settings.heading_size }}px;
+      line-height: 1.15;
+      font-family: {{ section.settings.heading_font_family }};
+      font-weight: {{ section.settings.heading_font_weight }};
+    }
+
+    .section-{{ section.id }} .faq-categories__layout {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .section-{{ section.id }} .faq-categories__sidebar {
+      position: relative;
+    }
+
+    .section-{{ section.id }} .faq-categories__sidebar-inner {
+      position: sticky;
+      top: {{ section.settings.sticky_top }}px;
+      background: {{ section.settings.sidebar_bg_color }};
+      border-radius: {{ section.settings.sidebar_radius }}px;
+      padding: 20px 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    }
+
+    .section-{{ section.id }} .faq-categories__sidebar-title {
+      margin: 0 0 14px;
+      color: {{ section.settings.sidebar_title_color }};
+      font-size: {{ section.settings.sidebar_title_size }}px;
+      line-height: 1.3;
+      font-family: {{ section.settings.sidebar_title_font_family }};
+      font-weight: {{ section.settings.sidebar_title_font_weight }};
+    }
+
+    .section-{{ section.id }} .faq-categories__category-picker {
+      position: relative;
+    }
+
+    .section-{{ section.id }} .faq-categories__category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .section-{{ section.id }} .faq-categories__category-button {
+      width: 100%;
+      appearance: none;
+      border: 0;
+      border-bottom: 1px solid {{ section.settings.category_divider_color }};
+      background: transparent;
+      color: {{ section.settings.category_text_color }};
+      text-align: left;
+      padding: 12px 0;
+      cursor: pointer;
+      transition: color 0.2s ease, opacity 0.2s ease;
+      font-size: {{ section.settings.category_font_size }}px;
+      line-height: 1.4;
+      font-family: {{ section.settings.category_font_family }};
+      font-weight: {{ section.settings.category_font_weight }};
+    }
+
+    .section-{{ section.id }} .faq-categories__category-button:hover {
+      color: {{ section.settings.category_active_text_color }};
+    }
+
+    .section-{{ section.id }} .faq-categories__category-button--active {
+      color: {{ section.settings.category_active_text_color }};
+      font-weight: 600;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger {
+      display: none;
+      width: 100%;
+      appearance: none;
+      border: 0;
+      background: #ffffff;
+      color: {{ section.settings.category_active_text_color }};
+      text-align: left;
+      padding: 16px 18px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      font-size: {{ section.settings.category_font_size }}px;
+      line-height: 1.4;
+      font-family: {{ section.settings.category_font_family }};
+      font-weight: 500;
+      cursor: pointer;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-label {
+      flex: 1 1 auto;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon::before,
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 8px;
+      height: 1.5px;
+      background: currentColor;
+      transition: transform 0.25s ease;
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon::before {
+      left: 1px;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .section-{{ section.id }} .faq-categories__mobile-trigger-icon::after {
+      right: 1px;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+
+    .section-{{ section.id }} .faq-categories__category-picker.is-open .faq-categories__mobile-trigger-icon::before {
+      transform: translateY(-50%) rotate(-45deg);
+    }
+
+    .section-{{ section.id }} .faq-categories__category-picker.is-open .faq-categories__mobile-trigger-icon::after {
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .section-{{ section.id }} .faq-categories__content {
+      min-width: 0;
+    }
+
+    .section-{{ section.id }} .faq-categories__accordion-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .section-{{ section.id }} .faq-categories__item {
+      background: {{ section.settings.faq_closed_bg_color }};
+      border-radius: {{ section.settings.faq_radius }}px;
+      overflow: hidden;
+      transition: background 0.3s ease;
+    }
+
+    .section-{{ section.id }} .faq-categories__item[open] {
+      background: {{ section.settings.faq_open_bg_color }};
+    }
+
+    .section-{{ section.id }} .faq-categories__item[open] .faq-categories__question {
+      color: {{ section.settings.faq_open_question_color }};
+    }
+
+    .section-{{ section.id }} .faq-categories__item:not([open]) .faq-categories__question {
+      color: {{ section.settings.faq_closed_question_color }};
+    }
+
+    .section-{{ section.id }} .faq-categories__question {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      cursor: pointer;
+      padding: 10px 20px;
+      font-size: {{ section.settings.faq_question_size }}px;
+      line-height: 1.4;
+      font-family: {{ section.settings.faq_question_font_family }};
+      font-weight: {{ section.settings.faq_question_font_weight }};
+    }
+
+    .section-{{ section.id }} .faq-categories__question::-webkit-details-marker {
+      display: none;
+    }
+
+    .section-{{ section.id }} .faq-categories__question-text {
+      flex: 1 1 auto;
+    }
+
+    .section-{{ section.id }} .faq-categories__icon {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      border: 1px solid #0F2E53;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #0F2E53;
+      transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .section-{{ section.id }} .faq-categories__icon::before,
+    .section-{{ section.id }} .faq-categories__icon::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background: currentColor;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.25s ease;
+    }
+
+    .section-{{ section.id }} .faq-categories__icon::before {
+      width: 10px;
+      height: 1px;
+    }
+
+    .section-{{ section.id }} .faq-categories__icon::after {
+      width: 1px;
+      height: 10px;
+    }
+
+    .section-{{ section.id }} .faq-categories__item[open] .faq-categories__icon {
+      background: transparent;
+      border-color: #5F5F5F;
+      color: #5F5F5F;
+    }
+
+    .section-{{ section.id }} .faq-categories__item[open] .faq-categories__icon::after {
+      opacity: 0;
+    }
+
+    .section-{{ section.id }} .faq-categories__content-inner {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 0.35s ease, opacity 0.3s ease;
+    }
+
+    .section-{{ section.id }} .faq-categories__item[open] .faq-categories__content-inner {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .section-{{ section.id }} .faq-categories__answer {
+      min-height: 0;
+      overflow: hidden;
+      padding: 0 20px 0;
+      color: {{ section.settings.faq_answer_color }};
+      font-size: {{ section.settings.faq_answer_size }}px;
+      line-height: 1.65;
+      font-family: {{ section.settings.faq_answer_font_family }};
+      font-weight: {{ section.settings.faq_answer_font_weight }};
+      transition: padding 0.35s ease;
+    }
+
+    .section-{{ section.id }} .faq-categories__item[open] .faq-categories__answer {
+      padding: 0 20px 20px;
+    }
+
+    .section-{{ section.id }} .faq-categories__answer > *:first-child {
+      margin-top: 0;
+    }
+
+    .section-{{ section.id }} .faq-categories__answer > *:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-{{ section.id }} .faq-categories__footer {
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .section-{{ section.id }} .faq-categories__footer-text {
+      margin: 0 0 14px;
+      color: {{ section.settings.footer_text_color }};
+      font-size: {{ section.settings.footer_text_size }}px;
+      line-height: 1.5;
+      font-family: {{ section.settings.footer_font_family }};
+      font-weight: {{ section.settings.footer_font_weight }};
+    }
+
+    .section-{{ section.id }} .faq-categories__footer-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 140px;
+      padding: 12px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      background: {{ section.settings.button_bg_color }};
+      color: {{ section.settings.button_text_color }};
+      font-size: {{ section.settings.button_font_size }}px;
+      line-height: 1.2;
+      font-family: {{ section.settings.button_font_family }};
+      font-weight: {{ section.settings.button_font_weight }};
+      transition: opacity 0.2s ease;
+    }
+
+    .section-{{ section.id }} .faq-categories__footer-button:hover {
+      opacity: 0.9;
+    }
+
+    .section-{{ section.id }} [data-faq-item][hidden] {
+      display: none !important;
+    }
+
+    @media screen and (max-width: 989px) {
+      .section-{{ section.id }} .faq-categories__layout {
+        grid-template-columns: 1fr;
+      }
+
+      .section-{{ section.id }} .faq-categories__sidebar-inner {
+        position: static;
+      }
+    }
+
+    @media screen and (max-width: 749px) {
+      .section-{{ section.id }} {
+        padding-left: 21px;
+        padding-right: 21px;
+      }
+
+      .section-{{ section.id }} .faq-categories__heading {
+        font-size: calc({{ section.settings.heading_size }}px * 0.82);
+      }
+
+      .section-{{ section.id }} .faq-categories__sidebar-inner {
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .section-{{ section.id }} .faq-categories__sidebar-title {
+        display: none;
+      }
+
+      .section-{{ section.id }} .faq-categories__mobile-trigger {
+        display: flex;
+      }
+
+      .section-{{ section.id }} .faq-categories__category-list {
+        display: none;
+        flex-direction: column;
+        gap: 0;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        z-index: 20;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+        padding: 4px 16px;
+      }
+
+      .section-{{ section.id }} .faq-categories__category-picker.is-open .faq-categories__category-list {
+        display: flex;
+      }
+
+      .section-{{ section.id }} .faq-categories__category-button {
+        padding: 14px 0;
+        color: {{ section.settings.category_text_color }};
+      }
+
+      .section-{{ section.id }} .faq-categories__category-button--active {
+        color: {{ section.settings.category_active_text_color }};
+        font-weight: 600;
+      }
+
+      .section-{{ section.id }} .faq-categories__question {
+        padding: 10px 16px;
+      }
+
+      .section-{{ section.id }} .faq-categories__answer {
+        padding: 0 16px 0;
+      }
+
+      .section-{{ section.id }} .faq-categories__item[open] .faq-categories__answer {
+        padding: 0 16px 16px;
+      }
+    }
+  </style>
+
+  <script>
+    (function() {
+      var section = document.getElementById('{{ section_id }}');
+      if (!section) return;
+
+      var categoryButtons = section.querySelectorAll('[data-category-trigger]');
+      var faqItems = section.querySelectorAll('[data-faq-item]');
+      var initialCategory = section.getAttribute('data-initial-category');
+
+      var categoryPicker = section.querySelector('.faq-categories__category-picker');
+      var dropdownToggle = section.querySelector('[data-category-dropdown-toggle]');
+      var activeCategoryLabel = section.querySelector('[data-active-category-label]');
+
+      function closeItem(item) {
+        item.removeAttribute('open');
+      }
+
+      function openItem(item) {
+        item.setAttribute('open', 'open');
+      }
+
+      function closeAllFaqs(items) {
+        items.forEach(function(item) {
+          closeItem(item);
+        });
+      }
+
+      function getVisibleFaqs(categoryKey) {
+        var visible = [];
+
+        faqItems.forEach(function(item) {
+          var matches = item.getAttribute('data-category-key') === categoryKey;
+          item.hidden = !matches;
+
+          if (matches) {
+            visible.push(item);
+          } else {
+            closeItem(item);
+          }
+        });
+
+        return visible;
+      }
+
+      function openFirstVisibleFaq(categoryKey) {
+        var visibleFaqs = getVisibleFaqs(categoryKey);
+        closeAllFaqs(visibleFaqs);
+
+        if (visibleFaqs.length) {
+          openItem(visibleFaqs[0]);
+        }
+      }
+
+      function closeDropdown() {
+        if (!categoryPicker || !dropdownToggle) return;
+        categoryPicker.classList.remove('is-open');
+        dropdownToggle.setAttribute('aria-expanded', 'false');
+      }
+
+      function toggleDropdown() {
+        if (!categoryPicker || !dropdownToggle) return;
+        var isOpen = categoryPicker.classList.contains('is-open');
+        categoryPicker.classList.toggle('is-open', !isOpen);
+        dropdownToggle.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      }
+
+      function setActiveCategory(categoryKey) {
+        categoryButtons.forEach(function(button) {
+          var isActive = button.getAttribute('data-category-key') === categoryKey;
+          button.classList.toggle('faq-categories__category-button--active', isActive);
+          button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+
+          if (isActive && activeCategoryLabel) {
+            activeCategoryLabel.textContent = button.getAttribute('data-category-label') || button.textContent.trim();
+          }
+        });
+
+        openFirstVisibleFaq(categoryKey);
+        closeDropdown();
+      }
+
+      if (dropdownToggle) {
+        dropdownToggle.addEventListener('click', function() {
+          toggleDropdown();
+        });
+
+        document.addEventListener('click', function(event) {
+          if (!categoryPicker) return;
+          if (!categoryPicker.contains(event.target) && !dropdownToggle.contains(event.target)) {
+            closeDropdown();
+          }
+        });
+      }
+
+      categoryButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var categoryKey = button.getAttribute('data-category-key');
+          setActiveCategory(categoryKey);
+        });
+      });
+
+      faqItems.forEach(function(item) {
+        var summary = item.querySelector('.faq-categories__question');
+        if (!summary) return;
+
+        summary.addEventListener('click', function(event) {
+          event.preventDefault();
+
+          var categoryKey = item.getAttribute('data-category-key');
+          var isOpen = item.hasAttribute('open');
+
+          faqItems.forEach(function(otherItem) {
+            if (otherItem !== item && otherItem.getAttribute('data-category-key') === categoryKey) {
+              closeItem(otherItem);
+            }
+          });
+
+          if (isOpen) {
+            closeItem(item);
+          } else {
+            openItem(item);
+          }
+        });
+      });
+
+      if (initialCategory) {
+        setActiveCategory(initialCategory);
+      }
+    })();
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ categories sticky",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "text",
+      "id": "sidebar_title",
+      "label": "Sidebar title",
+      "default": "Select by Category"
+    },
+    {
+      "type": "text",
+      "id": "contact_text",
+      "label": "Footer text",
+      "default": "Have more questions? Reach out so we can assist you."
+    },
+    {
+      "type": "text",
+      "id": "contact_button_label",
+      "label": "Button label",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "contact_button_link",
+      "label": "Button link"
+    },
+
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 900,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "label": "Section max width",
+      "default": 1280
+    },
+    {
+      "type": "range",
+      "id": "sticky_top",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "label": "Sticky top offset",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "sidebar_radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Sidebar radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "faq_radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "FAQ radius",
+      "default": 4
+    },
+
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section background",
+      "default": "#efefef"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "sidebar_bg_color",
+      "label": "Sidebar background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "sidebar_title_color",
+      "label": "Sidebar title color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "category_text_color",
+      "label": "Category text color",
+      "default": "#6a6a6a"
+    },
+    {
+      "type": "color",
+      "id": "category_active_text_color",
+      "label": "Active category text color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "category_divider_color",
+      "label": "Category divider color",
+      "default": "#dddddd"
+    },
+    {
+      "type": "color",
+      "id": "faq_closed_bg_color",
+      "label": "FAQ closed background",
+      "default": "#0f315f"
+    },
+    {
+      "type": "color",
+      "id": "faq_open_bg_color",
+      "label": "FAQ open background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "faq_closed_question_color",
+      "label": "FAQ closed question color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "faq_open_question_color",
+      "label": "FAQ open question color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "faq_answer_color",
+      "label": "FAQ answer color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "footer_text_color",
+      "label": "Footer text color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
+      "default": "#db8a1b"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "text",
+      "id": "heading_font_family",
+      "label": "Heading font family",
+      "default": "inherit"
+    },
+    {
+      "type": "text",
+      "id": "sidebar_title_font_family",
+      "label": "Sidebar title font family",
+      "default": "inherit"
+    },
+    {
+      "type": "text",
+      "id": "category_font_family",
+      "label": "Category font family",
+      "default": "inherit"
+    },
+    {
+      "type": "text",
+      "id": "faq_question_font_family",
+      "label": "FAQ question font family",
+      "default": "inherit"
+    },
+    {
+      "type": "text",
+      "id": "faq_answer_font_family",
+      "label": "FAQ answer font family",
+      "default": "inherit"
+    },
+    {
+      "type": "text",
+      "id": "footer_font_family",
+      "label": "Footer font family",
+      "default": "inherit"
+    },
+    {
+      "type": "text",
+      "id": "button_font_family",
+      "label": "Button font family",
+      "default": "inherit"
+    },
+
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "sidebar_title_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Sidebar title size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "category_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Category font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "faq_question_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "FAQ question size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "faq_answer_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "FAQ answer size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "footer_text_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Footer text size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Button font size",
+      "default": 16
+    },
+
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading font weight",
+      "default": "700",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" },
+        { "value": "800", "label": "800" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sidebar_title_font_weight",
+      "label": "Sidebar title font weight",
+      "default": "500",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "category_font_weight",
+      "label": "Category font weight",
+      "default": "400",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "faq_question_font_weight",
+      "label": "FAQ question font weight",
+      "default": "600",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "faq_answer_font_weight",
+      "label": "FAQ answer font weight",
+      "default": "400",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "footer_font_weight",
+      "label": "Footer text weight",
+      "default": "400",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button font weight",
+      "default": "600",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category_label",
+          "label": "Category label",
+          "default": "Product & Materials"
+        },
+        {
+          "type": "text",
+          "id": "category_key",
+          "label": "Category key",
+          "info": "Use a unique key like product-materials. FAQ items must use the same key.",
+          "default": "product-materials"
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category_key",
+          "label": "Category key",
+          "info": "Match this exactly to a category key above.",
+          "default": "product-materials"
+        },
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What material colors do you have?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>All of our covers start off white and we can print any background color as long as a number is provided as a guide.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ categories sticky",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "category_label": "Product & Materials",
+            "category_key": "product-materials"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_label": "Artwork & Printing",
+            "category_key": "artwork-printing"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_label": "Orders, Payment & Returns",
+            "category_key": "orders-payment-returns"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_label": "Production & Shipping",
+            "category_key": "production-shipping"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "category_key": "product-materials",
+            "question": "What material colors do you have?",
+            "answer": "<p>All of our covers start off white and we can print any background color as long as a number is provided as a guide.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "category_key": "artwork-printing",
+            "question": "Can you match colors exactly?",
+            "answer": "<p>We can get very close, but final printed output may vary slightly depending on material and production conditions.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "category_key": "orders-payment-returns",
+            "question": "Return Policy?",
+            "answer": "<p>Please contact us regarding returns, exchanges, or order issues and we will help review your situation.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "category_key": "production-shipping",
+            "question": "How long does production take?",
+            "answer": "<p>Production timelines vary by order size and customization requirements. Reach out for the most accurate lead time.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

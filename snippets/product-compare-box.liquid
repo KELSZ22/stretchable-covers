@@ -1,0 +1,200 @@
+{% liquid
+  assign compare_url = block.settings.compare_link
+
+  if compare_url != blank
+    if compare_url contains '?'
+      assign compare_url = compare_url | append: '&product=' | append: product.handle
+    else
+      assign compare_url = compare_url | append: '?product=' | append: product.handle
+    endif
+  endif
+%}
+
+<div class="product-compare-box" {{ block.shopify_attributes }}>
+  <div class="product-compare-box__top">
+    {% if block.settings.heading != blank %}
+      <div class="product-compare-box__heading">
+        {{ block.settings.heading }}
+      </div>
+    {% endif %}
+
+    {% if compare_url != blank %}
+      <a href="{{ compare_url }}" class="product-compare-box__button">
+        <span class="product-compare-box__button-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2.33301 3.5H11.6663" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M2.33301 7H11.6663" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M2.33301 10.5H11.6663" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>{{ block.settings.button_label }}</span>
+      </a>
+    {% else %}
+      <button type="button" class="product-compare-box__button" disabled>
+        <span class="product-compare-box__button-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2.33301 3.5H11.6663" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M2.33301 7H11.6663" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M2.33301 10.5H11.6663" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>{{ block.settings.button_label }}</span>
+      </button>
+    {% endif %}
+  </div>
+
+  <div class="product-compare-box__bottom">
+    {% if block.settings.quote != blank %}
+      <div class="product-compare-box__quote">
+        {{ block.settings.quote }}
+      </div>
+    {% endif %}
+
+    <div class="product-compare-box__meta">
+      {% if block.settings.author != blank %}
+        <span class="product-compare-box__author">{{ block.settings.author }}</span>
+      {% endif %}
+
+      <div class="product-compare-box__reviews">
+        <div class="product-compare-box__stars" aria-label="{{ block.settings.star_count }} out of 5 stars">
+          {% for i in (1..5) %}
+            <svg class="product-compare-box__star {% if i <= block.settings.star_count %}is-filled{% endif %}" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1.16699L8.80166 4.81765L12.8333 5.40515L9.91666 8.24683L10.605 12.2618L7 10.3668L3.395 12.2618L4.08333 8.24683L1.16666 5.40515L5.19833 4.81765L7 1.16699Z" fill="currentColor"/>
+            </svg>
+          {% endfor %}
+        </div>
+
+        {% if block.settings.review_label != blank %}
+          <span class="product-compare-box__review-label">{{ block.settings.review_label }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .product-compare-box {
+    background: #f4f4f4;
+    border: 2px solid #1f5b99;
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 16px;
+  }
+
+  .product-compare-box__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .product-compare-box__heading {
+    font-size: 13px;
+    line-height: 18px;
+    color: #222222;
+    font-weight: 500;
+  }
+
+  .product-compare-box__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: #153f72;
+    color: #ffffff;
+    text-decoration: none;
+    border: 1px solid #153f72;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.25s ease;
+  }
+
+  .product-compare-box__button:hover {
+    background: #0f3158;
+    border-color: #0f3158;
+    color: #ffffff;
+  }
+
+  .product-compare-box__button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .product-compare-box__button-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-compare-box__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .product-compare-box__quote {
+    font-size: 12px;
+    line-height: 18px;
+    color: #222222;
+  }
+
+  .product-compare-box__meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .product-compare-box__author {
+    font-size: 12px;
+    line-height: 16px;
+    color: #153f72;
+    font-weight: 600;
+  }
+
+  .product-compare-box__reviews {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .product-compare-box__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    color: #d0d0d0;
+  }
+
+  .product-compare-box__star.is-filled {
+    color: #f5b301;
+  }
+
+  .product-compare-box__review-label {
+    font-size: 12px;
+    line-height: 16px;
+    color: #444444;
+  }
+
+  @media screen and (max-width: 767px) {
+    .product-compare-box {
+      padding: 16px;
+    }
+
+    .product-compare-box__top {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .product-compare-box__button {
+      width: 100%;
+    }
+  }
+</style>

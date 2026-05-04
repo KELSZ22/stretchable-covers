@@ -1,0 +1,380 @@
+{% comment %}
+  Section: Brand Logo Marquee Fixed
+{% endcomment %}
+
+<section id="shopify-section-{{ section.id }}" class="brand-logo-marquee-fixed">
+  <div class="brand-logo-marquee-fixed__inner page-width">
+    <div class="brand-logo-marquee-fixed__grid">
+      <div class="brand-logo-marquee-fixed__intro">
+        {% if section.settings.heading != blank %}
+          <h2 class="brand-logo-marquee-fixed__heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+      </div>
+
+      <div
+        class="brand-logo-marquee-fixed__viewport"
+        data-marquee-viewport
+        {% if section.settings.pause_on_hover %}data-pause-on-hover="true"{% endif %}
+      >
+        <div
+          class="brand-logo-marquee-fixed__track"
+          data-marquee-track
+          style="
+            --marquee-gap: {{ section.settings.logo_gap }}px;
+            --marquee-duration: {{ section.settings.marquee_duration }}s;
+          "
+        >
+          <div class="brand-logo-marquee-fixed__strip" data-marquee-strip>
+            {% for block in section.blocks %}
+              {% if block.settings.logo != blank %}
+                {% if block.settings.link != blank %}
+                  <a
+                    href="{{ block.settings.link }}"
+                    class="brand-logo-marquee-fixed__item"
+                    {% if block.settings.open_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+                    {{ block.shopify_attributes }}
+                  >
+                    <img
+                      src="{{ block.settings.logo | image_url: width: 500 }}"
+                      alt="{{ block.settings.alt_text | escape | default: block.settings.logo.alt | escape }}"
+                      class="brand-logo-marquee-fixed__logo"
+                      loading="lazy"
+                      width="{{ block.settings.logo.width }}"
+                      height="{{ block.settings.logo.height }}"
+                    >
+                  </a>
+                {% else %}
+                  <div class="brand-logo-marquee-fixed__item" {{ block.shopify_attributes }}>
+                    <img
+                      src="{{ block.settings.logo | image_url: width: 500 }}"
+                      alt="{{ block.settings.alt_text | escape | default: block.settings.logo.alt | escape }}"
+                      class="brand-logo-marquee-fixed__logo"
+                      loading="lazy"
+                      width="{{ block.settings.logo.width }}"
+                      height="{{ block.settings.logo.height }}"
+                    >
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }}.brand-logo-marquee-fixed {
+    background: {{ section.settings.section_bg }};
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__inner {
+    padding: 69px 0px 60px 70px;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__grid {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__heading {
+    margin: 0;
+    max-width: 283px;
+    font-size: 32px;
+    line-height: 36px;
+    font-weight: 800;
+    color: {{ section.settings.heading_color }};
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__viewport {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    will-change: transform;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__track.is-ready {
+    animation: brandLogoMarqueeFixed-{{ section.id }} var(--marquee-duration) linear infinite;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__viewport[data-pause-on-hover="true"]:hover .brand-logo-marquee-fixed__track.is-ready {
+    animation-play-state: paused;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__strip {
+    display: flex;
+    align-items: center;
+    gap: var(--marquee-gap);
+    padding-right: var(--marquee-gap);
+    flex-shrink: 0;
+    min-width: max-content;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* min-width: 110px; */
+    text-decoration: none;
+    flex-shrink: 0;
+    width: 200px;
+    height: 65px;
+}
+
+  #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__logo {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: {{ section.settings.logo_max_height }}px;
+    object-fit: contain;
+  }
+
+  @keyframes brandLogoMarqueeFixed-{{ section.id }} {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-1 * var(--marquee-distance, 0px)));
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__heading {
+      max-width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__inner {
+      padding: 60px 0px;
+    }
+
+    #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__heading {
+      max-width: 100%;
+      font-size: 20px;
+      line-height: 22px;
+      text-align: center;
+      padding: 0 16px;
+      margin-bottom: 15px;
+    }
+
+    #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__track {
+      --marquee-gap: {{ section.settings.logo_gap_mobile }}px;
+    }
+
+    #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__logo {
+      max-height: 70px;
+    }
+
+    #shopify-section-{{ section.id }} .brand-logo-marquee-fixed__item {
+      min-width: 152px;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    var section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section) return;
+
+    var viewport = section.querySelector('[data-marquee-viewport]');
+    var track = section.querySelector('[data-marquee-track]');
+    var strip = section.querySelector('[data-marquee-strip]');
+
+    if (!viewport || !track || !strip) return;
+
+    var resizeTimer;
+
+    function buildMarquee() {
+      track.classList.remove('is-ready');
+      track.style.removeProperty('--marquee-distance');
+
+      var originalItems = Array.prototype.slice.call(strip.children).map(function(item) {
+        return item.cloneNode(true);
+      });
+
+      strip.innerHTML = '';
+
+      if (!originalItems.length) return;
+
+      originalItems.forEach(function(item) {
+        strip.appendChild(item);
+      });
+
+      var safety = 0;
+      while (strip.scrollWidth < viewport.offsetWidth * 1.35 && safety < 50) {
+        originalItems.forEach(function(item) {
+          strip.appendChild(item.cloneNode(true));
+        });
+        safety++;
+      }
+
+      var duplicate = strip.cloneNode(true);
+      duplicate.setAttribute('aria-hidden', 'true');
+      track.innerHTML = '';
+      track.appendChild(strip);
+      track.appendChild(duplicate);
+
+      var distance = strip.offsetWidth;
+      track.style.setProperty('--marquee-distance', distance + 'px');
+
+      if (distance > viewport.offsetWidth) {
+        track.offsetHeight;
+        track.classList.add('is-ready');
+      }
+    }
+
+    window.addEventListener('load', buildMarquee);
+
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(buildMarquee, 200);
+    });
+
+    buildMarquee();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Brand Logo Marquee",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Partnered by Hundred Brands Worldwide"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "logo_max_height",
+      "label": "Logo max height",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 38
+    },
+    {
+      "type": "range",
+      "id": "logo_gap",
+      "label": "Desktop logo gap",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "logo_gap_mobile",
+      "label": "Mobile logo gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "marquee_duration",
+      "label": "Marquee speed",
+      "min": 8,
+      "max": 60,
+      "step": 1,
+      "unit": "s",
+      "default": 22
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt text"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_new_tab",
+          "label": "Open in new tab",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Logo Marquee",
+      "blocks": [
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" }
+      ]
+    }
+  ]
+}
+{% endschema %}

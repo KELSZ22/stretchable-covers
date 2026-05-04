@@ -1,0 +1,400 @@
+{%- doc -%}
+  Custom Design Cover block.
+  Standalone custom button only.
+  Does not use Shopify accelerated checkout.
+
+  @param {string} can_add_to_cart - Whether the product can be added to the cart
+{%- enddoc -%}
+
+{% liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+%}
+
+{% if product != blank %}
+  <div
+    class="design-cover-block"
+    {{ block.shopify_attributes }}
+    {% if request.visual_preview_mode %}
+      data-shopify-visual-preview
+    {% endif %}
+    {% unless can_add_to_cart %}
+      hidden
+    {% endunless %}
+  >
+    <button
+      type="button"
+      class="shopify-payment-button__button shopify-payment-button__button--unbranded"
+      aria-label="Design Cover"
+      data-design-cover-trigger
+      data-product-id="{{ product.id }}"
+      data-product-title="{{ product.title | escape }}"
+      data-customizer-url="{% if block.settings.customizer_page != blank %}{{ pages[block.settings.customizer_page].url | escape }}{% else %}/pages/customizer{% endif %}"
+    >
+      <span class="design-cover-button__icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <path d="M11 10L14 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M6.50008 21C7.19232 21 7.869 20.7947 8.44458 20.4101C9.02015 20.0256 9.46875 19.4789 9.73366 18.8394C9.99857 18.1999 10.0679 17.4961 9.93283 16.8172C9.79778 16.1383 9.46444 15.5146 8.97495 15.0251C8.48547 14.5356 7.86183 14.2023 7.1829 14.0673C6.50396 13.9322 5.80023 14.0015 5.16069 14.2664C4.52115 14.5313 3.97452 14.9799 3.58994 15.5555C3.20535 16.1311 3.00008 16.8078 3.00008 17.5C3.00027 18.1656 2.74713 18.8063 2.29208 19.292C2.15187 19.4319 2.05634 19.6102 2.0176 19.8044C1.97887 19.9986 1.99868 20.2 2.07451 20.3829C2.15035 20.5659 2.2788 20.7222 2.44357 20.832C2.60835 20.9419 2.80204 21.0004 3.00008 21H6.50008Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M9.96904 17.031L21.378 5.62398C21.7761 5.22589 21.9998 4.68596 21.9998 4.12298C21.9998 3.55999 21.7761 3.02007 21.378 2.62198C20.98 2.22389 20.44 2.00024 19.877 2.00024C19.3141 2.00024 18.7741 2.22389 18.376 2.62198L6.96704 14.031" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+      </span>
+      <span class="design-cover-button__text">Design Cover</span>
+    </button>
+  </div>
+
+  <script>
+    (function () {
+      if (window.__customDesignCoverTriggerInit) return;
+      window.__customDesignCoverTriggerInit = true;
+
+      var normalize = function (v) {
+        return String(v == null ? "" : v).trim();
+      };
+
+      var getSelectedOptionsFromVariantPicker = function (root) {
+        var out = {};
+        if (!root) return out;
+
+        root.querySelectorAll("fieldset.variant-option").forEach(function (fieldset) {
+          var legend = fieldset.querySelector("legend");
+          var name = normalize(legend ? legend.textContent : "");
+          if (!name) return;
+          var checked = fieldset.querySelector('input[type="radio"]:checked');
+          if (checked) {
+            out[name] = normalize(checked.value);
+          }
+        });
+
+        root.querySelectorAll('select[name^="options["]').forEach(function (select) {
+          var nameAttr = normalize(select.getAttribute("name"));
+          var match = nameAttr.match(/^options\[(.+)\]$/);
+          var name = match ? normalize(match[1]) : "";
+          if (!name) return;
+          out[name] = normalize(select.value);
+        });
+
+        return out;
+      };
+
+      var findOptionValue = function (options, re) {
+        for (var key in options) {
+          if (!Object.prototype.hasOwnProperty.call(options, key)) continue;
+          if (re.test(key)) return options[key];
+        }
+        return "";
+      };
+
+      /** Strip legend noise (concatenated swatch value spans) → option name baseline. */
+      var legendToOptionLabel = function (legendEl) {
+        if (!legendEl) return "";
+        var clone = legendEl.cloneNode(true);
+        var noise = clone.querySelector(
+          '.variant-option__swatch-value, [data-key="variant-option-text"]'
+        );
+        if (noise) noise.remove();
+        return normalize(clone.textContent || "");
+      };
+
+      /** True when this row is “imprint sizing” vs cover/tube/color dimensions. Avoid broad /\b(?:print\s*size)?/ that hits wrong options. */
+      var isImprintOptionLegend = function (raw) {
+        var s = normalize(String(raw || ""));
+        if (!s) return false;
+        if (/\bcover\s*sizes\b/i.test(s)) return false;
+        if (/dimensions?\b/i.test(s) && !/\bimprint\b/i.test(s)) return false;
+        if (/^\s*size\s*$/i.test(s)) return false;
+        return (
+          /\bimprint(ing)?\b/i.test(s) ||
+          /\bcover\s*imprint\b/i.test(s) ||
+          /\bprint\s*area\b/i.test(s) ||
+          /\bprinting\b/i.test(s)
+        );
+      };
+
+      /** Match custom-cover-customizer.js: route bare imprint= toward size vs style. */
+      var looksLikeDimensionalImprintSize = function (raw) {
+        var t = normalize(raw);
+        if (!t) return false;
+        var s = t.toLowerCase();
+        if (/\b(inch|inches|in\.?|cm\b|mm\b|diameter|dia\.?|ø|dia\b)\b/.test(s)) return true;
+        if (/\d/.test(s) && /["\u2033\u2032]/.test(t)) return true;
+        if (/^\d+(\.\d+)?\s*$/.test(t.trim())) return true;
+        return /^(\d+(\.\d+)?)("|'|\u2033|\u2032)?\s*$/i.test(t.trim());
+      };
+
+      var isImprintSizeLegend = function (raw) {
+        var s = normalize(String(raw || ""));
+        if (!isImprintOptionLegend(s)) return false;
+        if (/\bimprint\s*size\b/i.test(s)) return true;
+        if (/\bprint\s*area\b/i.test(s)) return true;
+        return false;
+      };
+
+      var assignImprintFromRow = function (legendLabel, rawValue, out) {
+        var v = normalize(rawValue);
+        if (!v) return;
+        var leg = normalize(String(legendLabel || ""));
+        if (isImprintSizeLegend(leg)) {
+          if (!out.size) out.size = v;
+          return;
+        }
+        if (!isImprintOptionLegend(leg)) return;
+        if (looksLikeDimensionalImprintSize(v)) {
+          if (!out.size) out.size = v;
+        } else {
+          if (!out.type) out.type = v;
+        }
+      };
+
+      var readVariantJsonFromPicker = function (picker) {
+        if (!picker) return null;
+        var script = picker.querySelector(
+          'form.variant-picker__form script[type="application/json"]'
+        );
+        if (!script) return null;
+        try {
+          return JSON.parse(script.textContent || "{}");
+        } catch (e) {
+          return null;
+        }
+      };
+
+      /**
+       * Imprint Size vs Imprint (style) + variant id so customizer URLs match explicit query params:
+       * imprint_size / imprint_text (avoid putting “Standard Cover Imprint” under imprint alone).
+       */
+      var getCustomizerImprintFieldsFromVariantPicker = function (
+        picker,
+        optionsMap
+      ) {
+        var out = { size: "", type: "" };
+        if (!picker) return out;
+
+        var fieldsets = Array.from(
+          picker.querySelectorAll("fieldset.variant-option")
+        );
+        for (var fi = 0; fi < fieldsets.length; fi++) {
+          var fs = fieldsets[fi];
+          if (fs.classList.contains("variant-option--color-swatches")) continue;
+          var leg = legendToOptionLabel(fs.querySelector("legend"));
+          var checked = fs.querySelector('input[type="radio"]:checked');
+          assignImprintFromRow(leg, checked ? checked.value : "", out);
+        }
+
+        var dropdownGroups = picker.querySelectorAll(
+          ".variant-option--dropdowns"
+        );
+        for (var di = 0; di < dropdownGroups.length; di++) {
+          var group = dropdownGroups[di];
+          var lab = group.querySelector("label[for]");
+          var legTxt = normalize(lab ? lab.textContent : "");
+          var sel = group.querySelector("select.variant-option__select");
+          if (!sel || !sel.selectedOptions || !sel.selectedOptions.length) continue;
+          var dv = sel.selectedOptions[0].value || "";
+          assignImprintFromRow(legTxt, dv, out);
+        }
+
+        for (var mapKey in optionsMap) {
+          if (!Object.prototype.hasOwnProperty.call(optionsMap, mapKey)) continue;
+          assignImprintFromRow(mapKey, optionsMap[mapKey], out);
+        }
+
+        var variantObj = readVariantJsonFromPicker(picker);
+        var formInner = picker.querySelector("form.variant-picker__form");
+        if (!variantObj || !formInner) return out;
+
+        var optSlot = -1;
+        for (var ci = 0; ci < formInner.children.length; ci++) {
+          var node = formInner.children[ci];
+          if (!(node instanceof HTMLElement)) continue;
+          if (node.tagName === "SCRIPT") continue;
+          var isDropdown = node.matches(".variant-option--dropdowns");
+          var isFieldsetOpt = node.matches("fieldset.variant-option");
+          if (!isDropdown && !isFieldsetOpt) continue;
+          optSlot += 1;
+          var isColorFs =
+            isFieldsetOpt &&
+            node.classList.contains("variant-option--color-swatches");
+          var ddLab = node.querySelector("label[for]");
+          var colorDropdown =
+            isDropdown &&
+            /\bcolo(u)?r\b/i.test(
+              normalize(ddLab ? ddLab.textContent : ""),
+            );
+          if (isColorFs || colorDropdown) continue;
+          var lblN = "";
+          if (isFieldsetOpt) {
+            lblN = legendToOptionLabel(node.querySelector("legend"));
+          } else {
+            var labN = node.querySelector("label[for]");
+            lblN = normalize(labN ? labN.textContent : "");
+          }
+          var optKey =
+            optSlot === 0 ? "option1" : optSlot === 1 ? "option2" : "option3";
+          assignImprintFromRow(
+            lblN,
+            variantObj[optKey] != null ? variantObj[optKey] : "",
+            out,
+          );
+        }
+        return out;
+      };
+
+      /**
+       * Color label shown in Liquid (`data-color-swatch-selected`) is not updated by variant-picker JS;
+       * only the checked radio stays in sync — read that first, legend as SSR fallback only.
+       */
+      var getCustomizerColorFromVariantPicker = function (picker) {
+        if (!picker) return "";
+        var dedicated = picker.querySelector(
+          "fieldset.variant-option--color-swatches",
+        );
+        if (dedicated) {
+          var chk = dedicated.querySelector('input[type="radio"]:checked');
+          var live = normalize(chk ? chk.value : "");
+          if (live) return live;
+          var strong = dedicated.querySelector("[data-color-swatch-selected]");
+          return normalize(strong ? strong.textContent : "");
+        }
+        /** Option named Colour/Color rendered as buttons/swatches rather than `--color-swatches`. */
+        var groups = picker.querySelectorAll("fieldset.variant-option");
+        var gi = 0;
+        for (gi = 0; gi < groups.length; gi++) {
+          var fs = groups[gi];
+          var lg = fs.querySelector("legend");
+          var legRaw = normalize(lg ? lg.textContent : "");
+          if (!/\bcolo(u)?r\b/i.test(legRaw)) continue;
+          var sw = fs.querySelector('input[type="radio"]:checked');
+          var fromRad = normalize(sw ? sw.value : "");
+          if (fromRad) return fromRad;
+          var labSw = fs.querySelector(".variant-option__swatch-value");
+          var fromLbl = normalize(labSw ? labSw.textContent : "");
+          if (fromLbl) return fromLbl;
+        }
+        return "";
+      };
+
+      /** When option name isn't "color" / "colour": still infer from picker map. */
+      var getCustomizerColorFromOptions = function (options) {
+        return findOptionValue(options, /\bcolo(u)?r\b/i);
+      };
+
+      document.addEventListener("click", function (event) {
+        var trigger = event.target && event.target.closest
+          ? event.target.closest("[data-design-cover-trigger]")
+          : null;
+        if (!trigger) return;
+
+        var customizerUrl = normalize(trigger.getAttribute("data-customizer-url")) || "/pages/customizer";
+        var root = trigger.closest(".product-information") || document;
+        var productId = normalize(trigger.getAttribute("data-product-id"));
+
+        var productFormComponent =
+          trigger.closest("product-form-component") ||
+          root.querySelector("product-form-component");
+        var form = productFormComponent ? productFormComponent.querySelector("form") : null;
+
+        var variantPicker =
+          (productFormComponent && productFormComponent.querySelector("variant-picker")) ||
+          (productId ? document.querySelector('variant-picker[data-product-id="' + productId + '"]') : null) ||
+          root.querySelector("variant-picker");
+
+        /** `variant-picker` replaces the PDP URL via `history.replaceState` — prefer that over a stale cart form `id`. */
+        var variantId = "";
+        try {
+          var qp = new URLSearchParams(window.location.search || "").get(
+            "variant",
+          );
+          variantId = normalize(qp ? qp : "");
+        } catch (errVar) {}
+
+        if (!variantId) {
+          variantId = normalize(
+            form && form.querySelector('input[name="id"]')
+              ? form.querySelector('input[name="id"]').value
+              : "",
+          );
+        }
+
+        var options = getSelectedOptionsFromVariantPicker(variantPicker);
+        if (!variantId && variantPicker) {
+          var checked = variantPicker.querySelector('input[type="radio"][data-variant-id]:checked');
+          variantId = normalize(checked ? checked.getAttribute("data-variant-id") : "");
+        }
+        var imprintFields = getCustomizerImprintFieldsFromVariantPicker(
+          variantPicker,
+          options
+        );
+        var color =
+          getCustomizerColorFromVariantPicker(variantPicker) ||
+          getCustomizerColorFromOptions(options);
+
+        var url;
+        try {
+          url = new URL(customizerUrl, window.location.origin);
+        } catch (e) {
+          url = new URL("/pages/customizer", window.location.origin);
+        }
+        if (productId) url.searchParams.set("product", productId);
+        if (variantId) url.searchParams.set("variant", variantId);
+        if (normalize(imprintFields.size))
+          url.searchParams.set("imprint_size", normalize(imprintFields.size));
+        if (normalize(imprintFields.type))
+          url.searchParams.set("imprint_text", normalize(imprintFields.type));
+        if (color) url.searchParams.set("color", color);
+
+        window.location.href = url.toString();
+      });
+    })();
+  </script>
+{% endif %}
+
+{% stylesheet %}
+.design-cover-block button.shopify-payment-button__button.shopify-payment-button__button--unbranded {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    height: 52px;
+    background: #EB891B;
+}
+  .design-cover-block[data-shopify-visual-preview] {
+    width: 145px;
+  }
+
+  .design-cover-button:hover {
+    background: #c97d14;
+    transform: translateY(-1px);
+  }
+
+  .design-cover-button:focus-visible {
+    outline: 2px solid #d98a1c;
+    outline-offset: 2px;
+  }
+
+  .design-cover-button__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .design-cover-button__text {
+    white-space: nowrap;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Design Cover",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "page",
+      "id": "customizer_page",
+      "label": "Customizer page",
+      "info": "Select the page using the customizer template."
+    }
+  ]
+}
+{% endschema %}

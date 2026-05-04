@@ -11,6 +11,43 @@
   "type": "footer",
   "name": "Footer",
   "sections": {
+    "custom_footer_dHNGQP": {
+      "type": "custom-footer",
+      "name": "Custom Footer",
+      "settings": {
+        "logo": "shopify://shop_images/image_3_1_bfa0e4fd-cb7c-40fa-986d-4dc7df1ad793.png",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "shop_heading": "Shop All",
+        "shop_menu": "shop",
+        "information_heading": "Information",
+        "information_menu": "information",
+        "account_heading": "Account",
+        "account_menu": "account",
+        "policy_heading": "Policy",
+        "policy_menu": "policy",
+        "trust_label": "100% Trusted",
+        "trust_image": "shopify://shop_images/image_31.png",
+        "payment_label": "Accepted payment method",
+        "show_payment_icons": true,
+        "payment_image": "shopify://shop_images/Frame_1000007669.png",
+        "address_label": "Address",
+        "address_text": "12509 Dover Rd.\nReisterstown, MD 21136",
+        "phone_label": "Telephone",
+        "phone_text": "410-561-0800",
+        "phone_link": "",
+        "hours_label": "Store Hours",
+        "hours_text": "10AM-4PM USA Eastern Time",
+        "copyright_text": "© Stretchable Covers 2026 All Rights Reserved",
+        "footer_note": "Optimized by Launch to Profit Media",
+        "bg_color": "#f5f5f5",
+        "heading_color": "#111111",
+        "text_color": "#111111",
+        "muted_color": "#1f1f1f",
+        "border_color": "#d7d7d7",
+        "icon_bg": "#113760",
+        "icon_color": "#ffffff"
+      }
+    },
     "footer_m9NzUG": {
       "type": "footer",
       "blocks": {
@@ -142,6 +179,7 @@
         "group_H6VpwJ",
         "email_signup_crihX7"
       ],
+      "disabled": true,
       "name": "t:names.footer",
       "settings": {
         "section_width": "page-width",
@@ -209,6 +247,7 @@
     }
   },
   "order": [
+    "custom_footer_dHNGQP",
     "footer_m9NzUG",
     "footer_utilities_jLGE8U"
   ]

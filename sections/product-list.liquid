@@ -79,7 +79,18 @@
     {%- content_for 'blocks' -%}
   </div>
 </div>
-
+<style>
+  #shopify-section-{{ section.id }} .section{
+    padding: 60px 70px;
+    display: flex;
+    flex-direction: column;
+  }
+  @media screen and (max-width: 768px){
+    #shopify-section-{{ section.id }} .section{
+     padding: 60px 16px;
+  }
+}
+  </style>
 {% schema %}
 {
   "name": "t:names.product_list",

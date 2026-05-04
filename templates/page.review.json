@@ -1,0 +1,165 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Title",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "custom_review_eP67xC": {
+      "type": "Custom-review",
+      "blocks": {
+        "testimonial_kUniYm": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_441.png",
+            "image_alt": "Customer photo",
+            "quote": "\"WOW!! You guys are awesome! I'm so glad I found you. You're at the very top of my list of excellent companies.\"",
+            "name": "Cathy Powell",
+            "company": "Community Event Organizer"
+          }
+        },
+        "testimonial_Vdh9mz": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_441.png",
+            "image_alt": "Customer photo",
+            "quote": "\"Love the waterproof exam stool covers! Just got them today and we'll be ordering many more.\"",
+            "name": "Marilyn Thomas",
+            "company": "University Health Care System"
+          }
+        },
+        "testimonial_f984dg": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_441.png",
+            "image_alt": "Customer photo",
+            "quote": "\"OMG!! Are you a magician?! That's amazing, and they're GORGEOUS! THANK YOU!!!\"",
+            "name": "Cynthia Stanton",
+            "company": "Happy Customer"
+          }
+        },
+        "testimonial_ERp7rT": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_441.png",
+            "image_alt": "Customer photo",
+            "quote": "\"The cover looks great and shipping was very quick turnaround.\"",
+            "name": "Chris Bonura",
+            "company": "Repeat Customer"
+          }
+        },
+        "testimonial_YpPgLN": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_441.png",
+            "image_alt": "Customer photo",
+            "quote": "\"WOW!! You guys are awesome! I'm so glad I found you.\"",
+            "name": "Cathy Powell",
+            "company": "University Health Care System"
+          }
+        },
+        "testimonial_e4DGBt": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_441.png",
+            "image_alt": "Customer photo",
+            "quote": "\"WOW!! You guys are awesome! I'm so glad I found you.\"",
+            "name": "Cathy Powell",
+            "company": "University Health Care System"
+          }
+        },
+        "testimonial_4wrfBk": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_441.png",
+            "image_alt": "Customer photo",
+            "quote": "\"WOW!! You guys are awesome! I'm so glad I found you.\"",
+            "name": "Cathy Powell",
+            "company": "University Health Care System"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_kUniYm",
+        "testimonial_Vdh9mz",
+        "testimonial_f984dg",
+        "testimonial_ERp7rT",
+        "testimonial_YpPgLN",
+        "testimonial_e4DGBt",
+        "testimonial_4wrfBk"
+      ],
+      "name": "Customer Voices Slider",
+      "settings": {
+        "customers_text": "50,000+ of customers.",
+        "heading": "Voices of Our Customers",
+        "subheading": "Stories, feedback, and honest experiences from the people we serve.",
+        "cards_per_view": 5,
+        "card_gap": 14,
+        "heading_size": 42,
+        "mobile_heading_size": 34,
+        "max_width": 1400,
+        "padding_top": 48,
+        "padding_bottom": 44,
+        "mobile_padding_top": 34,
+        "mobile_padding_bottom": 24,
+        "section_bg": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "custom_review_eP67xC"
+  ]
+}

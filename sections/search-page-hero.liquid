@@ -1,0 +1,155 @@
+{% liquid
+  assign hero_heading = section.settings.heading
+  assign hero_description = section.settings.description
+
+  if hero_heading == blank
+    assign hero_heading = 'Search'
+  endif
+
+  assign search_count = search.results_count | default: 0
+  assign search_word = 'results'
+
+  if search_count == 1
+    assign search_word = 'result'
+  endif
+%}
+
+<section class="search-page-hero">
+  <div class="search-page-hero__inner page-width">
+    <div class="search-page-hero__content">
+      <h1 class="search-page-hero__title">{{ hero_heading }}</h1>
+
+      {%- if search.performed and search.terms != blank -%}
+        <div class="search-page-hero__meta">
+          {{ search_count }} {{ search_word }} for “{{ search.terms | escape }}”
+        </div>
+      {%- endif -%}
+
+      {%- if hero_description != blank -%}
+        <div class="search-page-hero__text">
+          {{ hero_description }}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .search-page-hero {
+    width: 100%;
+    padding: 48px 20px 52px;
+    border-top: 1px solid #0f5cc0;
+  }
+
+  .search-page-hero__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .search-page-hero__content {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .search-page-hero__title {
+    margin: 0;
+    color: #2b2f36;
+    font-family: Raleway;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .search-page-hero__meta {
+    margin-top: 12px;
+    color: #0F2E53;
+    font-family: Lato, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .search-page-hero__text {
+    margin-top: 18px;
+    color: #3d424a;
+    font-family: Lato, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.65;
+  }
+
+  .search-page-hero__text p {
+    margin: 0;
+  }
+
+  @media screen and (max-width: 989px) {
+    .search-page-hero {
+      padding: 42px 20px 46px;
+    }
+
+    .search-page-hero__title {
+      font-size: 44px;
+    }
+
+    .search-page-hero__meta {
+      font-size: 15px;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .search-page-hero {
+      padding: 34px 16px 38px;
+    }
+
+    .search-page-hero__content {
+      max-width: 100%;
+    }
+
+    .search-page-hero__title {
+      font-size: 34px;
+      line-height: 1.12;
+    }
+
+    .search-page-hero__meta {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .search-page-hero__text {
+      margin-top: 14px;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Search page hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "All Items"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "From marching bands to live stage productions, our covers keep your equipment performance-ready."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search page hero"
+    }
+  ]
+}
+{% endschema %}

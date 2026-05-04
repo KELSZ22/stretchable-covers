@@ -1,0 +1,234 @@
+{% liquid
+  assign separator = section.settings.separator | default: '>'
+  assign show_on_homepage = section.settings.show_on_homepage
+  assign current_collection = collection
+
+  if request.page_type == 'product' and current_collection == blank and product.collections.size > 0
+    assign current_collection = product.collections.first
+  endif
+
+  assign should_show = true
+  if request.page_type == 'index' and show_on_homepage == false
+    assign should_show = false
+  endif
+%}
+
+{% if should_show %}
+  <section
+    id="custom-breadcrumbs-{{ section.id }}"
+    class="custom-breadcrumbs-section"
+    style="
+      --cb-bg: {{ section.settings.bg_color }};
+      --cb-link: {{ section.settings.link_color }};
+      --cb-current: {{ section.settings.current_color }};
+      --cb-separator: {{ section.settings.separator_color }};
+      --cb-font-size: {{ section.settings.font_size }}px;
+      --cb-padding-top: {{ section.settings.padding_top }}px;
+      --cb-padding-bottom: {{ section.settings.padding_bottom }}px;
+    "
+  >
+    <div class="custom-breadcrumbs__wrap{% unless section.settings.full_width %} page-width{% endunless %}">
+      <nav class="custom-breadcrumbs" aria-label="Breadcrumb">
+        <ol class="custom-breadcrumbs__list">
+          {% case request.page_type %}
+            {% when 'product' %}
+              {% if current_collection != blank %}
+                <li class="custom-breadcrumbs__item">
+                  <a href="{{ current_collection.url }}" class="custom-breadcrumbs__link">
+                    {{ current_collection.title }}
+                  </a>
+                </li>
+
+                <li class="custom-breadcrumbs__separator" aria-hidden="true">{{ separator }}</li>
+              {% endif %}
+
+              <li class="custom-breadcrumbs__item">
+                <span class="custom-breadcrumbs__current">{{ product.title }}</span>
+              </li>
+
+            {% when 'collection' %}
+              <li class="custom-breadcrumbs__item">
+                <span class="custom-breadcrumbs__current">{{ collection.title }}</span>
+              </li>
+
+            {% when 'page' %}
+              <li class="custom-breadcrumbs__item">
+                <span class="custom-breadcrumbs__current">{{ page.title }}</span>
+              </li>
+
+            {% when 'blog' %}
+              <li class="custom-breadcrumbs__item">
+                <span class="custom-breadcrumbs__current">{{ blog.title }}</span>
+              </li>
+
+            {% when 'article' %}
+              <li class="custom-breadcrumbs__item">
+                <a href="{{ blog.url }}" class="custom-breadcrumbs__link">
+                  {{ blog.title }}
+                </a>
+              </li>
+
+              <li class="custom-breadcrumbs__separator" aria-hidden="true">{{ separator }}</li>
+
+              <li class="custom-breadcrumbs__item">
+                <span class="custom-breadcrumbs__current">{{ article.title }}</span>
+              </li>
+
+            {% when 'search' %}
+              <li class="custom-breadcrumbs__item">
+                <span class="custom-breadcrumbs__current">Search</span>
+              </li>
+
+            {% when 'cart' %}
+              <li class="custom-breadcrumbs__item">
+                <span class="custom-breadcrumbs__current">Cart</span>
+              </li>
+          {% endcase %}
+        </ol>
+      </nav>
+    </div>
+
+    <style>
+      #custom-breadcrumbs-{{ section.id }} {
+        background: var(--cb-bg);
+      }
+
+      #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__wrap {
+        width: 100%;
+        padding: 60px 70px 0;
+      }
+
+      #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs {
+        width: 100%;
+      }
+
+      #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__list {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__item,
+      #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__separator {
+        font-size: var(--cb-font-size);
+        line-height: 1.4;
+      }
+
+      #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__link {
+        color: var(--cb-link);
+        text-decoration: none;
+      }
+
+      #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__link:hover {
+        text-decoration: underline;
+      }
+
+      #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__separator {
+        color: var(--cb-separator);
+      }
+
+      #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__current {
+        color: var(--cb-current);
+      }
+
+      @media screen and (max-width: 768px) {
+        #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__item,
+        #custom-breadcrumbs-{{ section.id }} .custom-breadcrumbs__separator {
+          font-size: calc(var(--cb-font-size) - 1px);
+        }
+        #custom-breadcrumbs-{{ section.id }}  .custom-breadcrumbs__wrap {
+          padding: 60px 16px 0;
+        }
+      }
+    </style>
+  </section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Custom breadcrumbs",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_on_homepage",
+      "label": "Show on homepage",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator",
+      "default": ">"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "current_color",
+      "label": "Current text color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Separator color",
+      "default": "#666666"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom breadcrumbs"
+    }
+  ]
+}
+{% endschema %}

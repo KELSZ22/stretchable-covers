@@ -1,0 +1,685 @@
+{%- comment -%}
+  Floating dropdown for header nav item
+  Usage:
+  {% render 'custom-header-dropdown',
+    link: link,
+    menu2: section.settings.menu2,
+    mega_product_1: section.settings.mega_product_1,
+    mega_product_2: section.settings.mega_product_2
+  %}
+{%- endcomment -%}
+
+{%- assign secondary_menu = linklists[menu2] -%}
+
+{%- if link.links != blank -%}
+  <div class="custom-nav-modal" hidden>
+    <div class="custom-nav-modal__inner">
+      <p class="custom-nav-modal__label">Shop by Category</p>
+
+      <div class="custom-nav-modal__content">
+        <div class="custom-nav-modal__left">
+          <ul class="custom-nav-modal__menu">
+            {%- for child_link in link.links -%}
+              <li class="custom-nav-modal__menu-item {% if child_link.links != blank %}has-children{% endif %}">
+                <a href="{{ child_link.url }}" class="custom-nav-modal__menu-link">
+                  {{ child_link.title }}
+                </a>
+
+                {%- if child_link.links != blank -%}
+                  <ul class="custom-nav-modal__submenu">
+                    {%- for grandchild_link in child_link.links -%}
+                      <li class="custom-nav-modal__submenu-item">
+                        <a href="{{ grandchild_link.url }}" class="custom-nav-modal__submenu-link">
+                          {{ grandchild_link.title }}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+
+        <div class="custom-nav-modal__center">
+          <ul class="custom-nav-modal__menu">
+            {%- if secondary_menu != blank and secondary_menu.links != blank -%}
+              {%- for child_link in secondary_menu.links -%}
+                <li class="custom-nav-modal__menu-item {% if child_link.links != blank %}has-children{% endif %}">
+                  <a href="{{ child_link.url }}" class="custom-nav-modal__menu-link">
+                    {{ child_link.title }}
+                  </a>
+
+                  {%- if child_link.links != blank -%}
+                    <ul class="custom-nav-modal__submenu">
+                      {%- for grandchild_link in child_link.links -%}
+                        <li class="custom-nav-modal__submenu-item">
+                          <a href="{{ grandchild_link.url }}" class="custom-nav-modal__submenu-link">
+                            {{ grandchild_link.title }}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            {%- endif -%}
+          </ul>
+        </div>
+
+        <div class="custom-nav-modal__right">
+          <div class="custom-nav-modal__product-cards">
+            {%- if mega_product_1 != blank -%}
+              {%- assign product_card = mega_product_1 -%}
+              {%- assign product_variant = product_card.selected_or_first_available_variant -%}
+
+              <a href="{{ product_card.url }}" class="custom-nav-modal__product-card">
+                <div class="custom-nav-modal__product-image">
+                  {%- if product_card.featured_image != blank -%}
+                    <img
+                      src="{{ product_card.featured_image | image_url: width: 500 }}"
+                      alt="{{ product_card.title | escape }}"
+                      loading="lazy"
+                    >
+                  {%- else -%}
+                    <div class="custom-nav-modal__product-placeholder">
+                      No image
+                    </div>
+                  {%- endif -%}
+                </div>
+
+                <div class="custom-nav-modal__product-info">
+                  <div class="custom-nav-modal__product-title">
+                    {{ product_card.title }}
+                  </div>
+
+                  <div class="custom-nav-modal__product-price">
+                    {%- if product_variant.compare_at_price > product_variant.price -%}
+                      <span class="custom-nav-modal__product-price-current">
+                        {{ product_variant.price | money }}
+                      </span>
+                      <span class="custom-nav-modal__product-price-compare">
+                        {{ product_variant.compare_at_price | money }}
+                      </span>
+                    {%- else -%}
+                      <span class="custom-nav-modal__product-price-current">
+                        {{ product_variant.price | money }}
+                      </span>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </a>
+            {%- else -%}
+              <div class="custom-nav-modal__product-card custom-nav-modal__product-card--empty">
+                <div class="custom-nav-modal__product-image">
+                  <div class="custom-nav-modal__product-placeholder">
+                    Select product 1
+                  </div>
+                </div>
+
+                <div class="custom-nav-modal__product-info">
+                  <div class="custom-nav-modal__product-title">
+                    Product card
+                  </div>
+                  <div class="custom-nav-modal__product-empty-text">
+                    Choose product 1 in the header settings.
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- if mega_product_2 != blank -%}
+              {%- assign product_card = mega_product_2 -%}
+              {%- assign product_variant = product_card.selected_or_first_available_variant -%}
+
+              <a href="{{ product_card.url }}" class="custom-nav-modal__product-card">
+                <div class="custom-nav-modal__product-image">
+                  {%- if product_card.featured_image != blank -%}
+                    <img
+                      src="{{ product_card.featured_image | image_url: width: 500 }}"
+                      alt="{{ product_card.title | escape }}"
+                      loading="lazy"
+                    >
+                  {%- else -%}
+                    <div class="custom-nav-modal__product-placeholder">
+                      No image
+                    </div>
+                  {%- endif -%}
+                </div>
+
+                <div class="custom-nav-modal__product-info">
+                  <div class="custom-nav-modal__product-title">
+                    {{ product_card.title }}
+                  </div>
+
+                  <div class="custom-nav-modal__product-price">
+                    {%- if product_variant.compare_at_price > product_variant.price -%}
+                      <span class="custom-nav-modal__product-price-current">
+                        {{ product_variant.price | money }}
+                      </span>
+                      <span class="custom-nav-modal__product-price-compare">
+                        {{ product_variant.compare_at_price | money }}
+                      </span>
+                    {%- else -%}
+                      <span class="custom-nav-modal__product-price-current">
+                        {{ product_variant.price | money }}
+                      </span>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </a>
+            {%- else -%}
+              <div class="custom-nav-modal__product-card custom-nav-modal__product-card--empty">
+                <div class="custom-nav-modal__product-image">
+                  <div class="custom-nav-modal__product-placeholder">
+                    Select product 2
+                  </div>
+                </div>
+
+                <div class="custom-nav-modal__product-info">
+                  <div class="custom-nav-modal__product-title">
+                    Product card
+                  </div>
+                  <div class="custom-nav-modal__product-empty-text">
+                    Choose product 2 in the header settings.
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+<style>
+.custom-nav-modal {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 999;
+  width: 1110px;
+  max-width: calc(100vw - 32px);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.14);
+  overflow: hidden;
+}
+
+.custom-nav-modal__inner {
+  position: relative;
+  padding: 28px;
+}
+
+.custom-nav-modal__content {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.custom-nav-modal__left,
+.custom-nav-modal__center,
+.custom-nav-modal__right {
+  box-sizing: border-box;
+}
+
+.custom-nav-modal__left {
+  width: 285px;
+  flex: 0 0 285px;
+  padding-right: 24px;
+  border-right: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.custom-nav-modal__center {
+  width: 303px;
+  flex: 0 0 303px;
+  padding-right: 24px;
+  border-right: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.custom-nav-modal__right {
+  width: calc(100% - 285px - 303px - 48px);
+  min-width: 0;
+}
+
+.custom-nav-modal__label {
+  color: #0F2E53;
+  font-family: Lato, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+  margin: 0 0 18px;
+}
+
+.custom-nav-modal__menu,
+.custom-nav-modal__submenu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.custom-nav-modal__menu-item {
+  position: relative;
+}
+
+.custom-nav-modal__menu-item + .custom-nav-modal__menu-item {
+  margin-top: 12px;
+}
+
+.custom-nav-modal__menu-link {
+  color: #1F1F1F;
+  font-family: Lato, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  text-decoration: none;
+  display: block;
+}
+
+.custom-nav-modal__menu-link:hover {
+  color: #0F2E53;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: #0F2E53;
+}
+
+/* Grandchild links now always show */
+.custom-nav-modal__submenu {
+  display: block;
+  margin-top: 8px;
+  padding-left: 14px;
+}
+
+.custom-nav-modal__submenu-item + .custom-nav-modal__submenu-item {
+  margin-top: 6px;
+}
+
+.custom-nav-modal__submenu-link {
+  color: #5F5F5F;
+  font-family: Lato, sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 17px;
+  text-decoration: none;
+  display: block;
+}
+
+.custom-nav-modal__submenu-link:hover {
+  color: #0F2E53;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: #0F2E53;
+}
+
+/* Product cards */
+.custom-nav-modal__product-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  height: 100%;
+}
+
+.custom-nav-modal__product-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.custom-nav-modal__product-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(15, 46, 83, 0.35);
+  box-shadow: 0 10px 24px rgba(15, 46, 83, 0.12);
+}
+
+.custom-nav-modal__product-card--empty {
+  pointer-events: none;
+}
+
+.custom-nav-modal__product-image {
+  width: 100%;
+  background: #f7f7f7;
+  overflow: hidden;
+}
+
+.custom-nav-modal__product-image img,
+.custom-nav-modal__product-placeholder {
+  width: 100%;
+  height: 191px;
+  display: block;
+  border-radius: 0;
+}
+
+.custom-nav-modal__product-image img {
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.custom-nav-modal__product-card:hover .custom-nav-modal__product-image img {
+  transform: scale(1.04);
+}
+
+.custom-nav-modal__product-placeholder {
+  background: #f2f2f2;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Lato, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  padding: 14px;
+}
+
+.custom-nav-modal__product-info {
+  padding: 10px 10px 12px;
+}
+
+.custom-nav-modal__product-title {
+  color: #1F1F1F;
+  font-family: Lato, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.custom-nav-modal__product-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 9px;
+}
+
+.custom-nav-modal__product-price-current {
+  color: #0F2E53;
+  font-family: Lato, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.custom-nav-modal__product-price-compare {
+  color: #8a8a8a;
+  font-family: Lato, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: line-through;
+  line-height: 1.2;
+}
+
+.custom-nav-modal__product-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  max-width: 100%;
+  padding: 7px 12px;
+  background: #0F2E53;
+  color: #fff;
+  border-radius: 999px;
+  font-family: Lato, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.custom-nav-modal__product-empty-text {
+  color: #5F5F5F;
+  font-family: Lato, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+}
+
+.custom-nav-item.is-open > .custom-nav-modal {
+  display: none;
+}
+
+.custom-nav-modal--portal {
+  display: block !important;
+  position: fixed !important;
+  z-index: 99999 !important;
+  margin: 0 !important;
+}
+
+.custom-nav-modal[hidden] {
+  display: none !important;
+}
+
+@media screen and (max-width: 1110px) {
+  .custom-nav-modal__inner {
+    padding: 24px;
+  }
+
+  .custom-nav-modal__content {
+    gap: 18px;
+  }
+
+  .custom-nav-modal__left {
+    width: 240px;
+    flex: 0 0 240px;
+    padding-right: 18px;
+  }
+
+  .custom-nav-modal__center {
+    width: 240px;
+    flex: 0 0 240px;
+    padding-right: 18px;
+  }
+
+  .custom-nav-modal__right {
+    width: calc(100% - 240px - 240px - 36px);
+  }
+
+  .custom-nav-modal__product-image img,
+  .custom-nav-modal__product-placeholder {
+    height: 170px;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const navItems = document.querySelectorAll('.custom-nav-item.has-dropdown');
+  const desktopBreakpoint = window.matchMedia('(min-width: 768px)');
+  const modalGap = 8;
+
+  let activeItem = null;
+  let activeOriginalModal = null;
+  let activePortalModal = null;
+  let closeTimer = null;
+
+  function clearCloseTimer() {
+    if (closeTimer) {
+      clearTimeout(closeTimer);
+      closeTimer = null;
+    }
+  }
+
+  function closeMenu() {
+    clearCloseTimer();
+
+    if (activePortalModal) {
+      activePortalModal.remove();
+      activePortalModal = null;
+    }
+
+    if (activeOriginalModal) {
+      activeOriginalModal.hidden = true;
+      activeOriginalModal = null;
+    }
+
+    if (activeItem) {
+      const trigger = activeItem.querySelector('.custom-nav-trigger');
+      activeItem.classList.remove('is-open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      activeItem = null;
+    }
+  }
+
+  function delayedClose() {
+    clearCloseTimer();
+    closeTimer = setTimeout(function () {
+      closeMenu();
+    }, 220);
+  }
+
+  function getModalWidth() {
+    if (window.innerWidth <= 1110) {
+      return window.innerWidth - 32;
+    }
+
+    return 1110;
+  }
+
+  function positionMenu(item, modal) {
+    const trigger = item.querySelector('.custom-nav-trigger');
+    if (!trigger || !modal) return;
+
+    const rect = trigger.getBoundingClientRect();
+    const modalWidth = getModalWidth();
+    const viewportPadding = 16;
+
+    let left = rect.left;
+    let top = rect.bottom + modalGap;
+
+    if (left + modalWidth > window.innerWidth - viewportPadding) {
+      left = window.innerWidth - modalWidth - viewportPadding;
+    }
+
+    if (left < viewportPadding) {
+      left = viewportPadding;
+    }
+
+    modal.style.left = left + 'px';
+    modal.style.top = top + 'px';
+    modal.style.width = modalWidth + 'px';
+    modal.style.maxWidth = modalWidth + 'px';
+  }
+
+  function attachPortalHover(modal) {
+    modal.addEventListener('mouseenter', function () {
+      clearCloseTimer();
+    });
+
+    modal.addEventListener('mouseleave', function (event) {
+      const related = event.relatedTarget;
+
+      if (related && related.closest('.custom-nav-item.has-dropdown')) return;
+
+      delayedClose();
+    });
+  }
+
+  function openMenu(item) {
+    const trigger = item.querySelector('.custom-nav-trigger');
+    const originalModal = item.querySelector('.custom-nav-modal');
+
+    if (!trigger || !originalModal) return;
+
+    if (activeItem === item && activePortalModal) {
+      clearCloseTimer();
+      positionMenu(item, activePortalModal);
+      return;
+    }
+
+    closeMenu();
+
+    activeItem = item;
+    activeOriginalModal = originalModal;
+
+    item.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+
+    originalModal.hidden = true;
+
+    const portalModal = originalModal.cloneNode(true);
+    portalModal.hidden = false;
+    portalModal.classList.add('custom-nav-modal--portal');
+
+    document.body.appendChild(portalModal);
+    activePortalModal = portalModal;
+
+    positionMenu(item, portalModal);
+    attachPortalHover(portalModal);
+  }
+
+  navItems.forEach(function (item) {
+    const trigger = item.querySelector('.custom-nav-trigger');
+    const modal = item.querySelector('.custom-nav-modal');
+
+    if (!trigger || !modal) return;
+
+    item.addEventListener('mouseenter', function () {
+      if (!desktopBreakpoint.matches) return;
+
+      clearCloseTimer();
+      openMenu(item);
+    });
+
+    item.addEventListener('mouseleave', function (event) {
+      if (!desktopBreakpoint.matches) return;
+
+      const related = event.relatedTarget;
+
+      if (related && related.closest('.custom-nav-modal--portal')) return;
+      if (related && related.closest('.custom-nav-item.has-dropdown')) return;
+
+      delayedClose();
+    });
+
+    trigger.addEventListener('click', function (event) {
+      if (desktopBreakpoint.matches) {
+        event.preventDefault();
+        return;
+      }
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    const insideNavItem = event.target.closest('.custom-nav-item.has-dropdown');
+    const insidePortal = event.target.closest('.custom-nav-modal--portal');
+
+    if (!insideNavItem && !insidePortal) {
+      closeMenu();
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (!activeItem || !activePortalModal) {
+      closeMenu();
+      return;
+    }
+
+    if (!desktopBreakpoint.matches) {
+      closeMenu();
+      return;
+    }
+
+    positionMenu(activeItem, activePortalModal);
+  });
+
+  window.addEventListener('scroll', function () {
+    if (!activeItem || !activePortalModal || !desktopBreakpoint.matches) return;
+
+    positionMenu(activeItem, activePortalModal);
+  }, true);
+});
+</script>
