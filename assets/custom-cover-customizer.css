@@ -901,6 +901,22 @@
   outline-offset: 2px;
 }
 
+/* Imprint (type) row: medium help icon — between compact and full imprint-size helper */
+.custom-cover-customizer .custom-cover-customizer__round-action--imprint-hint {
+  inline-size: 34px;
+  block-size: 34px;
+  min-inline-size: 34px;
+  min-block-size: 34px;
+  padding: 0;
+  flex-shrink: 0;
+  border-width: var(--style-border-width-inputs);
+}
+
+.custom-cover-customizer .custom-cover-customizer__round-action--imprint-hint .custom-cover-customizer__round-action-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
 .custom-cover-customizer .custom-cover-customizer__toolbar-wrap {
   display: grid;
   gap: 15px;

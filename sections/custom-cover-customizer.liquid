@@ -324,6 +324,48 @@
                         </select>
                       </div>
                       <div class="custom-cover-customizer__group">
+                        <label class="custom-cover-customizer__label" for="CustomizerImprintText-{{ section.id }}">
+                          {{- section.settings.imprint_text_label | default: 'Imprint' | escape -}}
+                        </label>
+                        <div class="custom-cover-customizer__input-action-row">
+                          <select
+                            id="CustomizerImprintText-{{ section.id }}"
+                            class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
+                            data-imprint-text
+                            autocomplete="off"
+                            aria-label="{{ section.settings.imprint_text_placeholder | default: 'Select imprint' | escape }}">
+                            <option value="" disabled selected>
+                              {{- section.settings.imprint_text_placeholder | default: 'Select imprint' | escape -}}
+                            </option>
+                            {% assign imprint_types = section.settings.imprint_types | newline_to_br | split: '<br />' %}
+                            {% for imprint_type in imprint_types %}
+                              {% assign trimmed_imprint_type = imprint_type | strip %}
+                              {% if trimmed_imprint_type != blank %}
+                                <option value="{{ trimmed_imprint_type | escape }}">
+                                  {{- trimmed_imprint_type | escape -}}
+                                </option>
+                              {% endif %}
+                            {% endfor %}
+                          </select>
+                          <button
+                            type="button"
+                            class="custom-cover-customizer__round-action custom-cover-customizer__round-action--imprint-hint"
+                            data-size-guide-open
+                            aria-haspopup="dialog"
+                            aria-controls="SizingGuideModal-{{ section.id }}-customizer"
+                            aria-label="Sizing guide">
+                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 19 19" fill="none" aria-hidden="true">
+                                <g transform="translate(9.5 9.5) scale(1.08) translate(-9.5 -9.5)">
+                                  <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+                                </g>
+                              </svg>
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="custom-cover-customizer__group">
                         <label class="custom-cover-customizer__label" for="CustomizerImprint-{{ section.id }}">Imprint size</label>
                         <div class="custom-cover-customizer__input-action-row">
                         <select
@@ -364,48 +406,6 @@
                             aria-controls="SizingGuideModal-{{ section.id }}-customizer"
                             aria-label="Sizing guide">
                             <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">{{- 'custom-icon-size-helper.svg' | inline_asset_content -}}</span>
-                          </button>
-                        </div>
-                      </div>
-                      <div class="custom-cover-customizer__group">
-                        <label class="custom-cover-customizer__label" for="CustomizerImprintText-{{ section.id }}">
-                          {{- section.settings.imprint_text_label | default: 'Imprint' | escape -}}
-                        </label>
-                        <div class="custom-cover-customizer__input-action-row">
-                          <select
-                            id="CustomizerImprintText-{{ section.id }}"
-                            class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                            data-imprint-text
-                            autocomplete="off"
-                            aria-label="{{ section.settings.imprint_text_placeholder | default: 'Select imprint' | escape }}">
-                            <option value="" disabled selected>
-                              {{- section.settings.imprint_text_placeholder | default: 'Select imprint' | escape -}}
-                            </option>
-                            {% assign imprint_types = section.settings.imprint_types | newline_to_br | split: '<br />' %}
-                            {% for imprint_type in imprint_types %}
-                              {% assign trimmed_imprint_type = imprint_type | strip %}
-                              {% if trimmed_imprint_type != blank %}
-                                <option value="{{ trimmed_imprint_type | escape }}">
-                                  {{- trimmed_imprint_type | escape -}}
-                                </option>
-                              {% endif %}
-                            {% endfor %}
-                          </select>
-                          <button
-                            type="button"
-                            class="custom-cover-customizer__round-action"
-                            data-size-guide-open
-                            aria-haspopup="dialog"
-                            aria-controls="SizingGuideModal-{{ section.id }}-customizer"
-                            aria-label="Sizing guide">
-                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
-                                <g transform="translate(9.5 9.5) scale(1.35) translate(-9.5 -9.5)">
-                                  <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </g>
-                              </svg>
-                            </span>
                           </button>
                         </div>
                       </div>

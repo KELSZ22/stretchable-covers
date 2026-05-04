@@ -3099,6 +3099,14 @@ function renderCartItems(cart) {
       if (!isAddToCartForm(form)) return;
       if (form.dataset.customAjaxAdding === 'true') return;
 
+      var customizer = form.closest && form.closest('custom-cover-customizer-component');
+      if (
+        customizer &&
+        typeof customizer.ensureVariantIdForCart === 'function'
+      ) {
+        customizer.ensureVariantIdForCart();
+      }
+
       var formData = new FormData(form);
       var variantId = formData.get('id');
       var button = findAddToCartButton(form, submitter);
@@ -3149,6 +3157,9 @@ function renderCartItems(cart) {
 
     document.addEventListener('submit', function(e) {
       var form = e.target && e.target.closest ? e.target.closest('form') : null;
+      if ((!form || !isAddToCartForm(form)) && e.submitter && e.submitter.form) {
+        form = e.submitter.form;
+      }
 
       if (!isAddToCartForm(form)) return;
       if (form.hasAttribute('data-custom-ajax-cart-skip')) return;
@@ -3159,7 +3170,9 @@ function renderCartItems(cart) {
     }, true);
 
     document.addEventListener('click', function(e) {
-      var button = e.target.closest('button[name="add"], [type="submit"].product-form__submit, [data-add-to-cart]');
+      var button = e.target.closest(
+        'button[name="add"], [type="submit"].product-form__submit, [data-add-to-cart], button[type="submit"][form^="CustomizerProductForm"]'
+      );
       if (!button) return;
 
       var form = button.form || button.closest('form');

@@ -355,6 +355,15 @@ class CustomCoverCustomizer extends HTMLElement {
         return true;
       }
       if (n.includes(t) && t.length >= 4) {
+        // Reject: label "Imprint Size" must not match option "Imprint" (prefix of the real option name)
+        if (
+          n !== t &&
+          (n.startsWith(`${t} `) ||
+            n.startsWith(`${t}/`) ||
+            n.startsWith(`${t}-`))
+        ) {
+          return false;
+        }
         return true;
       }
       return false;
@@ -717,8 +726,11 @@ class CustomCoverCustomizer extends HTMLElement {
     }
   }
 
-  /** Find variant matching imprint picks; relax color match if none. */
-  pickVariantMatchingImprints(product) {
+  /**
+   * Find variant matching imprint picks; by default relax color if no variant matches all axes.
+   * @param {{ enforceUrlColorHint?: boolean }} [opts] When `enforceUrlColorHint` is true (URL `color=`), do not relax color — imprint prefill must not pick a wrong-color variant.
+   */
+  pickVariantMatchingImprints(product, opts = {}) {
     if (!product) {
       return null;
     }
@@ -772,10 +784,13 @@ class CustomCoverCustomizer extends HTMLElement {
       });
     };
 
-    let pick =
-      matches(candidates, { requireColor: true })[0] ||
-      matches(candidates, { requireColor: false })[0] ||
-      null;
+    const strictOnly =
+      opts.enforceUrlColorHint === true && Boolean(colorHint);
+    let pick = strictOnly
+      ? matches(candidates, { requireColor: true })[0] ?? null
+      : matches(candidates, { requireColor: true })[0] ||
+        matches(candidates, { requireColor: false })[0] ||
+        null;
     return pick?.id ?? null;
   }
 
@@ -800,6 +815,184 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     variantSel.value = opt.value;
     return String(variantSel.value || "") === want;
+  }
+
+  _variantColorTailFromTitle(title) {
+    const raw = String(title || "").trim();
+    if (!raw) return "";
+    const parts = raw
+      .split("/")
+      .map((p) => p.trim())
+      .filter(Boolean);
+    return parts.length ? parts[parts.length - 1] : raw;
+  }
+
+  /**
+   * Match PDP/storefront `color=` to a variant id using option values / title fallbacks.
+   * @returns {string} Numeric id string when found, otherwise "".
+   */
+  findVariantIdMatchingUrlColor(product, urlColorRaw) {
+    const desired = String(urlColorRaw || "").trim();
+    if (!product || !desired || !Array.isArray(product?.variants)) {
+      return "";
+    }
+    const variants = product.variants.filter(Boolean);
+    if (!variants.length) {
+      return "";
+    }
+    const ix = this.resolveImprintOptionIndices(product);
+    const matchesColor = (v) => {
+      const triple = this.variantOptionTriple(v);
+      const fromOpt =
+        ix.colorIdx >= 0 ? String(triple[ix.colorIdx] || "").trim() : "";
+      const tail = this._variantColorTailFromTitle(String(v?.title || ""));
+      const fullTitle = String(v?.title || "").trim();
+      if (fromOpt && this.literalOptionStringsMatch(fromOpt, desired)) {
+        return true;
+      }
+      if (tail && this.literalOptionStringsMatch(tail, desired)) {
+        return true;
+      }
+      if (fullTitle && this.literalOptionStringsMatch(fullTitle, desired)) {
+        return true;
+      }
+      return false;
+    };
+    const availableOnes = variants.filter((v) => Boolean(v.available));
+    const bucket = availableOnes.length ? availableOnes : variants.slice();
+    let hit = bucket.find(matchesColor);
+    if (!hit && availableOnes.length) {
+      hit = variants.find(matchesColor);
+    }
+    return hit?.id != null ? String(hit.id) : "";
+  }
+
+  /** True when current imprint size/type selects agree with variant option axes. */
+  _variantMatchesUiImprints(product, variant) {
+    const ix = this.resolveImprintOptionIndices(product);
+    const sizeSel = this.querySelector("[data-imprint-size]");
+    const typeSel = this.querySelector("[data-imprint-text]");
+    const sizeVal =
+      ix.sizeIdx >= 0 ? String(sizeSel?.value || "").trim() : "";
+    const imprintVal =
+      ix.typeIdx >= 0 ? String(typeSel?.value || "").trim() : "";
+    const sizeNeed = ix.sizeIdx >= 0 && Boolean(sizeVal);
+    const imprintNeed = ix.typeIdx >= 0 && Boolean(imprintVal);
+    const t = this.variantOptionTriple(variant);
+    if (
+      sizeNeed &&
+      sizeVal &&
+      !this.imprintSizeStringsMatch(String(t[ix.sizeIdx] || ""), sizeVal)
+    ) {
+      return false;
+    }
+    if (
+      imprintNeed &&
+      imprintVal &&
+      !this.literalOptionStringsMatch(String(t[ix.typeIdx] || ""), imprintVal)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  _variantMatchesUiColor(product, variant, pinned) {
+    const colorHint = String(pinned || "").trim();
+    if (!colorHint) {
+      return true;
+    }
+    const ix = this.resolveImprintOptionIndices(product);
+    const t = this.variantOptionTriple(variant);
+    if (
+      ix.colorIdx >= 0 &&
+      !this.literalOptionStringsMatch(String(t[ix.colorIdx] || ""), colorHint)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Resolves Shopify line-item `id` before Ajax cart interception (see theme header cart script).
+   * Swatch/URL color can hydrate `dataset.productColor` without setting the variant select.
+   */
+  ensureVariantIdForCart() {
+    const variantSel = this.querySelector("[data-variant-selector]");
+    const formEl = this.form;
+    const idField = formEl?.querySelector?.('input[name="id"]');
+    if (!variantSel || !formEl) {
+      return;
+    }
+    let cur = String(variantSel.value || "").trim();
+    if (cur) {
+      if (idField) idField.value = cur;
+      return;
+    }
+
+    const getCatalog =
+      typeof this._getProductCatalog === "function"
+        ? this._getProductCatalog
+        : null;
+    if (!getCatalog) {
+      return;
+    }
+    const pid = String(this.dataset.productId || "").trim();
+    const product = getCatalog().find((p) => String(p?.id ?? "") === pid);
+    if (!product) {
+      return;
+    }
+
+    const pinned = String(this.dataset.productColor || "").trim();
+
+    let pick =
+      pinned !== ""
+        ? this.pickVariantMatchingImprints(product, {
+            enforceUrlColorHint: true,
+          })
+        : this.pickVariantMatchingImprints(product);
+
+    if (pick == null && pinned !== "") {
+      const pools =
+        Array.isArray(product.variants)
+          ? product.variants.filter((v) => Boolean(v.available))
+          : [];
+      const pool = pools.length ? pools : (product.variants || []).slice();
+      const vidColor = this.findVariantIdMatchingUrlColor(product, pinned);
+      if (vidColor) {
+        const hit = pool.find((v) => String(v?.id ?? "") === String(vidColor));
+        if (
+          hit &&
+          this._variantMatchesUiColor(product, hit, pinned) &&
+          this._variantMatchesUiImprints(product, hit)
+        ) {
+          pick = hit.id ?? null;
+        }
+      }
+      if (pick == null) {
+        const matchRow = pool.find(
+          (v) =>
+            this._variantMatchesUiColor(product, v, pinned) &&
+            this._variantMatchesUiImprints(product, v),
+        );
+        if (matchRow?.id != null) {
+          pick = matchRow.id;
+        }
+      }
+    }
+
+    if (pick == null) {
+      pick = this.pickVariantMatchingImprints(product);
+    }
+
+    if (pick != null) {
+      const ok = this._setVariantSelectorValueAllowDisabled(
+        variantSel,
+        String(pick),
+      );
+      if (ok) {
+        variantSel.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }
   }
 
   resolveVariantFromImprintSelections() {
@@ -1321,56 +1514,6 @@ class CustomCoverCustomizer extends HTMLElement {
     const prefillColor = (urlParams.get("color") || "").trim();
     let didPrefillVariant = false;
 
-    const getColorNameFromVariantTitle = (title) => {
-      const raw = String(title || "").trim();
-      if (!raw) return "";
-      const parts = raw
-        .split("/")
-        .map((p) => p.trim())
-        .filter(Boolean);
-      return parts.length ? parts[parts.length - 1] : raw;
-    };
-
-    /** Match PDP `color=` (swatch legend) to a variant ID using Shopify option values, not variant title substring rules alone. */
-    const findVariantIdMatchingUrlColor = (product, urlColorRaw) => {
-      const desired = String(urlColorRaw || "").trim();
-      if (!product || !desired || !Array.isArray(product?.variants)) {
-        return "";
-      }
-      const variants = product.variants.filter(Boolean);
-      if (!variants.length) {
-        return "";
-      }
-      const ix = this.resolveImprintOptionIndices(product);
-      const matchesColor = (v) => {
-        const triple = this.variantOptionTriple(v);
-        const fromOpt =
-          ix.colorIdx >= 0 ? String(triple[ix.colorIdx] || "").trim() : "";
-        const tail = getColorNameFromVariantTitle(String(v?.title || ""));
-        const fullTitle = String(v?.title || "").trim();
-        if (fromOpt && this.literalOptionStringsMatch(fromOpt, desired)) {
-          return true;
-        }
-        if (tail && this.literalOptionStringsMatch(tail, desired)) {
-          return true;
-        }
-        if (
-          fullTitle &&
-          this.literalOptionStringsMatch(fullTitle, desired)
-        ) {
-          return true;
-        }
-        return false;
-      };
-      const availableOnes = variants.filter((v) => Boolean(v.available));
-      const bucket = availableOnes.length ? availableOnes : variants.slice();
-      let hit = bucket.find(matchesColor);
-      if (!hit && availableOnes.length) {
-        hit = variants.find(matchesColor);
-      }
-      return hit?.id != null ? String(hit.id) : "";
-    };
-
     const getSwatchBgForColorName = (name) => {
       const n = String(name || "")
         .trim()
@@ -1434,7 +1577,7 @@ class CustomCoverCustomizer extends HTMLElement {
               ? String(triple[ixResolved.colorIdx] || "").trim()
               : "";
           if (!colorCanonical) {
-            colorCanonical = getColorNameFromVariantTitle(title);
+            colorCanonical = this._variantColorTailFromTitle(title);
           }
           const variantId = String(v?.id || "").trim();
           const available = Boolean(v?.available);
@@ -1537,7 +1680,14 @@ class CustomCoverCustomizer extends HTMLElement {
         if (!selectedColorName) {
           const selectedText = String(selectedOpt?.textContent || "");
           selectedColorName =
-            getColorNameFromVariantTitle(selectedText) || "";
+            this._variantColorTailFromTitle(selectedText) || "";
+        }
+
+        const pinnedColor = String(this.dataset.productColor || "").trim();
+        if (!vid && pinnedColor) {
+          selectedColorName = pinnedColor;
+        } else if (vid && !selectedColorName && pinnedColor) {
+          selectedColorName = pinnedColor;
         }
 
         root.querySelectorAll(".custom-cover-customizer__swatch").forEach(
@@ -1556,6 +1706,7 @@ class CustomCoverCustomizer extends HTMLElement {
             selectedColorName || "Select color";
         }
       };
+      this._syncVariantSwatchUi = syncSelected;
       syncSelected();
       variantSelector.addEventListener("change", syncSelected);
     };
@@ -1598,6 +1749,10 @@ class CustomCoverCustomizer extends HTMLElement {
         return;
       }
       this.dataset.productId = String(selectedProduct.id);
+      /* FIX 1: URL color wins immediately so nothing runs before applyUrlPrefill can pick it up */
+      if (String(prefillColor || "").trim() !== "") {
+        this.dataset.productColor = String(prefillColor).trim();
+      }
       selectedProduct.variants.forEach((variant) => {
         const option = document.createElement("option");
         option.value = String(variant.id);
@@ -1616,6 +1771,7 @@ class CustomCoverCustomizer extends HTMLElement {
         selectedProduct.variants[0];
 
       const ixEarly = this.resolveImprintOptionIndices(selectedProduct);
+      // FIX: Only set productColor from the first variant if NO color was passed via URL
       const urlPinnedColor =
         typeof prefillColor === "string" && prefillColor.trim() !== "";
       if (
@@ -1629,7 +1785,7 @@ class CustomCoverCustomizer extends HTMLElement {
           this.dataset.productColor = col;
         }
       } else if (firstAvailableVariant && !urlPinnedColor) {
-        const colorNameFallback = getColorNameFromVariantTitle(
+        const colorNameFallback = this._variantColorTailFromTitle(
           firstAvailableVariant.title || "",
         );
         if (colorNameFallback) {
@@ -1641,24 +1797,31 @@ class CustomCoverCustomizer extends HTMLElement {
         idField.value = "";
       }
 
-      if (firstAvailableVariant?.id) {
+      // FIX: Only pre-select first available variant if there's no URL color/variant to honour
+      const hasUrlPrefillParams =
+        Boolean(prefillColor) ||
+        Boolean(prefillSizeFromUrl) ||
+        Boolean(prefillStyleFromUrl) ||
+        Boolean(prefillVariantId);
+
+      if (!hasUrlPrefillParams && firstAvailableVariant?.id) {
         variantSelector.value = String(firstAvailableVariant.id);
       }
 
       renderVariantSwatches(selectedProduct);
 
-      if (firstAvailableVariant?.id) {
+      if (!hasUrlPrefillParams && firstAvailableVariant?.id) {
         this.syncImprintSelectsOnlyFromVariantId(
           selectedProduct,
           firstAvailableVariant.id,
         );
       }
 
-      // Keep Product size unselected in UI, but preserve previous temporary pricing behavior.
       this.variantPriceCents = Number(firstAvailableVariant?.price || 0);
       this.updatePrice();
 
-      if (variantSelector?.value) {
+      // FIX: Only fire change event when not deferring to applyUrlPrefill
+      if (!hasUrlPrefillParams && variantSelector?.value) {
         variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
       }
     };
@@ -1695,7 +1858,9 @@ class CustomCoverCustomizer extends HTMLElement {
       if (!variantSelector || !prod) {
         return false;
       }
-      const pickCombined = this.pickVariantMatchingImprints(prod);
+      const pickCombined = this.pickVariantMatchingImprints(prod, {
+        enforceUrlColorHint: String(prefillColor || "").trim() !== "",
+      });
       if (pickCombined == null) {
         return false;
       }
@@ -1871,7 +2036,7 @@ class CustomCoverCustomizer extends HTMLElement {
 
       if (variantSelector && !didPrefillVariant && prefillColor) {
         const vid = prod
-          ? findVariantIdMatchingUrlColor(prod, prefillColor)
+          ? this.findVariantIdMatchingUrlColor(prod, prefillColor)
           : "";
         const options = [...variantSelector.options];
         let colorMatch =
@@ -1881,7 +2046,7 @@ class CustomCoverCustomizer extends HTMLElement {
           colorMatch =
             options.find((opt) => {
               if (!opt.value) return false;
-              const cn = getColorNameFromVariantTitle(
+              const cn = this._variantColorTailFromTitle(
                 String(opt.textContent || ""),
               );
               return this.literalOptionStringsMatch(cn, prefillColor);
@@ -1924,12 +2089,21 @@ class CustomCoverCustomizer extends HTMLElement {
         }
       }
 
-      if (variantSelector && !variantSelector.value) {
+      const urlPinsColor =
+        String(prefillColor || "").trim() !== "";
+
+      // FIX 3: do not overwrite URL-pinned color with first-available variant
+      if (
+        variantSelector &&
+        !variantSelector.value &&
+        !didPrefillVariant &&
+        !urlPinsColor
+      ) {
         const firstAvailable = [...variantSelector.options].find(
           (opt) => Boolean(opt.value) && !opt.disabled,
         );
         if (firstAvailable && firstAvailable.value) {
-          const colorName = getColorNameFromVariantTitle(
+          const colorName = this._variantColorTailFromTitle(
             firstAvailable.textContent || "",
           );
           if (colorName) {
@@ -1938,6 +2112,10 @@ class CustomCoverCustomizer extends HTMLElement {
           variantSelector.value = firstAvailable.value;
           variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
         }
+      }
+
+      if (typeof this._syncVariantSwatchUi === "function") {
+        this._syncVariantSwatchUi();
       }
     };
 
@@ -4825,6 +5003,7 @@ class CustomCoverCustomizer extends HTMLElement {
   }
 
   handleSubmit(event) {
+    this.ensureVariantIdForCart();
     const variantSelector = this.querySelector("[data-variant-selector]");
     if (!variantSelector?.value) {
       event.preventDefault();
