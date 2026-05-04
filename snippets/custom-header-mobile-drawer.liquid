@@ -1,0 +1,1251 @@
+{%- assign secondary_menu = linklists[menu2] -%}
+
+{%- assign mobile_search_product_1 = search_product_1 | default: product_1 -%}
+{%- assign mobile_search_product_2 = search_product_2 | default: product_2 -%}
+{%- assign mobile_search_featured_product = search_featured_product | default: featured_product -%}
+
+<div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+  <div class="mobile-drawer-inner">
+    <div class="mobile-drawer-top">
+      <div class="mobile-drawer-search">
+        <div class="mobile header-search sc-mobile-search" data-mobile-search-dropdown>
+          <form action="{{ routes.search_url }}" method="get" role="search" class="header-search__form">
+            <input
+              type="text"
+              name="q"
+              placeholder="{{ search_placeholder | default: 'Search Covers' }}"
+              aria-label="Search"
+              class="header-search__input"
+              autocomplete="off"
+            >
+
+            <button type="submit" aria-label="Submit search" class="header-search__submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+                <path d="M12.033 11.058L15.912 14.938" stroke="#1F1F1F" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="7.438" cy="7.438" r="5.438" stroke="#1F1F1F" stroke-width="1.5"/>
+              </svg>
+            </button>
+          </form>
+
+          <button type="button" class="sc-mobile-drawer-close" id="scMobileDrawerClose" aria-label="Close menu">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+
+          <div class="sc-mobile-search-modal" hidden>
+            <button type="button" class="sc-mobile-search-modal-close" data-mobile-search-close aria-label="Close search">
+              ×
+            </button>
+
+            <div class="sc-mobile-search-modal__body">
+              <div class="sc-mobile-search-modal__col">
+                <h4 class="sc-mobile-search-modal__title">Top Searches</h4>
+
+                <ul class="sc-mobile-search-links">
+                  <li>
+                    <a href="/search?q=steering+wheel+cover">
+                      <span class="sc-mobile-search-link-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
+                          <path d="M9.58984 0L13.3398 3.75L13.7695 4.19922L13.3398 4.64844L9.58984 8.39844L8.69141 7.5L11.3672 4.82422H10.625C5.43945 4.82422 1.25 9.01367 1.25 14.1992H0C0 8.3374 4.76318 3.57422 10.625 3.57422H11.3672L8.69141 0.898438L9.58984 0Z" fill="#1F1F1F"/>
+                        </svg>
+                      </span>
+                      <span>Steering wheel cover</span>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="/search?q=sousaphone+cover">
+                      <span class="sc-mobile-search-link-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
+                          <path d="M9.58984 0L13.3398 3.75L13.7695 4.19922L13.3398 4.64844L9.58984 8.39844L8.69141 7.5L11.3672 4.82422H10.625C5.43945 4.82422 1.25 9.01367 1.25 14.1992H0C0 8.3374 4.76318 3.57422 10.625 3.57422H11.3672L8.69141 0.898438L9.58984 0Z" fill="#1F1F1F"/>
+                        </svg>
+                      </span>
+                      <span>Sousaphone cover</span>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="/search?q=bar+exam+stool+cover">
+                      <span class="sc-mobile-search-link-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
+                          <path d="M9.58984 0L13.3398 3.75L13.7695 4.19922L13.3398 4.64844L9.58984 8.39844L8.69141 7.5L11.3672 4.82422H10.625C5.43945 4.82422 1.25 9.01367 1.25 14.1992H0C0 8.3374 4.76318 3.57422 10.625 3.57422H11.3672L8.69141 0.898438L9.58984 0Z" fill="#1F1F1F"/>
+                        </svg>
+                      </span>
+                      <span>Bar &amp; Exam stool cover</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="sc-mobile-search-modal__col">
+                <h4 class="sc-mobile-search-modal__title">Featured Products</h4>
+
+                <div class="sc-mobile-search-product-grid">
+                  {%- if mobile_search_product_1 != blank -%}
+                    {%- assign search_variant_1 = mobile_search_product_1.selected_or_first_available_variant -%}
+
+                    <a href="{{ mobile_search_product_1.url }}" class="sc-mobile-search-product-card">
+                      <div class="sc-mobile-search-product-image">
+                        {%- if mobile_search_product_1.featured_image != blank -%}
+                          <img
+                            src="{{ mobile_search_product_1.featured_image | image_url: width: 500 }}"
+                            alt="{{ mobile_search_product_1.title | escape }}"
+                            loading="lazy"
+                          >
+                        {%- else -%}
+                          <div class="sc-mobile-search-product-placeholder">No image</div>
+                        {%- endif -%}
+                      </div>
+
+                      <div class="sc-mobile-search-product-content">
+                        <div class="sc-mobile-search-product-title">
+                          {{ mobile_search_product_1.title }}
+                        </div>
+
+                        <div class="sc-mobile-search-product-price">
+                          {%- if search_variant_1.compare_at_price > search_variant_1.price -%}
+                            <span class="sc-mobile-search-product-price-current">
+                              {{ search_variant_1.price | money }}
+                            </span>
+                            <span class="sc-mobile-search-product-price-compare">
+                              {{ search_variant_1.compare_at_price | money }}
+                            </span>
+                          {%- else -%}
+                            <span class="sc-mobile-search-product-price-current">
+                              {{ search_variant_1.price | money }}
+                            </span>
+                          {%- endif -%}
+                        </div>
+                      </div>
+                    </a>
+                  {%- endif -%}
+
+                  {%- if mobile_search_product_2 != blank -%}
+                    {%- assign search_variant_2 = mobile_search_product_2.selected_or_first_available_variant -%}
+
+                    <a href="{{ mobile_search_product_2.url }}" class="sc-mobile-search-product-card">
+                      <div class="sc-mobile-search-product-image">
+                        {%- if mobile_search_product_2.featured_image != blank -%}
+                          <img
+                            src="{{ mobile_search_product_2.featured_image | image_url: width: 500 }}"
+                            alt="{{ mobile_search_product_2.title | escape }}"
+                            loading="lazy"
+                          >
+                        {%- else -%}
+                          <div class="sc-mobile-search-product-placeholder">No image</div>
+                        {%- endif -%}
+                      </div>
+
+                      <div class="sc-mobile-search-product-content">
+                        <div class="sc-mobile-search-product-title">
+                          {{ mobile_search_product_2.title }}
+                        </div>
+
+                        <div class="sc-mobile-search-product-price">
+                          {%- if search_variant_2.compare_at_price > search_variant_2.price -%}
+                            <span class="sc-mobile-search-product-price-current">
+                              {{ search_variant_2.price | money }}
+                            </span>
+                            <span class="sc-mobile-search-product-price-compare">
+                              {{ search_variant_2.compare_at_price | money }}
+                            </span>
+                          {%- else -%}
+                            <span class="sc-mobile-search-product-price-current">
+                              {{ search_variant_2.price | money }}
+                            </span>
+                          {%- endif -%}
+                        </div>
+                      </div>
+                    </a>
+                  {%- endif -%}
+
+                  {%- if mobile_search_product_1 == blank and mobile_search_product_2 == blank -%}
+                    <div class="sc-mobile-search-empty">
+                      Select search products in the header settings.
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+
+              <div class="sc-mobile-search-modal__col">
+                <h4 class="sc-mobile-search-modal__title">Featured Product</h4>
+
+                {%- if mobile_search_featured_product != blank -%}
+                  {%- assign featured_variant = mobile_search_featured_product.selected_or_first_available_variant -%}
+
+                  <a href="{{ mobile_search_featured_product.url }}" class="sc-mobile-search-featured-card">
+                    <div class="sc-mobile-search-product-image">
+                      {%- if mobile_search_featured_product.featured_image != blank -%}
+                        <img
+                          src="{{ mobile_search_featured_product.featured_image | image_url: width: 500 }}"
+                          alt="{{ mobile_search_featured_product.title | escape }}"
+                          loading="lazy"
+                        >
+                      {%- else -%}
+                        <div class="sc-mobile-search-product-placeholder">No image</div>
+                      {%- endif -%}
+                    </div>
+
+                    <div class="sc-mobile-search-product-content">
+                      <div class="sc-mobile-search-product-title">
+                        {{ mobile_search_featured_product.title }}
+                      </div>
+
+                      <div class="sc-mobile-search-product-price">
+                        {%- if featured_variant.compare_at_price > featured_variant.price -%}
+                          <span class="sc-mobile-search-product-price-current">
+                            {{ featured_variant.price | money }}
+                          </span>
+                          <span class="sc-mobile-search-product-price-compare">
+                            {{ featured_variant.compare_at_price | money }}
+                          </span>
+                        {%- else -%}
+                          <span class="sc-mobile-search-product-price-current">
+                            {{ featured_variant.price | money }}
+                          </span>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  </a>
+                {%- else -%}
+                  <div class="sc-mobile-search-empty">
+                    Select a search featured product in the header settings.
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="mobile-nav-list">
+      {%- for link in linklists[header_menu].links -%}
+        {%- if link.links != blank -%}
+          {%- assign mobile_link_title = link.title | strip | downcase -%}
+
+          <li class="mobile-nav-list__item">
+            <div class="mobile-sub-toggle" data-target="mobile-sub-{{ forloop.index }}">
+              <span>{{ link.title }}</span>
+
+              <span class="arrow" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8" fill="none">
+                  <path d="M1.4375 0L0 1.4375L5.81738 7.25488L11.6348 1.4375L10.1973 0L5.81738 4.37988L1.4375 0Z" fill="#1F1F1F"/>
+                </svg>
+              </span>
+            </div>
+
+            <ul class="mobile-submenu" id="mobile-sub-{{ forloop.index }}">
+              {%- for child_link in link.links -%}
+                <li class="mobile-submenu__item">
+                  <a class="inside-mobile-submenu" href="{{ child_link.url }}">
+                    {{ child_link.title }}
+                  </a>
+
+                  {%- if child_link.links != blank -%}
+                    <ul class="mobile-submenu-child mobile-submenu-child--always-show">
+                      {%- for grandchild_link in child_link.links -%}
+                        <li class="mobile-submenu-child__item">
+                          <a class="inside-mobile-submenu-child__item" href="{{ grandchild_link.url }}">
+                            {{ grandchild_link.title }}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+
+              {%- if mobile_link_title == 'shop all' -%}
+                {%- if secondary_menu != blank and secondary_menu.links != blank -%}
+                  <li class="mobile-submenu-menu2-wrap">
+                    <div class="mobile-submenu-menu2">
+                      {%- for menu_link in secondary_menu.links -%}
+                        <div class="mobile-submenu-menu2-group">
+                          <a href="{{ menu_link.url }}" class="mobile-submenu-menu2-title">
+                            {{ menu_link.title }}
+                          </a>
+
+                          {%- if menu_link.links != blank -%}
+                            <ul class="mobile-submenu-menu2-list">
+                              {%- for sub_link in menu_link.links -%}
+                                <li>
+                                  <a href="{{ sub_link.url }}" class="mobile-submenu-menu2-link">
+                                    {{ sub_link.title }}
+                                  </a>
+
+                                  {%- if sub_link.links != blank -%}
+                                    <ul class="mobile-submenu-menu2-grandchild-list">
+                                      {%- for last_link in sub_link.links -%}
+                                        <li>
+                                          <a href="{{ last_link.url }}" class="mobile-submenu-menu2-grandchild-link">
+                                            {{ last_link.title }}
+                                          </a>
+                                        </li>
+                                      {%- endfor -%}
+                                    </ul>
+                                  {%- endif -%}
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          {%- endif -%}
+                        </div>
+                      {%- endfor -%}
+                    </div>
+                  </li>
+                {%- endif -%}
+
+                <li class="mobile-submenu-cards-wrap">
+                  <div class="mobile-drawer-cards">
+                    {%- if mega_product_1 != blank -%}
+                      {%- assign mobile_product = mega_product_1 -%}
+                      {%- assign mobile_variant = mobile_product.selected_or_first_available_variant -%}
+
+                      <a href="{{ mobile_product.url }}" class="mobile-drawer-card mobile-drawer-product-card">
+                        <div class="mobile-drawer-card-image">
+                          {%- if mobile_product.featured_image != blank -%}
+                            <img
+                              src="{{ mobile_product.featured_image | image_url: width: 500 }}"
+                              alt="{{ mobile_product.title | escape }}"
+                              loading="lazy"
+                            >
+                          {%- else -%}
+                            <div class="mobile-drawer-img-placeholder">No image</div>
+                          {%- endif -%}
+                        </div>
+
+                        <div class="mobile-drawer-card-content">
+                          <div class="mobile-drawer-card-title">
+                            {{ mobile_product.title }}
+                          </div>
+
+                          <div class="mobile-drawer-card-price">
+                            {%- if mobile_variant.compare_at_price > mobile_variant.price -%}
+                              <span class="mobile-drawer-card-price-current">
+                                {{ mobile_variant.price | money }}
+                              </span>
+
+                              <span class="mobile-drawer-card-price-compare">
+                                {{ mobile_variant.compare_at_price | money }}
+                              </span>
+                            {%- else -%}
+                              <span class="mobile-drawer-card-price-current">
+                                {{ mobile_variant.price | money }}
+                              </span>
+                            {%- endif -%}
+                          </div>
+                        </div>
+                      </a>
+                    {%- endif -%}
+
+                    {%- if mega_product_2 != blank -%}
+                      {%- assign mobile_product = mega_product_2 -%}
+                      {%- assign mobile_variant = mobile_product.selected_or_first_available_variant -%}
+
+                      <a href="{{ mobile_product.url }}" class="mobile-drawer-card mobile-drawer-product-card">
+                        <div class="mobile-drawer-card-image">
+                          {%- if mobile_product.featured_image != blank -%}
+                            <img
+                              src="{{ mobile_product.featured_image | image_url: width: 500 }}"
+                              alt="{{ mobile_product.title | escape }}"
+                              loading="lazy"
+                            >
+                          {%- else -%}
+                            <div class="mobile-drawer-img-placeholder">No image</div>
+                          {%- endif -%}
+                        </div>
+
+                        <div class="mobile-drawer-card-content">
+                          <div class="mobile-drawer-card-title">
+                            {{ mobile_product.title }}
+                          </div>
+
+                          <div class="mobile-drawer-card-price">
+                            {%- if mobile_variant.compare_at_price > mobile_variant.price -%}
+                              <span class="mobile-drawer-card-price-current">
+                                {{ mobile_variant.price | money }}
+                              </span>
+
+                              <span class="mobile-drawer-card-price-compare">
+                                {{ mobile_variant.compare_at_price | money }}
+                              </span>
+                            {%- else -%}
+                              <span class="mobile-drawer-card-price-current">
+                                {{ mobile_variant.price | money }}
+                              </span>
+                            {%- endif -%}
+                          </div>
+                        </div>
+                      </a>
+                    {%- endif -%}
+
+                    {%- if mega_product_1 == blank and mega_product_2 == blank -%}
+                      <div class="mobile-drawer-product-empty">
+                        Select Mega menu product 1 and Mega menu product 2 in the header settings.
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </li>
+              {%- endif -%}
+            </ul>
+          </li>
+        {%- else -%}
+          <li class="mobile-nav-list__item">
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+<style>
+.mobile-drawer-search {
+  margin-bottom: 20px;
+}
+
+.mobile.header-search,
+.sc-mobile-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 20px 0;
+}
+
+.mobile.header-search form.header-search__form,
+.sc-mobile-search form.header-search__form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.mobile.header-search .header-search__input,
+.sc-mobile-search .header-search__input {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile.header-search .header-search__submit,
+.sc-mobile-search .header-search__submit {
+  flex: 0 0 auto;
+}
+
+.sc-mobile-drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: #1F1F1F;
+}
+
+.sc-mobile-drawer-close svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.sc-mobile-search-modal[hidden] {
+  display: none !important;
+}
+
+.sc-mobile-search-modal {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  width: 100%;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px 16px 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
+  z-index: 99999;
+}
+
+.sc-mobile-search-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: #1F1F1F;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.sc-mobile-search-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sc-mobile-search-modal__col {
+  width: 100%;
+}
+
+.sc-mobile-search-modal__title {
+  margin: 0 0 16px;
+  color: #0F2E53;
+  font-family: Lato, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.sc-mobile-search-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sc-mobile-search-links li + li {
+  margin-top: 18px;
+}
+
+.sc-mobile-search-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1F1F1F;
+  text-decoration: none;
+  font-family: Lato, sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.sc-mobile-search-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  flex: 0 0 14px;
+}
+
+.sc-mobile-search-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sc-mobile-search-product-card,
+.sc-mobile-search-featured-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sc-mobile-search-product-image {
+  width: 100%;
+  background: #f7f7f7;
+  overflow: hidden;
+}
+
+.sc-mobile-search-product-image img,
+.sc-mobile-search-product-placeholder {
+  width: 100%;
+  display: block;
+  border-radius: 0;
+}
+
+.sc-mobile-search-product-image img {
+  object-fit: cover;
+}
+
+.sc-mobile-search-product-placeholder {
+  background: #f2f2f2;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Lato, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  padding: 14px;
+}
+
+.sc-mobile-search-product-content {
+  padding: 10px;
+}
+
+.sc-mobile-search-product-title {
+  color: #1F1F1F;
+  font-family: Lato, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 16px;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.sc-mobile-search-product-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.sc-mobile-search-product-price-current {
+  color: #0F2E53;
+  font-family: Lato, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sc-mobile-search-product-price-compare {
+  color: #8a8a8a;
+  font-family: Lato, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: line-through;
+  line-height: 1.2;
+}
+
+.sc-mobile-search-empty {
+  grid-column: 1 / -1;
+  color: #5F5F5F;
+  font-family: Lato, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  padding: 14px;
+  background: #f7f7f7;
+  border-radius: 8px;
+}
+
+.mobile-submenu,
+.mobile-submenu li,
+.mobile-nav-list,
+.mobile-nav-list li,
+.mobile-submenu-child,
+.mobile-submenu-child li,
+.mobile-submenu-menu2-list,
+.mobile-submenu-menu2-list li,
+.mobile-submenu-menu2-grandchild-list,
+.mobile-submenu-menu2-grandchild-list li {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+}
+
+.mobile-submenu li::marker,
+.mobile-nav-list li::marker,
+.mobile-submenu-child li::marker,
+.mobile-submenu-menu2-list li::marker,
+.mobile-submenu-menu2-grandchild-list li::marker {
+  content: '' !important;
+}
+
+.mobile-nav-list {
+  padding: 20px !important;
+  margin: 0;
+}
+
+li.mobile-nav-list__item a,
+li.mobile-nav-list__item .mobile-sub-toggle {
+  padding: 13px 0;
+}
+
+a.mobile-drawer-card.mobile-drawer-product-card {
+  padding: 0 !important;
+}
+
+.mobile-sub-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-family: Lato, sans-serif;
+  color: #1F1F1F;
+  font-weight: 400;
+}
+
+.mobile-sub-toggle .arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 8px;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.mobile-sub-toggle .arrow svg {
+  display: block;
+  width: 12px;
+  height: 8px;
+}
+
+.mobile-sub-toggle.active .arrow {
+  transform: rotate(180deg);
+}
+
+.mobile-submenu {
+  display: none;
+  background: #fff;
+}
+
+.mobile-submenu.open {
+  display: block;
+}
+
+ul.mobile-nav-list a.inside-mobile-submenu,
+ul.mobile-nav-list a.mobile-submenu-menu2-title {
+  display: block;
+  color: #1F1F1F;
+  font-family: Lato, sans-serif;
+  font-size: 14px !important;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  padding: 13px 20px !important;
+  text-decoration: none;
+}
+
+ul.mobile-nav-list a.inside-mobile-submenu:hover,
+ul.mobile-nav-list a.mobile-submenu-menu2-title:hover {
+  color: #0F2E53;
+  text-decoration: underline;
+}
+
+ul.mobile-nav-list ul.mobile-submenu-child {
+  display: block !important;
+  padding: 0 0 8px 20px !important;
+  margin: -4px 0 4px !important;
+}
+
+ul.mobile-nav-list a.inside-mobile-submenu-child__item {
+  display: block;
+  color: #5F5F5F !important;
+  font-family: Lato, sans-serif;
+  font-size: 13px !important;
+  font-style: normal;
+  font-weight: 400 !important;
+  line-height: 17px;
+  padding: 6px 20px 6px 18px !important;
+  text-decoration: none;
+}
+
+ul.mobile-nav-list a.inside-mobile-submenu-child__item:hover {
+  color: #0F2E53 !important;
+  text-decoration: underline;
+}
+
+.mobile-submenu-menu2-wrap {
+  padding-top: 8px;
+}
+
+.mobile-submenu-menu2-group {
+  margin-bottom: 8px;
+}
+
+.mobile-submenu-menu2-list {
+  padding-left: 16px !important;
+}
+
+.mobile-submenu-menu2-link {
+  display: block;
+  color: #5F5F5F !important;
+  font-family: Lato, sans-serif;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 18px;
+  padding: 8px 20px !important;
+  text-decoration: none;
+}
+
+.mobile-submenu-menu2-grandchild-list {
+  display: block !important;
+  padding-left: 18px !important;
+  margin: -2px 0 6px !important;
+}
+
+.mobile-submenu-menu2-grandchild-link {
+  display: block;
+  color: #5F5F5F !important;
+  font-family: Lato, sans-serif;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 17px;
+  padding: 5px 20px !important;
+  text-decoration: none;
+}
+
+.mobile-submenu-menu2-link:hover,
+.mobile-submenu-menu2-grandchild-link:hover {
+  color: #0F2E53 !important;
+  text-decoration: underline;
+}
+
+.mobile-drawer-cards {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+a.mobile-drawer-card.mobile-drawer-product-card {
+  width: 50%;
+  border: 0 !important;
+}
+
+.mobile-drawer-product-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+  border: 1px solid rgba(15, 46, 83, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mobile-drawer-card-image {
+  width: 100%;
+  background: #f7f7f7;
+  overflow: hidden;
+}
+
+.mobile-drawer-card-image img,
+.mobile-drawer-img-placeholder {
+  width: 100%;
+  display: block;
+  border-radius: 0;
+}
+
+.mobile-drawer-card-image img {
+  object-fit: cover;
+}
+
+.mobile-drawer-img-placeholder {
+  background: #f2f2f2;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Lato, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  padding: 14px;
+}
+
+.mobile-drawer-card-content {
+  padding: 10px;
+}
+
+.mobile-drawer-card-title {
+  color: var(--Black, #1F1F1F);
+  font-family: Lato, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 16px;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.mobile-drawer-card-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.mobile-drawer-card-price-current {
+  color: #0F2E53;
+  font-family: Lato, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.mobile-drawer-card-price-compare {
+  color: #8a8a8a;
+  font-family: Lato, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: line-through;
+  line-height: 1.2;
+}
+
+.mobile-drawer-product-empty {
+  grid-column: 1 / -1;
+  color: #5F5F5F;
+  font-family: Lato, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  padding: 14px;
+  background: #f7f7f7;
+  border-radius: 8px;
+}
+
+@media (max-width: 420px) {
+  .sc-mobile-search-product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-drawer-cards {
+    flex-direction: column;
+  }
+
+  a.mobile-drawer-card.mobile-drawer-product-card {
+    width: 100%;
+  }
+
+  .mobile-drawer-card-image img,
+  .mobile-drawer-img-placeholder,
+  .sc-mobile-search-product-image img,
+  .sc-mobile-search-product-placeholder {
+    height: 180px;
+  }
+}
+</style>
+
+<script>
+  (function() {
+    if (window.scMobileDrawerSearchInitialized) return;
+    window.scMobileDrawerSearchInitialized = true;
+
+    var drawer = document.getElementById('mobileNavDrawer');
+    var overlay = document.getElementById('mobileNavOverlay');
+    var openBtn = document.getElementById('mobileMenuBtn');
+    var closeBtn = document.getElementById('scMobileDrawerClose');
+
+    if (drawer && closeBtn) {
+      function closeDrawer() {
+        drawer.classList.remove('open');
+        drawer.setAttribute('aria-hidden', 'true');
+
+        if (overlay) {
+          overlay.classList.remove('open');
+        }
+
+        if (openBtn) {
+          openBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        document.body.style.overflow = '';
+      }
+
+      closeBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeDrawer();
+      });
+
+      if (overlay) {
+        overlay.addEventListener('click', closeDrawer);
+      }
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          closeDrawer();
+        }
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function moneyFromCents(cents) {
+      if (typeof cents !== 'number') return '';
+      return '$' + (cents / 100).toFixed(2);
+    }
+
+    function getProductImage(product, width) {
+      if (product.featured_image && product.featured_image.url) {
+        return product.featured_image.url + '&width=' + width;
+      }
+
+      if (product.image) {
+        return product.image;
+      }
+
+      return '';
+    }
+
+    function renderProductCard(product) {
+      var imageUrl = getProductImage(product, 500);
+      var imageHtml = imageUrl
+        ? '<img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(product.title) + '" loading="lazy">'
+        : '<div class="sc-mobile-search-product-placeholder">No image</div>';
+
+      var priceHtml = '';
+
+      if (typeof product.price === 'number') {
+        priceHtml =
+          '<div class="sc-mobile-search-product-price">' +
+            '<span class="sc-mobile-search-product-price-current">' + moneyFromCents(product.price) + '</span>' +
+          '</div>';
+      }
+
+      return (
+        '<a href="' + escapeHtml(product.url) + '" class="sc-mobile-search-product-card">' +
+          '<div class="sc-mobile-search-product-image">' +
+            imageHtml +
+          '</div>' +
+          '<div class="sc-mobile-search-product-content">' +
+            '<div class="sc-mobile-search-product-title">' + escapeHtml(product.title) + '</div>' +
+            priceHtml +
+          '</div>' +
+        '</a>'
+      );
+    }
+
+    function renderFeaturedCard(product) {
+      var imageUrl = getProductImage(product, 500);
+      var imageHtml = imageUrl
+        ? '<img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(product.title) + '" loading="lazy">'
+        : '<div class="sc-mobile-search-product-placeholder">No image</div>';
+
+      var priceHtml = '';
+
+      if (typeof product.price === 'number') {
+        priceHtml =
+          '<div class="sc-mobile-search-product-price">' +
+            '<span class="sc-mobile-search-product-price-current">' + moneyFromCents(product.price) + '</span>' +
+          '</div>';
+      }
+
+      return (
+        '<a href="' + escapeHtml(product.url) + '" class="sc-mobile-search-featured-card">' +
+          '<div class="sc-mobile-search-product-image">' +
+            imageHtml +
+          '</div>' +
+          '<div class="sc-mobile-search-product-content">' +
+            '<div class="sc-mobile-search-product-title">' + escapeHtml(product.title) + '</div>' +
+            priceHtml +
+          '</div>' +
+        '</a>'
+      );
+    }
+
+    document.querySelectorAll('[data-mobile-search-dropdown]').forEach(function(wrapper) {
+      if (wrapper.dataset.mobileSearchInit === 'true') return;
+      wrapper.dataset.mobileSearchInit = 'true';
+
+      var form = wrapper.querySelector('.header-search__form');
+      var input = wrapper.querySelector('.header-search__input');
+      var dropdown = wrapper.querySelector('.sc-mobile-search-modal');
+      var closeSearchBtn = wrapper.querySelector('[data-mobile-search-close]');
+      var productGrid = wrapper.querySelector('.sc-mobile-search-product-grid');
+      var modalTitles = wrapper.querySelectorAll('.sc-mobile-search-modal__title');
+      var featuredCol = wrapper.querySelectorAll('.sc-mobile-search-modal__col')[2];
+      var debounceTimer = null;
+      var activeController = null;
+
+      if (!input || !dropdown || !productGrid) return;
+
+      var defaultProductGridHtml = productGrid.innerHTML;
+      var defaultFeaturedHtml = featuredCol ? featuredCol.innerHTML : '';
+
+      function openSearchModal() {
+        dropdown.hidden = false;
+      }
+
+      function closeSearchModal() {
+        dropdown.hidden = true;
+      }
+
+      function restoreDefaultSearchModal() {
+        if (modalTitles[1]) {
+          modalTitles[1].textContent = 'Featured Products';
+        }
+
+        if (modalTitles[2]) {
+          modalTitles[2].textContent = 'Featured Product';
+        }
+
+        productGrid.innerHTML = defaultProductGridHtml;
+
+        if (featuredCol) {
+          featuredCol.innerHTML = defaultFeaturedHtml;
+        }
+      }
+
+      function renderSearchResults(products, query) {
+        if (modalTitles[1]) {
+          modalTitles[1].textContent = 'Search Results';
+        }
+
+        if (modalTitles[2]) {
+          modalTitles[2].textContent = 'Top Result';
+        }
+
+        if (!products || !products.length) {
+          productGrid.innerHTML =
+            '<div class="sc-mobile-search-empty">No products found for "' + escapeHtml(query) + '".</div>';
+
+          if (featuredCol) {
+            featuredCol.innerHTML =
+              '<h4 class="sc-mobile-search-modal__title">Top Result</h4>' +
+              '<div class="sc-mobile-search-empty">No matching product found.</div>';
+          }
+
+          return;
+        }
+
+        productGrid.innerHTML = products.slice(0, 4).map(renderProductCard).join('');
+
+        if (featuredCol) {
+          featuredCol.innerHTML =
+            '<h4 class="sc-mobile-search-modal__title">Top Result</h4>' +
+            renderFeaturedCard(products[0]);
+        }
+      }
+
+      function fetchSearchResults(query) {
+        var cleanQuery = query.trim();
+
+        if (!cleanQuery) {
+          restoreDefaultSearchModal();
+          return;
+        }
+
+        if (activeController) {
+          activeController.abort();
+        }
+
+        activeController = new AbortController();
+
+        var url = '/search/suggest.json?q=' + encodeURIComponent(cleanQuery) +
+          '&resources[type]=product' +
+          '&resources[limit]=6';
+
+        fetch(url, {
+          signal: activeController.signal,
+          headers: {
+            Accept: 'application/json'
+          }
+        })
+          .then(function(response) {
+            if (!response.ok) {
+              throw new Error('Search request failed');
+            }
+
+            return response.json();
+          })
+          .then(function(data) {
+            var products =
+              data &&
+              data.resources &&
+              data.resources.results &&
+              data.resources.results.products
+                ? data.resources.results.products
+                : [];
+
+            renderSearchResults(products, cleanQuery);
+          })
+          .catch(function(error) {
+            if (error.name === 'AbortError') return;
+
+            productGrid.innerHTML =
+              '<div class="sc-mobile-search-empty">Search failed. Try again.</div>';
+
+            console.error(error);
+          });
+      }
+
+      input.addEventListener('focus', function() {
+        openSearchModal();
+
+        if (!input.value.trim()) {
+          restoreDefaultSearchModal();
+        }
+      });
+
+      input.addEventListener('click', function(event) {
+        event.stopPropagation();
+        openSearchModal();
+
+        if (!input.value.trim()) {
+          restoreDefaultSearchModal();
+        }
+      });
+
+      input.addEventListener('input', function() {
+        openSearchModal();
+
+        clearTimeout(debounceTimer);
+
+        debounceTimer = setTimeout(function() {
+          fetchSearchResults(input.value);
+        }, 250);
+      });
+
+      form.addEventListener('submit', function() {
+        closeSearchModal();
+      });
+
+      wrapper.addEventListener('click', function(event) {
+        event.stopPropagation();
+      });
+
+      dropdown.addEventListener('click', function(event) {
+        event.stopPropagation();
+      });
+
+      if (closeSearchBtn) {
+        closeSearchBtn.addEventListener('click', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          closeSearchModal();
+        });
+      }
+
+      document.addEventListener('click', function(event) {
+        if (!wrapper.contains(event.target)) {
+          closeSearchModal();
+        }
+      });
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          closeSearchModal();
+        }
+      });
+    });
+  })();
+</script>

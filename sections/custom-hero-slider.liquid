@@ -1,0 +1,1248 @@
+{% comment %}
+  Section: Custom Cover Hero Slider
+  Updated:
+  - Slides are their own block type
+  - Testimonials are their own block type
+  - All slides share the same testimonial slider
+  - Mobile testimonial dots/stepper are visually outside the testimonial card
+{% endcomment %}
+
+{% capture testimonial_quote_icon %}
+  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="33" viewBox="0 0 36 33" fill="none">
+    <path d="M2.93333 0C1.31267 0 0 1.31267 0 2.93333V14.6667C0 16.2873 1.31267 17.6 2.93333 17.6H8.86016C8.89672 20.2198 8.64045 25.8333 6.10443 29.9979H6.10729C5.92013 30.2865 5.8403 30.6317 5.88175 30.9731C5.9232 31.3146 6.0833 31.6306 6.33407 31.866C6.58484 32.1014 6.91035 32.2413 7.25374 32.2611C7.59713 32.2809 7.93656 32.1795 8.21276 31.9745C8.21276 31.9745 14.6667 27.0518 14.6667 17.6V2.93333C14.6667 1.31267 13.354 0 11.7333 0H2.93333ZM23.4667 0C21.846 0 20.5333 1.31267 20.5333 2.93333V14.6667C20.5333 16.2873 21.846 17.6 23.4667 17.6H29.3935C29.4301 20.2198 29.1738 25.8333 26.6378 29.9979H26.6406C26.4535 30.2865 26.3736 30.6317 26.4151 30.9731C26.4565 31.3146 26.6166 31.6306 26.8674 31.866C27.1182 32.1014 27.4437 32.2413 27.7871 32.2611C28.1305 32.2809 28.4699 32.1795 28.7461 31.9745C28.7461 31.9745 35.2 27.0518 35.2 17.6V2.93333C35.2 1.31267 33.8873 0 32.2667 0H23.4667Z" fill="white"/>
+  </svg>
+{% endcapture %}
+
+{% capture feature_icon_1 %}
+  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="32" viewBox="0 0 29 32" fill="none">
+    <path d="M14.5 0C6.5 0 0 6.5 0 14.5S6.5 29 14.5 29 29 22.5 29 14.5 22.5 0 14.5 0ZM14.5 26.6C7.8 26.6 2.4 21.2 2.4 14.5S7.8 2.4 14.5 2.4 26.6 7.8 26.6 14.5 21.2 26.6 14.5 26.6Z" fill="white"/>
+    <path d="M15.7 7H13.3V15.2L20.1 19.2L21.3 17.2L15.7 13.9V7Z" fill="white"/>
+  </svg>
+{% endcapture %}
+
+{% capture feature_icon_2 %}
+  <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" fill="none">
+    <path d="M17 2.8C9.2 2.8 2.8 9.2 2.8 17S9.2 31.2 17 31.2 31.2 24.8 31.2 17 24.8 2.8 17 2.8ZM17 29C10.4 29 5 23.6 5 17S10.4 5 17 5 29 10.4 29 17 23.6 29 17 29Z" fill="white"/>
+    <path d="M12 12H22V22H12V12ZM14.2 14.2V19.8H19.8V14.2H14.2Z" fill="white"/>
+  </svg>
+{% endcapture %}
+
+{% capture feature_icon_3 %}
+  <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" fill="none">
+    <path d="M17 3L30 10.5V23.5L17 31L4 23.5V10.5L17 3ZM6.2 11.8V22.2L17 28.4L27.8 22.2V11.8L17 5.6L6.2 11.8Z" fill="white"/>
+    <path d="M17 9.5L23.5 13.2V20.8L17 24.5L10.5 20.8V13.2L17 9.5ZM12.7 14.5V19.5L17 22L21.3 19.5V14.5L17 12L12.7 14.5Z" fill="white"/>
+  </svg>
+{% endcapture %}
+
+{% assign testimonial_count = 0 %}
+{% assign slide_count = 0 %}
+
+{% for block in section.blocks %}
+  {% if block.type == 'slide' %}
+    {% assign slide_count = slide_count | plus: 1 %}
+  {% endif %}
+
+  {% if block.type == 'testimonial' %}
+    {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
+      {% assign testimonial_count = testimonial_count | plus: 1 %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% capture testimonial_slider_markup %}
+  <div class="cc-slide__testimonial-quote">
+    {{ testimonial_quote_icon }}
+  </div>
+
+  <div class="cc-slide__testimonial" data-autoplay="true" data-speed="4">
+    <div class="cc-slide__testimonial-track-wrap">
+      <div class="cc-slide__testimonial-track">
+        {% for block in section.blocks %}
+          {% if block.type == 'testimonial' %}
+            {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
+              <div class="cc-slide__testimonial-item">
+                <div class="cc-slide__testimonial-item-quote">
+                  {{ testimonial_quote_icon }}
+                </div>
+
+                {% if block.settings.testimonial_text != blank %}
+                  <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text }}</div>
+                {% endif %}
+
+                {% if block.settings.testimonial_author != blank %}
+                  <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author }}</div>
+                {% endif %}
+
+                {% if block.settings.testimonial_role != blank %}
+                  <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role }}</div>
+                {% endif %}
+
+                {% if block.settings.testimonial_verified != blank %}
+                  <div class="cc-slide__testimonial-verified">
+                    {{ block.settings.testimonial_verified }} <span>★★★★★</span>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if testimonial_count > 1 %}
+      <div class="cc-slide__testimonial-dots">
+        {% assign testimonial_index = 0 %}
+        {% for block in section.blocks %}
+          {% if block.type == 'testimonial' %}
+            {% if block.settings.testimonial_text != blank or block.settings.testimonial_author != blank %}
+              {% assign testimonial_index = testimonial_index | plus: 1 %}
+              <button
+                class="cc-slide__testimonial-dot{% if testimonial_index == 1 %} is-active{% endif %}"
+                type="button"
+                aria-label="Go to testimonial {{ testimonial_index }}"
+              ></button>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endcapture %}
+
+{% capture hero_slides_markup %}{% endcapture %}
+{% capture bottom_testimonials_markup %}{% endcapture %}
+
+{% assign slide_index = 0 %}
+{% for block in section.blocks %}
+  {% if block.type == 'slide' %}
+    {% assign slide_index = slide_index | plus: 1 %}
+
+    {% capture current_hero_slide %}
+      <div
+        class="cc-slide cc-slide-{{ slide_index }}"
+        {{ block.shopify_attributes }}
+        style="
+          {% if block.settings.bg_image != blank %}
+            --cc-bg-desktop: url('{{ block.settings.bg_image | image_url: width: 2400 }}');
+          {% endif %}
+          {% if block.settings.bg_image_1024 != blank %}
+            --cc-bg-1024: url('{{ block.settings.bg_image_1024 | image_url: width: 1800 }}');
+          {% endif %}
+          {% if block.settings.bg_image_767 != blank %}
+            --cc-bg-767: url('{{ block.settings.bg_image_767 | image_url: width: 1200 }}');
+          {% endif %}
+        "
+      >
+        <div class="cc-slide__overlay">
+          <div class="cc-slide__inner page-width">
+            <div class="cc-slide__content">
+              {% if block.settings.rating_text != blank %}
+                <div class="cc-slide__rating-wrap">
+                  <div class="cc-slide__stars">★★★★★</div>
+                  <div class="cc-slide__rating-text">{{ block.settings.rating_text }}</div>
+                </div>
+              {% endif %}
+
+              {% if block.settings.heading != blank %}
+                <h1 class="cc-slide__heading">{{ block.settings.heading }}</h1>
+              {% endif %}
+
+              {% if block.settings.subheading != blank %}
+                <div class="cc-slide__subheading">{{ block.settings.subheading }}</div>
+              {% endif %}
+
+              {% if block.settings.button_label != blank %}
+                <div class="cc-slide__button-wrap">
+                  <a
+                    {% if block.settings.button_link != blank %}
+                      href="{{ block.settings.button_link }}"
+                    {% else %}
+                      role="link" aria-disabled="true"
+                    {% endif %}
+                    class="cc-slide__button"
+                  >
+                    {{ block.settings.button_label }}
+                  </a>
+                </div>
+              {% endif %}
+
+              <div class="cc-slide__features">
+                {% if block.settings.feature_1 != blank %}
+                  <div class="cc-slide__feature">
+                    {{ feature_icon_1 }}
+                    <span>{{ block.settings.feature_1 }}</span>
+                  </div>
+                {% endif %}
+
+                {% if block.settings.feature_2 != blank %}
+                  <div class="cc-slide__feature">
+                    {{ feature_icon_2 }}
+                    <span>{{ block.settings.feature_2 }}</span>
+                  </div>
+                {% endif %}
+
+                {% if block.settings.feature_3 != blank %}
+                  <div class="cc-slide__feature">
+                    {{ feature_icon_3 }}
+                    <span>{{ block.settings.feature_3 }}</span>
+                  </div>
+                {% endif %}
+              </div>
+
+              {% if testimonial_count > 0 %}
+                <div class="cc-slide__testimonial-wrap cc-slide__testimonial-wrap--desktop">
+                  {{ testimonial_slider_markup }}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endcapture %}
+
+    {% capture current_bottom_testimonial %}
+      <div class="cc-slider__bottom-item">
+        {% if testimonial_count > 0 %}
+          <div class="cc-slide__testimonial-wrap cc-slide__testimonial-wrap--bottom">
+            {{ testimonial_slider_markup }}
+          </div>
+        {% endif %}
+      </div>
+    {% endcapture %}
+
+    {% capture hero_slides_markup %}{{ hero_slides_markup }}{{ current_hero_slide }}{% endcapture %}
+    {% capture bottom_testimonials_markup %}{{ bottom_testimonials_markup }}{{ current_bottom_testimonial }}{% endcapture %}
+  {% endif %}
+{% endfor %}
+
+<div id="shopify-section-{{ section.id }}" class="cc-slider-section">
+  <div class="cc-slider" data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.autoplay_speed }}">
+    <div class="cc-slider__main">
+      <div class="cc-slider__track">
+        {{ hero_slides_markup }}
+      </div>
+
+      {% if slide_count > 1 %}
+        <div class="cc-slider__dots" aria-label="Slider Pagination">
+          {% assign dot_index = 0 %}
+          {% for block in section.blocks %}
+            {% if block.type == 'slide' %}
+              {% assign dot_index = dot_index | plus: 1 %}
+              <button
+                class="cc-slider__inside{% if dot_index == 1 %} is-active{% endif %}"
+                type="button"
+                aria-label="Go to slide {{ dot_index }}"
+                data-slide="{{ dot_index | minus: 1 }}"
+              >
+                <div class="cc-slider__dot">
+                  <div class="cc-slider__dot-inside"></div>
+                </div>
+              </button>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="cc-slider__bottom">
+      <div class="cc-slider__bottom-inner">
+        <div class="cc-slider__bottom-track">
+          {{ bottom_testimonials_markup }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider {
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__main {
+    position: relative;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__track,
+  #shopify-section-{{ section.id }} .cc-slider__bottom-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    will-change: transform;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide,
+  #shopify-section-{{ section.id }} .cc-slider__bottom-item {
+    min-width: 100%;
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide {
+    background-image: var(--cc-bg-desktop, none);
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__overlay {
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__inner {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 60px 70px;
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__content {
+    width: 600px;
+    color: #ffffff;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__rating-wrap {
+    margin-bottom: 18px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__stars {
+    color: #FFCE0C;
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__rating-text {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__heading {
+    margin: 0 0 10px;
+    font-size: 40px;
+    line-height: normal;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__subheading {
+    font-size: 20px;
+    line-height: 30px;
+    color: #ffffff;
+    margin-bottom: 13px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__button-wrap {
+    margin-bottom: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    background: #EB891B;
+    color: #ffffff;
+    transition: opacity 0.25s ease;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__button:hover {
+    opacity: 0.9;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 50px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__feature {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    line-height: normal;
+    color: #ffffff;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__feature svg {
+    flex: 0 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--desktop,
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--bottom {
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    padding-top: 14px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--desktop {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--bottom {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__bottom {
+    display: none;
+    position: relative;
+    z-index: 4;
+    margin-top: -78px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__bottom-inner {
+    overflow: hidden;
+    padding: 0 70px;
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__bottom-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    will-change: transform;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__bottom-item {
+    min-width: 100%;
+    width: 100%;
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-quote {
+    position: absolute;
+    top: 0;
+    left: 22px;
+    z-index: 3;
+    line-height: 0;
+    pointer-events: none;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-quote svg {
+    display: block;
+    width: 34px;
+    height: auto;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: rgba(24, 28, 44, 0.72);
+    color: #ffffff;
+    position: relative;
+    overflow: visible;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-track-wrap {
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-track {
+    display: flex;
+    width: 100%;
+    transition: transform 0.45s ease;
+    will-change: transform;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-item {
+    flex: 0 0 100%;
+    min-width: 100%;
+    width: 100%;
+    padding: 28px 22px 10px;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-item-quote {
+    display: none;
+    line-height: 0;
+    pointer-events: none;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-item-quote svg {
+    display: block;
+    width: 24px;
+    height: auto;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-text {
+    font-size: 14px;
+    line-height: 1.65;
+    font-style: italic;
+    font-weight: 400;
+    margin: 0 0 8px;
+    color: #ffffff;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-author {
+    display: inline;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    margin: 0;
+    color: #ffffff;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-role {
+    display: inline;
+    font-size: 12px;
+    line-height: 18px;
+    color: rgba(255, 255, 255, 0.82);
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-role::before {
+    content: " - ";
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-verified {
+    font-size: 14px;
+    line-height: normal;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-verified span {
+    color: #FFCE0C;
+    margin-left: 6px;
+    letter-spacing: 1px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 22px 18px;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-dot {
+    width: 28px;
+    height: 3px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__testimonial-dot.is-active {
+    background: #EB891B;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__dots {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 5;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__inside {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    transition: all 0.25s ease;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__dot-inside {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: all 0.25s ease;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__inside.is-active .cc-slider__dot {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #EB891B;
+    background: transparent;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__inside.is-active .cc-slider__dot-inside {
+    width: 10px;
+    height: 10px;
+    background: #EB891B;
+  }
+
+  @media screen and (max-width: 1366px) {
+    #shopify-section-{{ section.id }} .cc-slide__content {
+      width: 50%;
+      color: #ffffff;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .cc-slide__inner.page-width {
+      height: 1300px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide {
+      background-position: center;
+      background-image: var(--cc-bg-1024, var(--cc-bg-desktop, none));
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__inner.page-width {
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__content {
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__features {
+      justify-content: center;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__inner {
+      gap: 30px;
+      padding: 60px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__subheading {
+      font-size: 18px;
+      line-height: 28px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .cc-slide__rating-text {
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__heading {
+      font-size: 20px;
+      line-height: 27px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide {
+      background-position: center bottom;
+      background-image: var(--cc-bg-767, var(--cc-bg-1024, var(--cc-bg-desktop, none)));
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide.cc-slide-1 .cc-slide__inner.page-width {
+      height: 900px;
+      justify-content: flex-start;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide.cc-slide-1 .cc-slide__inner {
+      height: 900px;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 24px;
+      padding: 60px 16px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide:not(.cc-slide-1) .cc-slide__inner.page-width {
+      height: auto;
+      justify-content: flex-start;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide:not(.cc-slide-1) .cc-slide__inner {
+      height: auto;
+      min-height: 0;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 24px;
+      padding: 60px 16px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__content {
+      width: 100%;
+      max-width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__subheading {
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__features {
+      gap: 14px;
+      justify-content: center;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-text {
+      font-size: 14px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slider__dots {
+      gap: 5px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .cc-slide__testimonial {
+      background: #0F2E53;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--desktop {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--desktop,
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--bottom {
+      padding-top: 0;
+      padding-bottom: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-quote {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-track-wrap {
+      border-radius: 12px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-item {
+      padding: 34px 18px 16px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-item-quote {
+      display: block;
+      position: absolute;
+      top: 10px;
+      left: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-item-quote svg {
+      width: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-dots {
+      position: absolute;
+      left: 50%;
+      bottom: -18px;
+      transform: translateX(-50%);
+      padding: 0;
+      gap: 6px;
+      z-index: 3;
+      width: max-content;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-dot {
+      width: 30px;
+      height: 3px;
+      background: #d9d9d9;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slider__bottom {
+      display: block;
+      margin-top: 25px;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slider__bottom-inner {
+      padding: 0 16px;
+      overflow: hidden;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slider__bottom-track {
+      display: block;
+      transform: none !important;
+      transition: none;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slider__bottom-item {
+      display: none;
+      width: 100%;
+      min-width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slider__bottom-item.is-active {
+      display: flex;
+      justify-content: center;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--bottom {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    #shopify-section-{{ section.id }} .cc-slide__testimonial {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    #shopify-section-{{ section.id }} .cc-slide__inner.page-width {
+      height: 750px !important;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    var section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section) return;
+
+    var slider = section.querySelector('.cc-slider');
+    var track = section.querySelector('.cc-slider__track');
+    var heroSlides = section.querySelectorAll('.cc-slide');
+    var heroDots = section.querySelectorAll('.cc-slider__inside');
+    var bottomTrack = section.querySelector('.cc-slider__bottom-track');
+    var bottomItems = section.querySelectorAll('.cc-slider__bottom-item');
+
+    if (!slider || !track || !heroSlides.length) return;
+
+    var isAutoplayEnabled = String(slider.getAttribute('data-autoplay')) === 'true';
+    var heroSpeed = (parseInt(slider.getAttribute('data-speed'), 10) || 5) * 1000;
+
+    var currentHeroIndex = 0;
+    var heroTimeout = null;
+    var testimonialTimeout = null;
+
+    function clearTimers() {
+      if (heroTimeout) {
+        clearTimeout(heroTimeout);
+        heroTimeout = null;
+      }
+
+      if (testimonialTimeout) {
+        clearTimeout(testimonialTimeout);
+        testimonialTimeout = null;
+      }
+    }
+
+    function updateHeroDots() {
+      heroDots.forEach(function(dot, i) {
+        dot.classList.toggle('is-active', i === currentHeroIndex);
+      });
+    }
+
+    function updateHeroSlides() {
+      heroSlides.forEach(function(slide, i) {
+        slide.classList.toggle('is-active', i === currentHeroIndex);
+      });
+    }
+
+    function updateBottomTrack() {
+      if (!bottomItems.length) return;
+
+      var isMobileBottom = window.innerWidth <= 767;
+
+      if (bottomTrack) {
+        if (isMobileBottom) {
+          bottomTrack.style.transform = 'translateX(0)';
+        } else {
+          bottomTrack.style.transform = 'translateX(-' + (currentHeroIndex * 100) + '%)';
+        }
+      }
+
+      bottomItems.forEach(function(item, i) {
+        item.classList.toggle('is-active', i === currentHeroIndex);
+      });
+    }
+
+    function getActiveHeroSlide() {
+      return heroSlides[currentHeroIndex];
+    }
+
+    function getActiveBottomItem() {
+      return bottomItems[currentHeroIndex] || null;
+    }
+
+    function getTestimonialInstanceData(testimonialSlider) {
+      if (!testimonialSlider) return null;
+
+      var testimonialTrack = testimonialSlider.querySelector('.cc-slide__testimonial-track');
+      var testimonialItems = testimonialSlider.querySelectorAll('.cc-slide__testimonial-item');
+      var testimonialDots = testimonialSlider.querySelectorAll('.cc-slide__testimonial-dot');
+      var testimonialSpeed = (parseInt(testimonialSlider.getAttribute('data-speed'), 10) || 4) * 1000;
+
+      if (!testimonialTrack || !testimonialItems.length) return null;
+
+      return {
+        slider: testimonialSlider,
+        track: testimonialTrack,
+        items: testimonialItems,
+        dots: testimonialDots,
+        speed: testimonialSpeed,
+        total: testimonialItems.length
+      };
+    }
+
+    function getActiveTestimonialData() {
+      var instances = [];
+      var activeHero = getActiveHeroSlide();
+      var activeBottom = getActiveBottomItem();
+
+      [activeHero, activeBottom].forEach(function(scope) {
+        if (!scope) return;
+
+        var sliders = scope.querySelectorAll('.cc-slide__testimonial');
+
+        sliders.forEach(function(sliderEl) {
+          var data = getTestimonialInstanceData(sliderEl);
+          if (data) {
+            instances.push(data);
+          }
+        });
+      });
+
+      if (!instances.length) return null;
+
+      return {
+        instances: instances,
+        speed: instances[0].speed,
+        total: instances[0].total,
+        index: 0
+      };
+    }
+
+    function setTestimonialSlide(data, index) {
+      if (!data) return;
+
+      if (index < 0) index = data.total - 1;
+      if (index >= data.total) index = 0;
+
+      data.index = index;
+
+      data.instances.forEach(function(instance) {
+        instance.track.style.transform = 'translateX(-' + (data.index * 100) + '%)';
+
+        if (instance.dots.length) {
+          instance.dots.forEach(function(dot, i) {
+            dot.classList.toggle('is-active', i === data.index);
+          });
+        }
+      });
+    }
+
+    function resetAllTestimonials() {
+      var allTestimonialSliders = section.querySelectorAll('.cc-slide__testimonial');
+
+      allTestimonialSliders.forEach(function(sliderEl) {
+        var trackEl = sliderEl.querySelector('.cc-slide__testimonial-track');
+        var dotsEl = sliderEl.querySelectorAll('.cc-slide__testimonial-dot');
+
+        if (trackEl) {
+          trackEl.style.transform = 'translateX(0%)';
+        }
+
+        if (dotsEl.length) {
+          dotsEl.forEach(function(dot, i) {
+            dot.classList.toggle('is-active', i === 0);
+          });
+        }
+      });
+    }
+
+    function scheduleNextHeroSlide(delay) {
+      clearTimeout(heroTimeout);
+      heroTimeout = setTimeout(function() {
+        goToHeroSlide(currentHeroIndex + 1);
+      }, delay);
+    }
+
+    function playTestimonialsThenAdvance(data) {
+      clearTimeout(testimonialTimeout);
+
+      if (!isAutoplayEnabled) return;
+
+      if (!data) {
+        scheduleNextHeroSlide(heroSpeed);
+        return;
+      }
+
+      if (data.total <= 1) {
+        scheduleNextHeroSlide(heroSpeed);
+        return;
+      }
+
+      testimonialTimeout = setTimeout(function advanceTestimonial() {
+        if (data.index < data.total - 1) {
+          setTestimonialSlide(data, data.index + 1);
+          testimonialTimeout = setTimeout(advanceTestimonial, data.speed);
+        } else {
+          scheduleNextHeroSlide(data.speed);
+        }
+      }, data.speed);
+    }
+
+    function bindTestimonialDots(data) {
+      if (!data) return;
+
+      data.instances.forEach(function(instance) {
+        if (!instance.dots.length) return;
+
+        instance.dots.forEach(function(dot, index) {
+          dot.onclick = function() {
+            clearTimers();
+            setTestimonialSlide(data, index);
+
+            if (isAutoplayEnabled) {
+              playTestimonialsThenAdvance(data);
+            }
+          };
+        });
+      });
+    }
+
+    function runHeroCycle() {
+      clearTimers();
+      resetAllTestimonials();
+      updateBottomTrack();
+
+      var testimonialData = getActiveTestimonialData();
+
+      if (testimonialData) {
+        setTestimonialSlide(testimonialData, 0);
+        bindTestimonialDots(testimonialData);
+      }
+
+      playTestimonialsThenAdvance(testimonialData);
+    }
+
+    function goToHeroSlide(index) {
+      if (index < 0) index = heroSlides.length - 1;
+      if (index >= heroSlides.length) index = 0;
+
+      currentHeroIndex = index;
+      track.style.transform = 'translateX(-' + (currentHeroIndex * 100) + '%)';
+      updateHeroDots();
+      updateHeroSlides();
+      updateBottomTrack();
+      runHeroCycle();
+    }
+
+    if (heroDots.length) {
+      heroDots.forEach(function(dot) {
+        dot.addEventListener('click', function() {
+          var index = parseInt(this.getAttribute('data-slide'), 10);
+          goToHeroSlide(index);
+        });
+      });
+    }
+
+    slider.addEventListener('mouseenter', function() {
+      clearTimers();
+    });
+
+    slider.addEventListener('mouseleave', function() {
+      if (isAutoplayEnabled) {
+        runHeroCycle();
+      }
+    });
+
+    window.addEventListener('resize', function() {
+      updateHeroSlides();
+      updateBottomTrack();
+      runHeroCycle();
+    });
+
+    updateHeroSlides();
+    updateBottomTrack();
+    goToHeroSlide(0);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom Cover Slider",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "bg_image",
+          "label": "Background image"
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_image_1024",
+          "label": "Background image 1024px"
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_image_767",
+          "label": "Background image 767px"
+        },
+        {
+          "type": "text",
+          "id": "rating_text",
+          "label": "Rating text",
+          "default": "#1 Covers in the Industry | Cover over 450,000+ items"
+        },
+        {
+          "type": "textarea",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Custom Stretchable Covers That Bring Messages to Life"
+        },
+        {
+          "type": "textarea",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "For fleets, marching bands, dealerships, medical facilities & more"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Get My Custom Cover"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "text",
+          "id": "feature_1",
+          "label": "Feature 1",
+          "default": "Rush Order Available"
+        },
+        {
+          "type": "text",
+          "id": "feature_2",
+          "label": "Feature 2",
+          "default": "Customizable"
+        },
+        {
+          "type": "text",
+          "id": "feature_3",
+          "label": "Feature 3",
+          "default": "Multi-Purpose Use"
+        }
+      ]
+    },
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "testimonial_text",
+          "label": "Testimonial text",
+          "default": "All the sousaphone bell covers came out amazing! Thank you! Thanks for getting it done so quickly!"
+        },
+        {
+          "type": "text",
+          "id": "testimonial_author",
+          "label": "Testimonial author",
+          "default": "Michael H."
+        },
+        {
+          "type": "text",
+          "id": "testimonial_role",
+          "label": "Testimonial role",
+          "default": "ESPN Networks Production Manager"
+        },
+        {
+          "type": "text",
+          "id": "testimonial_verified",
+          "label": "Verified label",
+          "default": "Verified Buyer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Cover Slider",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

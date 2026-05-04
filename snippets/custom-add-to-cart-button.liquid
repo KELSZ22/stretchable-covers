@@ -1,0 +1,333 @@
+{%- doc -%}
+  Custom add to cart button.
+
+  @param {boolean} can_add_to_cart - Whether the product can be added to the cart.
+  @param {string} add_to_cart_text - The text to display on the button.
+  @param {object} product - The product object to be added to the cart.
+  @param {boolean} [icon_only_on_mobile] - If true, only the icon is shown on mobile devices.
+  @param {string} [class] - Additional CSS classes to apply to the button.
+  @param {string} [id] - The ID attribute for the button.
+  @param {string} [data_testid] - The data-testid attribute for testing.
+{%- enddoc -%}
+
+{%- liquid
+  assign target_product = product
+  if target_product == blank
+    assign target_product = closest.product
+  endif
+
+  assign default_add_to_cart_text = 'actions.add_to_cart' | t
+  assign button_text = add_to_cart_text | default: default_add_to_cart_text
+
+  assign target_variant = blank
+  assign target_variant_price = blank
+  if target_product != blank
+    assign target_variant = target_product.selected_or_first_available_variant
+    assign target_variant_price = target_variant.price
+  endif
+
+  assign product_variant_media = ''
+  if target_product != blank
+    assign product_variant_media = target_product.selected_or_first_available_variant.featured_media.preview_image | image_url: width: 100
+    if target_product.selected_or_first_available_variant.featured_media.preview_image == blank
+      assign product_variant_media = target_product.featured_media.preview_image | image_url: width: 100
+    endif
+  endif
+
+  assign cleaned_class = class | default: ''
+  assign cleaned_class = cleaned_class | replace: 'add-to-cart-button', '' | strip
+-%}
+
+ <button
+  type="button"
+  popovertarget="quantity-volume-popup-{{ block.id | default: section.id }}"
+  class="quantity-selector-toolkit new"
+>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12 8V12" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12 16H12.01" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <p>Add more to save more</p>
+</button>
+
+<div
+  id="quantity-volume-popup-{{ block.id | default: section.id }}"
+  class="quantity-volume-popup"
+  popover
+>
+  <button
+    type="button"
+    class="quantity-volume-popup__close"
+    popovertarget="quantity-volume-popup-{{ block.id | default: section.id }}"
+    popovertargetaction="hide"
+    aria-label="Close popup"
+  >
+    ×
+  </button>
+
+  <h3>Volume Pricing</h3>
+  <p class="quantity-volume-popup__subtitle">
+    Save more when you order more. Discounts applied automatically in cart.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Quantity</th>
+        <th>Price per Unit</th>
+        <th>You Save</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>50+</td>
+        <td>$19.49</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>100+</td>
+        <td>$18.99</td>
+        <td>Save $0.50 each</td>
+      </tr>
+      <tr>
+        <td>250+</td>
+        <td>$17.99</td>
+        <td>Save $1.50 each</td>
+      </tr>
+      <tr>
+        <td>500+</td>
+        <td>$16.99</td>
+        <td>Save $2.50 each</td>
+      </tr>
+      <tr>
+        <td>1000+</td>
+        <td>$15.99</td>
+        <td>Save $3.50 each</td>
+      </tr>
+      <tr>
+        <td>2500+</td>
+        <td>$13.99</td>
+        <td>Save $5.50 each</td>
+      </tr>
+      <tr>
+        <td>5000+</td>
+        <td>$11.99</td>
+        <td>Save $7.50 each</td>
+      </tr>
+      <tr>
+        <td>10000+</td>
+        <td>$9.99</td>
+        <td>Save $9.50 each</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="quantity-volume-popup__note">
+    The discount will automatically apply when you reach the quantity threshold.
+  </p>
+</div>
+
+<style>
+  button.quantity-selector-toolkit.new {
+    width: auto;
+  }
+  .quantity-selector-toolkit {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #1f1f1f;
+  }
+
+  .quantity-selector-toolkit p {
+    margin: 0;
+  }
+
+  .quantity-volume-popup {
+    width: min(660px, calc(100vw - 40px));
+    border: 0;
+    border-radius: 8px;
+    padding: 30px 30px 18px;
+    background: #fff;
+    color: #1f1f1f;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  }
+
+  .quantity-volume-popup::backdrop {
+    background: rgba(0, 0, 0, 0.82);
+  }
+
+  .quantity-volume-popup__close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    border: 0;
+    background: transparent;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    color: #1f1f1f;
+    width: auto !important;
+  }
+
+  .quantity-volume-popup h3 {
+    margin: 0 0 4px;
+    color: #0F2E53;
+    font-size: 18px;
+    line-height: 16px;
+    font-weight: 800;
+  }
+
+  .quantity-volume-popup__subtitle {
+    margin: 0 0 24px;
+    font-size: 14px;
+    line-height: 18px;
+    color: #5F5F5F;
+  }
+
+  .quantity-volume-popup table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .quantity-volume-popup th {
+    padding: 0 0 12px;
+    text-align: left;
+    font-weight: 700;
+    font-size:: 14px;
+    line-height: 18px;
+  }
+
+  .quantity-volume-popup td {
+    padding: 12px 0;
+    color: #5F5F5F;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+  }
+
+  .quantity-volume-popup tbody tr:nth-child(even) { 
+    background: #F3F4F5;
+  }
+
+  .quantity-volume-popup__note {
+    padding: 12px 0;
+    color: #5F5F5F;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .quantity-volume-popup {
+      width: calc(100vw - 32px);
+      padding: 26px 18px 16px;
+    }
+
+    .quantity-volume-popup h3 {
+      font-size: 18px;
+    }
+
+    .quantity-volume-popup table,
+    .quantity-volume-popup__subtitle {
+      font-size: 12px;
+    }
+  }
+</style>
+
+<div class="mobile-add-to-cart-sticky">
+  <div class="custom mobile-sticky-price">
+    {% if target_variant_price != blank %}
+      {{ target_variant_price | money }}
+    {% endif %}
+    <div class="bryan quantity-selector-container">
+    {% render 'quantity-selector', product: target_product %}
+  </div>
+  </div>
+
+  
+
+  <add-to-cart-component
+    ref="addToCartButtonContainer"
+    data-product-variant-media="{{ product_variant_media }}"
+    data-add-to-cart-animation="{{ settings.add_to_cart_animation }}"
+  >
+    <button
+      {% if id != blank %}
+        id="{{ id }}"
+      {% endif %}
+      type="submit"
+      name="add"
+      ref="addToCartButton"
+      on:click="/handleClick"
+      class="button custom-add-to-cart-button{% if cleaned_class != blank %} {{ cleaned_class }}{% endif %}"
+      {% if data_testid %}
+        data-testid="{{ data_testid }}"
+      {% endif %}
+      {% unless can_add_to_cart %}
+        disabled
+      {% endunless %}
+    >
+      <span class="add-to-cart-text">
+
+        <span class="custom add-to-cart-text__content{% if icon_only_on_mobile %} is-visually-hidden-mobile{% endif %}">
+          <span>
+            <span>Add to Cart</span>
+          </span>
+        </span>
+      </span>
+
+      <span class="add-to-cart__added">
+        <span class="svg-wrapper add-to-cart__added-icon">
+          {{- 'icon-checkmark-burst.svg' | inline_asset_content -}}
+        </span>
+      </span>
+    </button>
+  </add-to-cart-component>
+</div>
+
+{% stylesheet %}
+.product-form-buttons.spacing-style.product-form-buttons--stacked {
+    display: flex;
+}
+  .quantity-selector-toolkit {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+  }
+
+  .mobile-add-to-cart-sticky {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px 10px;
+    background: #fff;
+}
+
+.custom.mobile-sticky-price {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    gap: 10px;
+}
+span.custom.add-to-cart-text__content {
+    font-family: Lato;
+font-size: 16px;
+}
+ button#custom-mobile-add-to-cart {
+    height: 0;
+    min-height: 0;
+    padding: 15px;
+} 
+.custom.mobile-sticky-price quantity-selector-component.quantity-selector{
+        height: 0;
+    padding: 20px 0;
+}
+{% endstylesheet %}

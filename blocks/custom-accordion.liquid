@@ -1,0 +1,629 @@
+{%- assign block_settings = block.settings -%}
+
+<div
+  id="CustomAccordion-{{ block.id }}"
+  class="custom-faq-accordion{% if block_settings.open_group_by_default %} is-open{% endif %}"
+  data-custom-accordion
+  {{ block.shopify_attributes }}
+>
+  {% if block_settings.heading != blank %}
+    <button
+      type="button"
+      class="custom-faq-accordion__toggle"
+      aria-expanded="{% if block_settings.open_group_by_default %}true{% else %}false{% endif %}"
+      aria-controls="CustomFaqGroup-{{ block.id }}"
+    >
+      <span class="custom-faq-accordion__heading">
+        {{ block_settings.heading }}
+      </span>
+      <span class="custom-faq-accordion__header-icon" aria-hidden="true">
+        <span class="custom-faq-accordion__icon-svg custom-faq-accordion__icon-svg--closed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="#000">
+    <path d="M6 1V11" stroke="#000" stroke-width="1.5" stroke-linecap="round"></path>
+    <path d="M1 6H11" stroke="#000" stroke-width="1.5" stroke-linecap="round"></path>
+  </svg>
+        </span>
+        <span class="custom-faq-accordion__icon-svg custom-faq-accordion__icon-svg--open">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="2" viewBox="0 0 16 2" fill="#000">
+    <path d="M1 1H15" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
+        </span>
+      </span>
+    </button>
+  {% endif %}
+
+  <div
+    id="CustomFaqGroup-{{ block.id }}"
+    class="custom-faq-accordion__body"
+  >
+    <div class="custom-faq-accordion__body-inner">
+      <div class="custom-faq-accordion__items">
+        {% if block_settings.question_1 != blank %}
+          <div class="custom-faq__item{% if block_settings.open_first_item %} is-open{% endif %}">
+            <button
+              type="button"
+              class="custom-faq__trigger"
+              aria-expanded="{% if block_settings.open_first_item %}true{% else %}false{% endif %}"
+              aria-controls="CustomFaqPanel-{{ block.id }}-1"
+            >
+              <span class="custom-faq__question">{{ block_settings.question_1 }}</span>
+              <span class="custom-faq__icon" aria-hidden="true">
+                <span class="custom-faq__icon-svg custom-faq__icon-svg--closed">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M5.71082 5.33077e-05C5.59499 0.001865 5.4846 0.0495396 5.40387 0.132622C5.32314 0.215704 5.27865 0.327413 5.28016 0.44325V5.27512H0.443731C0.385757 5.2743 0.328198 5.28501 0.2744 5.30663C0.220601 5.32825 0.171636 5.36034 0.130349 5.40105C0.0890621 5.44175 0.0562777 5.49026 0.0339006 5.54375C0.0115234 5.59724 0 5.65464 0 5.71262C0 5.7706 0.0115234 5.828 0.0339006 5.88149C0.0562777 5.93497 0.0890621 5.98348 0.130349 6.02419C0.171636 6.0649 0.220601 6.09699 0.2744 6.11861C0.328198 6.14023 0.385757 6.15094 0.443731 6.15012H5.28016V11.2577C5.27934 11.3157 5.29005 11.3732 5.31167 11.427C5.33328 11.4808 5.36538 11.5298 5.40609 11.5711C5.44679 11.6124 5.4953 11.6452 5.54879 11.6675C5.60228 11.6899 5.65968 11.7014 5.71766 11.7014C5.77564 11.7014 5.83304 11.6899 5.88653 11.6675C5.94001 11.6452 5.98852 11.6124 6.02923 11.5711C6.06993 11.5298 6.10203 11.4808 6.12365 11.427C6.14527 11.3732 6.15598 11.3157 6.15516 11.2577V6.15012H11.2627C11.3207 6.15094 11.3783 6.14023 11.4321 6.11861C11.4859 6.09699 11.5348 6.0649 11.5761 6.02419C11.6174 5.98348 11.6502 5.93497 11.6726 5.88149C11.6949 5.828 11.7065 5.7706 11.7065 5.71262C11.7065 5.65464 11.6949 5.59724 11.6726 5.54375C11.6502 5.49026 11.6174 5.44175 11.5761 5.40105C11.5348 5.36034 11.4859 5.32825 11.4321 5.30663C11.3783 5.28501 11.3207 5.2743 11.2627 5.27512H6.15516V0.44325C6.15592 0.384741 6.14494 0.326673 6.12287 0.272482C6.10079 0.218292 6.06807 0.169079 6.02664 0.127757C5.98521 0.0864341 5.93592 0.0538412 5.88167 0.0319062C5.82742 0.00997129 5.76933 -0.000860028 5.71082 5.33077e-05Z" fill="#0F2E53"/>
+                  </svg>
+                </span>
+                <span class="custom-faq__icon-svg custom-faq__icon-svg--open">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="2" viewBox="0 0 16 2" fill="none">
+                    <path d="M1 1H15" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </span>
+              </span>
+            </button>
+
+            <div class="custom-faq__content">
+              <div
+                id="CustomFaqPanel-{{ block.id }}-1"
+                class="custom-faq__panel rte"
+              >
+                <div class="custom-faq__panel-inner">
+                  {{ block_settings.answer_1 }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block_settings.question_2 != blank %}
+          <div class="custom-faq__item">
+            <button
+              type="button"
+              class="custom-faq__trigger"
+              aria-expanded="false"
+              aria-controls="CustomFaqPanel-{{ block.id }}-2"
+            >
+              <span class="custom-faq__question">{{ block_settings.question_2 }}</span>
+              <span class="custom-faq__icon" aria-hidden="true">
+                <span class="custom-faq__icon-svg custom-faq__icon-svg--closed">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M5.71082 5.33077e-05C5.59499 0.001865 5.4846 0.0495396 5.40387 0.132622C5.32314 0.215704 5.27865 0.327413 5.28016 0.44325V5.27512H0.443731C0.385757 5.2743 0.328198 5.28501 0.2744 5.30663C0.220601 5.32825 0.171636 5.36034 0.130349 5.40105C0.0890621 5.44175 0.0562777 5.49026 0.0339006 5.54375C0.0115234 5.59724 0 5.65464 0 5.71262C0 5.7706 0.0115234 5.828 0.0339006 5.88149C0.0562777 5.93497 0.0890621 5.98348 0.130349 6.02419C0.171636 6.0649 0.220601 6.09699 0.2744 6.11861C0.328198 6.14023 0.385757 6.15094 0.443731 6.15012H5.28016V11.2577C5.27934 11.3157 5.29005 11.3732 5.31167 11.427C5.33328 11.4808 5.36538 11.5298 5.40609 11.5711C5.44679 11.6124 5.4953 11.6452 5.54879 11.6675C5.60228 11.6899 5.65968 11.7014 5.71766 11.7014C5.77564 11.7014 5.83304 11.6899 5.88653 11.6675C5.94001 11.6452 5.98852 11.6124 6.02923 11.5711C6.06993 11.5298 6.10203 11.4808 6.12365 11.427C6.14527 11.3732 6.15598 11.3157 6.15516 11.2577V6.15012H11.2627C11.3207 6.15094 11.3783 6.14023 11.4321 6.11861C11.4859 6.09699 11.5348 6.0649 11.5761 6.02419C11.6174 5.98348 11.6502 5.93497 11.6726 5.88149C11.6949 5.828 11.7065 5.7706 11.7065 5.71262C11.7065 5.65464 11.6949 5.59724 11.6726 5.54375C11.6502 5.49026 11.6174 5.44175 11.5761 5.40105C11.5348 5.36034 11.4859 5.32825 11.4321 5.30663C11.3783 5.28501 11.3207 5.2743 11.2627 5.27512H6.15516V0.44325C6.15592 0.384741 6.14494 0.326673 6.12287 0.272482C6.10079 0.218292 6.06807 0.169079 6.02664 0.127757C5.98521 0.0864341 5.93592 0.0538412 5.88167 0.0319062C5.82742 0.00997129 5.76933 -0.000860028 5.71082 5.33077e-05Z" fill="#0F2E53"/>
+                  </svg>
+                </span>
+                <span class="custom-faq__icon-svg custom-faq__icon-svg--open">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="2" viewBox="0 0 16 2" fill="none">
+                    <path d="M1 1H15" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </span>
+              </span>
+            </button>
+
+            <div class="custom-faq__content">
+              <div
+                id="CustomFaqPanel-{{ block.id }}-2"
+                class="custom-faq__panel rte"
+              >
+                <div class="custom-faq__panel-inner">
+                  {{ block_settings.answer_2 }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block_settings.question_3 != blank %}
+          <div class="custom-faq__item">
+            <button
+              type="button"
+              class="custom-faq__trigger"
+              aria-expanded="false"
+              aria-controls="CustomFaqPanel-{{ block.id }}-3"
+            >
+              <span class="custom-faq__question">{{ block_settings.question_3 }}</span>
+              <span class="custom-faq__icon" aria-hidden="true">
+                <span class="custom-faq__icon-svg custom-faq__icon-svg--closed">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M5.71082 5.33077e-05C5.59499 0.001865 5.4846 0.0495396 5.40387 0.132622C5.32314 0.215704 5.27865 0.327413 5.28016 0.44325V5.27512H0.443731C0.385757 5.2743 0.328198 5.28501 0.2744 5.30663C0.220601 5.32825 0.171636 5.36034 0.130349 5.40105C0.0890621 5.44175 0.0562777 5.49026 0.0339006 5.54375C0.0115234 5.59724 0 5.65464 0 5.71262C0 5.7706 0.0115234 5.828 0.0339006 5.88149C0.0562777 5.93497 0.0890621 5.98348 0.130349 6.02419C0.171636 6.0649 0.220601 6.09699 0.2744 6.11861C0.328198 6.14023 0.385757 6.15094 0.443731 6.15012H5.28016V11.2577C5.27934 11.3157 5.29005 11.3732 5.31167 11.427C5.33328 11.4808 5.36538 11.5298 5.40609 11.5711C5.44679 11.6124 5.4953 11.6452 5.54879 11.6675C5.60228 11.6899 5.65968 11.7014 5.71766 11.7014C5.77564 11.7014 5.83304 11.6899 5.88653 11.6675C5.94001 11.6452 5.98852 11.6124 6.02923 11.5711C6.06993 11.5298 6.10203 11.4808 6.12365 11.427C6.14527 11.3732 6.15598 11.3157 6.15516 11.2577V6.15012H11.2627C11.3207 6.15094 11.3783 6.14023 11.4321 6.11861C11.4859 6.09699 11.5348 6.0649 11.5761 6.02419C11.6174 5.98348 11.6502 5.93497 11.6726 5.88149C11.6949 5.828 11.7065 5.7706 11.7065 5.71262C11.7065 5.65464 11.6949 5.59724 11.6726 5.54375C11.6502 5.49026 11.6174 5.44175 11.5761 5.40105C11.5348 5.36034 11.4859 5.32825 11.4321 5.30663C11.3783 5.28501 11.3207 5.2743 11.2627 5.27512H6.15516V0.44325C6.15592 0.384741 6.14494 0.326673 6.12287 0.272482C6.10079 0.218292 6.06807 0.169079 6.02664 0.127757C5.98521 0.0864341 5.93592 0.0538412 5.88167 0.0319062C5.82742 0.00997129 5.76933 -0.000860028 5.71082 5.33077e-05Z" fill="#0F2E53"/>
+                  </svg>
+                </span>
+                <span class="custom-faq__icon-svg custom-faq__icon-svg--open">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="2" viewBox="0 0 16 2" fill="none">
+                    <path d="M1 1H15" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </span>
+              </span>
+            </button>
+
+            <div class="custom-faq__content">
+              <div
+                id="CustomFaqPanel-{{ block.id }}-3"
+                class="custom-faq__panel rte"
+              >
+                <div class="custom-faq__panel-inner">
+                  {{ block_settings.answer_3 }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block_settings.question_4 != blank %}
+          <div class="custom-faq__item">
+            <button
+              type="button"
+              class="custom-faq__trigger"
+              aria-expanded="false"
+              aria-controls="CustomFaqPanel-{{ block.id }}-4"
+            >
+              <span class="custom-faq__question">{{ block_settings.question_4 }}</span>
+              <span class="custom-faq__icon" aria-hidden="true">
+                <span class="custom-faq__icon-svg custom-faq__icon-svg--closed">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M5.71082 5.33077e-05C5.59499 0.001865 5.4846 0.0495396 5.40387 0.132622C5.32314 0.215704 5.27865 0.327413 5.28016 0.44325V5.27512H0.443731C0.385757 5.2743 0.328198 5.28501 0.2744 5.30663C0.220601 5.32825 0.171636 5.36034 0.130349 5.40105C0.0890621 5.44175 0.0562777 5.49026 0.0339006 5.54375C0.0115234 5.59724 0 5.65464 0 5.71262C0 5.7706 0.0115234 5.828 0.0339006 5.88149C0.0562777 5.93497 0.0890621 5.98348 0.130349 6.02419C0.171636 6.0649 0.220601 6.09699 0.2744 6.11861C0.328198 6.14023 0.385757 6.15094 0.443731 6.15012H5.28016V11.2577C5.27934 11.3157 5.29005 11.3732 5.31167 11.427C5.33328 11.4808 5.36538 11.5298 5.40609 11.5711C5.44679 11.6124 5.4953 11.6452 5.54879 11.6675C5.60228 11.6899 5.65968 11.7014 5.71766 11.7014C5.77564 11.7014 5.83304 11.6899 5.88653 11.6675C5.94001 11.6452 5.98852 11.6124 6.02923 11.5711C6.06993 11.5298 6.10203 11.4808 6.12365 11.427C6.14527 11.3732 6.15598 11.3157 6.15516 11.2577V6.15012H11.2627C11.3207 6.15094 11.3783 6.14023 11.4321 6.11861C11.4859 6.09699 11.5348 6.0649 11.5761 6.02419C11.6174 5.98348 11.6502 5.93497 11.6726 5.88149C11.6949 5.828 11.7065 5.7706 11.7065 5.71262C11.7065 5.65464 11.6949 5.59724 11.6726 5.54375C11.6502 5.49026 11.6174 5.44175 11.5761 5.40105C11.5348 5.36034 11.4859 5.32825 11.4321 5.30663C11.3783 5.28501 11.3207 5.2743 11.2627 5.27512H6.15516V0.44325C6.15592 0.384741 6.14494 0.326673 6.12287 0.272482C6.10079 0.218292 6.06807 0.169079 6.02664 0.127757C5.98521 0.0864341 5.93592 0.0538412 5.88167 0.0319062C5.82742 0.00997129 5.76933 -0.000860028 5.71082 5.33077e-05Z" fill="#0F2E53"/>
+                  </svg>
+                </span>
+                <span class="custom-faq__icon-svg custom-faq__icon-svg--open">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="2" viewBox="0 0 16 2" fill="none">
+                    <path d="M1 1H15" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </span>
+              </span>
+            </button>
+
+            <div class="custom-faq__content">
+              <div
+                id="CustomFaqPanel-{{ block.id }}-4"
+                class="custom-faq__panel rte"
+              >
+                <div class="custom-faq__panel-inner">
+                  {{ block_settings.answer_4 }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #CustomAccordion-{{ block.id }} {
+    width: 100%;
+    margin-top: -13px;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 0 12px;
+    border: 0;
+    border-bottom: 1px solid #cfcfcf;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+    box-shadow: none;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__heading {
+    display: block;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 600;
+    color: #111111;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__header-icon {
+    position: relative;
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 50%;
+    flex: 0 0 24px;
+    border: 1px solid transparent;
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+
+  #CustomAccordion-{{ block.id }}.is-open .custom-faq-accordion__header-icon {
+    background: transparent;
+
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__icon {
+    position: relative;
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 50%;
+    flex: 0 0 24px;
+    border: 1px solid transparent;
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__item.is-open .custom-faq__icon {
+    background: transparent;
+    border-color: #5F5F5F;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__icon-svg,
+  #CustomAccordion-{{ block.id }} .custom-faq__icon-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__icon-svg svg,
+  #CustomAccordion-{{ block.id }} .custom-faq__icon-svg svg {
+    display: block;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__icon-svg--open,
+  #CustomAccordion-{{ block.id }} .custom-faq__icon-svg--open {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__icon-svg--closed,
+  #CustomAccordion-{{ block.id }} .custom-faq__icon-svg--closed {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  #CustomAccordion-{{ block.id }}.is-open .custom-faq-accordion__icon-svg--closed,
+  #CustomAccordion-{{ block.id }} .custom-faq__item.is-open .custom-faq__icon-svg--closed {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  #CustomAccordion-{{ block.id }}.is-open .custom-faq-accordion__icon-svg--open,
+  #CustomAccordion-{{ block.id }} .custom-faq__item.is-open .custom-faq__icon-svg--open {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__body {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.35s ease,
+      visibility 0.35s ease;
+  }
+
+  #CustomAccordion-{{ block.id }}.is-open .custom-faq-accordion__body {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__body-inner {
+    overflow: hidden;
+    transform: translateY(-10px);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #CustomAccordion-{{ block.id }}.is-open .custom-faq-accordion__body-inner {
+    transform: translateY(0);
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq-accordion__items {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding-top: 20px;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__item {
+    border-radius: 4px;
+    overflow: hidden;
+    background: #0F2E53;
+    transition: background 0.35s ease;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__item.is-open {
+    background: #F3F4F5;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 16px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+    box-shadow: none;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__question {
+    display: block;
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: #ffffff;
+    transition: color 0.35s ease;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__item.is-open .custom-faq__question {
+    color: #1c1c1c;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__content {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__item.is-open .custom-faq__content {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__panel {
+    overflow: hidden;
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__panel-inner {
+    padding: 0 16px 18px;
+    color: #5F5F5F;
+    font-size: 14px;
+    line-height: 1.6;
+    transform: translateY(-8px);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__item.is-open .custom-faq__panel-inner {
+    transform: translateY(0);
+  }
+
+  #CustomAccordion-{{ block.id }} .custom-faq__panel p {
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    #CustomAccordion-{{ block.id }} .custom-faq__trigger {
+      padding: 16px 14px;
+    }
+
+    #CustomAccordion-{{ block.id }} .custom-faq__panel-inner {
+      padding: 0 14px 16px;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    function initCustomFaqAccordion(scope) {
+      var accordions = (scope || document).querySelectorAll('[data-custom-accordion]');
+
+      accordions.forEach(function (accordion) {
+        if (accordion.dataset.accordionReady === 'true') return;
+        accordion.dataset.accordionReady = 'true';
+
+        var groupToggle = accordion.querySelector('.custom-faq-accordion__toggle');
+        var items = accordion.querySelectorAll('.custom-faq__item');
+
+        if (groupToggle) {
+          groupToggle.addEventListener('click', function () {
+            var isGroupOpen = accordion.classList.contains('is-open');
+
+            if (isGroupOpen) {
+              accordion.classList.remove('is-open');
+              groupToggle.setAttribute('aria-expanded', 'false');
+            } else {
+              accordion.classList.add('is-open');
+              groupToggle.setAttribute('aria-expanded', 'true');
+            }
+          });
+        }
+
+        items.forEach(function (item) {
+          var trigger = item.querySelector('.custom-faq__trigger');
+          if (!trigger) return;
+
+          trigger.addEventListener('click', function (event) {
+            event.stopPropagation();
+
+            var isOpen = item.classList.contains('is-open');
+
+            items.forEach(function (accordionItem) {
+              var accordionTrigger = accordionItem.querySelector('.custom-faq__trigger');
+              accordionItem.classList.remove('is-open');
+
+              if (accordionTrigger) {
+                accordionTrigger.setAttribute('aria-expanded', 'false');
+              }
+            });
+
+            if (!isOpen) {
+              item.classList.add('is-open');
+              trigger.setAttribute('aria-expanded', 'true');
+            }
+          });
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      initCustomFaqAccordion(document);
+    });
+
+    document.addEventListener('shopify:section:load', function (event) {
+      initCustomFaqAccordion(event.target);
+    });
+
+    document.addEventListener('shopify:block:select', function (event) {
+      initCustomFaqAccordion(event.target);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "accordion custom",
+  "tag": null,
+  "class": "accordion",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FAQs"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_group_by_default",
+      "label": "Open FAQ group by default",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first_item",
+      "label": "Open first item by default",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "FAQ Item 1"
+    },
+    {
+      "type": "text",
+      "id": "question_1",
+      "label": "Question 1",
+      "default": "What is the largest imprint you can print?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_1",
+      "label": "Answer 1",
+      "default": "<p>29 inches</p>"
+    },
+    {
+      "type": "header",
+      "content": "FAQ Item 2"
+    },
+    {
+      "type": "text",
+      "id": "question_2",
+      "label": "Question 2",
+      "default": "What material colors do you have?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_2",
+      "label": "Answer 2",
+      "default": "<p>Add answer here.</p>"
+    },
+    {
+      "type": "header",
+      "content": "FAQ Item 3"
+    },
+    {
+      "type": "text",
+      "id": "question_3",
+      "label": "Question 3",
+      "default": "Can you match colors exactly?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_3",
+      "label": "Answer 3",
+      "default": "<p>Add answer here.</p>"
+    },
+    {
+      "type": "header",
+      "content": "FAQ Item 4"
+    },
+    {
+      "type": "text",
+      "id": "question_4",
+      "label": "Question 4",
+      "default": "Return Policy?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_4",
+      "label": "Answer 4",
+      "default": "<p>Add answer here.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "custom-accordion"
+    }
+  ]
+}
+{% endschema %}

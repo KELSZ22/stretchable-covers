@@ -1,0 +1,670 @@
+{% liquid
+  assign diameter_metafield_namespace = 'custom'
+  assign diameter_metafield_key = 'diameter'
+  assign most_ordered_namespace = 'custom'
+  assign most_ordered_key = 'most_ordered'
+%}
+
+<section class="ccollection" data-section-id="{{ section.id }}">
+  <div class="ccollection__inner page-width">
+    <aside class="ccollection__sidebar">
+      <form class="ccollection__filters" method="get" id="CollectionFiltersForm-{{ section.id }}">
+        <div class="ccollection__filters-header">Filters</div>
+
+        {% for filter in collection.filters %}
+          <details class="ccollection__filter-group" {% if forloop.first %}open{% endif %}>
+            <summary class="ccollection__filter-summary">
+              <span>{{ filter.label }}</span>
+              <span class="ccollection__filter-icon">⌄</span>
+            </summary>
+
+            <div class="ccollection__filter-body">
+              {% case filter.type %}
+                {% when 'list' %}
+                  <ul class="ccollection__filter-list" role="list">
+                    {% for value in filter.values %}
+                      <li class="ccollection__filter-item">
+                        <label class="ccollection__checkbox-label">
+                          <input
+                            class="ccollection__checkbox"
+                            type="checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            {% if value.active %}checked{% endif %}
+                            {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                          >
+                          <span class="ccollection__checkbox-box"></span>
+                          <span class="ccollection__checkbox-text">{{ value.label }}</span>
+                        </label>
+                      </li>
+                    {% endfor %}
+                  </ul>
+
+                {% when 'price_range' %}
+                  <div class="ccollection__price-range">
+                    <div class="ccollection__price-slider-wrap">
+                      <input
+                        class="ccollection__price-slider ccollection__price-slider--min"
+                        type="range"
+                        min="0"
+                        max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                        value="{{ filter.min_value.value | default: 0 | money_without_currency | replace: ',', '' }}"
+                        data-price-min
+                      >
+                      <input
+                        class="ccollection__price-slider ccollection__price-slider--max"
+                        type="range"
+                        min="0"
+                        max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                        value="{{ filter.max_value.value | default: filter.range_max | money_without_currency | replace: ',', '' }}"
+                        data-price-max
+                      >
+                    </div>
+
+                    <div class="ccollection__price-inputs">
+                      <div class="ccollection__price-field">
+                        <span class="ccollection__price-currency">{{ cart.currency.symbol | default: '$' }}</span>
+                        <input
+                          class="ccollection__price-input"
+                          type="number"
+                          name="{{ filter.min_value.param_name }}"
+                          value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                          min="0"
+                          max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          placeholder="0"
+                          data-price-input-min
+                        >
+                      </div>
+                      <span class="ccollection__price-separator">To</span>
+                      <div class="ccollection__price-field">
+                        <span class="ccollection__price-currency">{{ cart.currency.symbol | default: '$' }}</span>
+                        <input
+                          class="ccollection__price-input"
+                          type="number"
+                          name="{{ filter.max_value.param_name }}"
+                          value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                          min="0"
+                          max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          data-price-input-max
+                        >
+                      </div>
+                    </div>
+                  </div>
+              {% endcase %}
+            </div>
+          </details>
+        {% endfor %}
+
+        <div class="ccollection__filter-actions">
+          <button type="submit" class="ccollection__button ccollection__button--apply">Apply filters</button>
+          <a href="{{ collection.url }}" class="ccollection__button ccollection__button--clear">Clear</a>
+        </div>
+      </form>
+    </aside>
+
+    <div class="ccollection__content">
+      {% paginate collection.products by section.settings.products_per_page %}
+        <div class="ccollection__grid">
+          {% for product in collection.products %}
+            {% liquid
+              assign diameter_value = product.metafields[diameter_metafield_namespace][diameter_metafield_key]
+              assign is_most_ordered = product.metafields[most_ordered_namespace][most_ordered_key].value
+            %}
+
+            <article class="ccollection-card" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
+              <div class="ccollection-card__media-wrap">
+                {% if is_most_ordered %}
+                  <div class="ccollection-card__badge">★ Most Ordered</div>
+                {% endif %}
+
+                <button
+                  type="button"
+                  class="ccollection-card__wishlist"
+                  aria-label="Add {{ product.title | escape }} to wishlist"
+                  data-wishlist-button
+                  data-product-id="{{ product.id }}"
+                  data-product-handle="{{ product.handle }}"
+                  data-product-title="{{ product.title | escape }}"
+                  data-product-url="{{ product.url }}"
+                  data-product-price="{{ product.price | money }}"
+                  data-product-image="{% if product.featured_image %}{{ product.featured_image | image_url: width: 800 }}{% endif %}"
+                >
+                  <svg class="ccollection-card__wishlist-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+
+                <a href="{{ product.url }}" class="ccollection-card__media-link">
+                  {% if product.featured_image %}
+                    {{ product.featured_image | image_url: width: 700 | image_tag: class: 'ccollection-card__image', loading: 'lazy', alt: product.featured_image.alt | escape }}
+                  {% else %}
+                    {{ 'product-1' | placeholder_svg_tag: 'ccollection-card__image ccollection-card__image--placeholder' }}
+                  {% endif %}
+                </a>
+              </div>
+
+              <div class="ccollection-card__info">
+                <h3 class="ccollection-card__title">
+                  <a href="{{ product.url }}">{{ product.title }}</a>
+                </h3>
+
+                {% if diameter_value != blank %}
+                  <div class="ccollection-card__meta">
+                    <span class="ccollection-card__meta-label">Diameter</span>
+                    <span class="ccollection-card__meta-value">{{ diameter_value }}</span>
+                  </div>
+                {% endif %}
+
+                <div class="ccollection-card__price">{{ product.price | money }}</div>
+              </div>
+            </article>
+          {% else %}
+            <div class="ccollection__empty">No products found.</div>
+          {% endfor %}
+        </div>
+
+        {% if paginate.pages > 1 %}
+          <nav class="ccollection__pagination" aria-label="Pagination">
+            {% if paginate.previous %}
+              <a class="ccollection__pagination-link" href="{{ paginate.previous.url }}">Previous</a>
+            {% endif %}
+
+            <span class="ccollection__pagination-current">Page {{ paginate.current_page }} of {{ paginate.pages }}</span>
+
+            {% if paginate.next %}
+              <a class="ccollection__pagination-link" href="{{ paginate.next.url }}">Next</a>
+            {% endif %}
+          </nav>
+        {% endif %}
+      {% endpaginate %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .ccollection {
+    padding: 32px 0;
+  }
+
+  .ccollection__inner {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+  }
+
+  .ccollection__sidebar {
+    position: sticky;
+    top: 24px;
+  }
+
+  .ccollection__filters {
+    border: 1px solid #e7e7e7;
+    border-radius: 16px;
+    padding: 18px 16px 20px;
+    background: #fff;
+  }
+
+  .ccollection__filters-header {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .ccollection__filter-group {
+    padding: 14px 0;
+    border-top: 1px solid #ececec;
+  }
+
+  .ccollection__filter-group:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .ccollection__filter-summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .ccollection__filter-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ccollection__filter-body {
+    margin-top: 12px;
+  }
+
+  .ccollection__filter-list {
+    display: grid;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .ccollection__checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .ccollection__checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ccollection__checkbox-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #b8b8b8;
+    border-radius: 4px;
+    flex: 0 0 16px;
+    position: relative;
+  }
+
+  .ccollection__checkbox:checked + .ccollection__checkbox-box {
+    background: #ef8b1e;
+    border-color: #ef8b1e;
+  }
+
+  .ccollection__checkbox:checked + .ccollection__checkbox-box::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .ccollection__checkbox-text {
+    color: #222;
+  }
+
+  .ccollection__price-range {
+    display: grid;
+    gap: 14px;
+  }
+
+  .ccollection__price-slider-wrap {
+    position: relative;
+    height: 22px;
+  }
+
+  .ccollection__price-slider {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    pointer-events: none;
+    appearance: none;
+    background: transparent;
+  }
+
+  .ccollection__price-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #1f4b7f;
+    pointer-events: auto;
+    cursor: pointer;
+    border: 0;
+  }
+
+  .ccollection__price-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #1f4b7f;
+    pointer-events: auto;
+    cursor: pointer;
+    border: 0;
+  }
+
+  .ccollection__price-inputs {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .ccollection__price-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    padding: 0 10px;
+    min-height: 42px;
+  }
+
+  .ccollection__price-input {
+    border: 0;
+    width: 100%;
+    padding: 10px 0;
+    background: transparent;
+  }
+
+  .ccollection__price-input:focus {
+    outline: none;
+  }
+
+  .ccollection__filter-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .ccollection__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    border-radius: 999px;
+    padding: 0 16px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #111;
+  }
+
+  .ccollection__button--apply {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+
+  .ccollection__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+  }
+
+  .ccollection-card {
+    position: relative;
+  }
+
+  .ccollection-card__media-wrap {
+    position: relative;
+    border: 1px solid #ececec;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    min-height: 280px;
+  }
+
+  .ccollection-card__media-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+    padding: 20px;
+  }
+
+  .ccollection-card__image {
+    width: 100%;
+    height: 100%;
+    max-height: 240px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .ccollection-card__badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: #ef8b1e;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .ccollection-card__wishlist {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    background: #fff;
+    color: #222;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+  }
+
+  .ccollection-card__wishlist.is-active {
+    color: #ef8b1e;
+  }
+
+  .ccollection-card__wishlist-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .ccollection-card__info {
+    padding-top: 14px;
+  }
+
+  .ccollection-card__title {
+    margin: 0 0 8px;
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 500;
+  }
+
+  .ccollection-card__title a {
+    color: #111;
+    text-decoration: none;
+  }
+
+  .ccollection-card__meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #5e5e5e;
+    font-size: 14px;
+  }
+
+  .ccollection-card__meta-label {
+    font-weight: 500;
+  }
+
+  .ccollection-card__price {
+    font-size: 22px;
+    line-height: 1.2;
+    color: #111;
+  }
+
+  .ccollection__pagination {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 32px;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ccollection__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .ccollection__sidebar {
+      position: static;
+    }
+
+    .ccollection__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ccollection__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ccollection-card__title {
+      font-size: 22px;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const section = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!section) return;
+
+    const storageKey = 'ms_wishlist_products';
+
+    const getWishlist = () => {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey)) || [];
+      } catch (e) {
+        return [];
+      }
+    };
+
+    const saveWishlist = (items) => {
+      localStorage.setItem(storageKey, JSON.stringify(items));
+      window.dispatchEvent(new CustomEvent('ms:wishlist-updated', { detail: items }));
+    };
+
+    const wishlistButtons = section.querySelectorAll('[data-wishlist-button]');
+
+    const syncWishlistButtons = () => {
+      const wishlist = getWishlist();
+      wishlistButtons.forEach((button) => {
+        const productId = String(button.dataset.productId);
+        const exists = wishlist.some((item) => String(item.id) === productId);
+        button.classList.toggle('is-active', exists);
+        button.setAttribute('aria-pressed', exists ? 'true' : 'false');
+      });
+    };
+
+    wishlistButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const wishlist = getWishlist();
+        const productId = String(button.dataset.productId);
+        const existingIndex = wishlist.findIndex((item) => String(item.id) === productId);
+
+        if (existingIndex > -1) {
+          wishlist.splice(existingIndex, 1);
+        } else {
+          wishlist.push({
+            id: button.dataset.productId,
+            handle: button.dataset.productHandle,
+            title: button.dataset.productTitle,
+            url: button.dataset.productUrl,
+            price: button.dataset.productPrice,
+            image: button.dataset.productImage
+          });
+        }
+
+        saveWishlist(wishlist);
+        syncWishlistButtons();
+      });
+    });
+
+    syncWishlistButtons();
+
+    const priceMinRange = section.querySelector('[data-price-min]');
+    const priceMaxRange = section.querySelector('[data-price-max]');
+    const priceMinInput = section.querySelector('[data-price-input-min]');
+    const priceMaxInput = section.querySelector('[data-price-input-max]');
+
+    if (priceMinRange && priceMaxRange && priceMinInput && priceMaxInput) {
+      const syncFromRange = () => {
+        let min = parseInt(priceMinRange.value || 0, 10);
+        let max = parseInt(priceMaxRange.value || 0, 10);
+
+        if (min > max) {
+          const temp = min;
+          min = max;
+          max = temp;
+        }
+
+        priceMinInput.value = min;
+        priceMaxInput.value = max;
+        priceMinRange.value = min;
+        priceMaxRange.value = max;
+      };
+
+      const syncFromInput = () => {
+        let min = parseInt(priceMinInput.value || 0, 10);
+        let max = parseInt(priceMaxInput.value || 0, 10);
+
+        if (min > max) {
+          max = min;
+        }
+
+        priceMinRange.value = min;
+        priceMaxRange.value = max;
+      };
+
+      priceMinRange.addEventListener('input', syncFromRange);
+      priceMaxRange.addEventListener('input', syncFromRange);
+      priceMinInput.addEventListener('input', syncFromInput);
+      priceMaxInput.addEventListener('input', syncFromInput);
+    }
+
+    const filterForm = section.querySelector('#CollectionFiltersForm-{{ section.id }}');
+    if (filterForm) {
+      filterForm.addEventListener('change', (event) => {
+        const target = event.target;
+        if (target.matches('.ccollection__checkbox')) {
+          filterForm.submit();
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom collection grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 6,
+      "max": 24,
+      "step": 3,
+      "default": 9,
+      "label": "Products per page"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom collection grid"
+    }
+  ]
+}
+{% endschema %}
+
+

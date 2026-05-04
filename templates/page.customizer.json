@@ -1,0 +1,128 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Title",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "custom_cover_customizer": {
+      "type": "custom-cover-customizer",
+      "settings": {
+        "color_scheme": "",
+        "heading": "Design your stretchable cover",
+        "subheading": "Add text, image uploads, and clipart before checkout.",
+        "font_library": "both",
+        "font_choices": "Arial\nHelvetica\nGeorgia\nTimes New Roman",
+        "min_font_size": 12,
+        "default_font_size": 24,
+        "max_font_size": 120,
+        "max_text_length": 80,
+        "default_text_color": "#000000",
+        "font_fallback": "sans-serif",
+        "text_placeholder": "Insert your text",
+        "text_area_label": "Text",
+        "font_family_label": "Font",
+        "font_size_label": "Size",
+        "text_color_section_label": "Color",
+        "text_alignment_label": "Alignment",
+        "text_alignment_aria_label": "Text alignment",
+        "align_left_short_label": "Left",
+        "align_center_short_label": "Center",
+        "align_right_short_label": "Right",
+        "align_left_aria_label": "Align text left",
+        "align_center_aria_label": "Align text center",
+        "align_right_aria_label": "Align text right",
+        "align_justify_short_label": "Justify",
+        "align_justify_aria_label": "Justify text",
+        "text_format_toolbar_aria_label": "Text formatting",
+        "format_bold_aria_label": "Bold",
+        "format_italic_aria_label": "Italic",
+        "format_underline_aria_label": "Underline",
+        "format_strikethrough_aria_label": "Strikethrough",
+        "text_button_label": "Text",
+        "image_button_label": "Image",
+        "image_rights_label": "Allow stretchablecovers to have rights to this image",
+        "clipart_heading": "Clipart",
+        "imprint_sizes": "Small\nMedium\nLarge",
+        "safe_area_shape": "circle",
+        "safe_area_x": 10,
+        "safe_area_y": 10,
+        "safe_area_width": 80,
+        "safe_area_height": 80,
+        "block_outside_safe_area": true,
+        "upload_warning": "Image file is too large for upload.",
+        "max_upload_mb": 8,
+        "text_price_adjustment": 0,
+        "image_price_adjustment": 0,
+        "clipart_price_adjustment": 0,
+        "shapes_section_heading": "Shapes",
+        "shapes_fill_label": "Fill color",
+        "default_shape_color": "#eb891b",
+        "shapes_attribution": "-",
+        "shape_label_rectangle": "Rectangle",
+        "shape_label_ellipse": "Ellipse",
+        "shape_label_triangle": "Triangle",
+        "shape_price_adjustment": 0,
+        "include_preview_data": false,
+        "padding-block-start": 40,
+        "padding-block-end": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "custom_cover_customizer"
+  ]
+}

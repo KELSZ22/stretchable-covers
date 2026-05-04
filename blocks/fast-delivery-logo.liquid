@@ -1,0 +1,66 @@
+<div class="fast-delivery-logo-block" {{ block.shopify_attributes }}>
+  {% if block.settings.logo_image != blank %}
+    <div class="fast-delivery-logo-block__item">
+      {{
+        block.settings.logo_image
+        | image_url: width: 100
+        | image_tag:
+          loading: 'lazy',
+          class: 'fast-delivery-logo-block__image',
+          alt: block.settings.logo_image.alt
+      }}
+    </div>
+  {% endif %}
+</div>
+
+{% style %}
+  .fast-delivery-logo-block {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .fast-delivery-logo-block__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background: #f3f4f5;
+    padding: 10px;
+  }
+
+  .fast-delivery-logo-block__image {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    display: block;
+  }
+
+  @media screen and (max-width: 768px) {
+    .fast-delivery-logo-block {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    .fast-delivery-logo-block__item {
+      justify-content: flex-start;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fast Delivery Logo",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fast Delivery Logo"
+    }
+  ]
+}
+{% endschema %}

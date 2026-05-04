@@ -1,0 +1,161 @@
+<section class="wishlist-page page-width" data-wishlist-page>
+  <div class="wishlist-page__header">
+    <h1 class="wishlist-page__title">My Wishlist</h1>
+  </div>
+
+  <div class="wishlist-page__empty" data-wishlist-empty hidden>
+    Your wishlist is empty.
+  </div>
+
+  <div class="wishlist-page__grid" data-wishlist-grid></div>
+</section>
+
+<style>
+  .wishlist-page {
+    padding: 40px 0 64px;
+  }
+
+  .wishlist-page__title {
+    margin: 0 0 24px;
+  }
+
+  .wishlist-page__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .wishlist-page__card {
+    border: 1px solid #ececec;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .wishlist-page__image-wrap {
+    display: block;
+    aspect-ratio: 1 / 1;
+    padding: 20px;
+  }
+
+  .wishlist-page__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .wishlist-page__content {
+    padding: 0 18px 18px;
+  }
+
+  .wishlist-page__product-title {
+    margin: 0 0 8px;
+    font-size: 20px;
+  }
+
+  .wishlist-page__product-title a {
+    color: #111;
+    text-decoration: none;
+  }
+
+  .wishlist-page__price {
+    margin-bottom: 14px;
+  }
+
+  .wishlist-page__remove {
+    min-height: 42px;
+    border-radius: 999px;
+    border: 1px solid #ef8b1e;
+    background: #ef8b1e;
+    color: #fff;
+    padding: 0 16px;
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 989px) {
+    .wishlist-page__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .wishlist-page__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const storageKey = 'ms_wishlist_products';
+    const root = document.querySelector('[data-wishlist-page]');
+    if (!root) return;
+
+    const grid = root.querySelector('[data-wishlist-grid]');
+    const empty = root.querySelector('[data-wishlist-empty]');
+
+    const getWishlist = () => {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey)) || [];
+      } catch (e) {
+        return [];
+      }
+    };
+
+    const saveWishlist = (items) => {
+      localStorage.setItem(storageKey, JSON.stringify(items));
+      window.dispatchEvent(new CustomEvent('ms:wishlist-updated', { detail: items }));
+    };
+
+    const render = () => {
+      const items = getWishlist();
+      grid.innerHTML = '';
+
+      if (!items.length) {
+        empty.hidden = false;
+        return;
+      }
+
+      empty.hidden = true;
+
+      items.forEach((item) => {
+        const article = document.createElement('article');
+        article.className = 'wishlist-page__card';
+        article.innerHTML = `
+          <a class="wishlist-page__image-wrap" href="${item.url}">
+            <img class="wishlist-page__image" src="${item.image}" alt="${item.title}">
+          </a>
+          <div class="wishlist-page__content">
+            <h2 class="wishlist-page__product-title"><a href="${item.url}">${item.title}</a></h2>
+            <div class="wishlist-page__price">${item.price}</div>
+            <button class="wishlist-page__remove" type="button" data-remove-id="${item.id}">Remove</button>
+          </div>
+        `;
+        grid.appendChild(article);
+      });
+
+      root.querySelectorAll('[data-remove-id]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const nextItems = getWishlist().filter((item) => String(item.id) !== String(button.dataset.removeId));
+          saveWishlist(nextItems);
+          render();
+        });
+      });
+    };
+
+    window.addEventListener('ms:wishlist-updated', render);
+    render();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Wishlist page",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Wishlist page"
+    }
+  ]
+}
+{% endschema %}

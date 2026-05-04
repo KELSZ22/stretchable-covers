@@ -1,0 +1,73 @@
+<div class="custom-search-modal" id="customSearchModal" hidden>
+  <div class="custom-search-modal__overlay" data-search-modal-close></div>
+
+  <div class="custom-search-modal__dialog" role="dialog" aria-modal="true" aria-label="Search">
+    <button type="button" class="custom-search-modal__close" data-search-modal-close aria-label="Close search">
+      ×
+    </button>
+
+    <div class="custom-search-modal__top">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="custom-search-modal__form">
+        <input
+          type="text"
+          name="q"
+          placeholder="{{ search_placeholder | default: 'Search Covers' }}"
+          aria-label="Search"
+        >
+        <button type="submit" aria-label="Submit search">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+            <image xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAABnUlEQVR4AZyT3VHCQBSFIe+MyTswoQPtACpQKjBUYKyAUAFaQbACYwVQAh24Ad4TC2Did3YY2JDIgzv3sPf3cHf3xus4q9/vj4fDYQoKUIFiMBisQeSkNdQzCQVLz/PWZERVVW3ZV91udwvGIIUo9Vn4G2JJIJgTiSneQDTa7/eT3W43y/N8IpvYO0RRr9f7RG+IF4bhPd6EpEzFhoV9FkwDYYxDRGM6ahzNOx6PLyR0IHnV/hfoKCFWgmdQE4/iJx1D/1iLXBnERfBF/pir8d2w7sQnYFznDd3mBUFw5+aIpKST0HXe0G0HRVH8uDk6jp7x/rpFN8nRH9FNyWI/iy52geXzfHpm1HY5jUFI18qvJXmHw2HDnWQgPiXWEmTg1wva12EMVvK50J3oeWeQZAQSCr6ZBY1+wr7ELvC/Ab2Ojy9Fr4klMcaUeZ5PaXVGtIRQAzVn15CpeMHABcQ/8EXXRJaEQitqleQHBisAIxBgj4CO0iGu76pBVCOxTPwYOgMSdYHnIm1ErSSXknbNJeLO4n+RiPpENOXI2S8AAAD//wU/IxMAAAAGSURBVAMAoru7SgkzdOwAAAAASUVORK5CYII=" x="0" y="0" width="17" height="17"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="custom-search-modal__body">
+      <div class="custom-search-modal__column">
+        <h4>Top Searches</h4>
+        <ul>
+          <li><a href="/search?q=steering+wheel+cover">Steering wheel cover</a></li>
+          <li><a href="/search?q=sousaphone+cover">Sousaphone cover</a></li>
+          <li><a href="/search?q=bar+stool+cover">Bar &amp; Exam stool cover</a></li>
+        </ul>
+      </div>
+
+      <div class="custom-search-modal__column">
+        <h4>Recently Viewed Products</h4>
+        <div class="custom-search-modal__products">
+          {% if product_1 != blank %}
+            <a href="{{ product_1.url }}" class="custom-search-modal__product">
+              {% if product_1.featured_image != blank %}
+                <img src="{{ product_1.featured_image | image_url: width: 240 }}" alt="{{ product_1.title | escape }}">
+              {% endif %}
+              <span>{{ product_1.title }}</span>
+            </a>
+          {% endif %}
+
+          {% if product_2 != blank %}
+            <a href="{{ product_2.url }}" class="custom-search-modal__product">
+              {% if product_2.featured_image != blank %}
+                <img src="{{ product_2.featured_image | image_url: width: 240 }}" alt="{{ product_2.title | escape }}">
+              {% endif %}
+              <span>{{ product_2.title }}</span>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="custom-search-modal__column">
+        {% if featured_product != blank %}
+          <a href="{{ featured_product.url }}" class="custom-search-modal__featured">
+            {% if featured_product.featured_image != blank %}
+              <img src="{{ featured_product.featured_image | image_url: width: 400 }}" alt="{{ featured_product.title | escape }}">
+            {% endif %}
+            <strong>{{ featured_product.title }}</strong>
+            {% if featured_text != blank %}
+              <p>{{ featured_text }}</p>
+            {% endif %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

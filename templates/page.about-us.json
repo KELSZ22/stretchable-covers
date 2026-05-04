@@ -41,7 +41,10 @@
           "blocks": {}
         }
       },
-      "block_order": ["image_8rTMPp", "page-content"],
+      "block_order": [
+        "image_8rTMPp",
+        "page-content"
+      ],
       "name": "About Us",
       "settings": {
         "content_direction": "column",
@@ -167,10 +170,16 @@
               "blocks": {}
             }
           },
-          "block_order": ["text_TtPB3n", "text_3VXCcf"]
+          "block_order": [
+            "text_TtPB3n",
+            "text_3VXCcf"
+          ]
         }
       },
-      "block_order": ["image_FfQcyE", "group_7c38mN"],
+      "block_order": [
+        "image_FfQcyE",
+        "group_7c38mN"
+      ],
       "name": "About Us Content",
       "settings": {
         "content_direction": "row",
@@ -198,6 +207,67 @@
         "gradient_direction": "to top",
         "padding-block-start": 40,
         "padding-block-end": 40
+      }
+    },
+    "ups_icon_bar_Jdn349": {
+      "type": "ups-icon-bar",
+      "blocks": {
+        "item_r9anih": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_3cc7055f-ee0b-42f3-be31-a5b1368f3d70.svg",
+            "heading": "Fully Custom Covers",
+            "text": "Made to your exact size and specifications."
+          }
+        },
+        "item_ipNpHX": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_1_930105c0-ace6-4d16-84c9-02ccab6129b4.svg",
+            "heading": "Fast Production",
+            "text": "Quick turnaround without compromising quality."
+          }
+        },
+        "item_WTf3dd": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_2_efaffe70-fdad-45b8-acb0-2cf7d9904ff2.svg",
+            "heading": "Repeat Customers Worldwide",
+            "text": "Trusted by 50,000+ clients across the globe."
+          }
+        },
+        "item_anej3Q": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_3_7942513a-b518-45b0-b4ca-593a533197cf.svg",
+            "heading": "Order as Few as One",
+            "text": "No minimum order required."
+          }
+        },
+        "item_KXtqER": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_4.svg",
+            "heading": "Made with Premium Microfiber",
+            "text": "Soft, durable, and stretchable material."
+          }
+        }
+      },
+      "block_order": [
+        "item_r9anih",
+        "item_ipNpHX",
+        "item_WTf3dd",
+        "item_anej3Q",
+        "item_KXtqER"
+      ],
+      "name": "USP Icon Bar",
+      "settings": {
+        "bg_color": "#E8E8E8",
+        "border_color": "#1A2438",
+        "border_width": 2,
+        "icon_color": "#223B63",
+        "heading_color": "#111111",
+        "text_color": "#333333"
       }
     },
     "section_6jrbxV": {
@@ -308,7 +378,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_eAq7he", "text_38xRXB", "text_RECrt3"]
+          "block_order": [
+            "icon_eAq7he",
+            "text_38xRXB",
+            "text_RECrt3"
+          ]
         },
         "group_dyiBk6": {
           "type": "group",
@@ -415,7 +489,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_VVrC7T", "text_TJjbtt", "text_Y7RtAB"]
+          "block_order": [
+            "icon_VVrC7T",
+            "text_TJjbtt",
+            "text_Y7RtAB"
+          ]
         },
         "group_zD7yrt": {
           "type": "group",
@@ -522,7 +600,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_LATNkz", "text_XcNQxE", "text_tyXJ6z"]
+          "block_order": [
+            "icon_LATNkz",
+            "text_XcNQxE",
+            "text_tyXJ6z"
+          ]
         },
         "group_h3X9Y9": {
           "type": "group",
@@ -629,7 +711,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_8jP4pG", "text_qMkdiN", "text_DfeHKA"]
+          "block_order": [
+            "icon_8jP4pG",
+            "text_qMkdiN",
+            "text_DfeHKA"
+          ]
         },
         "group_EK3gxW": {
           "type": "group",
@@ -736,7 +822,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_hCNCPq", "text_j3YTcC", "text_VtHk3h"]
+          "block_order": [
+            "icon_hCNCPq",
+            "text_j3YTcC",
+            "text_VtHk3h"
+          ]
         }
       },
       "block_order": [
@@ -746,6 +836,7 @@
         "group_h3X9Y9",
         "group_EK3gxW"
       ],
+      "disabled": true,
       "name": "t:names.multicolumn",
       "settings": {
         "content_direction": "row",
@@ -869,7 +960,10 @@
               "blocks": {}
             }
           },
-          "block_order": ["text_yc38fj", "text_zPMBQ9"]
+          "block_order": [
+            "text_yc38fj",
+            "text_zPMBQ9"
+          ]
         },
         "image_4CwmLR": {
           "type": "image",
@@ -894,7 +988,10 @@
           "blocks": {}
         }
       },
-      "block_order": ["group_PbhCgH", "image_4CwmLR"],
+      "block_order": [
+        "group_PbhCgH",
+        "image_4CwmLR"
+      ],
       "name": "t:names.image_with_text",
       "settings": {
         "content_direction": "row",
@@ -922,6 +1019,96 @@
         "gradient_direction": "to top",
         "padding-block-start": 40,
         "padding-block-end": 40
+      }
+    },
+    "custom_section_marque_znazC8": {
+      "type": "custom-section-marque",
+      "blocks": {
+        "logo_PzjgP7": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/DUKE_ENERGY_1_c168a1da-69e6-4a13-bad9-b3664a0dbc09.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_cfMnLk": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/Ryder_1_1f5fcca6-302d-4de6-9edb-2fd49cbac2d7.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_G7nD6V": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/image_32_ba5283b9-57ff-4551-8aeb-8979132b9661.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_qdWPTx": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/image_36_66089adf-d2f3-4d34-8262-74285e689264.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_YX3XHQ": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/image_34_42cc10fa-a3b4-4296-9fa7-b16d6f0825ef.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_XVyeBK": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/RUSH_Trucks_3_330e248a-ef53-4c83-8f93-91c48514f8b6.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_NeX9JR": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/Penske_2.png",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "logo_PzjgP7",
+        "logo_cfMnLk",
+        "logo_G7nD6V",
+        "logo_qdWPTx",
+        "logo_YX3XHQ",
+        "logo_XVyeBK",
+        "logo_NeX9JR"
+      ],
+      "name": "Brand Logo Marquee",
+      "settings": {
+        "heading": "Partnered by Hundred Brands Worldwide",
+        "section_bg": "#FFFFFF",
+        "heading_color": "#111111",
+        "border_color": "#1A1A1A",
+        "border_width": 2,
+        "logo_max_height": 38,
+        "logo_gap": 36,
+        "logo_gap_mobile": 18,
+        "marquee_duration": 22,
+        "pause_on_hover": true
       }
     },
     "marquee_aeXF9k": {
@@ -964,24 +1151,32 @@
           "blocks": {}
         }
       },
-      "block_order": ["icon_AwbDVy", "icon_6RBde8", "icon_zYgUxK"],
+      "block_order": [
+        "icon_AwbDVy",
+        "icon_6RBde8",
+        "icon_zYgUxK"
+      ],
+      "disabled": true,
       "name": "t:names.marquee_section",
       "settings": {
+        "side_label_text": "Partnered by Hundred Brands \nWorldwide",
         "movement_direction": "normal",
+        "marquee_transparent_background": true,
         "color_scheme": "",
         "section_width": "page-width",
         "padding-block-start": 24,
         "padding-block-end": 24,
-        "gap_between_elements": 72,
-        "side_label_text": "Partnered by Hundred Brands \nWorldwide"
+        "gap_between_elements": 72
       }
     }
   },
   "order": [
     "main",
     "section_xxJ3Ry",
+    "ups_icon_bar_Jdn349",
     "section_6jrbxV",
     "section_kMx6WM",
+    "custom_section_marque_znazC8",
     "marquee_aeXF9k"
   ]
 }

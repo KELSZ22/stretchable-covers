@@ -116,12 +116,10 @@
     {% endcapture %}
 
     <cart-drawer-component
-      class="cart-drawer"
-      {{ block.shopify_attributes }}
-      {% if settings.auto_open_cart_drawer %}
-        auto-open
-      {% endif %}
-    >
+  class="cart-drawer"
+  {{ block.shopify_attributes }}
+  auto-open
+>
       <template id="empty-cart-template">
         {{ empty_cart_drawer_content }}
       </template>

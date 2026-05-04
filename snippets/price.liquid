@@ -100,7 +100,7 @@
         <span class="price">{{ price | default: '&nbsp;' }}</span>
       </span>
     {% else %}
-      <span class="price">{{ price | default: '&nbsp;' }}</span>
+      <span class="price">Starts at {{ price | default: '&nbsp;' }}</span>
     {% endif %}
 
     {% if show_sale_price_first == true and show_compare_price %}

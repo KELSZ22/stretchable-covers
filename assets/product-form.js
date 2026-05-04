@@ -169,7 +169,7 @@ if (!customElements.get('add-to-cart-component')) {
 /**
  * A custom element that manages a product form.
  *
- * @typedef {{items: Array<{quantity: number, variant_id: number}>}} Cart
+ * @typedef {{items: Array<{quantity: number, variant_id: number}>, item_count?: number}} Cart
  *
  * @typedef {object} ProductFormRefs
  * @property {HTMLInputElement} variantId - The form input for submitting the variant ID.
@@ -238,6 +238,29 @@ class ProductFormComponent extends Component {
   }
 
   /**
+   * Fetches the cart
+   * @returns {Promise<Cart | null>}
+   */
+  async #fetchCart() {
+    try {
+      const response = await fetch('/cart.js', {
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Cart fetch failed with status ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to fetch cart:', error);
+      return null;
+    }
+  }
+
+  /**
    * Fetches cart and updates quantity selector for current variant
    * @returns {Promise<number>} The cart quantity for the current variant
    */
@@ -245,14 +268,69 @@ class ProductFormComponent extends Component {
     const variantIdInput = /** @type {HTMLInputElement | null} */ (this.querySelector('input[name="id"]'));
     if (!variantIdInput?.value) return 0;
 
-    try {
-      const response = await fetch('/cart.js');
-      const cart = await response.json();
+    const cart = await this.#fetchCart();
+    if (!cart) return 0;
 
-      return this.#updateCartQuantityFromData(cart);
-    } catch (error) {
-      console.error('Failed to fetch cart quantity:', error);
-      return 0;
+    return this.#updateCartQuantityFromData(cart);
+  }
+
+  /**
+   * Dispatch document-level cart update so the cart icon and other listeners react immediately.
+   * @param {Cart | null} cart
+   * @param {FormData} formData
+   * @param {boolean} didError
+   */
+  #dispatchCartUpdate(cart, formData, didError = false) {
+    document.dispatchEvent(
+      new CustomEvent(ThemeEvents.cartUpdate, {
+        detail: {
+          resource: cart,
+          sourceId: this.id,
+          data: {
+            source: 'product-form-component',
+            didError,
+            itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault) || 1,
+            productId: this.dataset.productId,
+          },
+        },
+      })
+    );
+  }
+
+  /**
+   * Force open any cart drawer/custom drawer we can find.
+   */
+  #openCartDrawer() {
+    const drawer = document.querySelector(
+      'custom-cart-drawer, cart-drawer-component, .custom-cart-drawer, [data-cart-drawer], [data-drawer="cart"]'
+    );
+
+    if (drawer) {
+      if (typeof drawer.open === 'function') {
+        drawer.open();
+        return;
+      }
+
+      if (typeof drawer.showDialog === 'function') {
+        drawer.showDialog();
+        return;
+      }
+
+      if (typeof drawer.show === 'function') {
+        drawer.show();
+        return;
+      }
+
+      drawer.setAttribute('open', 'true');
+      drawer.classList.add('is-open', 'open', 'active');
+    }
+
+    const trigger = document.querySelector(
+      '[data-open-cart], [data-cart-trigger], .header-actions__cart-icon, button[aria-controls*="cart"], [aria-label*="Cart"], [aria-label*="cart"]'
+    );
+
+    if (trigger instanceof HTMLElement) {
+      trigger.click();
     }
   }
 
@@ -345,14 +423,24 @@ class ProductFormComponent extends Component {
 
     const formData = new FormData(form);
 
-    const cartItemsComponents = document.querySelectorAll('cart-items-component');
-    let cartItemComponentsSectionIds = [];
-    cartItemsComponents.forEach((item) => {
+    const sectionIds = new Set();
+
+    document.querySelectorAll('cart-items-component').forEach((item) => {
       if (item instanceof HTMLElement && item.dataset.sectionId) {
-        cartItemComponentsSectionIds.push(item.dataset.sectionId);
+        sectionIds.add(item.dataset.sectionId);
       }
-      formData.append('sections', cartItemComponentsSectionIds.join(','));
     });
+
+    document.querySelectorAll('cart-drawer-component, custom-cart-drawer').forEach((item) => {
+      if (item instanceof HTMLElement && item.dataset.sectionId) {
+        sectionIds.add(item.dataset.sectionId);
+      }
+    });
+
+    if (sectionIds.size > 0) {
+      formData.set('sections', Array.from(sectionIds).join(','));
+      formData.set('sections_url', window.location.pathname);
+    }
 
     const fetchCfg = fetchConfig('javascript', { body: formData });
 
@@ -393,13 +481,18 @@ class ProductFormComponent extends Component {
             this.#clearLiveRegionText();
           }, ERROR_MESSAGE_DISPLAY_DURATION);
 
-          // When we add more than the maximum amount of items to the cart, we need to dispatch a cart update event
-          // because our back-end still adds the max allowed amount to the cart.
-          this.dispatchEvent(
+          const cart = await this.#fetchCart();
+          if (cart) {
+            this.#updateCartQuantityFromData(cart);
+          }
+
+          this.#dispatchCartUpdate(cart, formData, true);
+
+          document.dispatchEvent(
             new CartAddEvent({}, this.id, {
               didError: true,
               source: 'product-form-component',
-              itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault),
+              itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault) || 1,
               productId: this.dataset.productId,
             })
           );
@@ -429,17 +522,27 @@ class ProductFormComponent extends Component {
             }, SUCCESS_MESSAGE_DISPLAY_DURATION);
           }
 
-          // Fetch the updated cart to get the actual total quantity for this variant
-          await this.#fetchAndUpdateCartQuantity();
+          const cart = await this.#fetchCart();
+          if (cart) {
+            this.#updateCartQuantityFromData(cart);
+          } else {
+            await this.#fetchAndUpdateCartQuantity();
+          }
 
-          this.dispatchEvent(
+          this.#dispatchCartUpdate(cart, formData, false);
+
+          document.dispatchEvent(
             new CartAddEvent({}, id.toString(), {
               source: 'product-form-component',
-              itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault),
+              itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault) || 1,
               productId: this.dataset.productId,
-              sections: response.sections,
+              sections: response.sections || {},
             })
           );
+
+          setTimeout(() => {
+            this.#openCartDrawer();
+          }, 120);
         }
       })
       .catch((error) => {

@@ -1,0 +1,1482 @@
+{% liquid
+  assign product = closest.product
+  assign current_variant = product.selected_or_first_available_variant
+  assign current_image = product.featured_image | default: product.images.first
+  assign testimonial_count = 0
+
+  if block.settings.quote != blank
+    assign testimonial_count = testimonial_count | plus: 1
+  endif
+
+  if block.settings.quote_2 != blank
+    assign testimonial_count = testimonial_count | plus: 1
+  endif
+
+  if block.settings.quote_3 != blank
+    assign testimonial_count = testimonial_count | plus: 1
+  endif
+%}
+
+<div
+  id="CompareBox-{{ block.id }}"
+  class="product-compare-box"
+  data-compare-box
+  {{ block.shopify_attributes }}
+>
+  <script type="application/json" data-current-product-json>
+    {
+      "handle": {{ product.handle | json }},
+      "title": {{ product.title | json }},
+      "url": {{ product.url | json }},
+      "vendor": {{ product.vendor | json }},
+      "type": {{ product.type | json }},
+      "available": {{ current_variant.available | default: product.available | json }},
+      "sku": {{ current_variant.sku | default: '' | json }},
+      "variant_title": {{ current_variant.title | default: '' | json }},
+      "price": {{ current_variant.price | default: product.price | json }},
+      "description": {{ product.description | strip_html | strip_newlines | truncate: 180 | json }},
+      "image": {% if current_image != blank %}{{ current_image | image_url: width: 720 | json }}{% else %}""{% endif %},
+      "image_alt": {% if current_image != blank %}{{ current_image.alt | default: product.title | json }}{% else %}{{ product.title | json }}{% endif %}
+    }
+  </script>
+
+  <div class="product-compare-box__top">
+    {% if block.settings.heading != blank %}
+      <div class="product-compare-box__heading">
+        {{ block.settings.heading }}
+      </div>
+    {% endif %}
+
+    <button
+      type="button"
+      class="product-compare-box__button"
+      data-compare-modal-open
+      aria-controls="CompareModal-{{ block.id }}"
+      aria-expanded="false"
+    >
+      <span class="product-compare-box__button-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M14 8C14 6.4087 13.3679 4.88258 12.2426 3.75736C11.1174 2.63214 9.5913 2 8 2C6.32263 2.00631 4.71265 2.66082 3.50667 3.82667L2 5.33333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M2 2V5.33333H5.33333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M2 8C2 9.5913 2.63214 11.1174 3.75736 12.2426C4.88258 13.3679 6.4087 14 8 14C9.67737 13.9937 11.2874 13.3392 12.4933 12.1733L14 10.6667" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10.6667 10.6666H14.0001V14" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+      </span>
+      <span>{{ block.settings.button_label }}</span>
+    </button>
+  </div>
+
+  {% if testimonial_count > 0 %}
+    <div
+      class="product-compare-box__slider"
+      data-compare-slider
+      data-autoplay="{{ block.settings.autoplay }}"
+      data-autoplay-speed="{{ block.settings.autoplay_speed | times: 1000 }}"
+    >
+      <div class="product-compare-box__viewport">
+        <div class="product-compare-box__track" data-compare-track>
+          {% if block.settings.quote != blank %}
+            <div class="product-compare-box__slide" aria-hidden="false">
+              <div class="product-compare-box__quote">
+                "{{ block.settings.quote }}"
+              </div>
+
+              <div class="product-compare-box__meta">
+                {% if block.settings.author != blank %}
+                  <span class="product-compare-box__author">{{ block.settings.author }}</span>
+                {% endif %}
+
+                <div class="product-compare-box__reviews">
+                  <div class="product-compare-box__stars" aria-label="{{ block.settings.star_count }} out of 5 stars">
+                    {% for i in (1..5) %}
+                      <svg class="product-compare-box__star {% if i <= block.settings.star_count %}is-filled{% endif %}" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 1.16699L8.80166 4.81765L12.8333 5.40515L9.91666 8.24683L10.605 12.2618L7 10.3668L3.395 12.2618L4.08333 8.24683L1.16666 5.40515L5.19833 4.81765L7 1.16699Z" fill="currentColor"/>
+                      </svg>
+                    {% endfor %}
+                  </div>
+
+                  {% if block.settings.review_label != blank %}
+                    <span class="product-compare-box__review-label">{{ block.settings.review_label }}</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if block.settings.quote_2 != blank %}
+            <div class="product-compare-box__slide" aria-hidden="true">
+              <div class="product-compare-box__quote">
+                "{{ block.settings.quote_2 }}"
+              </div>
+
+              <div class="product-compare-box__meta">
+                {% if block.settings.author_2 != blank %}
+                  <span class="product-compare-box__author">{{ block.settings.author_2 }}</span>
+                {% endif %}
+
+                <div class="product-compare-box__reviews">
+                  <div class="product-compare-box__stars" aria-label="{{ block.settings.star_count_2 }} out of 5 stars">
+                    {% for i in (1..5) %}
+                      <svg class="product-compare-box__star {% if i <= block.settings.star_count_2 %}is-filled{% endif %}" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 1.16699L8.80166 4.81765L12.8333 5.40515L9.91666 8.24683L10.605 12.2618L7 10.3668L3.395 12.2618L4.08333 8.24683L1.16666 5.40515L5.19833 4.81765L7 1.16699Z" fill="currentColor"/>
+                      </svg>
+                    {% endfor %}
+                  </div>
+
+                  {% if block.settings.review_label_2 != blank %}
+                    <span class="product-compare-box__review-label">{{ block.settings.review_label_2 }}</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if block.settings.quote_3 != blank %}
+            <div class="product-compare-box__slide" aria-hidden="true">
+              <div class="product-compare-box__quote">
+                "{{ block.settings.quote_3 }}"
+              </div>
+
+              <div class="product-compare-box__meta">
+                {% if block.settings.author_3 != blank %}
+                  <span class="product-compare-box__author">{{ block.settings.author_3 }}</span>
+                {% endif %}
+
+                <div class="product-compare-box__reviews">
+                  <div class="product-compare-box__stars" aria-label="{{ block.settings.star_count_3 }} out of 5 stars">
+                    {% for i in (1..5) %}
+                      <svg class="product-compare-box__star {% if i <= block.settings.star_count_3 %}is-filled{% endif %}" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 1.16699L8.80166 4.81765L12.8333 5.40515L9.91666 8.24683L10.605 12.2618L7 10.3668L3.395 12.2618L4.08333 8.24683L1.16666 5.40515L5.19833 4.81765L7 1.16699Z" fill="currentColor"/>
+                      </svg>
+                    {% endfor %}
+                  </div>
+
+                  {% if block.settings.review_label_3 != blank %}
+                    <span class="product-compare-box__review-label">{{ block.settings.review_label_3 }}</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if testimonial_count > 1 %}
+        <button type="button" class="product-compare-box__nav product-compare-box__nav--prev" data-compare-prev aria-label="Previous testimonial">
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M6.5 1.5L3 5L6.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" class="product-compare-box__nav product-compare-box__nav--next" data-compare-next aria-label="Next testimonial">
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M3.5 1.5L7 5L3.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+       
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div
+    id="CompareModal-{{ block.id }}"
+    class="product-compare-modal"
+    data-compare-modal
+    hidden
+  >
+    <div class="product-compare-modal__overlay" data-compare-modal-close></div>
+
+    <div
+      class="product-compare-modal__dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="CompareModalTitle-{{ block.id }}"
+      tabindex="-1"
+    >
+      <div class="product-compare-modal__header">
+        <h3 id="CompareModalTitle-{{ block.id }}" class="product-compare-modal__title">
+          {{ block.settings.modal_heading }}
+        </h3>
+
+        <button
+          type="button"
+          class="product-compare-modal__close"
+          data-compare-modal-close
+          aria-label="Close compare modal"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M4.5 4.5L13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M13.5 4.5L4.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="product-compare-modal__body">
+        <div class="product-compare-modal__top">
+          <div class="product-compare-modal__column">
+            <div class="product-compare-modal__column-label">Current product</div>
+
+            <div class="product-compare-product-card product-compare-product-card--current">
+              <div class="product-compare-product-card__media">
+                {% if current_image != blank %}
+                  <img
+                    src="{{ current_image | image_url: width: 720 }}"
+                    alt="{{ current_image.alt | default: product.title | escape }}"
+                    loading="lazy"
+                    width="240"
+                    height="240"
+                  >
+                {% else %}
+                  <div class="product-compare-product-card__media-placeholder">No image</div>
+                {% endif %}
+              </div>
+
+              <div class="product-compare-product-card__content">
+                <div class="product-compare-product-card__title">{{ product.title }}</div>
+
+                {% if product.vendor != blank %}
+                  <div class="product-compare-product-card__vendor">{{ product.vendor }}</div>
+                {% endif %}
+
+                <div class="product-compare-product-card__price">
+                  {{ current_variant.price | default: product.price | money }}
+                </div>
+
+                <a href="{{ product.url }}" class="product-compare-product-card__link">
+                  View product
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-compare-modal__column">
+            <div class="product-compare-modal__column-label">Search another product</div>
+
+            <div class="product-compare-modal__search-wrap">
+              <label class="visually-hidden" for="CompareSearch-{{ block.id }}">
+                Search product
+              </label>
+
+              <input
+                id="CompareSearch-{{ block.id }}"
+                class="product-compare-modal__search-input"
+                type="search"
+                placeholder="{{ block.settings.search_placeholder }}"
+                autocomplete="off"
+                data-compare-search-input
+              >
+
+              <div class="product-compare-modal__search-results" data-compare-search-results></div>
+            </div>
+
+            <div class="product-compare-modal__selected-product" data-compare-selected-card>
+              <div class="product-compare-modal__empty">
+                Search and select a product to compare.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-compare-modal__table-wrap">
+          <table class="product-compare-modal__table">
+            <thead>
+              <tr>
+                <th scope="col">Field</th>
+                <th scope="col">Current product</th>
+                <th scope="col">Selected product</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Product</th>
+                <td>{{ product.title }}</td>
+                <td data-compare-field="title">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Price</th>
+                <td>{{ current_variant.price | default: product.price | money }}</td>
+                <td data-compare-field="price">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Vendor</th>
+                <td>{{ product.vendor | default: '—' }}</td>
+                <td data-compare-field="vendor">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Type</th>
+                <td>{{ product.type | default: '—' }}</td>
+                <td data-compare-field="type">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Availability</th>
+                <td>
+                  {% if current_variant.available or product.available %}
+                    In stock
+                  {% else %}
+                    Out of stock
+                  {% endif %}
+                </td>
+                <td data-compare-field="available">—</td>
+              </tr>
+              <tr>
+                <th scope="row">SKU</th>
+                <td>{{ current_variant.sku | default: '—' }}</td>
+                <td data-compare-field="sku">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Variant</th>
+                <td>
+                  {% if current_variant.title != blank and current_variant.title != 'Default Title' %}
+                    {{ current_variant.title }}
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                <td data-compare-field="variant_title">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Description</th>
+                <td>{{ product.description | strip_html | strip_newlines | truncate: 180 | default: '—' }}</td>
+                <td data-compare-field="description">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  body.compare-modal-open {
+    overflow: hidden;
+  }
+
+  .product-compare-box {
+    background: #F3F4F5;
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 16px;
+    position: relative;
+  }
+
+  .product-compare-box__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #C5C5C5;
+    padding-bottom: 16px;
+}
+
+  .product-compare-box__heading {
+    font-size: 13px;
+    line-height: 18px;
+    color: #222222;
+    font-weight: 500;
+  }
+
+  .product-compare-box__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: #0F2E53;
+    color: #ffffff;
+    text-decoration: none;
+    border: 1px solid #0F2E53;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.25s ease;
+    font-family: Lato;
+  }
+
+  .product-compare-box__button:hover {
+    background: #0f3158;
+    border-color: #0f3158;
+    color: #ffffff;
+  }
+
+  .product-compare-box__button-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-compare-box__slider {
+    position: relative;
+  }
+
+  .product-compare-box__viewport {
+    overflow: hidden;
+  }
+
+  .product-compare-box__track {
+    display: flex;
+    transition: transform 0.35s ease;
+    will-change: transform;
+  }
+
+  .product-compare-box__slide {
+    min-width: 100%;
+    width: 100%;
+    padding: 4px 50px 0;
+    box-sizing: border-box;
+  }
+
+  .product-compare-box__quote {
+    font-size: 14px;
+    line-height: 18px;
+    color: #222222;
+    margin-bottom: 10px;
+    font-family: Lato;
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .product-compare-box__meta {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .product-compare-box__author {
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 400;
+    font-family: Lato;
+  }
+
+  .product-compare-box__reviews {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .product-compare-box__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    color: #d0d0d0;
+  }
+
+  .product-compare-box__star.is-filled {
+    color: #f5b301;
+  }
+
+  .product-compare-box__review-label {
+    font-size: 12px;
+    line-height: 16px;
+    color: #444444;
+  }
+
+  .product-compare-box__nav {
+    position: absolute;
+    top: 42%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #0F2E53;
+    background: #ffffff;
+    color: #0F2E53;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.25s ease;
+    padding: 0;
+    z-index: 2;
+  }
+
+  .product-compare-box__nav:hover {
+    background: #0F2E53;
+    color: #ffffff;
+  }
+
+  .product-compare-box__nav--prev {
+    left: 0;
+  }
+
+  .product-compare-box__nav--next {
+    right: 0;
+  }
+
+  .product-compare-box__dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .product-compare-box__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 0;
+    background: #c7c7c7;
+    padding: 0;
+    cursor: pointer;
+    transition: 0.25s ease;
+  }
+
+  .product-compare-box__dot.is-active {
+    background: #0F2E53;
+    transform: scale(1.15);
+  }
+
+  .product-compare-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+  }
+
+  .product-compare-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .product-compare-modal__dialog {
+    position: relative;
+    z-index: 2;
+    width: calc(100% - 32px);
+    max-width: 1120px;
+    max-height: calc(100vh - 40px);
+    margin: 20px auto;
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+  }
+
+  .product-compare-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e6e6e6;
+  }
+
+  .product-compare-modal__title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 24px;
+    color: #111111;
+  }
+
+  .product-compare-modal__close {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #d8d8d8;
+    background: #ffffff;
+    color: #111111;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.25s ease;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .product-compare-modal__close:hover {
+    background: #0F2E53;
+    border-color: #0F2E53;
+    color: #ffffff;
+  }
+
+  .product-compare-modal__body {
+    padding: 24px;
+    overflow: auto;
+  }
+
+  .product-compare-modal__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .product-compare-modal__column-label {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0F2E53;
+    margin-bottom: 10px;
+  }
+
+  .product-compare-product-card {
+    border: 1px solid #e6e6e6;
+    border-radius: 14px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 16px;
+    min-height: 152px;
+    align-items: start;
+  }
+
+  .product-compare-product-card__media {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f4f4f4;
+  }
+
+  .product-compare-product-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .product-compare-product-card__media-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
+    color: #666666;
+    padding: 12px;
+  }
+
+  .product-compare-product-card__content {
+    min-width: 0;
+  }
+
+  .product-compare-product-card__title {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 600;
+    color: #111111;
+    margin-bottom: 6px;
+  }
+
+  .product-compare-product-card__vendor {
+    font-size: 13px;
+    line-height: 18px;
+    color: #666666;
+    margin-bottom: 8px;
+  }
+
+  .product-compare-product-card__price {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #0F2E53;
+    margin-bottom: 10px;
+  }
+
+  .product-compare-product-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 600;
+    color: #0F2E53;
+    text-decoration: none;
+  }
+
+  .product-compare-product-card__link:hover {
+    text-decoration: underline;
+  }
+
+  .product-compare-modal__search-wrap {
+    position: relative;
+    margin-bottom: 12px;
+  }
+
+  .product-compare-modal__search-input {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 999px;
+    border: 1px solid #d8d8d8;
+    background: #ffffff;
+    padding: 12px 18px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #111111;
+    outline: none;
+  }
+
+  .product-compare-modal__search-input:focus {
+    border-color: #0F2E53;
+    box-shadow: 0 0 0 3px rgba(21, 63, 114, 0.08);
+  }
+
+  .product-compare-modal__search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 5;
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-radius: 14px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    display: none;
+  }
+
+  .product-compare-modal__search-results.is-visible {
+    display: block;
+  }
+
+  .product-compare-modal__search-state {
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 18px;
+    color: #666666;
+  }
+
+  .product-compare-modal__result {
+    width: 100%;
+    border: 0;
+    background: #ffffff;
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .product-compare-modal__result:last-child {
+    border-bottom: 0;
+  }
+
+  .product-compare-modal__result:hover {
+    background: #f8fbff;
+  }
+
+  .product-compare-modal__result-image {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f4f4f4;
+  }
+
+  .product-compare-modal__result-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .product-compare-modal__result-image-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background: #f4f4f4;
+  }
+
+  .product-compare-modal__result-title {
+    font-size: 14px;
+    line-height: 19px;
+    font-weight: 600;
+    color: #111111;
+    margin-bottom: 4px;
+  }
+
+  .product-compare-modal__result-meta {
+    font-size: 12px;
+    line-height: 16px;
+    color: #666666;
+  }
+
+  .product-compare-modal__selected-product {
+    min-height: 152px;
+  }
+
+  .product-compare-modal__empty {
+    min-height: 152px;
+    border: 1px dashed #d8d8d8;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    color: #666666;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .product-compare-modal__table-wrap {
+    overflow-x: auto;
+  }
+
+  .product-compare-modal__table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 760px;
+  }
+
+  .product-compare-modal__table th,
+  .product-compare-modal__table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #ececec;
+    vertical-align: top;
+    text-align: left;
+    font-size: 14px;
+    line-height: 20px;
+    color: #111111;
+  }
+
+  .product-compare-modal__table thead th {
+    font-size: 13px;
+    line-height: 18px;
+    color: #0F2E53;
+    font-weight: 700;
+    background: #f8fbff;
+  }
+
+  .product-compare-modal__table tbody th {
+    width: 180px;
+    font-weight: 700;
+    background: #fcfcfc;
+  }
+
+  @media screen and (max-width: 768px) {
+    .product-compare-box {
+      padding: 16px;
+    }
+    .product-compare-box__top {
+      flex-direction: column;
+}
+
+    .product-compare-box__nav {
+      top: 38%;
+      width: 24px;
+      height: 24px;
+    }
+
+    .product-compare-modal__dialog {
+      width: calc(100% - 16px);
+      max-height: calc(100vh - 16px);
+      margin: 8px auto;
+      border-radius: 14px;
+    }
+
+    .product-compare-modal__header,
+    .product-compare-modal__body {
+      padding: 16px;
+    }
+
+    .product-compare-modal__top {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .product-compare-product-card {
+      grid-template-columns: 84px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 120px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    function initCompareBoxSliders(root) {
+      const scope = root || document;
+
+      scope.querySelectorAll('[data-compare-slider]').forEach((slider) => {
+        if (slider.dataset.initialized === 'true') {
+          return;
+        }
+
+        const track = slider.querySelector('[data-compare-track]');
+        if (!track) {
+          return;
+        }
+
+        const slides = Array.from(track.children);
+        const prevButton = slider.querySelector('[data-compare-prev]');
+        const nextButton = slider.querySelector('[data-compare-next]');
+        const dots = Array.from(slider.querySelectorAll('[data-compare-dot]'));
+        const autoplayEnabled = slider.dataset.autoplay === 'true';
+        const autoplaySpeed = parseInt(slider.dataset.autoplaySpeed, 10) || 5000;
+
+        let currentIndex = 0;
+        let autoplayInterval = null;
+
+        function updateSlider() {
+          track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+
+          slides.forEach((slide, index) => {
+            slide.setAttribute('aria-hidden', index === currentIndex ? 'false' : 'true');
+          });
+
+          dots.forEach((dot, index) => {
+            const isActive = index === currentIndex;
+            dot.classList.toggle('is-active', isActive);
+            dot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          });
+        }
+
+        function goToSlide(index) {
+          if (!slides.length) {
+            return;
+          }
+
+          currentIndex = (index + slides.length) % slides.length;
+          updateSlider();
+        }
+
+        function startAutoplay() {
+          if (!autoplayEnabled || slides.length <= 1) {
+            return;
+          }
+
+          stopAutoplay();
+
+          autoplayInterval = window.setInterval(() => {
+            goToSlide(currentIndex + 1);
+          }, autoplaySpeed);
+        }
+
+        function stopAutoplay() {
+          if (autoplayInterval) {
+            window.clearInterval(autoplayInterval);
+            autoplayInterval = null;
+          }
+        }
+
+        if (prevButton) {
+          prevButton.addEventListener('click', () => {
+            goToSlide(currentIndex - 1);
+            startAutoplay();
+          });
+        }
+
+        if (nextButton) {
+          nextButton.addEventListener('click', () => {
+            goToSlide(currentIndex + 1);
+            startAutoplay();
+          });
+        }
+
+        dots.forEach((dot) => {
+          dot.addEventListener('click', () => {
+            goToSlide(Number(dot.dataset.index));
+            startAutoplay();
+          });
+        });
+
+        slider.addEventListener('mouseenter', stopAutoplay);
+        slider.addEventListener('mouseleave', startAutoplay);
+        slider.addEventListener('focusin', stopAutoplay);
+        slider.addEventListener('focusout', startAutoplay);
+
+        updateSlider();
+        startAutoplay();
+
+        slider.dataset.initialized = 'true';
+      });
+    }
+
+    function initCompareModals(root) {
+      const scope = root || document;
+      const shopCurrency = {{ cart.currency.iso_code | default: localization.country.currency.iso_code | default: shop.currency | json }};
+
+      scope.querySelectorAll('[data-compare-box]').forEach((box) => {
+        if (box.dataset.compareModalInit === 'true') {
+          return;
+        }
+
+        const modal = box.querySelector('[data-compare-modal]');
+        const openButton = box.querySelector('[data-compare-modal-open]');
+        const closeButtons = box.querySelectorAll('[data-compare-modal-close]');
+        const dialog = modal ? modal.querySelector('.product-compare-modal__dialog') : null;
+        const searchInput = modal ? modal.querySelector('[data-compare-search-input]') : null;
+        const resultsWrap = modal ? modal.querySelector('[data-compare-search-results]') : null;
+        const selectedCardWrap = modal ? modal.querySelector('[data-compare-selected-card]') : null;
+        const currentProductScript = box.querySelector('[data-current-product-json]');
+        const currentProduct = currentProductScript ? JSON.parse(currentProductScript.textContent) : null;
+        const compareFields = modal ? modal.querySelectorAll('[data-compare-field]') : [];
+        let lastFocusedElement = null;
+        let searchTimer = null;
+        let activeRequest = 0;
+
+        if (!modal || !openButton || !dialog || !searchInput || !resultsWrap || !selectedCardWrap || !currentProduct) {
+          return;
+        }
+
+        function escapeHtml(value) {
+          return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function stripHtml(value) {
+          const temp = document.createElement('div');
+          temp.innerHTML = value || '';
+          return (temp.textContent || temp.innerText || '').replace(/\s+/g, ' ').trim();
+        }
+
+        function normalizeVariantTitle(value) {
+          if (!value || value === 'Default Title') {
+            return '—';
+          }
+
+          return value;
+        }
+
+        function formatMoney(cents) {
+          const numeric = Number(cents || 0);
+
+          try {
+            return new Intl.NumberFormat(undefined, {
+              style: 'currency',
+              currency: shopCurrency
+            }).format(numeric / 100);
+          } catch (error) {
+            return (numeric / 100).toFixed(2);
+          }
+        }
+
+        function productUrl(product) {
+          if (product.url) {
+            return product.url;
+          }
+
+          return (window.Shopify && window.Shopify.routes && window.Shopify.routes.root ? window.Shopify.routes.root : '/') + 'products/' + product.handle;
+        }
+
+        function normalizeAjaxProduct(product) {
+          const firstAvailableVariant = Array.isArray(product.variants)
+            ? product.variants.find((variant) => variant.available) || product.variants[0]
+            : null;
+
+          const image = product.featured_image || (Array.isArray(product.images) && product.images.length ? product.images[0] : '');
+
+          return {
+            handle: product.handle || '',
+            title: product.title || '',
+            url: productUrl(product),
+            vendor: product.vendor || '',
+            type: product.type || '',
+            available: firstAvailableVariant ? !!firstAvailableVariant.available : !!product.available,
+            sku: firstAvailableVariant && firstAvailableVariant.sku ? firstAvailableVariant.sku : '',
+            variant_title: firstAvailableVariant && firstAvailableVariant.title ? firstAvailableVariant.title : '',
+            price: firstAvailableVariant && typeof firstAvailableVariant.price !== 'undefined'
+              ? firstAvailableVariant.price
+              : (typeof product.price_min !== 'undefined' ? product.price_min : product.price || 0),
+            description: stripHtml(product.description || '').slice(0, 180) || '',
+            image: image || '',
+            image_alt: product.title || ''
+          };
+        }
+
+        function setResultState(message) {
+          resultsWrap.innerHTML = '<div class="product-compare-modal__search-state">' + escapeHtml(message) + '</div>';
+          resultsWrap.classList.add('is-visible');
+        }
+
+        function clearResults() {
+          resultsWrap.innerHTML = '';
+          resultsWrap.classList.remove('is-visible');
+        }
+
+        function renderSelectedCard(product) {
+          const imageMarkup = product.image
+            ? '<div class="product-compare-product-card__media"><img src="' + escapeHtml(product.image) + '" alt="' + escapeHtml(product.image_alt || product.title) + '" loading="lazy"></div>'
+            : '<div class="product-compare-product-card__media"><div class="product-compare-product-card__media-placeholder">No image</div></div>';
+
+          selectedCardWrap.innerHTML =
+            '<div class="product-compare-product-card">' +
+              imageMarkup +
+              '<div class="product-compare-product-card__content">' +
+                '<div class="product-compare-product-card__title">' + escapeHtml(product.title || 'Untitled product') + '</div>' +
+                (product.vendor ? '<div class="product-compare-product-card__vendor">' + escapeHtml(product.vendor) + '</div>' : '') +
+                '<div class="product-compare-product-card__price">' + escapeHtml(formatMoney(product.price)) + '</div>' +
+                '<a href="' + escapeHtml(product.url) + '" class="product-compare-product-card__link">View product</a>' +
+              '</div>' +
+            '</div>';
+        }
+
+        function updateComparison(product) {
+          const map = {
+            title: product.title || '—',
+            price: formatMoney(product.price),
+            vendor: product.vendor || '—',
+            type: product.type || '—',
+            available: product.available ? 'In stock' : 'Out of stock',
+            sku: product.sku || '—',
+            variant_title: normalizeVariantTitle(product.variant_title),
+            description: product.description || '—'
+          };
+
+          compareFields.forEach((field) => {
+            const key = field.dataset.compareField;
+            field.textContent = typeof map[key] !== 'undefined' ? map[key] : '—';
+          });
+        }
+
+        function resetComparison() {
+          selectedCardWrap.innerHTML = '<div class="product-compare-modal__empty">Search and select a product to compare.</div>';
+
+          compareFields.forEach((field) => {
+            field.textContent = '—';
+          });
+        }
+
+        function renderSearchResults(products) {
+          const filtered = products.filter((item) => item.handle !== currentProduct.handle);
+
+          if (!filtered.length) {
+            setResultState('No matching products found.');
+            return;
+          }
+
+          resultsWrap.innerHTML = filtered.map((item) => {
+            const imageUrl = item.featured_image && item.featured_image.url
+              ? item.featured_image.url
+              : (item.image || '');
+            const imageMarkup = imageUrl
+              ? '<div class="product-compare-modal__result-image"><img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml((item.featured_image && item.featured_image.alt) || item.title || '') + '" loading="lazy"></div>'
+              : '<div class="product-compare-modal__result-image-placeholder"></div>';
+
+            return (
+              '<button type="button" class="product-compare-modal__result" data-compare-result data-handle="' + escapeHtml(item.handle) + '">' +
+                imageMarkup +
+                '<div>' +
+                  '<div class="product-compare-modal__result-title">' + escapeHtml(item.title || '') + '</div>' +
+                  '<div class="product-compare-modal__result-meta">' + escapeHtml(item.vendor || item.type || '') + '</div>' +
+                '</div>' +
+              '</button>'
+            );
+          }).join('');
+
+          resultsWrap.classList.add('is-visible');
+
+          resultsWrap.querySelectorAll('[data-compare-result]').forEach((button) => {
+            button.addEventListener('click', async () => {
+              const handle = button.dataset.handle;
+
+              if (!handle) {
+                return;
+              }
+
+              searchInput.value = button.querySelector('.product-compare-modal__result-title') ? button.querySelector('.product-compare-modal__result-title').textContent.trim() : searchInput.value;
+              clearResults();
+              selectedCardWrap.innerHTML = '<div class="product-compare-modal__empty">Loading product…</div>';
+
+              try {
+                const response = await fetch((window.Shopify && window.Shopify.routes && window.Shopify.routes.root ? window.Shopify.routes.root : '/') + 'products/' + encodeURIComponent(handle) + '.js', {
+                  headers: {
+                    Accept: 'application/json'
+                  }
+                });
+
+                if (!response.ok) {
+                  throw new Error('Unable to load product.');
+                }
+
+                const ajaxProduct = await response.json();
+                const normalized = normalizeAjaxProduct(ajaxProduct);
+
+                renderSelectedCard(normalized);
+                updateComparison(normalized);
+              } catch (error) {
+                selectedCardWrap.innerHTML = '<div class="product-compare-modal__empty">Could not load that product. Try another one.</div>';
+                compareFields.forEach((field) => {
+                  field.textContent = '—';
+                });
+              }
+            });
+          });
+        }
+
+        async function runSearch(query) {
+          const searchId = Date.now();
+          activeRequest = searchId;
+          setResultState('Searching…');
+
+          try {
+            const requestUrl =
+              (window.Shopify && window.Shopify.routes && window.Shopify.routes.root ? window.Shopify.routes.root : '/') +
+              'search/suggest.json?q=' + encodeURIComponent(query) +
+              '&resources[type]=product' +
+              '&resources[limit]=6' +
+              '&resources[limit_scope]=each' +
+              '&resources[options][unavailable_products]=last' +
+              '&resources[options][fields]=title,product_type,variants.title,vendor,variants.sku';
+
+            const response = await fetch(requestUrl, {
+              headers: {
+                Accept: 'application/json'
+              }
+            });
+
+            if (!response.ok) {
+              throw new Error('Search request failed.');
+            }
+
+            const data = await response.json();
+
+            if (activeRequest !== searchId) {
+              return;
+            }
+
+            const products = data && data.resources && data.resources.results && Array.isArray(data.resources.results.products)
+              ? data.resources.results.products
+              : [];
+
+            renderSearchResults(products);
+          } catch (error) {
+            if (activeRequest !== searchId) {
+              return;
+            }
+
+            setResultState('Something went wrong while searching.');
+          }
+        }
+
+        function openModal() {
+          lastFocusedElement = document.activeElement;
+          modal.hidden = false;
+          document.body.classList.add('compare-modal-open');
+          openButton.setAttribute('aria-expanded', 'true');
+          dialog.focus();
+        }
+
+        function closeModal() {
+          modal.hidden = true;
+          document.body.classList.remove('compare-modal-open');
+          openButton.setAttribute('aria-expanded', 'false');
+          clearResults();
+
+          if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+            lastFocusedElement.focus();
+          }
+        }
+
+        openButton.addEventListener('click', openModal);
+
+        closeButtons.forEach((button) => {
+          button.addEventListener('click', closeModal);
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (modal.hidden) {
+            return;
+          }
+
+          if (event.key === 'Escape') {
+            closeModal();
+          }
+        });
+
+        searchInput.addEventListener('input', () => {
+          const query = searchInput.value.trim();
+
+          window.clearTimeout(searchTimer);
+
+          if (query.length < 2) {
+            clearResults();
+            return;
+          }
+
+          searchTimer = window.setTimeout(() => {
+            runSearch(query);
+          }, 250);
+        });
+
+        resetComparison();
+        box.dataset.compareModalInit = 'true';
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      initCompareBoxSliders(document);
+      initCompareModals(document);
+    });
+
+    document.addEventListener('shopify:section:load', function (event) {
+      initCompareBoxSliders(event.target);
+      initCompareModals(event.target);
+    });
+
+    document.addEventListener('shopify:block:select', function (event) {
+      const section = event.target.closest('.shopify-section');
+      initCompareBoxSliders(section || document);
+      initCompareModals(section || document);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Compare box",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Compare this product with other available options"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Compare this Product"
+    },
+    {
+      "type": "text",
+      "id": "modal_heading",
+      "label": "Modal heading",
+      "default": "Compare products"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder",
+      "default": "Search a product"
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 1"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote",
+      "default": "\"All the customizable bell covers come out amazing! Thank you! Thanks for getting it done so quickly!\""
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Author",
+      "default": "Michael H. - ESP Networks Production Manager"
+    },
+    {
+      "type": "range",
+      "id": "star_count",
+      "label": "Star count",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_label",
+      "label": "Review label",
+      "default": "Verified Review"
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 2"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_2",
+      "label": "Quote"
+    },
+    {
+      "type": "text",
+      "id": "author_2",
+      "label": "Author"
+    },
+    {
+      "type": "range",
+      "id": "star_count_2",
+      "label": "Star count",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_label_2",
+      "label": "Review label",
+      "default": "Verified Review"
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 3"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_3",
+      "label": "Quote"
+    },
+    {
+      "type": "text",
+      "id": "author_3",
+      "label": "Author"
+    },
+    {
+      "type": "range",
+      "id": "star_count_3",
+      "label": "Star count",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_label_3",
+      "label": "Review label",
+      "default": "Verified Review"
+    },
+    {
+      "type": "header",
+      "content": "Slider settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    }
+  ],
+  "presets": [
+    {
+      "name": "Compare box"
+    }
+  ]
+}
+{% endschema %}

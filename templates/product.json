@@ -9,6 +9,22 @@
  */
 {
   "sections": {
+    "custom_breadcrumbs_ENh9yw": {
+      "type": "custom-breadcrumbs",
+      "name": "Custom breadcrumbs",
+      "settings": {
+        "show_on_homepage": false,
+        "full_width": false,
+        "separator": "/",
+        "font_size": 12,
+        "padding_top": 12,
+        "padding_bottom": 12,
+        "bg_color": "#ffffff",
+        "link_color": "#4a4a4a",
+        "current_color": "#000000",
+        "separator_color": "#666666"
+      }
+    },
     "main": {
       "type": "product-information",
       "blocks": {
@@ -20,7 +36,7 @@
             "media_columns": "two",
             "image_gap": 4,
             "large_first_image": false,
-            "icons_style": "none",
+            "icons_style": "chevron",
             "slideshow_controls_style": "thumbnails",
             "slideshow_mobile_controls_style": "thumbnails",
             "thumbnail_position": "bottom",
@@ -108,11 +124,25 @@
                 "padding-inline-end": 0
               },
               "blocks": {
+                "review_pwQ9Mc": {
+                  "type": "review",
+                  "name": "t:names.product_review_stars",
+                  "settings": {
+                    "stars_style": "outline",
+                    "show_number": true,
+                    "rating_color": "primary",
+                    "type_preset": "paragraph",
+                    "width": "100%",
+                    "alignment": "left"
+                  },
+                  "blocks": {}
+                },
                 "text_xrnftG": {
                   "type": "text",
                   "name": "Product title",
                   "settings": {
                     "text": "<h1>{{ closest.product.title }}</h1>",
+                    "logo_image": "shopify://shop_images/fast_delivery.png",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -158,6 +188,7 @@
                 }
               },
               "block_order": [
+                "review_pwQ9Mc",
                 "text_xrnftG",
                 "price_tVjtKg"
               ]
@@ -211,18 +242,25 @@
                   "settings": {},
                   "blocks": {}
                 },
+                "accelerated-checkout": {
+                  "type": "accelerated-checkout",
+                  "disabled": true,
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                },
+                "design-cover": {
+                  "type": "design-cover",
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                },
                 "add-to-cart": {
                   "type": "add-to-cart",
                   "static": true,
                   "settings": {
                     "style_class": "button"
                   },
-                  "blocks": {}
-                },
-                "accelerated-checkout": {
-                  "type": "accelerated-checkout",
-                  "static": true,
-                  "settings": {},
                   "blocks": {}
                 },
                 "product-zip-code": {
@@ -250,6 +288,31 @@
               "type": "product-info-grid",
               "name": "Product Info Grid",
               "settings": {},
+              "blocks": {}
+            },
+            "compare_box_6AWFXf": {
+              "type": "compare-box",
+              "name": "Compare box",
+              "settings": {
+                "heading": "Compare this product with other available options",
+                "button_label": "Compare this Product",
+                "modal_heading": "Compare products",
+                "search_placeholder": "Search a product",
+                "quote": "All the customizable bell covers come out amazing! Thank you! Thanks for getting it done so quickly!",
+                "author": "Michael H. - ESP Networks Production Manager",
+                "star_count": 5,
+                "review_label": "Verified Review",
+                "quote_2": "All the customizable bell covers come out amazing! Thank you! Thanks for getting it done so quickly!",
+                "author_2": "Michael H. - ESP Networks Production Manager",
+                "star_count_2": 5,
+                "review_label_2": "Verified Review",
+                "quote_3": "",
+                "author_3": "",
+                "star_count_3": 5,
+                "review_label_3": "Verified Review",
+                "autoplay": true,
+                "autoplay_speed": 5
+              },
               "blocks": {}
             },
             "accordion_UF6wpm": {
@@ -284,7 +347,7 @@
                       "type": "text",
                       "name": "Product description",
                       "settings": {
-                        "text": "<p>{{ closest.product.description }}</p>",
+                        "text": "{{ closest.product.description }}",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -323,7 +386,7 @@
                     "text_Aaaty7": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location.</p>",
+                        "text": "<p>{{ closest.product.metafields.custom.important_printing_note | metafield_tag }}</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -362,7 +425,7 @@
                     "text_Dqpam9": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "text": "<p>{{ closest.product.metafields.custom.specification | metafield_tag }}</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -401,7 +464,7 @@
                     "text_dHtD7r": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "text": "<p>{{ closest.product.metafields.custom.how_to_measure | metafield_tag }}</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -440,7 +503,7 @@
                     "text_r8PefT": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "text": "<p>{{ closest.product.metafields.custom.materials_used | metafield_tag }}</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -475,6 +538,28 @@
                 "accordion_row_WaGDtU",
                 "accordion_row_KiUnaw"
               ]
+            },
+            "custom_accordion_JMM7jD": {
+              "type": "custom-accordion",
+              "name": "custom-accordion",
+              "settings": {
+                "heading": "FAQs",
+                "open_group_by_default": true,
+                "open_first_item": true,
+                "question_1": "What is the largest imprint you can print?",
+                "answer_1": "<p>29 inches</p>",
+                "question_2": "What material colors do you have?",
+                "answer_2": "<p>Add answer here.</p>",
+                "question_3": "Can you match colors exactly?",
+                "answer_3": "<p>Add answer here.</p>",
+                "question_4": "Return Policy?",
+                "answer_4": "<p>Add answer here.</p>",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -485,7 +570,9 @@
             "buy_buttons_eYQEYi",
             "divider_LdbDi9",
             "product_info_grid_B8eVAV",
-            "accordion_UF6wpm"
+            "compare_box_6AWFXf",
+            "accordion_UF6wpm",
+            "custom_accordion_JMM7jD"
           ]
         }
       },
@@ -552,6 +639,7 @@
         "block_RBUDxJ",
         "block_67haib"
       ],
+      "disabled": true,
       "name": "Image row",
       "settings": {
         "background": "#f6f6f6"
@@ -563,6 +651,67 @@
       "settings": {
         "spacer_size_mobile": 0,
         "spacer_size_desktop": 50
+      }
+    },
+    "ups_icon_bar_rnHWap": {
+      "type": "ups-icon-bar",
+      "blocks": {
+        "item_ywXa8U": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector.png",
+            "heading": "Fully Custom Covers",
+            "text": "Made to your exact size and specifications."
+          }
+        },
+        "item_fiXjHP": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_1.png",
+            "heading": "Fast Production",
+            "text": "Quick turnaround without compromising quality."
+          }
+        },
+        "item_7XayQD": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_2.png",
+            "heading": "Repeat Customers Worldwide",
+            "text": "Trusted by 50,000+ clients across the globe."
+          }
+        },
+        "item_LqQBX4": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_3.png",
+            "heading": "Order as Few as One",
+            "text": "No minimum order required."
+          }
+        },
+        "item_xBLrja": {
+          "type": "item",
+          "settings": {
+            "custom_icon": "shopify://shop_images/Vector_4.png",
+            "heading": "Made with Premium Microfiber",
+            "text": "Soft, durable, and stretchable material."
+          }
+        }
+      },
+      "block_order": [
+        "item_ywXa8U",
+        "item_fiXjHP",
+        "item_7XayQD",
+        "item_LqQBX4",
+        "item_xBLrja"
+      ],
+      "name": "USP Icon Bar",
+      "settings": {
+        "bg_color": "#f6f6f6",
+        "border_color": "#1a2438",
+        "border_width": 2,
+        "icon_color": "#223b63",
+        "heading_color": "#111111",
+        "text_color": "#333333"
       }
     },
     "image_swiper_n9ebDN": {
@@ -602,8 +751,8 @@
       "settings": {
         "section_version": "version-2",
         "background": "#ffffff",
-        "heading": "Trusted by Hundreds of Brands Worldwide",
-        "description": "Personalize your cover in just a few clicks.",
+        "heading": "Trusted by Hundreds of Brands <br>Worldwide",
+        "description": "",
         "rating": "Trusted by 50,000 + customers"
       }
     },
@@ -651,7 +800,7 @@
       "name": "Image swiper",
       "settings": {
         "section_version": "version-1",
-        "background": "#f6f6f6",
+        "background": "#f9f9f9",
         "heading": "Design in 3 Easy Steps",
         "description": "Personalize your cover in just a few clicks.",
         "rating": ""
@@ -715,6 +864,111 @@
       "settings": {
         "spacer_size_mobile": 0,
         "spacer_size_desktop": 50
+      }
+    },
+    "custom_section_product_TirLQH": {
+      "type": "custom-section-product",
+      "blocks": {
+        "product_slide_kmCWFb": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_HBEqmF": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_8rAJt7": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_6z6HY6": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_QkyBXN": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_UbxHhX": {
+          "type": "product_slide",
+          "settings": {
+            "product": "sample-1",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        }
+      },
+      "block_order": [
+        "product_slide_kmCWFb",
+        "product_slide_HBEqmF",
+        "product_slide_8rAJt7",
+        "product_slide_6z6HY6",
+        "product_slide_QkyBXN",
+        "product_slide_UbxHhX"
+      ],
+      "name": "Selected Products Slider",
+      "settings": {
+        "heading": "You May Also Like",
+        "subheading": "",
+        "view_all_text": "View All",
+        "view_all_link": "",
+        "enable_autoplay": true,
+        "autoplay_speed": 4,
+        "section_bg": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "subheading_color": "#666666",
+        "link_color": "#1a1a1a",
+        "title_color": "#1a1a1a",
+        "meta_color": "#666666",
+        "price_color": "#1a1a1a",
+        "stars_color": "#f5a623",
+        "badge_bg": "#e98a15",
+        "badge_color": "#ffffff",
+        "card_radius": 6
       }
     },
     "product_list_NiDTqC": {
@@ -890,6 +1144,7 @@
           ]
         }
       },
+      "disabled": true,
       "name": "t:names.products_carousel",
       "settings": {
         "collection": "all-items",
@@ -909,6 +1164,178 @@
         "color_scheme": "scheme-1",
         "padding-block-start": 48,
         "padding-block-end": 48
+      }
+    },
+    "custom_section_testimonial_aGKFWw": {
+      "type": "custom-section-testimonial",
+      "blocks": {
+        "testimonial_7iNcqG": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        },
+        "testimonial_Rxx3k9": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        },
+        "testimonial_ga8gYW": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        },
+        "testimonial_7NLLUM": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        },
+        "testimonial_NzgwM3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
+            "author": "Cathy Powell",
+            "role": "University Health Care System"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_7iNcqG",
+        "testimonial_Rxx3k9",
+        "testimonial_ga8gYW",
+        "testimonial_7NLLUM",
+        "testimonial_NzgwM3"
+      ],
+      "name": "Testimonial Slider",
+      "settings": {
+        "stars_text": "★★★★★",
+        "trusted_text": "Trusted by 450,000 + customers",
+        "heading": "Why Our Customers Keep Coming Back",
+        "description": "Thousands of customers.<br> Repeated use. Shared by our customers.",
+        "desktop_cards": "4",
+        "section_bg": "#ffffff",
+        "stars_color": "#f5a623",
+        "trusted_color": "#666666",
+        "heading_color": "#1f1f1f",
+        "description_color": "#666666",
+        "card_bg": "#ffffff",
+        "quote_icon_color": "#0f2e53",
+        "quote_color": "#444444",
+        "author_color": "#222222",
+        "role_color": "#666666",
+        "arrow_bg": "#f3f3f3",
+        "arrow_color": "#7a7a7a",
+        "arrow_border": "#d5d5d5",
+        "arrow_hover_bg": "#0f2e53",
+        "arrow_hover_color": "#ffffff",
+        "line_color": "#d8d8d8"
+      }
+    },
+    "6648fa065774a62fa86d": {
+      "type": "apps",
+      "blocks": {
+        "178f50e6-3fe4-413f-830e-20ef95b0d03c": {
+          "type": "shopify://apps/yotpo-product-reviews/blocks/reviews/eb7dfd7d-db44-4334-bc49-c893b51b36cf",
+          "settings": {
+            "product": "{{product}}"
+          }
+        }
+      },
+      "block_order": [
+        "178f50e6-3fe4-413f-830e-20ef95b0d03c"
+      ],
+      "settings": {}
+    },
+    "custon_section_faq_qpxUWt": {
+      "type": "custon-section-faq",
+      "blocks": {
+        "faq_item_X9MwF7": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is the largest imprint you can print?",
+            "answer": "<p>29 inches</p>",
+            "category": "category_1"
+          }
+        },
+        "faq_item_Y4wVPb": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What material colors do you have?",
+            "answer": "<p>We offer a wide range of material colors depending on the product type and print method.</p>",
+            "category": "category_1"
+          }
+        },
+        "faq_item_d3LDAw": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can you match colors exactly?",
+            "answer": "<p>We can get very close, but exact color matching may vary slightly by material and printing method.</p>",
+            "category": "category_2"
+          }
+        },
+        "faq_item_6Cg6Bh": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Return Policy?",
+            "answer": "<p>Please contact us right away if there is an issue with your order so we can review it.</p>",
+            "category": "category_3"
+          }
+        },
+        "faq_item_taG8CJ": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your standard production time?",
+            "answer": "<p>Production time depends on quantity and artwork approval, but standard turnaround is typically discussed before checkout.</p>",
+            "category": "category_4"
+          }
+        }
+      },
+      "block_order": [
+        "faq_item_X9MwF7",
+        "faq_item_Y4wVPb",
+        "faq_item_d3LDAw",
+        "faq_item_6Cg6Bh",
+        "faq_item_taG8CJ"
+      ],
+      "name": "FAQ Category Accordion",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "category_1": "Product & Materials",
+        "category_2": "Artwork & Printing",
+        "category_3": "Orders, Payment & Returns",
+        "category_4": "Production & Shipping",
+        "category_5": "",
+        "category_6": "",
+        "bottom_text": "Have more questions? Reach out so we can assist you.",
+        "button_label": "Contact Us",
+        "button_link": "",
+        "section_bg": "#ffffff",
+        "heading_color": "#1f1f1f",
+        "category_box_bg": "#ffffff",
+        "category_divider_color": "#e7e7e7",
+        "category_text_color": "#6a6a6a",
+        "category_active_text_color": "#1f1f1f",
+        "closed_bg": "#0f2e53",
+        "closed_text": "#ffffff",
+        "open_bg": "#eaeaea",
+        "open_text": "#1f1f1f",
+        "answer_color": "#7a7a7a",
+        "bottom_text_color": "#6a6a6a",
+        "button_bg": "#f3a12a",
+        "button_text": "#ffffff",
+        "padding_top": 40,
+        "padding_bottom": 40
       }
     },
     "custom_testimonial_n7rJKp": {
@@ -967,6 +1394,7 @@
         "testimonial_TeccRj",
         "testimonial_cGXmwR"
       ],
+      "disabled": true,
       "name": "Custom Testimonials",
       "settings": {
         "trust_text": "Trusted by 450,000 + customers",
@@ -976,16 +1404,22 @@
     }
   },
   "order": [
+    "custom_breadcrumbs_ENh9yw",
     "main",
     "image_row_7KNinV",
     "spacer_cfBYhw",
+    "ups_icon_bar_rnHWap",
     "image_swiper_n9ebDN",
     "spacer_kpMBb4",
     "image_swiper_BqqLEK",
     "spacer_CA3eWN",
     "image_marquee_LXkpHT",
     "spacer_AbwpxQ",
+    "custom_section_product_TirLQH",
     "product_list_NiDTqC",
+    "custom_section_testimonial_aGKFWw",
+    "6648fa065774a62fa86d",
+    "custon_section_faq_qpxUWt",
     "custom_testimonial_n7rJKp"
   ]
 }

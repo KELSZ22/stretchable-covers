@@ -231,7 +231,7 @@
                   {% endcase %}
                 {%- endfor -%}
               {% endcapture %}
-
+              <h3 class="facets__main-title">Filters</h3>
               <div class="facets__filters-wrapper">
                 {% if block_settings.filter_style == 'horizontal' %}
                   {% liquid
@@ -323,10 +323,12 @@
           type="button"
         >
           <span class="svg-wrapper">
-            {{ 'icon-filter.svg' | inline_asset_content }}
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M5.76035 0.720001C5.16832 0.720001 4.68035 1.20797 4.68035 1.8V2.52H1.08035C1.0691 2.52 1.05785 2.52 1.0466 2.52C0.848321 2.52984 0.693633 2.69859 0.703477 2.89688C0.713321 3.09516 0.882071 3.24985 1.08035 3.24H4.68035V3.96C4.68035 4.55203 5.16832 5.04 5.76035 5.04H6.48035C7.07238 5.04 7.56035 4.55203 7.56035 3.96V1.8C7.56035 1.20797 7.07238 0.720001 6.48035 0.720001H5.76035ZM5.76035 1.44H6.48035C6.68426 1.44 6.84035 1.5961 6.84035 1.8V3.96C6.84035 4.16391 6.68426 4.32 6.48035 4.32H5.76035C5.55645 4.32 5.40035 4.16391 5.40035 3.96V2.9475C5.4102 2.89969 5.4102 2.84906 5.40035 2.80125V1.8C5.40035 1.5961 5.55645 1.44 5.76035 1.44ZM7.92035 2.52V3.24H16.9204C17.0497 3.24141 17.1707 3.17391 17.2368 3.06141C17.3014 2.94891 17.3014 2.81109 17.2368 2.6986C17.1707 2.5861 17.0497 2.51859 16.9204 2.52H7.92035ZM12.2404 6.84C11.6483 6.84 11.1604 7.32797 11.1604 7.92V8.64H1.08035C1.0691 8.64 1.05785 8.64 1.0466 8.64C0.848321 8.64984 0.693633 8.81859 0.703477 9.01688C0.713321 9.21516 0.882071 9.36984 1.08035 9.36H11.1604V10.08C11.1604 10.672 11.6483 11.16 12.2404 11.16H12.9604C13.5524 11.16 14.0404 10.672 14.0404 10.08V7.92C14.0404 7.32797 13.5524 6.84 12.9604 6.84H12.2404ZM12.2404 7.56H12.9604C13.1643 7.56 13.3204 7.71609 13.3204 7.92V10.08C13.3204 10.2839 13.1643 10.44 12.9604 10.44H12.2404C12.0364 10.44 11.8804 10.2839 11.8804 10.08V9.0675C11.8902 9.01969 11.8902 8.96906 11.8804 8.92125V7.92C11.8804 7.71609 12.0364 7.56 12.2404 7.56ZM14.4004 8.64V9.36H16.9204C17.0497 9.36141 17.1707 9.29391 17.2368 9.18141C17.3014 9.06891 17.3014 8.93109 17.2368 8.81859C17.1707 8.70609 17.0497 8.63859 16.9204 8.64H14.4004ZM4.68035 12.96C4.08832 12.96 3.60035 13.448 3.60035 14.04V14.76H1.08035C1.0691 14.76 1.05785 14.76 1.0466 14.76C1.03535 14.76 1.0241 14.76 1.01285 14.76C0.814571 14.7783 0.668321 14.9555 0.686602 15.1538C0.704883 15.352 0.882071 15.4983 1.08035 15.48H3.60035V16.2C3.60035 16.792 4.08832 17.28 4.68035 17.28H5.40035C5.99238 17.28 6.48035 16.792 6.48035 16.2V14.04C6.48035 13.448 5.99238 12.96 5.40035 12.96H4.68035ZM4.68035 13.68H5.40035C5.60426 13.68 5.76035 13.8361 5.76035 14.04V16.2C5.76035 16.4039 5.60426 16.56 5.40035 16.56H4.68035C4.47645 16.56 4.32035 16.4039 4.32035 16.2V15.1875C4.3302 15.1397 4.3302 15.0891 4.32035 15.0413V14.04C4.32035 13.8361 4.47645 13.68 4.68035 13.68ZM6.84035 14.76V15.48H16.9204C17.0497 15.4814 17.1707 15.4139 17.2368 15.3014C17.3014 15.1889 17.3014 15.0511 17.2368 14.9386C17.1707 14.8261 17.0497 14.7586 16.9204 14.76H6.84035Z" fill="#0F2E53"/>
+            </svg>
           </span>
 
-          {{ 'actions.show_filters' | t }}
+          Filter By:
 
           {% if total_active_values > 0 %}
             <div
@@ -349,42 +351,43 @@
       </div>
     {% endif %}
 
-    {% liquid
-      assign child_count = 0
-      if block_settings.enable_filtering == false and effective_show_sorting
-        assign child_count = child_count | plus: 1
-      endif
-      if effective_show_column_options
-        assign child_count = child_count | plus: 1
-      endif
-    %}
+{% liquid
+  assign child_count = 0
+  if effective_show_sorting
+    assign child_count = child_count | plus: 1
+  endif
+  if effective_show_column_options
+    assign child_count = child_count | plus: 1
+  endif
+%}
 
-    <div class="facets-mobile-wrapper facets-controls-wrapper{% if child_count > 1 %} facets-mobile-wrapper--multiple-controls{% endif %}">
-      {% if block_settings.enable_filtering == false and effective_show_sorting %}
-        <facets-form-component
-          section-id="{{ section.id }}"
-          id="FacetFiltersForm--{{ section.id }}-mobile-sorting-only"
-        >
-          <form
-            action="{{ results_url }}"
-            id="FacetFiltersForm--{{ section.id }}-mobile-sorting-only"
-            ref="facetsForm"
-          >
-            {% render 'sorting',
-              results: results,
-              sort_by: sort_by,
-              filter_style: block_settings.filter_style,
-              sort_position: 'mobile',
-              should_use_select_on_mobile: should_use_select_on_mobile,
-              section_id: section.id
-            %}
-          </form>
-        </facets-form-component>
-      {% endif %}
-      {% if effective_show_column_options %}
-        {% render 'grid-density-controls', viewport: 'mobile' %}
-      {% endif %}
-    </div>
+<div class="facets-mobile-wrapper facets-controls-wrapper{% if child_count > 1 %} facets-mobile-wrapper--multiple-controls{% endif %}">
+  {% if effective_show_sorting %}
+    <facets-form-component
+      section-id="{{ section.id }}"
+      id="FacetFiltersForm--{{ section.id }}-mobile-sorting"
+    >
+      <form
+        action="{{ results_url }}"
+        id="FacetFiltersForm--{{ section.id }}-mobile-sorting"
+        ref="facetsForm"
+      >
+        {% render 'sorting',
+          results: results,
+          sort_by: sort_by,
+          filter_style: block_settings.filter_style,
+          sort_position: 'mobile',
+          should_use_select_on_mobile: true,
+          section_id: section.id
+        %}
+      </form>
+    </facets-form-component>
+  {% endif %}
+
+  {% if effective_show_column_options %}
+    {% render 'grid-density-controls', viewport: 'mobile' %}
+  {% endif %}
+</div>
   </div>
 {% else %}
   <div></div>
@@ -422,7 +425,7 @@
               id="filters-drawer-heading"
               class="facets-drawer__title h3"
             >
-              {{ 'blocks.filter' | t }}
+              Filter By:
 
               {% if total_active_values > 0 %}
                 <span
@@ -1338,6 +1341,112 @@
     border-inline-start: var(--style-border-width) solid var(--color-border);
     height: var(--font-paragraph--size);
     position: absolute;
+  }
+  .facets__main-title {
+    color: #1F1F1F;
+    font-family: Lato;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 28px; 
+  }
+
+  @media screen and (max-width:749px){
+    .facets__main-title {
+      display: none;
+    }
+    .facets__title-wrapper { 
+      color: #0F2E53;
+      font-family: Lato;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 28px; 
+    }
+    .filter-count-bubble {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      top: 10px;
+      left: 45px;
+      background: #0F2E53;
+    }
+    .filter-count-bubble__text {
+      color: #FFF;
+      text-align: center;
+      font-family: Lato;
+      font-size: 8px;
+      font-style: normal; 
+      font-weight: 700;
+      line-height: 6px; 
+    }
+    .facets-toggle__button {
+      gap: 20px;
+      color:  #0F2E53;
+      font-family: Lato;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px; 
+    }
+    .facets-toggle {
+      gap: 12px;
+      padding: 16px 20px;
+      border-radius: 0 0 14px 14px;
+      background: #fff;
+      box-shadow: 0 4px 5.2px 0 rgba(0, 0, 0, 0.07);
+    }
+
+    .facets-toggle__wrapper,
+    .facets-mobile-wrapper {
+      flex: 1 1 0;
+    }
+
+    .facets-mobile-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .facets-mobile-wrapper .sorting-filter {
+      width: auto;
+    }
+  }
+  @media screen and (min-width: 750px){
+  .facets__form-wrapper {
+    display: flex;
+    padding: 27px 19px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 14px;
+    background: #FFF;
+    box-shadow: 0 4px 5.2px 0 rgba(0, 0, 0, 0.07);
+  }
+}
+  /*custom styles remove if affects other pages*/
+  .card-gallery {
+    box-shadow: 0 4.395px 4.395px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+  }
+  .facets--filters-title.h4 {
+    display: none;
+  }
+  @media screen and (min-width: 750px) {
+    .main-collection-grid {
+      margin-left: 85px;
+    }
+    .facets.facets-controls-wrapper{
+      display: none;
+    }
+  }
+  .facets-toggle {
+    display: flex;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 5.2px 0 rgba(0, 0, 0, 0.05);
+    margin: 0 15px 20px 15px !important;
   }
 {% endstylesheet %}
 

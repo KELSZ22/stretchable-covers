@@ -1,7 +1,12 @@
 * {
   box-sizing: border-box;
 }
-
+h1,h2,h3,h4,h5,h6{
+  font-family: Raleway, sans-serif;
+}
+p, span{
+  font-family: Lato, sans-serif;
+}
 body {
   color: var(--color-foreground);
   background: var(--color-background);
@@ -49,6 +54,12 @@ svg {
 img {
   width: 100%;
   height: auto;
+}
+
+div#header-group {
+    position: sticky;
+    top: 0;
+    z-index: 99999;
 }
 
 input,
@@ -4211,7 +4222,7 @@ slideshow-arrows {
   display: flex;
   z-index: var(--layer-heightened);
   pointer-events: none;
-  mix-blend-mode: difference;
+  mix-blend-mode: normal; 
   align-items: flex-end;
 
   &[position='left'] {
@@ -4245,7 +4256,25 @@ slideshow-arrows .slideshow-control {
   min-height: var(--minimum-touch-target);
   min-width: var(--minimum-touch-target);
   padding: 0 var(--padding-xs);
-  color: var(--color-white);
+  color: #5F5F5F;
+}
+button.slideshow-control.slideshow-control--next.slideshow-control--style-chevron.button.button-unstyled.button-unstyled--transparent,
+button.slideshow-control.slideshow-control--previous.slideshow-control--style-chevron.button.button-unstyled.button-unstyled--transparent.flip-x {
+    color: #5F5F5F;
+    background: #F3F4F5;
+    border: 1px solid #C5C5C5;
+    padding: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    border-radius: 99999px;
+}
+button.slideshow-control.slideshow-control--next.slideshow-control--style-chevron.button.button-unstyled.button-unstyled--transparent svg,
+button.slideshow-control.slideshow-control--previous.slideshow-control--style-chevron.button.button-unstyled.button-unstyled--transparent.flip-x svg {
+      width: 15px;
+      height: 15px;
 }
 
 slideshow-arrows .slideshow-control.slideshow-control--style-none {
@@ -4467,7 +4496,10 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
 }
 
 .resource-list__carousel slideshow-arrows {
-  padding-inline: var(--util-page-margin-offset);
+  /* padding-inline: var(--util-page-margin-offset); */
+}
+slideshow-component.resource-list__carousel slideshow-slides {
+    padding: 0;
 }
 
 .resource-list__carousel .resource-list__slide {
@@ -4965,4 +4997,10 @@ product-recommendations:has([data-has-recommendations='false']) {
     opacity: var(--atc-opacity, 1);
     translate: 0px var(--atc-destination, 0px);
   }
+}
+.yotpo-label-container {
+    display: none !important;
+}
+.main-widget.yotpo-display-wrapper.yotpo-no-reviews {
+    padding: 60px 40px;
 }

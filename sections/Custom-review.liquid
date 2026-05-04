@@ -1,0 +1,663 @@
+<section id="shopify-section-{{ section.id }}" class="vc-testimonials" data-section-id="{{ section.id }}" data-cards-per-view="{{ section.settings.cards_per_view }}">
+  <div class="vc-testimonials__inner page-width">
+    <div class="vc-testimonials__header">
+      <div class="vc-testimonials__topline">
+        <div class="vc-testimonials__stars" aria-hidden="true">
+          <svg width="120" height="22" viewBox="0 0 120 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.0009 16.5834L15.5558 19.3325C16.2745 19.7661 17.1609 19.1217 16.9702 18.3049L15.7611 13.123L19.7862 9.63601C20.4206 9.08692 20.0814 8.04467 19.2454 7.97409L13.9471 7.52492L11.8745 2.63451C11.5472 1.86359 10.4546 1.86359 10.1273 2.63451L8.05473 7.52492L2.7564 7.97409C1.9204 8.04467 1.58123 9.08692 2.21556 9.63601L6.24065 13.123L5.03156 18.3049C4.8409 19.1217 5.72731 19.7661 6.44598 19.3325L11.0009 16.5834Z" fill="#EB891B"/>
+            <path d="M35.3583 16.5834L39.9132 19.3325C40.6319 19.7661 41.5183 19.1217 41.3277 18.3049L40.1186 13.123L44.1437 9.63601C44.778 9.08692 44.4388 8.04467 43.6028 7.97409L38.3045 7.52492L36.2319 2.63451C35.9047 1.86359 34.812 1.86359 34.4847 2.63451L32.4122 7.52492L27.1138 7.97409C26.2778 8.04467 25.9387 9.08692 26.573 9.63601L30.5981 13.123L29.389 18.3049C29.1983 19.1217 30.0847 19.7661 30.8034 19.3325L35.3583 16.5834Z" fill="#EB891B"/>
+            <path d="M59.7157 16.5834L64.2707 19.3325C64.9893 19.7661 65.8757 19.1217 65.6851 18.3049L64.476 13.123L68.5011 9.63601C69.1354 9.08692 68.7962 8.04467 67.9602 7.97409L62.6619 7.52492L60.5893 2.63451C60.2621 1.86359 59.1694 1.86359 58.8422 2.63451L56.7696 7.52492L51.4712 7.97409C50.6352 8.04467 50.2961 9.08692 50.9304 9.63601L54.9555 13.123L53.7464 18.3049C53.5557 19.1217 54.4422 19.7661 55.1608 19.3325L59.7157 16.5834Z" fill="#EB891B"/>
+            <path d="M84.0732 16.5834L88.6281 19.3325C89.3467 19.7661 90.2332 19.1217 90.0425 18.3049L88.8334 13.123L92.8585 9.63601C93.4928 9.08692 93.1537 8.04467 92.3177 7.97409L87.0193 7.52492L84.9467 2.63451C84.6195 1.86359 83.5268 1.86359 83.1996 2.63451L81.127 7.52492L75.8287 7.97409C74.9927 8.04467 74.6535 9.08692 75.2878 9.63601L79.3129 13.123L78.1038 18.3049C77.9132 19.1217 78.7996 19.7661 79.5182 19.3325L84.0732 16.5834Z" fill="#EB891B"/>
+            <path d="M108.429 16.5834L112.984 19.3325C113.702 19.7661 114.589 19.1217 114.398 18.3049L113.189 13.123L117.214 9.63601C117.848 9.08692 117.509 8.04467 116.673 7.97409L111.375 7.52492L109.302 2.63451C108.975 1.86359 107.882 1.86359 107.555 2.63451L105.482 7.52492L100.184 7.97409C99.3481 8.04467 99.009 9.08692 99.6433 9.63601L103.668 13.123L102.459 18.3049C102.269 19.1217 103.155 19.7661 103.874 19.3325L108.429 16.5834Z" fill="#EB891B"/>
+          </svg>
+        </div>
+        <p class="vc-testimonials__customers">{{ section.settings.customers_text }}</p>
+      </div>
+      <h2 class="vc-testimonials__title">{{ section.settings.heading }}</h2>
+      <p class="vc-testimonials__subtitle">{{ section.settings.subheading }}</p>
+    </div>
+
+    <div class="vc-testimonials__slider-wrap">
+      <div class="vc-testimonials__viewport" data-viewport>
+        <div class="vc-testimonials__track">
+          {% for block in section.blocks %}
+            <article class="vc-testimonials__card" {{ block.shopify_attributes }}>
+              {% if block.settings.image != blank %}
+                <div class="vc-testimonials__image-wrap">
+                  <img
+                    class="vc-testimonials__image"
+                    src="{{ block.settings.image | image_url: width: 1200 }}"
+                    alt="{{ block.settings.image_alt | escape }}"
+                    loading="lazy"
+                    width="800"
+                    height="600"
+                  >
+                </div>
+              {% endif %}
+              <div class="vc-testimonials__quote-mark" aria-hidden="true">
+                <svg width="36" height="33" viewBox="0 0 36 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2.93333 0C1.31267 0 0 1.31267 0 2.93333V14.6667C0 16.2873 1.31267 17.6 2.93333 17.6H8.86016C8.89672 20.2198 8.64045 25.8333 6.10443 29.9979H6.10729C5.92013 30.2865 5.8403 30.6317 5.88175 30.9731C5.9232 31.3146 6.0833 31.6306 6.33407 31.866C6.58484 32.1014 6.91035 32.2413 7.25374 32.2611C7.59713 32.2809 7.93656 32.1795 8.21276 31.9745C8.21276 31.9745 14.6667 27.0518 14.6667 17.6V2.93333C14.6667 1.31267 13.354 0 11.7333 0H2.93333ZM23.4667 0C21.846 0 20.5333 1.31267 20.5333 2.93333V14.6667C20.5333 16.2873 21.846 17.6 23.4667 17.6H29.3935C29.4301 20.2198 29.1738 25.8333 26.6378 29.9979H26.6406C26.4535 30.2865 26.3736 30.6317 26.4151 30.9731C26.4565 31.3146 26.6166 31.6306 26.8674 31.866C27.1182 32.1014 27.4437 32.2413 27.7871 32.2611C28.1305 32.2809 28.4699 32.1795 28.7461 31.9745C28.7461 31.9745 35.2 27.0518 35.2 17.6V2.93333C35.2 1.31267 33.8873 0 32.2667 0H23.4667Z" fill="#0F2E53"/>
+                </svg>
+              </div>
+              <div class="vc-testimonials__text">{{ block.settings.quote }}</div>
+              <div class="vc-testimonials__meta">
+                <p class="vc-testimonials__name">{{ block.settings.name }}</p>
+                <p class="vc-testimonials__company">{{ block.settings.company }}</p>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="vc-testimonials__controls">
+        <div class="vc-testimonials__nav">
+          <button class="vc-testimonials__arrow vc-testimonials__arrow--prev" type="button" aria-label="Previous testimonials" data-prev>
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="-0.5" y="0.5" width="39" height="39" rx="19.5" transform="matrix(-1 0 0 1 39 0)" fill="#F3F4F5"/>
+              <rect x="-0.5" y="0.5" width="39" height="39" rx="19.5" transform="matrix(-1 0 0 1 39 0)" stroke="#C5C5C5"/>
+              <path d="M23 26L17 20L23 14" stroke="#5F5F5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="vc-testimonials__arrow vc-testimonials__arrow--next" type="button" aria-label="Next testimonials" data-next>
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0.5" y="-0.5" width="39" height="39" rx="19.5" transform="matrix(1 0 0 -1 0 39)" fill="#0F2E53"/>
+              <rect x="0.5" y="-0.5" width="39" height="39" rx="19.5" transform="matrix(1 0 0 -1 0 39)" stroke="#0F2E53"/>
+              <path d="M18 14.5L24 20.5L18 26.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="vc-testimonials__tracker" data-tracker>
+          <span class="vc-testimonials__tracker-indicator" data-tracker-indicator></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    #shopify-section-{{ section.id }} .vc-testimonials {
+      background: {{ section.settings.section_bg }};
+      padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__inner {
+      max-width: {{ section.settings.max_width }}px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__header {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__topline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__stars {
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__stars svg {
+      width: 120px;
+      height: 22px;
+      display: block;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__customers {
+      margin: 0;
+      font-size: 16px;
+      color: #2D2D2D;
+      line-height: 1.2;
+      font-family: 'Lato';
+      font-weight: 500;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__title {
+      margin: 0;
+      font-size: {{ section.settings.heading_size }}px;
+      line-height: 1.2;
+      color: #0F172A;
+      font-weight: 700;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__subtitle {
+      margin: 8px 0 0;
+      font-size: 15px;
+      color: #353535;
+      line-height: 1.5;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__slider-wrap {
+      position: relative;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__viewport {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__viewport::-webkit-scrollbar {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__track {
+      display: flex;
+      gap: {{ section.settings.card_gap }}px;
+      width: max-content;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__card {
+      flex: 0 0 calc((100vw - 40px - ({{ section.settings.cards_per_view }} - 1) * {{ section.settings.card_gap }}px) / {{ section.settings.cards_per_view }});
+      width: calc((100vw - 40px - ({{ section.settings.cards_per_view }} - 1) * {{ section.settings.card_gap }}px) / {{ section.settings.cards_per_view }});
+      max-width: calc(({{ section.settings.max_width }}px - 40px - ({{ section.settings.cards_per_view }} - 1) * {{ section.settings.card_gap }}px) / {{ section.settings.cards_per_view }});
+      min-width: calc((100% - ({{ section.settings.cards_per_view }} - 1) * {{ section.settings.card_gap }}px) / {{ section.settings.cards_per_view }});
+      background: #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__image-wrap {
+      width: 100%;
+      padding: 20px;
+      height: auto;
+      box-sizing: border-box;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+      object-fit: cover;
+      max-width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__quote-mark {
+      line-height: 1;
+      margin: 2px 16px 8px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__text {
+      margin: 0 16px 20px;
+      color: #272727;
+      font-size: 16px;
+      line-height: 1.55;
+      flex-grow: 1;
+      font-style: italic;
+      font-family: Lato, sans-serif !important;
+      font-weight: 400;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__meta {
+      margin: 0 16px 16px;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__name {
+      margin: 0;
+      font-size: 16px;
+      color: #1B1B1B;
+      line-height: 1.35;
+      font-family: Lato, sans-serif
+      font-weight: 500;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__company {
+      margin: 2px 0 0;
+      font-size: 15px;
+      color: #303030;
+      font-style: italic;
+      line-height: 1.4;
+      font-family: Lato, sans-serif
+      font-weight: 500;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__controls {
+      margin-top: 26px;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__arrow {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      cursor: pointer;
+      line-height: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__arrow:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__tracker {
+      width: min(320px, 70%);
+      height: 2px;
+      background: #C6C6C6;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #shopify-section-{{ section.id }} .vc-testimonials__tracker-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: #1B1B1B;
+      width: 100%;
+      transform: translateX(0%);
+      transition: transform 0.25s ease;
+    }
+
+    @media screen and (max-width: 749px) {
+      #shopify-section-{{ section.id }} .vc-testimonials__topline {
+        flex-direction: column;
+    }
+      #shopify-section-{{ section.id }} .vc-testimonials {
+        padding: {{ section.settings.mobile_padding_top }}px 0 {{ section.settings.mobile_padding_bottom }}px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__inner {
+        padding: 0 8px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__header {
+        margin-bottom: 20px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__topline {
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__stars svg {
+        width: 96px;
+        height: 18px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__customers {
+        font-size: 12px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__title {
+        font-size: {{ section.settings.mobile_heading_size }}px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__subtitle {
+        font-size: 14px;
+        line-height: 1.35;
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__viewport {
+        padding-right: 44px;
+        box-sizing: border-box;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__track {
+        gap: 12px;
+        width: auto;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__card {
+        flex: 0 0 calc(100% - 44px);
+        width: calc(100% - 44px);
+        min-width: calc(100% - 44px);
+        max-width: calc(100% - 44px);
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__image-wrap {
+        padding: 14px 14px 8px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__image {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__quote-mark {
+        margin: 2px 14px 6px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__text {
+        margin: 0 14px 16px;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__meta {
+        margin: 0 14px 14px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__name {
+        font-size: 15px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__company {
+        font-size: 14px;
+      }
+
+      #shopify-section-{{ section.id }} .vc-testimonials__controls {
+        display: none;
+      }
+    }
+  </style>
+
+  <script>
+    (function() {
+      var section = document.getElementById('shopify-section-{{ section.id }}');
+      if (!section) return;
+
+      var viewport = section.querySelector('[data-viewport]');
+      var prevBtn = section.querySelector('[data-prev]');
+      var nextBtn = section.querySelector('[data-next]');
+      var trackerIndicator = section.querySelector('[data-tracker-indicator]');
+      var cardsPerViewDesktop = parseInt(section.getAttribute('data-cards-per-view'), 10) || 4;
+      var pageCount = 1;
+      var currentPage = 0;
+
+      function isMobile() {
+        return window.matchMedia('(max-width: 749px)').matches;
+      }
+
+      function maxScroll() {
+        return Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+      }
+
+      function getPageCount() {
+        var cards = section.querySelectorAll('.vc-testimonials__card').length;
+        var perView = isMobile() ? 1 : cardsPerViewDesktop;
+        return Math.max(1, Math.ceil(cards / perView));
+      }
+
+      function clampPage(value) {
+        if (value < 0) return 0;
+        if (value > pageCount - 1) return pageCount - 1;
+        return value;
+      }
+
+      function scrollToPage(page) {
+        page = clampPage(page);
+        var max = maxScroll();
+        var left = pageCount > 1 ? (max * (page / (pageCount - 1))) : 0;
+        viewport.scrollTo({ left: left, behavior: 'smooth' });
+      }
+
+      function updateTracker() {
+        if (!trackerIndicator) return;
+        var widthPercent = 100 / pageCount;
+        trackerIndicator.style.width = widthPercent + '%';
+        trackerIndicator.style.transform = 'translateX(' + (currentPage * 100) + '%)';
+      }
+
+      function updateButtons() {
+        if (!prevBtn || !nextBtn) return;
+        prevBtn.disabled = currentPage <= 0;
+        nextBtn.disabled = currentPage >= pageCount - 1;
+      }
+
+      function updateFromScroll() {
+        var max = maxScroll();
+        if (max === 0 || pageCount === 1) {
+          currentPage = 0;
+        } else {
+          currentPage = clampPage(Math.round((viewport.scrollLeft / max) * (pageCount - 1)));
+        }
+        updateButtons();
+        updateTracker();
+      }
+
+      function setup() {
+        pageCount = getPageCount();
+        currentPage = clampPage(currentPage);
+        updateFromScroll();
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+          scrollToPage(currentPage - 1);
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+          scrollToPage(currentPage + 1);
+        });
+      }
+
+      viewport.addEventListener('scroll', function() {
+        window.requestAnimationFrame(updateFromScroll);
+      });
+
+      window.addEventListener('resize', function() {
+        setup();
+      });
+
+      setup();
+    })();
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Customer Voices Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "customers_text",
+      "label": "Customers text",
+      "default": "50,000+ of customers."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Voices of Our Customers"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Stories, feedback, and honest experiences from the people we serve."
+    },
+    {
+      "type": "range",
+      "id": "cards_per_view",
+      "label": "Cards per view on desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Card gap",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Desktop heading size",
+      "min": 24,
+      "max": 52,
+      "step": 1,
+      "default": 46
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "label": "Mobile heading size",
+      "min": 20,
+      "max": 40,
+      "step": 1,
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Content max width",
+      "min": 900,
+      "max": 1800,
+      "step": 20,
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top spacing",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom spacing",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "label": "Mobile top spacing",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "label": "Mobile bottom spacing",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Section background",
+      "default": "#F3F4F5"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Top image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text",
+          "default": "Customer photo"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Testimonial",
+          "default": "\"WOW!! You guys are awesome! I'm so glad I found you.\""
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Cathy Powell"
+        },
+        {
+          "type": "text",
+          "id": "company",
+          "label": "Company",
+          "default": "Community Event Organizer"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 50,
+  "presets": [
+    {
+      "name": "Customer Voices Slider",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "\"WOW!! You guys are awesome! I'm so glad I found you. You're at the very top of my list of excellent companies.\"",
+            "name": "Cathy Powell",
+            "company": "Community Event Organizer"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "\"Love the waterproof exam stool covers! Just got them today and we'll be ordering many more.\"",
+            "name": "Marilyn Thomas",
+            "company": "University Health Care System"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "\"OMG!! Are you a magician?! That's amazing, and they're GORGEOUS! THANK YOU!!!\"",
+            "name": "Cynthia Stanton",
+            "company": "Happy Customer"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "\"The cover looks great and shipping was very quick turnaround.\"",
+            "name": "Chris Bonura",
+            "company": "Repeat Customer"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

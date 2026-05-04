@@ -39,6 +39,8 @@
     {% endif %}
 
     {{ content_for_header }}
+        <script src="{{ 'stretchablecovers-product-cart.js' | asset_url }}" defer></script>
+    <script src="{{ 'stretchablecovers-cart-drawer-patch.js' | asset_url }}" defer></script>
   </head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
@@ -126,5 +128,22 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1/dist/fancybox/fancybox.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1/dist/fancybox/fancybox.umd.js"></script>
+
+
+    <script>
+      Fancybox.bind("[data-fancybox]", {
+        // Your custom options
+      });
+    </script>
+
+    <script src="https://cdn-widgetsrepository.yotpo.com/v1/loader/yDreHO8cPz3AfroroulIfzZwnqf9cbATR73Eecym" async></script>
+
+    
   </body>
 </html>
