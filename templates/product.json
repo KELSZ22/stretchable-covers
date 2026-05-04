@@ -95,7 +95,7 @@
                 "align_baseline": false,
                 "horizontal_alignment_flex_direction_column": "flex-start",
                 "vertical_alignment_flex_direction_column": "center",
-                "gap": 12,
+                "gap": 15,
                 "width": "fill",
                 "custom_width": 100,
                 "width_mobile": "fill",
@@ -185,19 +185,20 @@
                     "padding-inline-end": 0
                   },
                   "blocks": {}
+                },
+                "product_info_badge_nFLFrg": {
+                  "type": "product-info-badge",
+                  "name": "Product Info Badge",
+                  "settings": {},
+                  "blocks": {}
                 }
               },
               "block_order": [
                 "review_pwQ9Mc",
                 "text_xrnftG",
-                "price_tVjtKg"
+                "price_tVjtKg",
+                "product_info_badge_nFLFrg"
               ]
-            },
-            "product_info_badge_nFLFrg": {
-              "type": "product-info-badge",
-              "name": "Product Info Badge",
-              "settings": {},
-              "blocks": {}
             },
             "divider_VJhene": {
               "type": "_divider",
@@ -252,7 +253,9 @@
                 "design-cover": {
                   "type": "design-cover",
                   "static": true,
-                  "settings": {},
+                  "settings": {
+                    "customizer_page": ""
+                  },
                   "blocks": {}
                 },
                 "add-to-cart": {
@@ -544,8 +547,8 @@
               "name": "custom-accordion",
               "settings": {
                 "heading": "FAQs",
-                "open_group_by_default": true,
-                "open_first_item": true,
+                "open_group_by_default": false,
+                "open_first_item": false,
                 "question_1": "What is the largest imprint you can print?",
                 "answer_1": "<p>29 inches</p>",
                 "question_2": "What material colors do you have?",
@@ -564,7 +567,6 @@
           },
           "block_order": [
             "group_icgrde",
-            "product_info_badge_nFLFrg",
             "divider_VJhene",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
@@ -1319,7 +1321,7 @@
         "category_6": "",
         "bottom_text": "Have more questions? Reach out so we can assist you.",
         "button_label": "Contact Us",
-        "button_link": "",
+        "button_link": "shopify://pages/contact",
         "section_bg": "#ffffff",
         "heading_color": "#1f1f1f",
         "category_box_bg": "#ffffff",

@@ -1,23 +1,41 @@
-<div class="pib">
+<div class="product-info-badge" {{ block.shopify_attributes }}>
+  <div class="pib">
     <div class="pib_container">
-        <img src="https://cdn.shopify.com/s/files/1/0621/6784/2913/files/d6fe16f0e2010fb3dd1ad5e1ce0928630b9357d9.png?v=1774399198">
+        <img src="https://cdn.shopify.com/s/files/1/0621/6784/2913/files/d6fe16f0e2010fb3dd1ad5e1ce0928630b9357d9.png?v=1774399198" width="28" height="28" alt="">
         <p>Made in the USA</p>
     </div>
     <div class="pib_container">
-        <img src="https://cdn.shopify.com/s/files/1/0621/6784/2913/files/c6acffd7228b893ee0eaa6bbf9c8a31a569db73b.png?v=1774399223">
+        <img src="https://cdn.shopify.com/s/files/1/0621/6784/2913/files/c6acffd7228b893ee0eaa6bbf9c8a31a569db73b.png?v=1774399223" width="28" height="28" alt="">
         <p>100% High Quality Polyester Micro Fiber</p>
     </div>
+  </div>
 </div>
 
 {% style %}
-  .pib {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+  .product-details .shopify-block:has(> .product-info-badge) {
+    align-self: stretch;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .product-info-badge {
+    display: block;
+    width: 100%;
+  }
+
+  .product-info-badge .pib {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     gap: 10px;
   }
+
   .pib_container {
-    display: flex; 
-    justify-content: center;
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    justify-content: flex-start;
     align-items: center;
     gap: 5px;
     background: #F3F4F5;
@@ -27,19 +45,22 @@
     font-style: Medium;
     font-size: 12px;
     line-height: 14px;
-
   }
+
   .pib_container img {
     width: 28px;
     height: 28px;
   }
-  @media screen and (max-width: 768px){
-    .pib{
-      grid-template-columns: repeat(1, 1fr);
+
+  @media screen and (min-width: 750px) {
+    .product-info-badge .pib {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
     }
+
     .pib_container {
-    justify-content: flex-start;
-}
+      justify-content: center;
+    }
   }
 {% endstyle %}
 
@@ -48,7 +69,7 @@
     "name": "Product Info Badge",
     "presets": [
         {
-            "name": "Product Info Badge",
+            "name": "Product Info Badge"
         }
     ]
 }
