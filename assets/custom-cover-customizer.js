@@ -80,6 +80,10 @@ class CustomCoverCustomizer extends HTMLElement {
     this._imprintSizeInnerTemplate = null;
     /** @type {string | null} */
     this._imprintTypeInnerTemplate = null;
+    /** @type {(() => void) | null} */
+    this._designHelpCleanup = null;
+    /** @type {((event: KeyboardEvent) => void) | null} */
+    this._onDesignHelpEscape = null;
   }
 
   connectedCallback() {
@@ -159,6 +163,9 @@ class CustomCoverCustomizer extends HTMLElement {
         true,
       );
       this._onDesignOverflowOutsidePointerDown = null;
+    }
+    if (typeof this._designHelpCleanup === "function") {
+      this._designHelpCleanup();
     }
     this._stopCaretBlinkLoop();
   }
@@ -384,19 +391,10 @@ class CustomCoverCustomizer extends HTMLElement {
     if (fromCfg >= 0) {
       return fromCfg;
     }
-    let i = optionNames.findIndex(
+    return optionNames.findIndex(
       (x, idx) =>
         !ex.has(idx) && /\bcolor\b|\bcolour\b/i.test(String(x || "")),
     );
-    if (i >= 0) {
-      return i;
-    }
-    for (let k = optionNames.length - 1; k >= 0; k--) {
-      if (!ex.has(k)) {
-        return k;
-      }
-    }
-    return -1;
   }
 
   /**
@@ -1552,8 +1550,36 @@ class CustomCoverCustomizer extends HTMLElement {
         Array.isArray(productForSwatches.optionNames)
           ? this.resolveImprintOptionIndices(productForSwatches)
           : null;
+      const colorIdxResolved =
+        ixResolved && typeof ixResolved.colorIdx === "number"
+          ? ixResolved.colorIdx
+          : -1;
+
+      if (typeof this._variantSwatchOnChange === "function") {
+        variantSelector.removeEventListener(
+          "change",
+          this._variantSwatchOnChange,
+        );
+        this._variantSwatchOnChange = null;
+      }
+
+      const colorGroup = this.querySelector("[data-variant-color-group]");
 
       root.innerHTML = "";
+      if (selectedColorLabel) {
+        selectedColorLabel.textContent = "—";
+      }
+
+      if (colorIdxResolved < 0) {
+        if (colorGroup) {
+          colorGroup.hidden = true;
+        }
+        this._syncVariantSwatchUi = null;
+        return;
+      }
+      if (colorGroup) {
+        colorGroup.hidden = false;
+      }
       if (selectedColorLabel) {
         selectedColorLabel.textContent = "Select color";
       }
@@ -1573,8 +1599,8 @@ class CustomCoverCustomizer extends HTMLElement {
           const title = String(v?.title || "").trim();
           const triple = this.variantOptionTriple(v);
           let colorCanonical =
-            ixResolved && ixResolved.colorIdx >= 0
-              ? String(triple[ixResolved.colorIdx] || "").trim()
+            colorIdxResolved >= 0
+              ? String(triple[colorIdxResolved] || "").trim()
               : "";
           if (!colorCanonical) {
             colorCanonical = this._variantColorTailFromTitle(title);
@@ -1708,7 +1734,8 @@ class CustomCoverCustomizer extends HTMLElement {
       };
       this._syncVariantSwatchUi = syncSelected;
       syncSelected();
-      variantSelector.addEventListener("change", syncSelected);
+      this._variantSwatchOnChange = syncSelected;
+      variantSelector.addEventListener("change", this._variantSwatchOnChange);
     };
 
     const populateVariantsForProduct = (productId) => {
@@ -1736,6 +1763,24 @@ class CustomCoverCustomizer extends HTMLElement {
         if (swatchesRoot) {
           swatchesRoot.innerHTML = "";
         }
+        const colorGroupEmpty = this.querySelector("[data-variant-color-group]");
+        if (colorGroupEmpty) {
+          colorGroupEmpty.hidden = true;
+        }
+        const selectedColorLabelEmpty = this.querySelector(
+          "[data-selected-color-label]",
+        );
+        if (selectedColorLabelEmpty) {
+          selectedColorLabelEmpty.textContent = "—";
+        }
+        if (typeof this._variantSwatchOnChange === "function") {
+          variantSelector.removeEventListener(
+            "change",
+            this._variantSwatchOnChange,
+          );
+          this._variantSwatchOnChange = null;
+        }
+        this._syncVariantSwatchUi = null;
         const sizeEl = this.querySelector("[data-imprint-size]");
         const typeEl = this.querySelector("[data-imprint-text]");
         if (sizeEl && this._imprintSizeInnerTemplate != null) {
@@ -1784,13 +1829,8 @@ class CustomCoverCustomizer extends HTMLElement {
         if (col) {
           this.dataset.productColor = col;
         }
-      } else if (firstAvailableVariant && !urlPinnedColor) {
-        const colorNameFallback = this._variantColorTailFromTitle(
-          firstAvailableVariant.title || "",
-        );
-        if (colorNameFallback) {
-          this.dataset.productColor = colorNameFallback;
-        }
+      } else if (ixEarly.colorIdx < 0 && !urlPinnedColor) {
+        delete this.dataset.productColor;
       }
 
       if (idField) {
@@ -2103,11 +2143,16 @@ class CustomCoverCustomizer extends HTMLElement {
           (opt) => Boolean(opt.value) && !opt.disabled,
         );
         if (firstAvailable && firstAvailable.value) {
-          const colorName = this._variantColorTailFromTitle(
-            firstAvailable.textContent || "",
-          );
-          if (colorName) {
-            this.dataset.productColor = colorName;
+          const ixFb = prod
+            ? this.resolveImprintOptionIndices(prod)
+            : { colorIdx: -1 };
+          if (typeof ixFb.colorIdx === "number" && ixFb.colorIdx >= 0) {
+            const colorName = this._variantColorTailFromTitle(
+              firstAvailable.textContent || "",
+            );
+            if (colorName) {
+              this.dataset.productColor = colorName;
+            }
           }
           variantSelector.value = firstAvailable.value;
           variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
@@ -2385,6 +2430,89 @@ class CustomCoverCustomizer extends HTMLElement {
       const copied = await this.copyTextToClipboard(pageUrl);
       this.showShareTooltip(shareBtn, copied ? "Copied" : "Copy failed");
     });
+
+    const helpModal = sectionRoot?.querySelector("[data-custom-cover-help-modal]");
+    const helpBtn = sectionRoot?.querySelector("[data-design-help]");
+    const helpVideoFrame = helpModal?.querySelector("[data-help-video-frame]");
+    const helpCloseEls = helpModal
+      ? helpModal.querySelectorAll("[data-custom-cover-help-close]")
+      : [];
+
+    if (helpModal instanceof HTMLElement && helpBtn instanceof HTMLElement) {
+      const embedUrl = helpModal.dataset.helpEmbedUrl?.trim() || "";
+
+      const closeDesignHelpModal = () => {
+        if (!helpModal.classList.contains("is-active")) {
+          return;
+        }
+        helpModal.classList.remove("is-active");
+        helpModal.setAttribute("aria-hidden", "true");
+        document.documentElement.classList.remove("custom-cover-help-modal-open");
+        if (helpVideoFrame instanceof HTMLIFrameElement) {
+          helpVideoFrame.src = "";
+        }
+        helpBtn.setAttribute("aria-expanded", "false");
+        if (helpBtn.isConnected) {
+          helpBtn.focus({ preventScroll: true });
+        }
+      };
+
+      const openDesignHelpModal = () => {
+        helpModal.classList.add("is-active");
+        helpModal.setAttribute("aria-hidden", "false");
+        document.documentElement.classList.add("custom-cover-help-modal-open");
+        helpBtn.setAttribute("aria-expanded", "true");
+        if (helpVideoFrame instanceof HTMLIFrameElement && embedUrl) {
+          helpVideoFrame.src = embedUrl;
+        }
+        const closeControl = helpModal.querySelector(
+          ".custom-cover-help-modal__close",
+        );
+        if (closeControl instanceof HTMLElement) {
+          closeControl.focus({ preventScroll: true });
+        }
+      };
+
+      const openHandler = () => openDesignHelpModal();
+      const closeHandler = () => closeDesignHelpModal();
+
+      helpBtn.addEventListener("click", openHandler);
+      helpCloseEls.forEach((el) => {
+        el.addEventListener("click", closeHandler);
+      });
+
+      if (this._onDesignHelpEscape) {
+        window.removeEventListener("keydown", this._onDesignHelpEscape);
+      }
+      this._onDesignHelpEscape = (event) => {
+        if (event.key !== "Escape") {
+          return;
+        }
+        if (!helpModal.classList.contains("is-active")) {
+          return;
+        }
+        event.preventDefault();
+        closeDesignHelpModal();
+      };
+      window.addEventListener("keydown", this._onDesignHelpEscape);
+
+      this._designHelpCleanup = () => {
+        const escapeHandler = this._onDesignHelpEscape;
+        if (escapeHandler) {
+          window.removeEventListener("keydown", escapeHandler);
+          this._onDesignHelpEscape = null;
+        }
+        closeDesignHelpModal();
+        helpBtn.removeEventListener("click", openHandler);
+        helpCloseEls.forEach((el) => {
+          el.removeEventListener("click", closeHandler);
+        });
+        this._designHelpCleanup = null;
+      };
+    } else {
+      this._designHelpCleanup = null;
+    }
+
     saveDraftBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         void this.saveCurrentAsDraft();
@@ -2754,10 +2882,20 @@ class CustomCoverCustomizer extends HTMLElement {
   }
 
   handleUploadFile(file) {
+    const mime = String(file.type || "").toLowerCase();
+    if (mime && !mime.startsWith("image/")) {
+      this.setWarning("Please upload an image file.");
+      return;
+    }
+
     const maxBytes = Number(this.dataset.maxUploadBytes || 0);
+    const maxMb = Number(this.dataset.maxUploadMb || 0);
     if (maxBytes > 0 && file.size > maxBytes) {
       this.setWarning(
-        this.dataset.uploadWarning || "Image file is too large for upload.",
+        maxMb > 0
+          ? `This file is too large. Maximum upload size is ${maxMb} MB.`
+          : this.dataset.uploadWarning ||
+              "This file is too large to upload.",
       );
       return;
     }

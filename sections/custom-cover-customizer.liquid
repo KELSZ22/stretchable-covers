@@ -143,7 +143,8 @@
           data-image-price-cents="{{ section.settings.image_price_adjustment | times: 100 | round }}"
           data-clipart-price-cents="{{ section.settings.clipart_price_adjustment | times: 100 | round }}"
           data-shape-price-cents="{{ section.settings.shape_price_adjustment | times: 100 | round }}"
-          data-max-upload-bytes="{{ section.settings.max_upload_mb | times: 1048576 | round }}"
+          data-max-upload-bytes="{{ section.settings.max_upload_mb | default: 10 | times: 1048576 | round }}"
+          data-max-upload-mb="{{ section.settings.max_upload_mb | default: 10 }}"
           data-block-outside-safe-area="{{ section.settings.block_outside_safe_area }}"
           data-safe-warning="{{ section.settings.safe_area_warning | escape }}"
           data-upload-warning="{{ section.settings.upload_warning | escape }}"
@@ -400,18 +401,19 @@
                           </select>
                           <button
                             type="button"
-                            class="custom-cover-customizer__round-action"
+                            class="custom-cover-customizer__size-guide-trigger"
                             data-size-guide-open
                             aria-haspopup="dialog"
-                            aria-controls="SizingGuideModal-{{ section.id }}-customizer"
-                            aria-label="Sizing guide">
-                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">{{- 'custom-icon-size-helper.svg' | inline_asset_content -}}</span>
+                            aria-controls="SizingGuideModal-{{ section.id }}-customizer">
+                            Sizing guide
                           </button>
                         </div>
                       </div>
-                      <div class="custom-cover-customizer__group">
+                      <div
+                        class="custom-cover-customizer__group"
+                        data-variant-color-group>
                         <label class="custom-cover-customizer__label" for="CustomizerVariant-{{ section.id }}">
-                          <span>Color:</span>
+                          <span>{{ section.settings.variant_imprint_color_option | default: 'Color' | escape }}:</span>
                           <span data-selected-color-label>—</span>
                         </label>
                         <select
@@ -516,7 +518,24 @@
                               stroke-linejoin="round" />
                           </svg>
                         </span>
-                        <span>Browse your computer or drag your file here</span>
+                        <span class="custom-cover-customizer__dropzone-label">
+                          {{-
+                            section.settings.image_upload_dropzone_label
+                            | default: 'Browse your computer or drag your image here'
+                            | escape
+                          -}}
+                        </span>
+                        <span class="custom-cover-customizer__dropzone-formats">
+                          {{-
+                            section.settings.image_upload_formats_hint
+                            | default: 'Accepts JPG, PNG, SVG, and WebP'
+                            | escape
+                          -}}
+                        </span>
+                        <span class="custom-cover-customizer__dropzone-max">
+                          Max file size:
+                          {{ section.settings.max_upload_mb | default: 10 }} MB
+                        </span>
                       </button>
                     </div>
 
@@ -1139,14 +1158,19 @@
                 aria-label="Share design">
                 {{- 'custom-icon-preview-share.svg' | inline_asset_content -}}
               </button>
-              <button
-                type="button"
-                class="custom-cover-customizer__preview-footer-icon-button"
-                data-design-help
-                data-tooltip="Help"
-                aria-label="Design help">
-                {{- 'custom-icon-preview-help.svg' | inline_asset_content -}}
-              </button>
+              {%- unless section.settings.design_help_enable == false -%}
+                <button
+                  type="button"
+                  class="custom-cover-customizer__preview-footer-icon-button"
+                  data-design-help
+                  data-tooltip="Help"
+                  aria-label="Design help"
+                  aria-haspopup="dialog"
+                  aria-controls="DesignHelpModal-{{ section.id }}"
+                  aria-expanded="false">
+                  {{- 'custom-icon-preview-help.svg' | inline_asset_content -}}
+                </button>
+              {%- endunless -%}
             </div>
             <p class="custom-cover-customizer__preview-footer-price">
               <span class="custom-cover-customizer__preview-footer-price-label">Total:</span>
@@ -1162,6 +1186,78 @@
       </div>
     </div>
   </div>
+
+  {%- unless section.settings.design_help_enable == false -%}
+    {%- liquid
+      assign design_help_youtube_url = section.settings.design_help_youtube_url | strip
+      assign design_help_youtube_id = ''
+      assign design_help_embed_url = ''
+      if design_help_youtube_url != blank
+        if design_help_youtube_url contains 'youtu.be/'
+          assign design_help_youtube_id = design_help_youtube_url | split: 'youtu.be/' | last | split: '?' | first | split: '&' | first | split: '#' | first
+        elsif design_help_youtube_url contains 'youtube.com/embed/'
+          assign design_help_youtube_id = design_help_youtube_url | split: 'embed/' | last | split: '?' | first | split: '&' | first
+        elsif design_help_youtube_url contains 'youtube.com/shorts/'
+          assign design_help_youtube_id = design_help_youtube_url | split: 'shorts/' | last | split: '?' | first | split: '&' | first | split: '/' | first
+        elsif design_help_youtube_url contains 'v='
+          assign design_help_youtube_id = design_help_youtube_url | split: 'v=' | last | split: '&' | first | split: '#' | first
+        endif
+      endif
+      if design_help_youtube_id != blank
+        assign design_help_embed_url = 'https://www.youtube.com/embed/' | append: design_help_youtube_id | append: '?rel=0'
+      endif
+    -%}
+    <div
+      id="DesignHelpModal-{{ section.id }}"
+      class="custom-cover-help-modal"
+      data-custom-cover-help-modal
+      aria-hidden="true"
+      {% if design_help_embed_url != blank %}
+        data-help-embed-url="{{ design_help_embed_url | escape }}"
+      {% endif %}>
+      <div
+        class="custom-cover-help-modal__overlay"
+        data-custom-cover-help-close
+        tabindex="-1"></div>
+      <div
+        class="custom-cover-help-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="DesignHelpModalTitle-{{ section.id }}">
+        <button
+          type="button"
+          class="custom-cover-help-modal__close"
+          data-custom-cover-help-close
+          aria-label="Close help">
+          &times;
+        </button>
+        <div class="custom-cover-help-modal__content">
+          <h2
+            id="DesignHelpModalTitle-{{ section.id }}"
+            class="custom-cover-help-modal__title">
+            {{ section.settings.design_help_heading | escape }}
+          </h2>
+          {%- if section.settings.design_help_body != blank -%}
+            <div class="custom-cover-help-modal__body rte">
+              {{ section.settings.design_help_body }}
+            </div>
+          {%- endif -%}
+          {%- if design_help_embed_url != blank -%}
+            <div class="custom-cover-help-modal__video">
+              <iframe
+                data-help-video-frame
+                class="custom-cover-help-modal__iframe"
+                title="{{ section.settings.design_help_heading | escape }} — video"
+                loading="lazy"
+                src=""
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endunless -%}
 </section>
 
 {% schema %}
@@ -1188,6 +1284,28 @@
         "default": "Text, images, clipart, and shapes—then arrange everything on your cover before checkout."
       },
       {
+        "type": "header",
+        "content": "Design help"
+      }, {
+        "type": "checkbox",
+        "id": "design_help_enable",
+        "label": "Show design help button",
+        "default": true
+      }, {
+        "type": "text",
+        "id": "design_help_heading",
+        "label": "Help modal title",
+        "default": "How to use the customizer"
+      }, {
+        "type": "richtext",
+        "id": "design_help_body",
+        "label": "Help modal instructions (optional)"
+      }, {
+        "type": "url",
+        "id": "design_help_youtube_url",
+        "label": "Instruction video (YouTube URL)",
+        "info": "Paste a watch, youtu.be, Shorts, or embed link. The video loads when the help modal opens."
+      }, {
         "type": "header",
         "content": "Text settings"
       }, {
@@ -1373,6 +1491,17 @@
         "default": "Allow stretchablecovers to have rights to this image"
       }, {
         "type": "text",
+        "id": "image_upload_dropzone_label",
+        "label": "Image upload dropzone main text",
+        "default": "Browse your computer or drag your image here"
+      }, {
+        "type": "text",
+        "id": "image_upload_formats_hint",
+        "label": "Image upload accepted formats hint",
+        "default": "Accepts JPG, PNG, SVG, and WebP",
+        "info": "The uploader accepts image types your browser supports (file picker uses image/*)."
+      }, {
+        "type": "text",
         "id": "clipart_heading",
         "label": "Clipart title",
         "default": "Clipart"
@@ -1448,7 +1577,7 @@
         "id": "variant_imprint_color_option",
         "label": "Color option name",
         "default": "Color",
-        "info": "Used together with imprint options to pick the matching variant ID. Fallback: last variant option."
+        "info": "Must match a real product option (e.g. Color), or an option whose name contains “color”. If the product has no color option, the color swatch row is hidden; imprint/size options still drive the variant."
       }, {
         "type": "textarea",
         "id": "imprint_types",
@@ -1541,16 +1670,18 @@
       }, {
         "type": "text",
         "id": "upload_warning",
-        "label": "Upload warning text",
-        "default": "Image file is too large for upload."
+        "label": "Upload warning text (non-size issues)",
+        "default": "There was a problem with this upload.",
+        "info": "Oversized files always show a message that includes the max MB limit from Max upload size."
       }, {
         "type": "range",
         "id": "max_upload_mb",
         "label": "Max upload size (MB)",
         "min": 1,
-        "max": 20,
+        "max": 10,
         "step": 1,
-        "default": 8
+        "default": 10,
+        "info": "Applies to customer image uploads. Larger files are rejected before upload."
       }, {
         "type": "header",
         "content": "Pricing adjustments"
