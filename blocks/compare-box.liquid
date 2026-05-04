@@ -179,19 +179,22 @@
     </div>
   {% endif %}
 
-  <div
+  <dialog
     id="CompareModal-{{ block.id }}"
     class="product-compare-modal"
     data-compare-modal
-    hidden
+    aria-labelledby="CompareModalTitle-{{ block.id }}"
   >
-    <div class="product-compare-modal__overlay" data-compare-modal-close></div>
+    <button
+      type="button"
+      class="product-compare-modal__dismiss-sheet"
+      data-compare-modal-close
+      aria-label="Close compare modal"
+      tabindex="-1"
+    ></button>
 
     <div
       class="product-compare-modal__dialog"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="CompareModalTitle-{{ block.id }}"
       tabindex="-1"
     >
       <div class="product-compare-modal__header">
@@ -345,7 +348,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </dialog>
 </div>
 
 {% stylesheet %}
@@ -535,30 +538,71 @@
     transform: scale(1.15);
   }
 
-  .product-compare-modal {
+  /* Native <dialog> + showModal() use the top layer (above sticky header). */
+  dialog.product-compare-modal {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px));
+    border: none;
+    background: transparent;
+    color: inherit;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
-  .product-compare-modal__overlay {
-    position: absolute;
-    inset: 0;
+  dialog.product-compare-modal::backdrop {
     background: rgba(0, 0, 0, 0.55);
   }
 
+  dialog.product-compare-modal[open] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    place-items: center;
+  }
+
+  dialog.product-compare-modal:not([open]) {
+    display: none;
+  }
+
+  .product-compare-modal__dismiss-sheet {
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 0;
+    place-self: stretch;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
   .product-compare-modal__dialog {
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 1;
     position: relative;
-    z-index: 2;
-    width: calc(100% - 32px);
+    width: 100%;
     max-width: 1120px;
-    max-height: calc(100vh - 40px);
-    margin: 20px auto;
+    max-height: calc(100vh - 32px);
+    max-height: min(calc(100vh - 32px), calc(100dvh - 32px));
+    margin: 0;
     background: #ffffff;
     border-radius: 18px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    flex: 0 1 auto;
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
   }
 
@@ -569,6 +613,7 @@
     gap: 16px;
     padding: 20px 24px;
     border-bottom: 1px solid #e6e6e6;
+    flex-shrink: 0;
   }
 
   .product-compare-modal__title {
@@ -602,7 +647,10 @@
 
   .product-compare-modal__body {
     padding: 24px;
+    flex: 1 1 auto;
+    min-height: 0;
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .product-compare-modal__top {
@@ -877,10 +925,14 @@
     }
 
     .product-compare-modal__dialog {
-      width: calc(100% - 16px);
+      width: 100%;
       max-height: calc(100vh - 16px);
-      margin: 8px auto;
+      max-height: min(calc(100vh - 16px), calc(100dvh - 16px));
       border-radius: 14px;
+    }
+
+    dialog.product-compare-modal {
+      padding: max(8px, env(safe-area-inset-top, 0px)) 8px max(8px, env(safe-area-inset-bottom, 0px));
     }
 
     .product-compare-modal__header,
@@ -1263,15 +1315,38 @@
         }
 
         function openModal() {
+          if (modal.open) {
+            return;
+          }
+
           lastFocusedElement = document.activeElement;
-          modal.hidden = false;
+
+          if (typeof modal.showModal !== 'function') {
+            return;
+          }
+
+          try {
+            modal.showModal();
+          } catch (e) {
+            return;
+          }
+
           document.body.classList.add('compare-modal-open');
           openButton.setAttribute('aria-expanded', 'true');
           dialog.focus();
         }
 
         function closeModal() {
-          modal.hidden = true;
+          if (!modal.open) {
+            return;
+          }
+
+          if (typeof modal.close === 'function') {
+            modal.close();
+          }
+        }
+
+        modal.addEventListener('close', function () {
           document.body.classList.remove('compare-modal-open');
           openButton.setAttribute('aria-expanded', 'false');
           clearResults();
@@ -1279,22 +1354,12 @@
           if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
             lastFocusedElement.focus();
           }
-        }
+        });
 
         openButton.addEventListener('click', openModal);
 
         closeButtons.forEach((button) => {
           button.addEventListener('click', closeModal);
-        });
-
-        document.addEventListener('keydown', (event) => {
-          if (modal.hidden) {
-            return;
-          }
-
-          if (event.key === 'Escape') {
-            closeModal();
-          }
         });
 
         searchInput.addEventListener('input', () => {
