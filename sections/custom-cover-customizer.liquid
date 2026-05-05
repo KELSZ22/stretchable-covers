@@ -326,10 +326,28 @@
                         </select>
                       </div>
                       <div class="custom-cover-customizer__group">
-                        <label class="custom-cover-customizer__label" for="CustomizerImprintText-{{ section.id }}">
-                          {{- section.settings.imprint_text_label | default: 'Imprint' | escape -}}
-                        </label>
-                        <div class="custom-cover-customizer__input-action-row">
+                        <div class="custom-cover-customizer__label-action-row">
+                          <label class="custom-cover-customizer__label" for="CustomizerImprintText-{{ section.id }}">
+                            {{- section.settings.imprint_text_label | default: 'Imprint' | escape -}}
+                          </label>
+                          <button
+                            type="button"
+                            class="custom-cover-customizer__round-action custom-cover-customizer__round-action--imprint-hint"
+                            data-size-guide-open
+                            aria-haspopup="dialog"
+                            aria-controls="SizingGuideModal-{{ section.id }}-customizer"
+                            aria-label="Sizing guide">
+                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 19 19" fill="none" aria-hidden="true">
+                                <g transform="translate(9.5 9.5) scale(1.08) translate(-9.5 -9.5)">
+                                  <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+                                </g>
+                              </svg>
+                            </span>
+                          </button>
+                        </div>
+                        <div>
                           <select
                             id="CustomizerImprintText-{{ section.id }}"
                             class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
@@ -349,31 +367,25 @@
                               {% endif %}
                             {% endfor %}
                           </select>
-                          <button
-                            type="button"
-                            class="custom-cover-customizer__round-action custom-cover-customizer__round-action--imprint-hint"
-                            data-size-guide-open
-                            aria-haspopup="dialog"
-                            aria-controls="SizingGuideModal-{{ section.id }}-customizer"
-                            aria-label="Sizing guide">
-                            <span class="custom-cover-customizer__round-action-icon" aria-hidden="true">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 19 19" fill="none" aria-hidden="true">
-                                <g transform="translate(9.5 9.5) scale(1.08) translate(-9.5 -9.5)">
-                                  <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
-                                </g>
-                              </svg>
-                            </span>
-                          </button>
                         </div>
                       </div>
                       <div class="custom-cover-customizer__group">
-                        <label class="custom-cover-customizer__label" for="CustomizerImprint-{{ section.id }}">Imprint size</label>
-                        <div class="custom-cover-customizer__input-action-row">
-                        <select
-                          id="CustomizerImprint-{{ section.id }}"
-                          class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                          data-imprint-size>
+                        <div class="custom-cover-customizer__label-action-row">
+                          <label class="custom-cover-customizer__label" for="CustomizerImprint-{{ section.id }}">Imprint size</label>
+                          <button
+                            type="button"
+                            class="custom-cover-customizer__size-guide-trigger"
+                            data-size-guide-open
+                            aria-haspopup="dialog"
+                            aria-controls="SizingGuideModal-{{ section.id }}-customizer">
+                            Sizing guide
+                          </button>
+                        </div>
+                        <div>
+                          <select
+                            id="CustomizerImprint-{{ section.id }}"
+                            class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
+                            data-imprint-size>
                             <option value="" disabled>Select imprint size</option>
                             {% assign imprint_sizes = section.settings.imprint_sizes | newline_to_br | split: '<br />' %}
                             {% assign imprint_list_has_plain_other = false %}
@@ -400,14 +412,6 @@
                               </option>
                             {% endunless %}
                           </select>
-                          <button
-                            type="button"
-                            class="custom-cover-customizer__size-guide-trigger"
-                            data-size-guide-open
-                            aria-haspopup="dialog"
-                            aria-controls="SizingGuideModal-{{ section.id }}-customizer">
-                            Sizing guide
-                          </button>
                         </div>
                       </div>
                       <div
@@ -486,58 +490,64 @@
                       hidden>
                       <label class="custom-cover-customizer__rights">
                         <input type="checkbox" data-image-rights>
-                        <span>{{ section.settings.image_rights_label | escape }}</span>
+                        <span>{{ section.settings.image_rights_label | default: 'Allow stretchablecovers to have rights to this image' | escape }}</span>
                       </label>
-                      <button
-                        type="button"
-                        class="custom-cover-customizer__dropzone"
-                        data-upload-dropzone>
-                        <span class="custom-cover-customizer__dropzone-icon" aria-hidden="true">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="40"
-                            height="40"
-                            viewBox="0 0 40 40"
-                            fill="none">
-                            <path
-                              d="M20 5V25"
-                              stroke="#5F5F5F"
-                              stroke-width="3"
-                              stroke-linecap="round"
-                              stroke-linejoin="round" />
-                            <path
-                              d="M28.3334 13.3333L20 5L11.6667 13.3333"
-                              stroke="#5F5F5F"
-                              stroke-width="3"
-                              stroke-linecap="round"
-                              stroke-linejoin="round" />
-                            <path
-                              d="M35 25V31.6667C35 32.5507 34.6488 33.3986 34.0237 34.0237C33.3986 34.6488 32.5507 35 31.6667 35H8.33333C7.44928 35 6.60143 34.6488 5.97631 34.0237C5.35119 33.3986 5 32.5507 5 31.6667V25"
-                              stroke="#5F5F5F"
-                              stroke-width="3"
-                              stroke-linecap="round"
-                              stroke-linejoin="round" />
-                          </svg>
-                        </span>
-                        <span class="custom-cover-customizer__dropzone-label">
-                          {{-
-                            section.settings.image_upload_dropzone_label
-                            | default: 'Browse your computer or drag your image here'
-                            | escape
-                          -}}
-                        </span>
-                        <span class="custom-cover-customizer__dropzone-formats">
-                          {{-
-                            section.settings.image_upload_formats_hint
-                            | default: 'Accepts JPG, PNG, SVG, and WebP'
-                            | escape
-                          -}}
-                        </span>
-                        <span class="custom-cover-customizer__dropzone-max">
-                          Max file size:
-                          {{ section.settings.max_upload_mb | default: 10 }} MB
-                        </span>
-                      </button>
+                      <div class="custom-cover-customizer__upload-box" data-upload-box hidden>
+                        <p
+                          class="custom-cover-customizer__warning custom-cover-customizer__warning--upload"
+                          aria-live="polite"
+                          data-upload-warning-output></p>
+                        <button
+                          type="button"
+                          class="custom-cover-customizer__dropzone"
+                          data-upload-dropzone>
+                          <span class="custom-cover-customizer__dropzone-icon" aria-hidden="true">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="40"
+                              height="40"
+                              viewBox="0 0 40 40"
+                              fill="none">
+                              <path
+                                d="M20 5V25"
+                                stroke="#5F5F5F"
+                                stroke-width="3"
+                                stroke-linecap="round"
+                                stroke-linejoin="round" />
+                              <path
+                                d="M28.3334 13.3333L20 5L11.6667 13.3333"
+                                stroke="#5F5F5F"
+                                stroke-width="3"
+                                stroke-linecap="round"
+                                stroke-linejoin="round" />
+                              <path
+                                d="M35 25V31.6667C35 32.5507 34.6488 33.3986 34.0237 34.0237C33.3986 34.6488 32.5507 35 31.6667 35H8.33333C7.44928 35 6.60143 34.6488 5.97631 34.0237C5.35119 33.3986 5 32.5507 5 31.6667V25"
+                                stroke="#5F5F5F"
+                                stroke-width="3"
+                                stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            </svg>
+                          </span>
+                          <span class="custom-cover-customizer__dropzone-label">
+                            {{-
+                              section.settings.image_upload_dropzone_label
+                              | default: 'Browse your computer or drag your image here'
+                              | escape
+                            -}}
+                          </span>
+                          <span class="custom-cover-customizer__dropzone-formats">
+                            {{-
+                              section.settings.image_upload_formats_hint
+                              | default: 'Accepts JPG, PNG, SVG, and WebP'
+                              | escape
+                            -}}
+                          </span>
+                          <span class="custom-cover-customizer__dropzone-max">
+                            Max file size:
+                            {{ section.settings.max_upload_mb | default: 10 }} MB
+                          </span>
+                        </button>
+                      </div>
                     </div>
 
                     {%- comment -%} ===== CLIPART PANEL ===== {%- endcomment -%}
@@ -1435,6 +1445,11 @@
     </div>
 
     <div class="custom-cover-customizer__preview">
+      <div class="custom-cover-customizer__preview-top-actions">
+        {% render 'custom-cover-customizer-design-bar-actions'
+          , section_id: section.id
+          , menu_variant: 'inline' %}
+      </div>
       <div class="custom-cover-customizer__canvas-wrap">
         <div class="custom-cover-customizer__canvas-stage">
           <canvas
@@ -1502,11 +1517,6 @@
               <span class="custom-cover-customizer__preview-footer-price-amount" data-preview-footer-price-total>{{- 0 | money -}}</span>
             </p>
           </div>
-        </div>
-        <div class="custom-cover-customizer__preview-footer-ctas">
-          {% render 'custom-cover-customizer-design-bar-actions'
-            , section_id: section.id
-            , menu_variant: 'preview-footer' %}
         </div>
       </div>
     </div>

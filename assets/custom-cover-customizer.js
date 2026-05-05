@@ -26,6 +26,7 @@ class CustomCoverCustomizer extends HTMLElement {
     this.ctx = null;
     this.form = null;
     this.warningOutput = null;
+    this.uploadWarningOutput = null;
     this.elements = [];
     this.selectedElementId = null;
     this.dragState = null;
@@ -113,6 +114,7 @@ class CustomCoverCustomizer extends HTMLElement {
     this.canvas = section?.querySelector("[data-customizer-canvas]");
     this.form = this.querySelector("form");
     this.warningOutput = this.querySelector("[data-warning-output]");
+    this.uploadWarningOutput = this.querySelector("[data-upload-warning-output]");
 
     if (!this.canvas || !this.form) {
       return;
@@ -1120,6 +1122,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const sectionRoot = this.closest(".custom-cover-customizer");
     const uploadInput = this.querySelector("[data-upload-input]");
     const imageRights = this.querySelector("[data-image-rights]");
+    const uploadBox = this.querySelector("[data-upload-box]");
     const uploadDropzone = this.querySelector("[data-upload-dropzone]");
     const modeTabs = this.querySelectorAll("[data-mode-tab]");
     const modePanels = this.querySelectorAll("[data-mode-panel]");
@@ -1343,6 +1346,21 @@ class CustomCoverCustomizer extends HTMLElement {
         }
       });
     });
+
+    const syncUploadBoxVisibility = () => {
+      const canUpload = Boolean(imageRights?.checked);
+      if (uploadBox) {
+        uploadBox.hidden = !canUpload;
+      }
+      if (!canUpload) {
+        this.setUploadWarning("");
+      }
+    };
+
+    imageRights?.addEventListener("change", () => {
+      syncUploadBoxVisibility();
+    });
+    syncUploadBoxVisibility();
 
     uploadInput?.addEventListener("change", (event) =>
       this.handleUpload(event),
@@ -3123,20 +3141,24 @@ class CustomCoverCustomizer extends HTMLElement {
   handleUploadFile(file) {
     const mime = String(file.type || "").toLowerCase();
     if (mime && !mime.startsWith("image/")) {
-      this.setWarning("Please upload an image file.");
+      this.setWarning("");
+      this.setUploadWarning("Please upload an image file.");
       return;
     }
 
     const maxBytes = Number(this.dataset.maxUploadBytes || 0);
     const maxMb = Number(this.dataset.maxUploadMb || 0);
     if (maxBytes > 0 && file.size > maxBytes) {
-      this.setWarning(
+      this.setWarning("");
+      this.setUploadWarning(
         maxMb > 0
           ? `This file is too large. Maximum upload size is ${maxMb} MB.`
           : this.dataset.uploadWarning || "This file is too large to upload.",
       );
       return;
     }
+
+    this.setUploadWarning("");
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -4027,7 +4049,7 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     if (
       target.closest(
-        ".custom-cover-customizer__design-bar, .custom-cover-customizer__panel",
+        ".custom-cover-customizer__design-bar, .custom-cover-customizer__panel, .custom-cover-customizer__preview-top-actions",
       )
     ) {
       return;
@@ -5468,6 +5490,13 @@ class CustomCoverCustomizer extends HTMLElement {
       return;
     }
     this.warningOutput.textContent = message || "";
+  }
+
+  setUploadWarning(message) {
+    if (!this.uploadWarningOutput) {
+      return;
+    }
+    this.uploadWarningOutput.textContent = message || "";
   }
 
   setActiveTool(tool) {
