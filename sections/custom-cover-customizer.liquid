@@ -652,229 +652,10 @@
                           data-text-input
                           placeholder="{{ section.settings.text_placeholder | escape }}"></textarea>
                       </div>
-                      <div class="custom-cover-customizer__inline-grid">
-                        <div class="custom-cover-customizer__group">
-                          <label class="custom-cover-customizer__label" for="CustomizerFont-{{ section.id }}">
-                            {{- section.settings.font_family_label | escape -}}
-                          </label>
-                          <select
-                            id="CustomizerFont-{{ section.id }}"
-                            class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                            data-font-input>
-                            {% if font_library_mode == 'google' or font_library_mode == 'both' %}
-                              {% assign gfamilies = google_fonts_pipe | split: '|' %}
-                              {% for gentry in gfamilies %}
-                                {% assign gfont = gentry | strip %}
-                                {% if gfont != blank %}
-                                  <option value="{{ gfont | escape }}">{{ gfont | escape }}</option>
-                                {% endif %}
-                              {% endfor %}
-                            {% endif %}
-                            {% if font_library_mode == 'custom' or font_library_mode == 'both' %}
-                              {% for font in custom_cover_font_lines %}
-                                {% assign trimmed_font = font | strip %}
-                                {% if trimmed_font != blank %}
-                                  <option value="{{ trimmed_font | escape }}">{{ trimmed_font | escape }}</option>
-                                {% endif %}
-                              {% endfor %}
-                            {% endif %}
-                          </select>
-                        </div>
-                        <div class="custom-cover-customizer__group">
-                          <label class="custom-cover-customizer__label" for="CustomizerFontSize-{{ section.id }}">
-                            {{- section.settings.font_size_label | escape -}}
-                          </label>
-                          <select
-                            id="CustomizerFontSize-{{ section.id }}"
-                            class="custom-cover-customizer__input custom-cover-customizer__input--size custom-cover-customizer__input--select-like"
-                            data-font-size-input>
-                            {% assign min_size = section.settings.min_font_size %}
-                            {% assign max_size = section.settings.max_font_size %}
-                            {% assign default_size = section.settings.default_font_size %}
-                            {% for font_size in (min_size..max_size) %}
-                              <option
-                                value="{{ font_size }}"
-                                {% if font_size == default_size %}
-                                selected{% endif %}>{{ font_size }}px</option>
-                            {% endfor %}
-                          </select>
-                        </div>
-                      </div>
-                      <div class="custom-cover-customizer__group custom-cover-customizer__group--tight">
-                        <fieldset class="custom-cover-customizer__subfield">
-                          <div
-                            class="custom-cover-customizer__format-row"
-                            role="toolbar"
-                            aria-label="{{ section.settings.text_format_toolbar_aria_label | escape }}">
-                            <div class="custom-cover-customizer__format-cluster custom-cover-customizer__format-cluster--color">
-                              <label class="custom-cover-customizer__color-chip">
-                                <span class="visually-hidden">{{ section.settings.text_color_section_label | escape }}</span>
-                                <input
-                                  id="CustomizerColor-{{ section.id }}"
-                                  class="custom-cover-customizer__color-native"
-                                  type="color"
-                                  value="{{ default_text_hex }}"
-                                  data-text-color-input
-                                  aria-label="{{ section.settings.text_color_section_label | escape }}">
-                                <span
-                                  class="custom-cover-customizer__color-swatch"
-                                  data-color-swatch
-                                  aria-hidden="true"
-                                  style="background-color: {{ default_text_hex }}"></span>
-                                <span class="custom-cover-customizer__color-hex" data-color-hex>{{- default_text_hex | upcase -}}</span>
-                              </label>
-                            </div>
-                            <div class="custom-cover-customizer__format-cluster custom-cover-customizer__format-cluster--grow">
-                              <div
-                                class="custom-cover-customizer__segmented custom-cover-customizer__segmented--toolbar"
-                                role="group"
-                                aria-label="{{ section.settings.text_alignment_aria_label | escape }}">
-                                <button
-                                  type="button"
-                                  class="custom-cover-customizer__segment custom-cover-customizer__segment--toolbar"
-                                  data-text-align="left"
-                                  aria-pressed="true"
-                                  aria-label="{{ section.settings.align_left_aria_label | escape }}">
-                                  <span class="visually-hidden">{{ section.settings.align_left_short_label | escape }}</span>
-                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-left.svg' | inline_asset_content -}}</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="custom-cover-customizer__segment custom-cover-customizer__segment--toolbar"
-                                  data-text-align="center"
-                                  aria-pressed="false"
-                                  aria-label="{{ section.settings.align_center_aria_label | escape }}">
-                                  <span class="visually-hidden">{{ section.settings.align_center_short_label | escape }}</span>
-                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-center.svg' | inline_asset_content -}}</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="custom-cover-customizer__segment custom-cover-customizer__segment--toolbar"
-                                  data-text-align="right"
-                                  aria-pressed="false"
-                                  aria-label="{{ section.settings.align_right_aria_label | escape }}">
-                                  <span class="visually-hidden">{{ section.settings.align_right_short_label | escape }}</span>
-                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-right.svg' | inline_asset_content -}}</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="custom-cover-customizer__segment custom-cover-customizer__segment--toolbar"
-                                  data-text-align="justify"
-                                  aria-pressed="false"
-                                  aria-label="{{ section.settings.align_justify_aria_label | escape }}">
-                                  <span class="visually-hidden">{{ section.settings.align_justify_short_label | escape }}</span>
-                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-justify.svg' | inline_asset_content -}}</span>
-                                </button>
-                              </div>
-                            </div>
-                            <div class="custom-cover-customizer__format-cluster">
-                              <div
-                                class="custom-cover-customizer__format-styles"
-                                role="group"
-                                aria-label="{{ section.settings.text_format_toolbar_aria_label | escape }}">
-                                <button
-                                  type="button"
-                                  class="custom-cover-customizer__format-btn custom-cover-customizer__format-btn--inline"
-                                  data-format-bold
-                                  aria-pressed="false"
-                                  aria-label="{{ section.settings.format_bold_aria_label | escape }}">
-                                  <span class="custom-cover-customizer__format-letter">B</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="custom-cover-customizer__format-btn custom-cover-customizer__format-btn--inline"
-                                  data-format-italic
-                                  aria-pressed="false"
-                                  aria-label="{{ section.settings.format_italic_aria_label | escape }}">
-                                  <span class="custom-cover-customizer__format-letter custom-cover-customizer__format-letter--italic">I</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="custom-cover-customizer__format-btn custom-cover-customizer__format-btn--inline"
-                                  data-format-underline
-                                  aria-pressed="false"
-                                  aria-label="{{ section.settings.format_underline_aria_label | escape }}">
-                                  <span class="custom-cover-customizer__format-letter custom-cover-customizer__format-letter--underline">U</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="custom-cover-customizer__format-btn custom-cover-customizer__format-btn--inline"
-                                  data-format-strikethrough
-                                  aria-pressed="false"
-                                  aria-label="{{ section.settings.format_strikethrough_aria_label | escape }}">
-                                  <span class="custom-cover-customizer__format-letter custom-cover-customizer__format-letter--strike">S</span>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </fieldset>
-                      </div>
-
-                      <div class="custom-cover-customizer__text-subsection">
-                        <p class="custom-cover-customizer__label custom-cover-customizer__section-label custom-cover-customizer__section-label--compact">
-                          {{- section.settings.text_outline_section_label | default: 'Outline' | escape -}}
-                        </p>
-                        <div class="custom-cover-customizer__toggle-row">
-                          <label class="custom-cover-customizer__toggle-label" for="CustomizerOutlineEnabled-{{ section.id }}">
-                            {{- section.settings.text_outline_enable_label | default: 'Enable outline' | escape -}}
-                          </label>
-                          <input
-                            id="CustomizerOutlineEnabled-{{ section.id }}"
-                            type="checkbox"
-                            class="custom-cover-customizer__toggle-input"
-                            data-text-outline-enabled
-                            aria-label="{{ section.settings.text_outline_enable_label | default: 'Enable outline' | escape }}">
-                        </div>
-                        <div class="custom-cover-customizer__outline-controls" data-text-outline-controls hidden>
-                          <div class="custom-cover-customizer__inline-grid">
-                            <div class="custom-cover-customizer__group">
-                              <label class="custom-cover-customizer__label" for="CustomizerOutlineWeight-{{ section.id }}">
-                                {{- section.settings.text_outline_weight_label | default: 'Weight' | escape -}}
-                              </label>
-                              <input
-                                id="CustomizerOutlineWeight-{{ section.id }}"
-                                type="range"
-                                class="custom-cover-customizer__range-input"
-                                data-text-outline-weight
-                                min="1"
-                                max="16"
-                                step="1"
-                                value="3"
-                                aria-valuemin="1"
-                                aria-valuemax="16">
-                            </div>
-                            <div class="custom-cover-customizer__group">
-                              <label class="custom-cover-customizer__label" for="CustomizerOutlineColor-{{ section.id }}">
-                                {{- section.settings.text_outline_color_label | default: 'Color' | escape -}}
-                              </label>
-                              <label class="custom-cover-customizer__color-chip">
-                                <span class="visually-hidden">{{ section.settings.text_outline_color_label | default: 'Outline color' | escape }}</span>
-                                <input
-                                  id="CustomizerOutlineColor-{{ section.id }}"
-                                  class="custom-cover-customizer__color-native"
-                                  type="color"
-                                  value="{{ default_outline_hex }}"
-                                  data-text-outline-color
-                                  aria-label="{{ section.settings.text_outline_color_label | default: 'Outline color' | escape }}">
-                                <span
-                                  class="custom-cover-customizer__color-swatch"
-                                  data-text-outline-swatch
-                                  aria-hidden="true"
-                                  style="background-color: {{ default_outline_hex }}"></span>
-                                <span class="custom-cover-customizer__color-hex" data-text-outline-hex>{{- default_outline_hex | upcase -}}</span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="custom-cover-customizer__text-subsection">
-                        <p class="custom-cover-customizer__label custom-cover-customizer__section-label custom-cover-customizer__section-label--compact">
-                          {{- section.settings.text_effects_section_label | default: 'Text effects' | escape -}}
-                        </p>
+                      <div class="custom-cover-customizer__text-subsection custom-cover-customizer__text-subsection--effects">
                         <div class="custom-cover-customizer__group">
                           <label class="custom-cover-customizer__label" for="CustomizerTextEffect-{{ section.id }}">
-                            {{- section.settings.text_effect_type_label | default: 'Effect' | escape -}}
+                            Text Effects
                           </label>
                           <select
                             id="CustomizerTextEffect-{{ section.id }}"
@@ -889,7 +670,7 @@
                           </select>
                         </div>
                         <div class="custom-cover-customizer__text-effect-panels">
-                          <div class="custom-cover-customizer__group custom-cover-customizer__text-effect-panel" data-text-effect-panel="curve">
+                          <div class="custom-cover-customizer__group custom-cover-customizer__text-effect-panel" data-text-effect-panel="curve" hidden>
                             <div class="custom-cover-customizer__inline-grid">
                               <div class="custom-cover-customizer__group">
                                 <label class="custom-cover-customizer__label" for="CustomizerEffectRadiusCurve-{{ section.id }}">
@@ -1083,9 +864,224 @@
                           </div>
                         </div>
                       </div>
+                      <div class="custom-cover-customizer__inline-grid custom-cover-customizer__text-color-row">
+                        <div class="custom-cover-customizer__group">
+                          <label class="custom-cover-customizer__label" for="CustomizerColor-{{ section.id }}">
+                            Fill
+                          </label>
+                          <label class="custom-cover-customizer__color-chip">
+                            <span class="visually-hidden">{{ section.settings.text_color_section_label | escape }}</span>
+                            <input
+                              id="CustomizerColor-{{ section.id }}"
+                              class="custom-cover-customizer__color-native"
+                              type="color"
+                              value="{{ default_text_hex }}"
+                              data-text-color-input
+                              aria-label="{{ section.settings.text_color_section_label | escape }}">
+                            <span
+                              class="custom-cover-customizer__color-swatch"
+                              data-color-swatch
+                              aria-hidden="true"
+                              style="background-color: {{ default_text_hex }}"></span>
+                            <span class="custom-cover-customizer__color-hex" data-color-hex>{{- default_text_hex | upcase -}}</span>
+                          </label>
+                        </div>
+                        <div class="custom-cover-customizer__group">
+                          <label class="custom-cover-customizer__label" for="CustomizerOutlineColor-{{ section.id }}">
+                            Outline
+                          </label>
+                          <div class="custom-cover-customizer__outline-color-control">
+                            <label class="custom-cover-customizer__color-chip">
+                              <span class="visually-hidden">{{ section.settings.text_outline_color_label | default: 'Outline color' | escape }}</span>
+                              <input
+                                id="CustomizerOutlineColor-{{ section.id }}"
+                                class="custom-cover-customizer__color-native"
+                                type="color"
+                                value="{{ default_outline_hex }}"
+                                data-text-outline-color
+                                aria-label="{{ section.settings.text_outline_color_label | default: 'Outline color' | escape }}">
+                              <span
+                                class="custom-cover-customizer__color-swatch"
+                                data-text-outline-swatch
+                                aria-hidden="true"
+                                style="background-color: {{ default_outline_hex }}"></span>
+                              <span class="custom-cover-customizer__color-hex" data-text-outline-hex>{{- default_outline_hex | upcase -}}</span>
+                            </label>
+                            <button
+                              type="button"
+                              class="custom-cover-customizer__outline-weight-trigger"
+                              data-outline-weight-toggle
+                              aria-controls="CustomizerOutlineWeightPopover-{{ section.id }}"
+                              aria-expanded="false">
+                              {{- section.settings.text_outline_weight_label | default: 'Weight of the outline' | escape -}}
+                            </button>
+                            <div
+                              id="CustomizerOutlineWeightPopover-{{ section.id }}"
+                              class="custom-cover-customizer__outline-weight-popover"
+                              data-outline-weight-popover
+                              hidden>
+                              <label class="custom-cover-customizer__label" for="CustomizerOutlineWeight-{{ section.id }}">
+                                {{- section.settings.text_outline_weight_label | default: 'Weight' | escape -}}
+                              </label>
+                              <input
+                                id="CustomizerOutlineWeight-{{ section.id }}"
+                                type="range"
+                                class="custom-cover-customizer__range-input"
+                                data-text-outline-weight
+                                min="0"
+                                max="16"
+                                step="1"
+                                value="3"
+                                aria-valuemin="0"
+                                aria-valuemax="16">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="custom-cover-customizer__inline-grid custom-cover-customizer__text-font-row">
+                        <div class="custom-cover-customizer__group">
+                          <label class="custom-cover-customizer__label" for="CustomizerFont-{{ section.id }}">
+                            {{- section.settings.font_family_label | escape -}}
+                          </label>
+                          <select
+                            id="CustomizerFont-{{ section.id }}"
+                            class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
+                            data-font-input>
+                            {% if font_library_mode == 'google' or font_library_mode == 'both' %}
+                              {% assign gfamilies = google_fonts_pipe | split: '|' %}
+                              {% for gentry in gfamilies %}
+                                {% assign gfont = gentry | strip %}
+                                {% if gfont != blank %}
+                                  <option value="{{ gfont | escape }}">{{ gfont | escape }}</option>
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+                            {% if font_library_mode == 'custom' or font_library_mode == 'both' %}
+                              {% for font in custom_cover_font_lines %}
+                                {% assign trimmed_font = font | strip %}
+                                {% if trimmed_font != blank %}
+                                  <option value="{{ trimmed_font | escape }}">{{ trimmed_font | escape }}</option>
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+                          </select>
+                        </div>
+                        <div class="custom-cover-customizer__group">
+                          <label class="custom-cover-customizer__label" for="CustomizerFontSize-{{ section.id }}">
+                            {{- section.settings.font_size_label | escape -}}
+                          </label>
+                          <select
+                            id="CustomizerFontSize-{{ section.id }}"
+                            class="custom-cover-customizer__input custom-cover-customizer__input--size custom-cover-customizer__input--select-like"
+                            data-font-size-input>
+                            {% assign min_size = section.settings.min_font_size %}
+                            {% assign max_size = section.settings.max_font_size %}
+                            {% assign default_size = section.settings.default_font_size %}
+                            {% for font_size in (min_size..max_size) %}
+                              <option
+                                value="{{ font_size }}"
+                                {% if font_size == default_size %}
+                                selected{% endif %}>{{ font_size }}px</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                      <div class="custom-cover-customizer__group custom-cover-customizer__group--tight custom-cover-customizer__text-format-controls">
+                        <fieldset class="custom-cover-customizer__subfield">
+                          <div
+                            class="custom-cover-customizer__format-row"
+                            role="toolbar"
+                            aria-label="{{ section.settings.text_format_toolbar_aria_label | escape }}">
+                            <div class="custom-cover-customizer__format-cluster custom-cover-customizer__format-cluster--grow">
+                              <div
+                                class="custom-cover-customizer__segmented custom-cover-customizer__segmented--toolbar"
+                                role="group"
+                                aria-label="{{ section.settings.text_alignment_aria_label | escape }}">
+                                <button
+                                  type="button"
+                                  class="custom-cover-customizer__segment custom-cover-customizer__segment--toolbar"
+                                  data-text-align="left"
+                                  aria-pressed="true"
+                                  aria-label="{{ section.settings.align_left_aria_label | escape }}">
+                                  <span class="visually-hidden">{{ section.settings.align_left_short_label | escape }}</span>
+                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-left.svg' | inline_asset_content -}}</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  class="custom-cover-customizer__segment custom-cover-customizer__segment--toolbar"
+                                  data-text-align="center"
+                                  aria-pressed="false"
+                                  aria-label="{{ section.settings.align_center_aria_label | escape }}">
+                                  <span class="visually-hidden">{{ section.settings.align_center_short_label | escape }}</span>
+                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-center.svg' | inline_asset_content -}}</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  class="custom-cover-customizer__segment custom-cover-customizer__segment--toolbar"
+                                  data-text-align="right"
+                                  aria-pressed="false"
+                                  aria-label="{{ section.settings.align_right_aria_label | escape }}">
+                                  <span class="visually-hidden">{{ section.settings.align_right_short_label | escape }}</span>
+                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-right.svg' | inline_asset_content -}}</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  class="custom-cover-customizer__segment custom-cover-customizer__segment--toolbar"
+                                  data-text-align="justify"
+                                  aria-pressed="false"
+                                  aria-label="{{ section.settings.align_justify_aria_label | escape }}">
+                                  <span class="visually-hidden">{{ section.settings.align_justify_short_label | escape }}</span>
+                                  <span class="custom-cover-customizer__segment-icon" aria-hidden="true">{{- 'icon-customizer-align-justify.svg' | inline_asset_content -}}</span>
+                                </button>
+                              </div>
+                            </div>
+                            <div class="custom-cover-customizer__format-cluster">
+                              <div
+                                class="custom-cover-customizer__format-styles"
+                                role="group"
+                                aria-label="{{ section.settings.text_format_toolbar_aria_label | escape }}">
+                                <button
+                                  type="button"
+                                  class="custom-cover-customizer__format-btn custom-cover-customizer__format-btn--inline"
+                                  data-format-bold
+                                  aria-pressed="false"
+                                  aria-label="{{ section.settings.format_bold_aria_label | escape }}">
+                                  <span class="custom-cover-customizer__format-letter">B</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  class="custom-cover-customizer__format-btn custom-cover-customizer__format-btn--inline"
+                                  data-format-italic
+                                  aria-pressed="false"
+                                  aria-label="{{ section.settings.format_italic_aria_label | escape }}">
+                                  <span class="custom-cover-customizer__format-letter custom-cover-customizer__format-letter--italic">I</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  class="custom-cover-customizer__format-btn custom-cover-customizer__format-btn--inline"
+                                  data-format-underline
+                                  aria-pressed="false"
+                                  aria-label="{{ section.settings.format_underline_aria_label | escape }}">
+                                  <span class="custom-cover-customizer__format-letter custom-cover-customizer__format-letter--underline">U</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  class="custom-cover-customizer__format-btn custom-cover-customizer__format-btn--inline"
+                                  data-format-strikethrough
+                                  aria-pressed="false"
+                                  aria-label="{{ section.settings.format_strikethrough_aria_label | escape }}">
+                                  <span class="custom-cover-customizer__format-letter custom-cover-customizer__format-letter--strike">S</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </div>
+
                     </div>
 
                     {%- assign default_shape_fill = section.settings.default_shape_color | default: '#333333' -%}
+                    {%- assign default_shape_outline = section.settings.default_shape_outline_color | default: '#000000' -%}
                     <div
                       class="custom-cover-customizer__shapes-panel"
                       data-tool-panel="shapes"
@@ -1093,24 +1089,78 @@
                       <div class="custom-cover-customizer__group">
                         <p class="custom-cover-customizer__label custom-cover-customizer__shapes-title">Choose a Shape</p>
                       </div>
-                      <div class="custom-cover-customizer__group">
-                        <p class="custom-cover-customizer__label">{{ section.settings.shapes_fill_label | escape }}</p>
-                        <label class="custom-cover-customizer__color-chip">
-                          <span class="visually-hidden">{{ section.settings.shapes_fill_label | escape }}</span>
-                          <input
-                            id="CustomizerShapeFill-{{ section.id }}"
-                            class="custom-cover-customizer__color-native"
-                            type="color"
-                            value="{{ default_shape_fill }}"
-                            data-shape-fill-input
-                            aria-label="{{ section.settings.shapes_fill_label | escape }}">
-                          <span
-                            class="custom-cover-customizer__color-swatch"
-                            data-shape-fill-swatch
-                            aria-hidden="true"
-                            style="background-color: {{ default_shape_fill }}"></span>
-                          <span class="custom-cover-customizer__color-hex" data-shape-fill-hex>{{- default_shape_fill | upcase -}}</span>
-                        </label>
+                      <input type="checkbox" data-shape-outline-enabled checked hidden>
+                      <div class="custom-cover-customizer__inline-grid custom-cover-customizer__text-color-row custom-cover-customizer__shapes-color-row">
+                        <div class="custom-cover-customizer__group">
+                          <label class="custom-cover-customizer__label" for="CustomizerShapeFill-{{ section.id }}">
+                            {{ section.settings.shapes_fill_label | escape }}
+                          </label>
+                          <label class="custom-cover-customizer__color-chip">
+                            <span class="visually-hidden">{{ section.settings.shapes_fill_label | escape }}</span>
+                            <input
+                              id="CustomizerShapeFill-{{ section.id }}"
+                              class="custom-cover-customizer__color-native"
+                              type="color"
+                              value="{{ default_shape_fill }}"
+                              data-shape-fill-input
+                              aria-label="{{ section.settings.shapes_fill_label | escape }}">
+                            <span
+                              class="custom-cover-customizer__color-swatch"
+                              data-shape-fill-swatch
+                              aria-hidden="true"
+                              style="background-color: {{ default_shape_fill }}"></span>
+                            <span class="custom-cover-customizer__color-hex" data-shape-fill-hex>{{- default_shape_fill | upcase -}}</span>
+                          </label>
+                        </div>
+                        <div class="custom-cover-customizer__group">
+                          <label class="custom-cover-customizer__label" for="CustomizerShapeOutlineColor-{{ section.id }}">
+                            {{ section.settings.shapes_outline_color_label | default: 'Outline' | escape }}
+                          </label>
+                          <div class="custom-cover-customizer__outline-color-control">
+                            <label class="custom-cover-customizer__color-chip">
+                              <span class="visually-hidden">{{ section.settings.shapes_outline_color_label | default: 'Outline color' | escape }}</span>
+                              <input
+                                id="CustomizerShapeOutlineColor-{{ section.id }}"
+                                class="custom-cover-customizer__color-native"
+                                type="color"
+                                value="{{ default_shape_outline }}"
+                                data-shape-outline-color-input
+                                aria-label="{{ section.settings.shapes_outline_color_label | default: 'Outline color' | escape }}">
+                              <span
+                                class="custom-cover-customizer__color-swatch"
+                                data-shape-outline-color-swatch
+                                aria-hidden="true"
+                                style="background-color: {{ default_shape_outline }}"></span>
+                              <span class="custom-cover-customizer__color-hex" data-shape-outline-color-hex>{{- default_shape_outline | upcase -}}</span>
+                            </label>
+                            <button
+                              type="button"
+                              class="custom-cover-customizer__outline-weight-trigger"
+                              data-shape-outline-weight-toggle
+                              aria-controls="CustomizerShapeOutlineWeightPopover-{{ section.id }}"
+                              aria-expanded="false">
+                              {{- section.settings.shapes_outline_width_label | default: 'Weight' | escape -}}
+                            </button>
+                            <div
+                              id="CustomizerShapeOutlineWeightPopover-{{ section.id }}"
+                              class="custom-cover-customizer__outline-weight-popover"
+                              data-shape-outline-weight-popover
+                              hidden>
+                              <label class="custom-cover-customizer__label" for="CustomizerShapeOutlineWidth-{{ section.id }}">
+                                {{- section.settings.shapes_outline_width_label | default: 'Weight' | escape -}}
+                              </label>
+                              <input
+                                id="CustomizerShapeOutlineWidth-{{ section.id }}"
+                                class="custom-cover-customizer__range-input"
+                                type="range"
+                                min="0"
+                                max="20"
+                                step="1"
+                                value="3"
+                                data-shape-outline-width-input>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <div class="custom-cover-customizer__shapes-list">
                         <div class="custom-cover-customizer__shapes-root" data-shapes-root></div>
@@ -2084,6 +2134,26 @@
         "id": "default_shape_color",
         "label": "Default shape fill",
         "default": "#333333"
+      }, {
+        "type": "text",
+        "id": "shapes_outline_enable_label",
+        "label": "Shapes outline toggle label",
+        "default": "Enable outline"
+      }, {
+        "type": "text",
+        "id": "shapes_outline_color_label",
+        "label": "Shapes outline color label",
+        "default": "Outline"
+      }, {
+        "type": "text",
+        "id": "shapes_outline_width_label",
+        "label": "Shapes outline width label",
+        "default": "Weight"
+      }, {
+        "type": "color",
+        "id": "default_shape_outline_color",
+        "label": "Default shape outline color",
+        "default": "#000000"
       }, {
         "type": "textarea",
         "id": "shapes_attribution",

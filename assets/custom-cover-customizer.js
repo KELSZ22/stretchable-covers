@@ -49,7 +49,7 @@ class CustomCoverCustomizer extends HTMLElement {
       fontStyle: "normal",
       underline: false,
       strikethrough: false,
-      outlineEnabled: false,
+      outlineEnabled: true,
       outlineWidth: 3,
       outlineColor: "#ffffff",
       textEffect: "straight",
@@ -147,6 +147,8 @@ class CustomCoverCustomizer extends HTMLElement {
       }
       this.textDefaults.outlineColor = v;
     }
+    this.updateShapeFillChrome();
+    this.updateShapeOutlineColorChrome();
     this.seedVariantPrice();
     this.render();
     this.updatePrice();
@@ -1157,6 +1159,10 @@ class CustomCoverCustomizer extends HTMLElement {
     const zoomOutBtn = sectionRoot?.querySelector("[data-canvas-zoom-out]");
     const panBtn = sectionRoot?.querySelector("[data-canvas-pan]");
     const copyBtns = sectionRoot?.querySelectorAll("[data-design-copy]") ?? [];
+    const flipHorizontalBtns =
+      sectionRoot?.querySelectorAll("[data-design-flip-horizontal]") ?? [];
+    const flipVerticalBtns =
+      sectionRoot?.querySelectorAll("[data-design-flip-vertical]") ?? [];
     const undoBtns = sectionRoot?.querySelectorAll("[data-design-undo]") ?? [];
     const redoBtns = sectionRoot?.querySelectorAll("[data-design-redo]") ?? [];
     const deleteBtns =
@@ -1490,6 +1496,57 @@ class CustomCoverCustomizer extends HTMLElement {
         this.render();
         this.updateHiddenProperties();
       }
+    });
+    this.querySelector("[data-shape-outline-enabled]")?.addEventListener(
+      "change",
+      () => this.applyShapeOutlineFromFormToSelection(),
+    );
+    this.querySelector("[data-shape-outline-width-input]")?.addEventListener(
+      "input",
+      () => this.applyShapeOutlineFromFormToSelection(),
+    );
+    this.querySelector("[data-shape-outline-color-input]")?.addEventListener(
+      "input",
+      () => {
+        this.updateShapeOutlineColorChrome();
+        this.applyShapeOutlineFromFormToSelection();
+      },
+    );
+    const shapeOutlineWeightToggle = this.querySelector(
+      "[data-shape-outline-weight-toggle]",
+    );
+    const shapeOutlineWeightPopover = this.querySelector(
+      "[data-shape-outline-weight-popover]",
+    );
+    const setShapeOutlineWeightPopover = (open) => {
+      if (!shapeOutlineWeightToggle || !shapeOutlineWeightPopover) return;
+      shapeOutlineWeightPopover.hidden = !open;
+      shapeOutlineWeightToggle.setAttribute(
+        "aria-expanded",
+        open ? "true" : "false",
+      );
+    };
+    shapeOutlineWeightToggle?.addEventListener("click", () => {
+      const isOpen = shapeOutlineWeightPopover?.hidden === false;
+      setShapeOutlineWeightPopover(!isOpen);
+    });
+    this.addEventListener("click", (event) => {
+      if (
+        !shapeOutlineWeightToggle ||
+        !shapeOutlineWeightPopover ||
+        shapeOutlineWeightPopover.hidden
+      ) {
+        return;
+      }
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (
+        shapeOutlineWeightToggle.contains(target) ||
+        shapeOutlineWeightPopover.contains(target)
+      ) {
+        return;
+      }
+      setShapeOutlineWeightPopover(false);
     });
 
     let productCatalog = this.readProductCatalog();
@@ -2365,6 +2422,30 @@ class CustomCoverCustomizer extends HTMLElement {
       "input",
       () => this.applyTextOutlineEffectFromFormToSelection(),
     );
+    const outlineWeightToggle = this.querySelector("[data-outline-weight-toggle]");
+    const outlineWeightPopover = this.querySelector("[data-outline-weight-popover]");
+    const setOutlineWeightPopover = (open) => {
+      if (!outlineWeightToggle || !outlineWeightPopover) return;
+      outlineWeightPopover.hidden = !open;
+      outlineWeightToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    };
+    outlineWeightToggle?.addEventListener("click", () => {
+      const isOpen = outlineWeightPopover?.hidden === false;
+      const shouldOpen = !isOpen;
+      setOutlineWeightPopover(shouldOpen);
+    });
+    this.addEventListener("click", (event) => {
+      if (!outlineWeightToggle || !outlineWeightPopover || outlineWeightPopover.hidden) return;
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (
+        outlineWeightToggle.contains(target) ||
+        outlineWeightPopover.contains(target)
+      ) {
+        return;
+      }
+      setOutlineWeightPopover(false);
+    });
     this.querySelector("[data-text-outline-color]")?.addEventListener(
       "input",
       () => {
@@ -2478,6 +2559,12 @@ class CustomCoverCustomizer extends HTMLElement {
     });
     copyBtns.forEach((btn) =>
       btn.addEventListener("click", () => this.duplicateSelectedElement()),
+    );
+    flipHorizontalBtns.forEach((btn) =>
+      btn.addEventListener("click", () => this.flipSelectedElement("horizontal")),
+    );
+    flipVerticalBtns.forEach((btn) =>
+      btn.addEventListener("click", () => this.flipSelectedElement("vertical")),
     );
     undoBtns.forEach((btn) =>
       btn.addEventListener("click", () => this.undoLastChange()),
@@ -2917,6 +3004,81 @@ class CustomCoverCustomizer extends HTMLElement {
     }
   }
 
+  updateShapeOutlineColorChrome() {
+    const input = this.querySelector("[data-shape-outline-color-input]");
+    const hexEl = this.querySelector("[data-shape-outline-color-hex]");
+    const swatch = this.querySelector("[data-shape-outline-color-swatch]");
+    let v = (input?.value || "#000000").trim();
+    if (!v.startsWith("#")) {
+      v = `#${v}`;
+    }
+    if (hexEl) {
+      hexEl.textContent = v.toUpperCase();
+    }
+    if (swatch) {
+      swatch.style.backgroundColor = v;
+    }
+  }
+
+  ensureShapeElementOutline(element) {
+    if (!element || element.type !== "shape") {
+      return;
+    }
+    const variant = String(element.shapeVariant || "").trim().toLowerCase();
+    const defaultEnabled = variant === "outline";
+    if (typeof element.strokeEnabled !== "boolean") {
+      element.strokeEnabled = defaultEnabled;
+    }
+    const parsedStrokeWidth = Math.round(Number(element.strokeWidth));
+    element.strokeWidth = Math.min(
+      20,
+      Math.max(0, Number.isFinite(parsedStrokeWidth) ? parsedStrokeWidth : 3),
+    );
+    let strokeColor = String(element.strokeColor || "").trim();
+    if (!strokeColor) {
+      strokeColor = "#000000";
+    }
+    if (!strokeColor.startsWith("#")) {
+      strokeColor = `#${strokeColor}`;
+    }
+    element.strokeColor = strokeColor;
+  }
+
+  readShapeOutlineFromForm() {
+    const strokeEnabledInput = this.querySelector("[data-shape-outline-enabled]");
+    const strokeWidthInput = this.querySelector("[data-shape-outline-width-input]");
+    const strokeColorInput = this.querySelector("[data-shape-outline-color-input]");
+    let strokeColor = String(strokeColorInput?.value || "#000000").trim();
+    if (!strokeColor.startsWith("#")) {
+      strokeColor = `#${strokeColor}`;
+    }
+    const parsedStrokeWidth = Math.round(Number(strokeWidthInput?.value));
+    const strokeWidth = Math.min(
+      20,
+      Math.max(0, Number.isFinite(parsedStrokeWidth) ? parsedStrokeWidth : 3),
+    );
+    return {
+      strokeEnabled: strokeEnabledInput
+        ? Boolean(strokeEnabledInput.checked)
+        : true,
+      strokeWidth,
+      strokeColor,
+    };
+  }
+
+  applyShapeOutlineFromFormToSelection() {
+    const selected = this.getSelectedElement();
+    const shapeOutline = this.readShapeOutlineFromForm();
+    if (selected?.type === "shape") {
+      selected.strokeEnabled = shapeOutline.strokeEnabled;
+      selected.strokeWidth = shapeOutline.strokeWidth;
+      selected.strokeColor = shapeOutline.strokeColor;
+      this.ensureShapeElementOutline(selected);
+      this.render();
+      this.updateHiddenProperties();
+    }
+  }
+
   handleDesignKeydown(event) {
     if (event.key !== "Delete" && event.key !== "Backspace") {
       return;
@@ -3334,6 +3496,8 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     const width = def.defaultW;
     const height = def.defaultH;
+    const shapeOutlineDefaults = this.readShapeOutlineFromForm();
+    const isOutlineShape = String(def.variant || "").toLowerCase() === "outline";
 
     const element = {
       id: crypto.randomUUID(),
@@ -3345,7 +3509,12 @@ class CustomCoverCustomizer extends HTMLElement {
       width,
       height,
       scale: 1,
+      flipX: 1,
+      flipY: 1,
       rotation: 0,
+      strokeEnabled: isOutlineShape || shapeOutlineDefaults.strokeEnabled,
+      strokeWidth: shapeOutlineDefaults.strokeWidth,
+      strokeColor: shapeOutlineDefaults.strokeColor,
     };
 
     if (def.kind === "path" && def.paths?.length) {
@@ -3360,6 +3529,7 @@ class CustomCoverCustomizer extends HTMLElement {
     if (def.variant) {
       element.shapeVariant = def.variant;
     }
+    this.ensureShapeElementOutline(element);
 
     this.pushHistorySnapshot();
     this.elements.push(element);
@@ -3377,7 +3547,15 @@ class CustomCoverCustomizer extends HTMLElement {
   drawShapeToContext(element) {
     const w = element.width;
     const h = element.height;
+    this.ensureShapeElementOutline(element);
     this.ctx.fillStyle = element.fill || "#333333";
+    this.ctx.strokeStyle = element.strokeColor || "#000000";
+    this.ctx.lineWidth = Number(element.strokeWidth) || 1;
+    this.ctx.lineJoin = "round";
+    this.ctx.lineCap = "round";
+    const shouldStroke =
+      Boolean(element.strokeEnabled) && Number(element.strokeWidth) > 0;
+    const shouldFill = String(element.shapeVariant || "").toLowerCase() !== "outline";
 
     if (element.paths?.length) {
       const vb = element.viewBox || 24;
@@ -3385,7 +3563,12 @@ class CustomCoverCustomizer extends HTMLElement {
       this.ctx.scale(w / vb, h / vb);
       for (const d of element.paths) {
         const p = new Path2D(d);
-        this.ctx.fill(p, rule);
+        if (shouldFill) {
+          this.ctx.fill(p, rule);
+        }
+        if (shouldStroke) {
+          this.ctx.stroke(p);
+        }
       }
       return;
     }
@@ -3395,20 +3578,40 @@ class CustomCoverCustomizer extends HTMLElement {
     if (def?.kind === "builtin") {
       const b = def.builtin;
       if (b === "rectangle") {
-        this.ctx.fillRect(0, 0, w, h);
+        if (shouldFill) {
+          this.ctx.fillRect(0, 0, w, h);
+        }
+        if (shouldStroke) {
+          this.ctx.strokeRect(0, 0, w, h);
+        }
       } else if (b === "ellipse") {
         this.ctx.beginPath();
         this.ctx.ellipse(w / 2, h / 2, w / 2, h / 2, 0, 0, Math.PI * 2);
-        this.ctx.fill();
+        if (shouldFill) {
+          this.ctx.fill();
+        }
+        if (shouldStroke) {
+          this.ctx.stroke();
+        }
       } else if (b === "triangle") {
         this.ctx.beginPath();
         this.ctx.moveTo(w / 2, 0);
         this.ctx.lineTo(w, h);
         this.ctx.lineTo(0, h);
         this.ctx.closePath();
-        this.ctx.fill();
+        if (shouldFill) {
+          this.ctx.fill();
+        }
+        if (shouldStroke) {
+          this.ctx.stroke();
+        }
       } else {
-        this.ctx.fillRect(0, 0, w, h);
+        if (shouldFill) {
+          this.ctx.fillRect(0, 0, w, h);
+        }
+        if (shouldStroke) {
+          this.ctx.strokeRect(0, 0, w, h);
+        }
       }
       return;
     }
@@ -3419,27 +3622,52 @@ class CustomCoverCustomizer extends HTMLElement {
       const rule = def.fillRule || "nonzero";
       for (const d of def.paths) {
         const p = new Path2D(d);
-        this.ctx.fill(p, rule);
+        if (shouldFill) {
+          this.ctx.fill(p, rule);
+        }
+        if (shouldStroke) {
+          this.ctx.stroke(p);
+        }
       }
       return;
     }
 
     const kind = element.shapeKind || "rectangle";
     if (kind === "rectangle") {
-      this.ctx.fillRect(0, 0, w, h);
+      if (shouldFill) {
+        this.ctx.fillRect(0, 0, w, h);
+      }
+      if (shouldStroke) {
+        this.ctx.strokeRect(0, 0, w, h);
+      }
     } else if (kind === "ellipse") {
       this.ctx.beginPath();
       this.ctx.ellipse(w / 2, h / 2, w / 2, h / 2, 0, 0, Math.PI * 2);
-      this.ctx.fill();
+      if (shouldFill) {
+        this.ctx.fill();
+      }
+      if (shouldStroke) {
+        this.ctx.stroke();
+      }
     } else if (kind === "triangle") {
       this.ctx.beginPath();
       this.ctx.moveTo(w / 2, 0);
       this.ctx.lineTo(w, h);
       this.ctx.lineTo(0, h);
       this.ctx.closePath();
-      this.ctx.fill();
+      if (shouldFill) {
+        this.ctx.fill();
+      }
+      if (shouldStroke) {
+        this.ctx.stroke();
+      }
     } else {
-      this.ctx.fillRect(0, 0, w, h);
+      if (shouldFill) {
+        this.ctx.fillRect(0, 0, w, h);
+      }
+      if (shouldStroke) {
+        this.ctx.strokeRect(0, 0, w, h);
+      }
     }
   }
 
@@ -3460,6 +3688,8 @@ class CustomCoverCustomizer extends HTMLElement {
         width: img.width * ratio,
         height: img.height * ratio,
         scale: 1,
+        flipX: 1,
+        flipY: 1,
         rotation: 0,
       };
 
@@ -3575,17 +3805,17 @@ class CustomCoverCustomizer extends HTMLElement {
       };
     } else if (mode === "scale") {
       this.pendingHistorySnapshot = this.createHistorySnapshot();
-      const centerX = (el.width || 0) / 2;
-      const centerY = (el.height || 0) / 2;
+      const center = this.localToCanvas(el.width / 2, el.height / 2, el);
       const startDist = Math.max(
         8,
-        Math.hypot(local.x - centerX, local.y - centerY),
+        Math.hypot(point.x - center.x, point.y - center.y),
       );
       this.dragState = {
         mode: "scale",
         elementId: el.id,
         startScale: el.scale || 1,
         startDist,
+        startFontSize: Number(el.fontSize) || 24,
       };
     } else if (mode === "rotate") {
       this.pendingHistorySnapshot = this.createHistorySnapshot();
@@ -3641,12 +3871,14 @@ class CustomCoverCustomizer extends HTMLElement {
       element.x = point.x - this.dragState.offsetX;
       element.y = point.y - this.dragState.offsetY;
     } else if (this.dragState.mode === "scale") {
-      const local = this.canvasToLocal(point.x, point.y, element);
-      const centerX = (element.width || 0) / 2;
-      const centerY = (element.height || 0) / 2;
+      const center = this.localToCanvas(
+        element.width / 2,
+        element.height / 2,
+        element,
+      );
       const nowDist = Math.max(
         8,
-        Math.hypot(local.x - centerX, local.y - centerY),
+        Math.hypot(point.x - center.x, point.y - center.y),
       );
       const ratio = nowDist / this.dragState.startDist;
       element.scale = Math.min(
@@ -3688,9 +3920,11 @@ class CustomCoverCustomizer extends HTMLElement {
     const cos = Math.cos(rad);
     const sin = Math.sin(rad);
     const s = el.scale || 1;
+    const flipX = Number(el.flipX) === -1 ? -1 : 1;
+    const flipY = Number(el.flipY) === -1 ? -1 : 1;
     return {
-      x: (dx * cos + dy * sin) / s + centerX,
-      y: (-dx * sin + dy * cos) / s + centerY,
+      x: (dx * cos + dy * sin) / (s * flipX) + centerX,
+      y: (-dx * sin + dy * cos) / (s * flipY) + centerY,
     };
   }
 
@@ -3701,8 +3935,10 @@ class CustomCoverCustomizer extends HTMLElement {
     const cos = Math.cos(rad);
     const sin = Math.sin(rad);
     const s = el.scale || 1;
-    const sx = (lx - centerX) * s;
-    const sy = (ly - centerY) * s;
+    const flipX = Number(el.flipX) === -1 ? -1 : 1;
+    const flipY = Number(el.flipY) === -1 ? -1 : 1;
+    const sx = (lx - centerX) * s * flipX;
+    const sy = (ly - centerY) * s * flipY;
     return {
       x: el.x + centerX + sx * cos - sy * sin,
       y: el.y + centerY + sx * sin + sy * cos,
@@ -3744,6 +3980,32 @@ class CustomCoverCustomizer extends HTMLElement {
         this.canvas.style.cursor = "grab";
       }
       return;
+    }
+    if (this.dragState?.mode === "scale") {
+      const scaledElement = this.elements.find(
+        (item) => item.id === this.dragState.elementId,
+      );
+      if (scaledElement?.type === "text") {
+        const centerX = scaledElement.x + (scaledElement.width || 0) / 2;
+        const centerY = scaledElement.y + (scaledElement.height || 0) / 2;
+        const effectiveFontSize = Math.min(
+          420,
+          Math.max(
+            6,
+            Math.round(
+              (this.dragState.startFontSize || scaledElement.fontSize || 24) *
+                Math.max(0.01, scaledElement.scale || 1),
+            ),
+          ),
+        );
+        scaledElement.fontSize = effectiveFontSize;
+        scaledElement.scale = 1;
+        this.render();
+        scaledElement.x = centerX - (scaledElement.width || 0) / 2;
+        scaledElement.y = centerY - (scaledElement.height || 0) / 2;
+        this.render();
+        this.updateHiddenProperties();
+      }
     }
     if (this.dragState && this.pendingHistorySnapshot) {
       this.commitPendingHistorySnapshot();
@@ -3890,6 +4152,12 @@ class CustomCoverCustomizer extends HTMLElement {
       this.syncAlignmentControls(this.textDefaults.textAlign);
       this.updateColorChrome();
       this.syncTextOutlineEffectControls(null);
+      const shapeOutlineEnabled = this.querySelector(
+        "[data-shape-outline-enabled]",
+      );
+      if (shapeOutlineEnabled) {
+        shapeOutlineEnabled.checked = true;
+      }
       return;
     }
 
@@ -3925,10 +4193,30 @@ class CustomCoverCustomizer extends HTMLElement {
       if (shapeFillInput) {
         shapeFillInput.value = element.fill || shapeFillInput.value;
       }
+      this.ensureShapeElementOutline(element);
+      const shapeOutlineEnabled = this.querySelector(
+        "[data-shape-outline-enabled]",
+      );
+      const shapeOutlineWidthInput = this.querySelector(
+        "[data-shape-outline-width-input]",
+      );
+      const shapeOutlineColorInput = this.querySelector(
+        "[data-shape-outline-color-input]",
+      );
+      if (shapeOutlineEnabled) {
+        shapeOutlineEnabled.checked = Boolean(element.strokeEnabled);
+      }
+      if (shapeOutlineWidthInput) {
+        shapeOutlineWidthInput.value = String(element.strokeWidth || 3);
+      }
+      if (shapeOutlineColorInput) {
+        shapeOutlineColorInput.value = element.strokeColor || "#000000";
+      }
       this.syncFormatToolbars();
       this.syncAlignmentControls(this.textDefaults.textAlign);
       this.updateColorChrome();
       this.updateShapeFillChrome();
+      this.updateShapeOutlineColorChrome();
     } else {
       if (textInput) {
         textInput.value = "";
@@ -3984,10 +4272,15 @@ class CustomCoverCustomizer extends HTMLElement {
     element.outlineWidth = Math.min(
       16,
       Math.max(
-        1,
-        Math.round(
-          Number(element.outlineWidth ?? d.outlineWidth) || d.outlineWidth,
-        ),
+        0,
+        (() => {
+          const parsedOutlineWidth = Math.round(
+            Number(element.outlineWidth ?? d.outlineWidth),
+          );
+          return Number.isFinite(parsedOutlineWidth)
+            ? parsedOutlineWidth
+            : d.outlineWidth;
+        })(),
       ),
     );
     let oc = String(element.outlineColor || "").trim();
@@ -4040,7 +4333,7 @@ class CustomCoverCustomizer extends HTMLElement {
       outlineEnabled.checked = Boolean(base.outlineEnabled);
     }
     if (outlineControls) {
-      outlineControls.hidden = !base.outlineEnabled;
+      outlineControls.hidden = false;
     }
     const ow = this.querySelector("[data-text-outline-weight]");
     if (ow) {
@@ -4122,10 +4415,11 @@ class CustomCoverCustomizer extends HTMLElement {
     const outlineColor = this.querySelector("[data-text-outline-color]");
     const effectSelect = this.querySelector("[data-text-effect]");
 
-    target.outlineEnabled = Boolean(outlineEnabled?.checked);
+    target.outlineEnabled = true;
+    const parsedOutlineWeight = Math.round(Number(outlineWeight?.value));
     target.outlineWidth = Math.min(
       16,
-      Math.max(1, Math.round(Number(outlineWeight?.value) || 3)),
+      Math.max(0, Number.isFinite(parsedOutlineWeight) ? parsedOutlineWeight : 3),
     );
     let oc = String(outlineColor?.value || "#ffffff").trim();
     if (!oc.startsWith("#")) {
@@ -4210,11 +4504,6 @@ class CustomCoverCustomizer extends HTMLElement {
     if (el?.type === "text") {
       this.readTextOutlineEffectFromFormInto(el);
     }
-    const outlineControls = this.querySelector("[data-text-outline-controls]");
-    const outlineToggle = this.querySelector("[data-text-outline-enabled]");
-    if (outlineControls) {
-      outlineControls.hidden = !outlineToggle?.checked;
-    }
     this.render();
     this.updateHiddenProperties();
   }
@@ -4260,7 +4549,7 @@ class CustomCoverCustomizer extends HTMLElement {
 
   getOutlineDrawConfig(element) {
     const enabled = Boolean(element.outlineEnabled);
-    const width = Math.min(16, Math.max(1, Number(element.outlineWidth) || 0));
+    const width = Math.min(16, Math.max(0, Number(element.outlineWidth) || 0));
     let color = String(element.outlineColor || "#ffffff").trim();
     if (!color.startsWith("#")) {
       color = `#${color}`;
@@ -4715,7 +5004,9 @@ class CustomCoverCustomizer extends HTMLElement {
       this.ctx.translate(element.x, element.y);
       this.ctx.translate(element.width / 2, element.height / 2);
       this.ctx.rotate((element.rotation * Math.PI) / 180);
-      this.ctx.scale(element.scale, element.scale);
+      const flipX = Number(element.flipX) === -1 ? -1 : 1;
+      const flipY = Number(element.flipY) === -1 ? -1 : 1;
+      this.ctx.scale(element.scale * flipX, element.scale * flipY);
       this.ctx.translate(-element.width / 2, -element.height / 2);
 
       if (element.type === "text") {
@@ -4821,6 +5112,7 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     this.elements = snapshot.elements.map((element) => {
       const restored = { ...element };
+      this.ensureElementFlipState(restored);
       if (Array.isArray(restored.paths)) {
         restored.paths = [...restored.paths];
       }
@@ -4835,6 +5127,8 @@ class CustomCoverCustomizer extends HTMLElement {
       }
       if (restored.type === "text") {
         this.ensureTextElementOutlineAndEffect(restored);
+      } else if (restored.type === "shape") {
+        this.ensureShapeElementOutline(restored);
       }
       return restored;
     });
@@ -4843,6 +5137,14 @@ class CustomCoverCustomizer extends HTMLElement {
     this.render();
     this.updatePrice();
     this.updateHiddenProperties();
+  }
+
+  ensureElementFlipState(element) {
+    if (!element || typeof element !== "object") {
+      return;
+    }
+    element.flipX = Number(element.flipX) === -1 ? -1 : 1;
+    element.flipY = Number(element.flipY) === -1 ? -1 : 1;
   }
 
   duplicateSelectedElement() {
@@ -4868,6 +5170,28 @@ class CustomCoverCustomizer extends HTMLElement {
     this.syncControlInputs();
     this.render();
     this.updatePrice();
+  }
+
+  flipSelectedElement(axis) {
+    const selected = this.getSelectedElement();
+    if (
+      !selected ||
+      !["text", "image", "clipart", "shape"].includes(selected.type)
+    ) {
+      return;
+    }
+    this.pushHistorySnapshot();
+    const currentFlipX = Number(selected.flipX) === -1 ? -1 : 1;
+    const currentFlipY = Number(selected.flipY) === -1 ? -1 : 1;
+    if (axis === "vertical") {
+      selected.flipY = currentFlipY * -1;
+      selected.flipX = currentFlipX;
+    } else {
+      selected.flipX = currentFlipX * -1;
+      selected.flipY = currentFlipY;
+    }
+    this.render();
+    this.updateHiddenProperties();
   }
 
   deleteSelectedElement() {
@@ -5219,6 +5543,8 @@ class CustomCoverCustomizer extends HTMLElement {
       width: 220,
       height: 60,
       scale: 1,
+      flipX: 1,
+      flipY: 1,
       rotation: 0,
       ...overrides,
     };
@@ -5604,6 +5930,7 @@ class CustomCoverCustomizer extends HTMLElement {
 
   hydrateElementFromDraft(item) {
     const next = { ...item };
+    this.ensureElementFlipState(next);
     if ((next.type === "image" || next.type === "clipart") && next.src) {
       const image = new Image();
       image.onload = () => this.render();
@@ -5623,6 +5950,8 @@ class CustomCoverCustomizer extends HTMLElement {
       const el = this.hydrateElementFromDraft(item);
       if (el.type === "text") {
         this.ensureTextElementOutlineAndEffect(el);
+      } else if (el.type === "shape") {
+        this.ensureShapeElementOutline(el);
       }
       return el;
     });
@@ -5930,6 +6259,12 @@ class CustomCoverCustomizer extends HTMLElement {
         iconifyIcon: element.type === "shape" ? element.iconifyIcon || "" : "",
         shapeVariant:
           element.type === "shape" ? element.shapeVariant || "" : "",
+        strokeEnabled:
+          element.type === "shape" ? Boolean(element.strokeEnabled) : false,
+        strokeWidth:
+          element.type === "shape" ? Number(element.strokeWidth) || 0 : "",
+        strokeColor:
+          element.type === "shape" ? String(element.strokeColor || "") : "",
         src:
           element.type === "image" || element.type === "clipart"
             ? element.src

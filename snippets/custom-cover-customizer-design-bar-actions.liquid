@@ -53,6 +53,28 @@
   <button
     type="button"
     class="custom-cover-customizer__design-tool"
+    data-design-flip-horizontal
+    data-tooltip="Flip Horizontal"
+    aria-label="Flip selected element horizontally">
+    <span class="custom-cover-customizer__design-tool-icon" aria-hidden="true">
+      {{- 'custom-icon-design-flip-horizontal.svg' | inline_asset_content -}}
+    </span>
+    <span class="custom-cover-customizer__design-tool-label">Flip Horizontal</span>
+  </button>
+  <button
+    type="button"
+    class="custom-cover-customizer__design-tool"
+    data-design-flip-vertical
+    data-tooltip="Flip Vertical"
+    aria-label="Flip selected element vertically">
+    <span class="custom-cover-customizer__design-tool-icon" aria-hidden="true">
+      {{- 'custom-icon-design-flip-vertical.svg' | inline_asset_content -}}
+    </span>
+    <span class="custom-cover-customizer__design-tool-label">Flip Vertical</span>
+  </button>
+  <button
+    type="button"
+    class="custom-cover-customizer__design-tool"
     data-design-delete
     data-tooltip="Delete"
     aria-label="Delete selected element">

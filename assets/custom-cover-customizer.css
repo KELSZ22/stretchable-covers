@@ -1703,15 +1703,154 @@
   margin-bottom: 40px;
 }
 
+.custom-cover-customizer .custom-cover-customizer__text-color-row {
+  gap: 12px;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__text-color-row
+  .custom-cover-customizer__group {
+  min-width: 0;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__text-color-row
+  .custom-cover-customizer__color-chip {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 40px;
+  border: 1px solid #d3d3d3;
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px 10px;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__text-subsection--effects-advanced {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.custom-cover-customizer .custom-cover-customizer__outline-color-control {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.custom-cover-customizer .custom-cover-customizer__outline-weight-trigger {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  max-width: 46%;
+  min-height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: #e1e1e1;
+  color: #333;
+  font-family: Lato, sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+  padding: 6px 9px;
+  cursor: pointer;
+  z-index: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__outline-weight-trigger:focus-visible {
+  outline: 2px solid rgb(var(--color-button-rgb));
+  outline-offset: 2px;
+}
+
+.custom-cover-customizer .custom-cover-customizer__outline-weight-popover {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  top: calc(100% + 8px);
+  z-index: 12;
+  display: grid;
+  gap: 8px;
+  border: 1px solid #d3d3d3;
+  border-radius: 8px;
+  background: #f3f3f3;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.1);
+  padding: 10px 12px;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__outline-weight-popover[hidden] {
+  display: none !important;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__outline-color-control
+  .custom-cover-customizer__color-chip {
+  padding-right: clamp(82px, 40%, 120px);
+}
+
+@media screen and (max-width: 640px) {
+  .custom-cover-customizer .custom-cover-customizer__text-color-row {
+    grid-template-columns: 1fr;
+  }
+
+  .custom-cover-customizer .custom-cover-customizer__outline-weight-trigger {
+    max-width: 42%;
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+}
+
+/* Text tool UI: match soft-gray control bars from design reference. */
+.custom-cover-customizer
+  .custom-cover-customizer__text-panel
+  select[data-text-effect] {
+  border-color: #d3d3d3;
+  background-color: #fff;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__text-panel
+  .custom-cover-customizer__outline-controls
+  .custom-cover-customizer__color-chip {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  border: 1px solid #d3d3d3;
+  border-radius: 8px;
+  background: #f3f3f3;
+  padding: 8px 10px;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__text-panel
+  .custom-cover-customizer__outline-controls
+  .custom-cover-customizer__color-hex {
+  color: #404040;
+}
+
+.custom-cover-customizer
+  .custom-cover-customizer__text-panel
+  .custom-cover-customizer__outline-controls
+  .custom-cover-customizer__range-input {
+  accent-color: #8f8f8f;
+}
+
 .custom-cover-customizer .custom-cover-customizer__text-subsection {
   display: grid;
   gap: 12px;
   padding-top: 8px;
-  border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.1);
 }
 
-.custom-cover-customizer
-  .custom-cover-customizer__section-label--compact {
+.custom-cover-customizer .custom-cover-customizer__section-label--compact {
   margin-bottom: 0;
 }
 
@@ -1743,7 +1882,9 @@
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .custom-cover-customizer .custom-cover-customizer__toggle-input::after {
