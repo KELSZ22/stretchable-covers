@@ -13,6 +13,7 @@
 {%- assign google_fonts_pipe = google_fonts_pipe | strip -%}
 {%- assign custom_cover_font_lines = section.settings.font_choices | newline_to_br | split: '<br />' -%}
 {%- assign default_text_hex = section.settings.default_text_color | default: '#000000' -%}
+{%- assign default_outline_hex = section.settings.default_text_outline_color | default: '#ffffff' -%}
 {%- assign template_handles = section.settings.templates_handles | newline_to_br | split: '<br />' -%}
 {%- assign templates_metaobject_type = section.settings.templates_metaobject_type | strip | downcase | replace: ' ', '_' -%}
 {%- assign templates_metaobjects_collection = shop.metaobjects[templates_metaobject_type] -%}
@@ -808,6 +809,280 @@
                           </div>
                         </fieldset>
                       </div>
+
+                      <div class="custom-cover-customizer__text-subsection">
+                        <p class="custom-cover-customizer__label custom-cover-customizer__section-label custom-cover-customizer__section-label--compact">
+                          {{- section.settings.text_outline_section_label | default: 'Outline' | escape -}}
+                        </p>
+                        <div class="custom-cover-customizer__toggle-row">
+                          <label class="custom-cover-customizer__toggle-label" for="CustomizerOutlineEnabled-{{ section.id }}">
+                            {{- section.settings.text_outline_enable_label | default: 'Enable outline' | escape -}}
+                          </label>
+                          <input
+                            id="CustomizerOutlineEnabled-{{ section.id }}"
+                            type="checkbox"
+                            class="custom-cover-customizer__toggle-input"
+                            data-text-outline-enabled
+                            aria-label="{{ section.settings.text_outline_enable_label | default: 'Enable outline' | escape }}">
+                        </div>
+                        <div class="custom-cover-customizer__outline-controls" data-text-outline-controls hidden>
+                          <div class="custom-cover-customizer__inline-grid">
+                            <div class="custom-cover-customizer__group">
+                              <label class="custom-cover-customizer__label" for="CustomizerOutlineWeight-{{ section.id }}">
+                                {{- section.settings.text_outline_weight_label | default: 'Weight' | escape -}}
+                              </label>
+                              <input
+                                id="CustomizerOutlineWeight-{{ section.id }}"
+                                type="range"
+                                class="custom-cover-customizer__range-input"
+                                data-text-outline-weight
+                                min="1"
+                                max="16"
+                                step="1"
+                                value="3"
+                                aria-valuemin="1"
+                                aria-valuemax="16">
+                            </div>
+                            <div class="custom-cover-customizer__group">
+                              <label class="custom-cover-customizer__label" for="CustomizerOutlineColor-{{ section.id }}">
+                                {{- section.settings.text_outline_color_label | default: 'Color' | escape -}}
+                              </label>
+                              <label class="custom-cover-customizer__color-chip">
+                                <span class="visually-hidden">{{ section.settings.text_outline_color_label | default: 'Outline color' | escape }}</span>
+                                <input
+                                  id="CustomizerOutlineColor-{{ section.id }}"
+                                  class="custom-cover-customizer__color-native"
+                                  type="color"
+                                  value="{{ default_outline_hex }}"
+                                  data-text-outline-color
+                                  aria-label="{{ section.settings.text_outline_color_label | default: 'Outline color' | escape }}">
+                                <span
+                                  class="custom-cover-customizer__color-swatch"
+                                  data-text-outline-swatch
+                                  aria-hidden="true"
+                                  style="background-color: {{ default_outline_hex }}"></span>
+                                <span class="custom-cover-customizer__color-hex" data-text-outline-hex>{{- default_outline_hex | upcase -}}</span>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="custom-cover-customizer__text-subsection">
+                        <p class="custom-cover-customizer__label custom-cover-customizer__section-label custom-cover-customizer__section-label--compact">
+                          {{- section.settings.text_effects_section_label | default: 'Text effects' | escape -}}
+                        </p>
+                        <div class="custom-cover-customizer__group">
+                          <label class="custom-cover-customizer__label" for="CustomizerTextEffect-{{ section.id }}">
+                            {{- section.settings.text_effect_type_label | default: 'Effect' | escape -}}
+                          </label>
+                          <select
+                            id="CustomizerTextEffect-{{ section.id }}"
+                            class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
+                            data-text-effect>
+                            <option value="straight">{{ section.settings.text_effect_straight_label | default: 'Straight' | escape }}</option>
+                            <option value="curve">{{ section.settings.text_effect_curve_label | default: 'Curve' | escape }}</option>
+                            <option value="arc">{{ section.settings.text_effect_arc_label | default: 'Arc' | escape }}</option>
+                            <option value="small-to-large">{{ section.settings.text_effect_small_to_large_label | default: 'Small to Large' | escape }}</option>
+                            <option value="large-to-small">{{ section.settings.text_effect_large_to_small_label | default: 'Large to Small' | escape }}</option>
+                            <option value="bulge">{{ section.settings.text_effect_bulge_label | default: 'Bulge' | escape }}</option>
+                          </select>
+                        </div>
+                        <div class="custom-cover-customizer__text-effect-panels">
+                          <div class="custom-cover-customizer__group custom-cover-customizer__text-effect-panel" data-text-effect-panel="curve">
+                            <div class="custom-cover-customizer__inline-grid">
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectRadiusCurve-{{ section.id }}">
+                                  {{- section.settings.text_effect_radius_label | default: 'Radius' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectRadiusCurve-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-radius
+                                  data-text-effect-radius-for="curve"
+                                  min="-2000"
+                                  max="2000"
+                                  step="10"
+                                  value="320"
+                                  title="{{ section.settings.text_effect_radius_hint | strip | default: 'Sign: Curve up / Arc down when positive. Magnitude: smaller absolute = tighter.' | escape }}"
+                                  aria-valuemin="-2000"
+                                  aria-valuemax="2000">
+                              </div>
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectSpacingCurve-{{ section.id }}">
+                                  {{- section.settings.text_effect_spacing_label | default: 'Spacing' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectSpacingCurve-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-spacing
+                                  data-text-effect-spacing-for="curve"
+                                  min="-8"
+                                  max="48"
+                                  step="1"
+                                  value="0"
+                                  aria-valuemin="-8"
+                                  aria-valuemax="48">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="custom-cover-customizer__group custom-cover-customizer__text-effect-panel" data-text-effect-panel="arc" hidden>
+                            <div class="custom-cover-customizer__inline-grid">
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectRadiusArc-{{ section.id }}">
+                                  {{- section.settings.text_effect_radius_label | default: 'Radius' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectRadiusArc-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-radius
+                                  data-text-effect-radius-for="arc"
+                                  min="-2000"
+                                  max="2000"
+                                  step="10"
+                                  value="320"
+                                  title="{{ section.settings.text_effect_radius_hint | strip | default: 'Sign: Curve up / Arc down when positive. Magnitude: smaller absolute = tighter.' | escape }}"
+                                  aria-valuemin="-2000"
+                                  aria-valuemax="2000">
+                              </div>
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectSpacingArc-{{ section.id }}">
+                                  {{- section.settings.text_effect_spacing_label | default: 'Spacing' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectSpacingArc-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-spacing
+                                  data-text-effect-spacing-for="arc"
+                                  min="-8"
+                                  max="48"
+                                  step="1"
+                                  value="0"
+                                  aria-valuemin="-8"
+                                  aria-valuemax="48">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="custom-cover-customizer__group custom-cover-customizer__text-effect-panel" data-text-effect-panel="small-to-large" hidden>
+                            <div class="custom-cover-customizer__inline-grid">
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectLeftStl-{{ section.id }}">
+                                  {{- section.settings.text_effect_left_size_label | default: 'Left size' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectLeftStl-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-left-size
+                                  data-text-effect-left-size-for="small-to-large"
+                                  min="20"
+                                  max="220"
+                                  step="2"
+                                  value="72"
+                                  aria-valuemin="20"
+                                  aria-valuemax="220">
+                              </div>
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectRightStl-{{ section.id }}">
+                                  {{- section.settings.text_effect_right_size_label | default: 'Right size' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectRightStl-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-right-size
+                                  data-text-effect-right-size-for="small-to-large"
+                                  min="20"
+                                  max="220"
+                                  step="2"
+                                  value="140"
+                                  aria-valuemin="20"
+                                  aria-valuemax="220">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="custom-cover-customizer__group custom-cover-customizer__text-effect-panel" data-text-effect-panel="large-to-small" hidden>
+                            <div class="custom-cover-customizer__inline-grid">
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectLeftLts-{{ section.id }}">
+                                  {{- section.settings.text_effect_left_size_label | default: 'Left size' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectLeftLts-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-left-size
+                                  data-text-effect-left-size-for="large-to-small"
+                                  min="20"
+                                  max="220"
+                                  step="2"
+                                  value="140"
+                                  aria-valuemin="20"
+                                  aria-valuemax="220">
+                              </div>
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectRightLts-{{ section.id }}">
+                                  {{- section.settings.text_effect_right_size_label | default: 'Right size' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectRightLts-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-right-size
+                                  data-text-effect-right-size-for="large-to-small"
+                                  min="20"
+                                  max="220"
+                                  step="2"
+                                  value="72"
+                                  aria-valuemin="20"
+                                  aria-valuemax="220">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="custom-cover-customizer__group custom-cover-customizer__text-effect-panel" data-text-effect-panel="bulge" hidden>
+                            <div class="custom-cover-customizer__inline-grid">
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectLeftBulge-{{ section.id }}">
+                                  {{- section.settings.text_effect_left_size_label | default: 'Left size' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectLeftBulge-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-left-size
+                                  data-text-effect-left-size-for="bulge"
+                                  min="20"
+                                  max="220"
+                                  step="2"
+                                  value="80"
+                                  aria-valuemin="20"
+                                  aria-valuemax="220">
+                              </div>
+                              <div class="custom-cover-customizer__group">
+                                <label class="custom-cover-customizer__label" for="CustomizerEffectRightBulge-{{ section.id }}">
+                                  {{- section.settings.text_effect_right_size_label | default: 'Right size' | escape -}}
+                                </label>
+                                <input
+                                  id="CustomizerEffectRightBulge-{{ section.id }}"
+                                  type="range"
+                                  class="custom-cover-customizer__range-input"
+                                  data-text-effect-right-size
+                                  data-text-effect-right-size-for="bulge"
+                                  min="20"
+                                  max="220"
+                                  step="2"
+                                  value="80"
+                                  aria-valuemin="20"
+                                  aria-valuemax="220">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     {%- assign default_shape_fill = section.settings.default_shape_color | default: '#333333' -%}
@@ -1364,11 +1639,102 @@
         "max": 400,
         "step": 5,
         "default": 80
-      }, {
+      },       {
         "type": "color",
         "id": "default_text_color",
         "label": "Default text color",
         "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "default_text_outline_color",
+        "label": "Default text outline color",
+        "default": "#ffffff"
+      }, {
+        "type": "text",
+        "id": "text_outline_section_label",
+        "label": "Outline section title",
+        "default": "Outline"
+      }, {
+        "type": "text",
+        "id": "text_outline_enable_label",
+        "label": "Outline enable label",
+        "default": "Enable outline"
+      }, {
+        "type": "text",
+        "id": "text_outline_weight_label",
+        "label": "Outline weight label",
+        "default": "Weight"
+      }, {
+        "type": "text",
+        "id": "text_outline_color_label",
+        "label": "Outline color label",
+        "default": "Color"
+      }, {
+        "type": "text",
+        "id": "text_effects_section_label",
+        "label": "Text effects section title",
+        "default": "Text effects"
+      }, {
+        "type": "text",
+        "id": "text_effect_type_label",
+        "label": "Text effect dropdown label",
+        "default": "Effect"
+      }, {
+        "type": "text",
+        "id": "text_effect_straight_label",
+        "label": "Effect: Straight (normal)",
+        "default": "Straight"
+      }, {
+        "type": "text",
+        "id": "text_effect_curve_label",
+        "label": "Effect: Curve",
+        "default": "Curve"
+      }, {
+        "type": "text",
+        "id": "text_effect_arc_label",
+        "label": "Effect: Arc",
+        "default": "Arc"
+      }, {
+        "type": "text",
+        "id": "text_effect_small_to_large_label",
+        "label": "Effect: Small to Large",
+        "default": "Small to Large"
+      }, {
+        "type": "text",
+        "id": "text_effect_large_to_small_label",
+        "label": "Effect: Large to Small",
+        "default": "Large to Small"
+      }, {
+        "type": "text",
+        "id": "text_effect_bulge_label",
+        "label": "Effect: Bulge",
+        "default": "Bulge"
+      }, {
+        "type": "text",
+        "id": "text_effect_radius_label",
+        "label": "Curve/Arc radius label",
+        "default": "Radius (+/−)"
+      }, {
+        "type": "text",
+        "id": "text_effect_radius_hint",
+        "label": "Curve/Arc radius tooltip (native title)",
+        "default": "Sign: Curve up / Arc down when positive. Magnitude: smaller absolute = tighter.",
+        "info": "Shown on hover on the radius sliders. Leave blank to use the default."
+      }, {
+        "type": "text",
+        "id": "text_effect_spacing_label",
+        "label": "Curve/Arc spacing label",
+        "default": "Spacing"
+      }, {
+        "type": "text",
+        "id": "text_effect_left_size_label",
+        "label": "Left size label (size effects)",
+        "default": "Left size"
+      }, {
+        "type": "text",
+        "id": "text_effect_right_size_label",
+        "label": "Right size label (size effects)",
+        "default": "Right size"
       }, {
         "type": "text",
         "id": "font_fallback",

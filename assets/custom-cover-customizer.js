@@ -10,6 +10,14 @@ const CUSTOMIZER_ROT_HANDLE_RADIUS_PX = 6;
 const CUSTOMIZER_ROT_HANDLE_HIT_RADIUS_PX = 5;
 const CUSTOMIZER_DRAFTS_STORAGE_VERSION = 1;
 const CUSTOMIZER_PREVIEW_STORAGE_VERSION = 1;
+const CUSTOMIZER_TEXT_EFFECT_IDS = [
+  "straight",
+  "curve",
+  "arc",
+  "small-to-large",
+  "large-to-small",
+  "bulge",
+];
 
 class CustomCoverCustomizer extends HTMLElement {
   constructor() {
@@ -41,6 +49,20 @@ class CustomCoverCustomizer extends HTMLElement {
       fontStyle: "normal",
       underline: false,
       strikethrough: false,
+      outlineEnabled: false,
+      outlineWidth: 3,
+      outlineColor: "#ffffff",
+      textEffect: "straight",
+      curveRadius: 320,
+      curveSpacing: 0,
+      arcRadius: 320,
+      arcSpacing: 0,
+      stlLeft: 72,
+      stlRight: 140,
+      ltsLeft: 140,
+      ltsRight: 72,
+      bulgeLeft: 80,
+      bulgeRight: 80,
     };
     /** @type {"text" | "image" | "clipart" | "shapes" | string} */
     this.currentTool = "text";
@@ -117,6 +139,14 @@ class CustomCoverCustomizer extends HTMLElement {
 
     this.setupMoneyFormatter();
     this.bindFields();
+    const seedOutlineColor = this.querySelector("[data-text-outline-color]");
+    if (seedOutlineColor?.value) {
+      let v = String(seedOutlineColor.value).trim();
+      if (!v.startsWith("#")) {
+        v = `#${v}`;
+      }
+      this.textDefaults.outlineColor = v;
+    }
     this.seedVariantPrice();
     this.render();
     this.updatePrice();
@@ -342,7 +372,10 @@ class CustomCoverCustomizer extends HTMLElement {
     const n = raw.toLowerCase();
     let i = optionNames.findIndex(
       (x, idx) =>
-        !ex.has(idx) && String(x || "").trim().toLowerCase() === n,
+        !ex.has(idx) &&
+        String(x || "")
+          .trim()
+          .toLowerCase() === n,
     );
     if (i >= 0) {
       return i;
@@ -351,7 +384,9 @@ class CustomCoverCustomizer extends HTMLElement {
       if (ex.has(idx)) {
         return false;
       }
-      const t = String(x || "").trim().toLowerCase();
+      const t = String(x || "")
+        .trim()
+        .toLowerCase();
       if (!t) {
         return false;
       }
@@ -392,8 +427,7 @@ class CustomCoverCustomizer extends HTMLElement {
       return fromCfg;
     }
     return optionNames.findIndex(
-      (x, idx) =>
-        !ex.has(idx) && /\bcolor\b|\bcolour\b/i.test(String(x || "")),
+      (x, idx) => !ex.has(idx) && /\bcolor\b|\bcolour\b/i.test(String(x || "")),
     );
   }
 
@@ -401,7 +435,9 @@ class CustomCoverCustomizer extends HTMLElement {
    * @param {Record<string, unknown>} product Normalized catalog product
    */
   resolveImprintOptionIndices(product) {
-    const names = Array.isArray(product?.optionNames) ? product.optionNames : [];
+    const names = Array.isArray(product?.optionNames)
+      ? product.optionNames
+      : [];
     const sizeLbl = String(
       this.dataset.imprintVariantSizeOption || "Imprint Size",
     ).trim();
@@ -413,12 +449,10 @@ class CustomCoverCustomizer extends HTMLElement {
     ).trim();
     let sizeIdx = this._matchVariantOptionNameIndex(names, sizeLbl);
     const sizeTaken =
-      typeof sizeIdx === "number" && sizeIdx >= 0 ? new Set([sizeIdx]) : new Set();
-    let typeIdx = this._matchVariantOptionNameIndex(
-      names,
-      typeLbl,
-      sizeTaken,
-    );
+      typeof sizeIdx === "number" && sizeIdx >= 0
+        ? new Set([sizeIdx])
+        : new Set();
+    let typeIdx = this._matchVariantOptionNameIndex(names, typeLbl, sizeTaken);
     if (
       sizeIdx >= 0 &&
       typeIdx >= 0 &&
@@ -558,9 +592,7 @@ class CustomCoverCustomizer extends HTMLElement {
         return false;
       }
       if (axis === "size") {
-        return (
-          ov === desired || this.imprintSizeStringsMatch(ov, desired)
-        );
+        return ov === desired || this.imprintSizeStringsMatch(ov, desired);
       }
       return ov === desired || this.literalOptionStringsMatch(ov, desired);
     });
@@ -612,7 +644,9 @@ class CustomCoverCustomizer extends HTMLElement {
     let used = false;
 
     if (ix.sizeIdx >= 0 && variants.length) {
-      const rawVals = variants.map((v) => this.variantOptionTriple(v)[ix.sizeIdx]);
+      const rawVals = variants.map(
+        (v) => this.variantOptionTriple(v)[ix.sizeIdx],
+      );
       const uniq = this._uniqueSortedStrings(rawVals, (a, b) =>
         this.imprintSizeSortDesc(a, b),
       );
@@ -704,9 +738,9 @@ class CustomCoverCustomizer extends HTMLElement {
     if (!product || variantId == null || variantId === "") {
       return;
     }
-    const variant = (Array.isArray(product.variants) ? product.variants : []).find(
-      (v) => String(v?.id ?? "") === String(variantId),
-    );
+    const variant = (
+      Array.isArray(product.variants) ? product.variants : []
+    ).find((v) => String(v?.id ?? "") === String(variantId));
     if (!variant) {
       return;
     }
@@ -736,8 +770,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const variants = Array.isArray(product.variants) ? product.variants : [];
     const sizeSel = this.querySelector("[data-imprint-size]");
     const typeSel = this.querySelector("[data-imprint-text]");
-    const sizeVal =
-      ix.sizeIdx >= 0 ? String(sizeSel?.value || "").trim() : "";
+    const sizeVal = ix.sizeIdx >= 0 ? String(sizeSel?.value || "").trim() : "";
     const imprintVal =
       ix.typeIdx >= 0 ? String(typeSel?.value || "").trim() : "";
     const sizeNeed = ix.sizeIdx >= 0 && Boolean(sizeVal);
@@ -782,10 +815,9 @@ class CustomCoverCustomizer extends HTMLElement {
       });
     };
 
-    const strictOnly =
-      opts.enforceUrlColorHint === true && Boolean(colorHint);
+    const strictOnly = opts.enforceUrlColorHint === true && Boolean(colorHint);
     let pick = strictOnly
-      ? matches(candidates, { requireColor: true })[0] ?? null
+      ? (matches(candidates, { requireColor: true })[0] ?? null)
       : matches(candidates, { requireColor: true })[0] ||
         matches(candidates, { requireColor: false })[0] ||
         null;
@@ -870,8 +902,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const ix = this.resolveImprintOptionIndices(product);
     const sizeSel = this.querySelector("[data-imprint-size]");
     const typeSel = this.querySelector("[data-imprint-text]");
-    const sizeVal =
-      ix.sizeIdx >= 0 ? String(sizeSel?.value || "").trim() : "";
+    const sizeVal = ix.sizeIdx >= 0 ? String(sizeSel?.value || "").trim() : "";
     const imprintVal =
       ix.typeIdx >= 0 ? String(typeSel?.value || "").trim() : "";
     const sizeNeed = ix.sizeIdx >= 0 && Boolean(sizeVal);
@@ -950,10 +981,9 @@ class CustomCoverCustomizer extends HTMLElement {
         : this.pickVariantMatchingImprints(product);
 
     if (pick == null && pinned !== "") {
-      const pools =
-        Array.isArray(product.variants)
-          ? product.variants.filter((v) => Boolean(v.available))
-          : [];
+      const pools = Array.isArray(product.variants)
+        ? product.variants.filter((v) => Boolean(v.available))
+        : [];
       const pool = pools.length ? pools : (product.variants || []).slice();
       const vidColor = this.findVariantIdMatchingUrlColor(product, pinned);
       if (vidColor) {
@@ -1716,8 +1746,9 @@ class CustomCoverCustomizer extends HTMLElement {
           selectedColorName = pinnedColor;
         }
 
-        root.querySelectorAll(".custom-cover-customizer__swatch").forEach(
-          (el) => {
+        root
+          .querySelectorAll(".custom-cover-customizer__swatch")
+          .forEach((el) => {
             const sw = String(el.getAttribute("data-color-name") || "").trim();
             el.classList.toggle(
               "is-selected",
@@ -1725,11 +1756,9 @@ class CustomCoverCustomizer extends HTMLElement {
                 Boolean(selectedColorName) &&
                 this.literalOptionStringsMatch(sw, selectedColorName),
             );
-          },
-        );
+          });
         if (selectedColorLabel) {
-          selectedColorLabel.textContent =
-            selectedColorName || "Select color";
+          selectedColorLabel.textContent = selectedColorName || "Select color";
         }
       };
       this._syncVariantSwatchUi = syncSelected;
@@ -1763,7 +1792,9 @@ class CustomCoverCustomizer extends HTMLElement {
         if (swatchesRoot) {
           swatchesRoot.innerHTML = "";
         }
-        const colorGroupEmpty = this.querySelector("[data-variant-color-group]");
+        const colorGroupEmpty = this.querySelector(
+          "[data-variant-color-group]",
+        );
         if (colorGroupEmpty) {
           colorGroupEmpty.hidden = true;
         }
@@ -1819,11 +1850,7 @@ class CustomCoverCustomizer extends HTMLElement {
       // FIX: Only set productColor from the first variant if NO color was passed via URL
       const urlPinnedColor =
         typeof prefillColor === "string" && prefillColor.trim() !== "";
-      if (
-        firstAvailableVariant &&
-        ixEarly.colorIdx >= 0 &&
-        !urlPinnedColor
-      ) {
+      if (firstAvailableVariant && ixEarly.colorIdx >= 0 && !urlPinnedColor) {
         const tripleEarly = this.variantOptionTriple(firstAvailableVariant);
         const col = String(tripleEarly[ixEarly.colorIdx] || "").trim();
         if (col) {
@@ -1959,10 +1986,7 @@ class CustomCoverCustomizer extends HTMLElement {
             }
             return (
               this.imprintSizeStringsMatch(opt.value || "", imprintNorm) ||
-              this.imprintSizeStringsMatch(
-                opt.textContent || "",
-                imprintNorm,
-              )
+              this.imprintSizeStringsMatch(opt.textContent || "", imprintNorm)
             );
           }) ||
           null;
@@ -1978,13 +2002,17 @@ class CustomCoverCustomizer extends HTMLElement {
             if (!imprintKey.startsWith(v)) return false;
             if (imprintKey.length === v.length) return true;
             var boundary = imprintKey[v.length];
-            return /[\s,./|(-–—:]/.test(boundary || "") || imprintKey.includes(v + " ");
+            return (
+              /[\s,./|(-–—:]/.test(boundary || "") ||
+              imprintKey.includes(v + " ")
+            );
           }) ||
           null;
 
         let chosenOpt = prefixMatch;
-        const allowSynthetic =
-          !imprintSizeSelector.hasAttribute("data-variant-driven");
+        const allowSynthetic = !imprintSizeSelector.hasAttribute(
+          "data-variant-driven",
+        );
 
         if (!chosenOpt && allowSynthetic) {
           const option = document.createElement("option");
@@ -2017,10 +2045,7 @@ class CustomCoverCustomizer extends HTMLElement {
             (o) =>
               String(o.value || "").toLowerCase() === wantLo ||
               this.literalOptionStringsMatch(String(o.value || ""), want) ||
-              this.literalOptionStringsMatch(
-                String(o.textContent || ""),
-                want,
-              ),
+              this.literalOptionStringsMatch(String(o.textContent || ""), want),
           );
           const allowSynthType = !imprintTextInput.hasAttribute(
             "data-variant-driven",
@@ -2047,7 +2072,9 @@ class CustomCoverCustomizer extends HTMLElement {
             !imprintTextInput.options[imprintTextInput.selectedIndex].disabled);
         if (hasVal) {
           imprintTextInput.dispatchEvent(new Event("input", { bubbles: true }));
-          imprintTextInput.dispatchEvent(new Event("change", { bubbles: true }));
+          imprintTextInput.dispatchEvent(
+            new Event("change", { bubbles: true }),
+          );
         }
       };
 
@@ -2068,8 +2095,15 @@ class CustomCoverCustomizer extends HTMLElement {
         Boolean(prefillSizeFromUrl) ||
         Boolean(prefillStyleFromUrl);
 
-      if (variantSelector && !didPrefillVariant && prod && hasUrlImprintOrColor) {
-        if (syncVariantPickFromSelections(prod, { dispatchVariantChange: true })) {
+      if (
+        variantSelector &&
+        !didPrefillVariant &&
+        prod &&
+        hasUrlImprintOrColor
+      ) {
+        if (
+          syncVariantPickFromSelections(prod, { dispatchVariantChange: true })
+        ) {
           didPrefillVariant = true;
         }
       }
@@ -2080,8 +2114,7 @@ class CustomCoverCustomizer extends HTMLElement {
           : "";
         const options = [...variantSelector.options];
         let colorMatch =
-          vid &&
-          options.find((opt) => String(opt.value || "") === String(vid));
+          vid && options.find((opt) => String(opt.value || "") === String(vid));
         if (!colorMatch?.value) {
           colorMatch =
             options.find((opt) => {
@@ -2109,9 +2142,7 @@ class CustomCoverCustomizer extends HTMLElement {
             colorMatch.value,
           )
         ) {
-          variantSelector.dispatchEvent(
-            new Event("change", { bubbles: true }),
-          );
+          variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
           didPrefillVariant = true;
         }
       }
@@ -2122,15 +2153,12 @@ class CustomCoverCustomizer extends HTMLElement {
             prefillVariantId,
           )
         ) {
-          variantSelector.dispatchEvent(
-            new Event("change", { bubbles: true }),
-          );
+          variantSelector.dispatchEvent(new Event("change", { bubbles: true }));
           didPrefillVariant = true;
         }
       }
 
-      const urlPinsColor =
-        String(prefillColor || "").trim() !== "";
+      const urlPinsColor = String(prefillColor || "").trim() !== "";
 
       // FIX 3: do not overwrite URL-pinned color with first-available variant
       if (
@@ -2193,10 +2221,7 @@ class CustomCoverCustomizer extends HTMLElement {
           }
         }
       }
-      if (
-        selectedProduct &&
-        !this._suppressImprintVariantResolution
-      ) {
+      if (selectedProduct && !this._suppressImprintVariantResolution) {
         this.syncImprintSelectsOnlyFromVariantId(
           selectedProduct,
           selected.value,
@@ -2224,7 +2249,9 @@ class CustomCoverCustomizer extends HTMLElement {
       if (!imprintTextInput) {
         return;
       }
-      const raw = window.prompt("Enter imprint style (e.g. Full Cover Imprint).");
+      const raw = window.prompt(
+        "Enter imprint style (e.g. Full Cover Imprint).",
+      );
       const requested = String(raw || "").trim();
       if (!requested) {
         return;
@@ -2330,6 +2357,52 @@ class CustomCoverCustomizer extends HTMLElement {
       this.updateColorChrome();
     });
 
+    this.querySelector("[data-text-outline-enabled]")?.addEventListener(
+      "change",
+      () => this.applyTextOutlineEffectFromFormToSelection(),
+    );
+    this.querySelector("[data-text-outline-weight]")?.addEventListener(
+      "input",
+      () => this.applyTextOutlineEffectFromFormToSelection(),
+    );
+    this.querySelector("[data-text-outline-color]")?.addEventListener(
+      "input",
+      () => {
+        this.updateOutlineColorChrome();
+        this.applyTextOutlineEffectFromFormToSelection();
+      },
+    );
+    this.querySelector("[data-text-effect]")?.addEventListener("change", () => {
+      this.readTextOutlineEffectFromFormInto(this.textDefaults);
+      const el = this.getActiveTextElementForStyleUpdate();
+      if (el?.type === "text") {
+        this.readTextOutlineEffectFromFormInto(el);
+      }
+      this.refreshTextEffectPanelVisibility();
+      this.render();
+      this.updateHiddenProperties();
+    });
+    this.querySelectorAll("[data-text-effect-radius]").forEach((input) => {
+      input.addEventListener("input", () =>
+        this.applyTextOutlineEffectFromFormToSelection(),
+      );
+    });
+    this.querySelectorAll("[data-text-effect-spacing]").forEach((input) => {
+      input.addEventListener("input", () =>
+        this.applyTextOutlineEffectFromFormToSelection(),
+      );
+    });
+    this.querySelectorAll("[data-text-effect-left-size]").forEach((input) => {
+      input.addEventListener("input", () =>
+        this.applyTextOutlineEffectFromFormToSelection(),
+      );
+    });
+    this.querySelectorAll("[data-text-effect-right-size]").forEach((input) => {
+      input.addEventListener("input", () =>
+        this.applyTextOutlineEffectFromFormToSelection(),
+      );
+    });
+
     imageRights?.addEventListener("change", () =>
       this.updateHiddenProperties(),
     );
@@ -2431,7 +2504,9 @@ class CustomCoverCustomizer extends HTMLElement {
       this.showShareTooltip(shareBtn, copied ? "Copied" : "Copy failed");
     });
 
-    const helpModal = sectionRoot?.querySelector("[data-custom-cover-help-modal]");
+    const helpModal = sectionRoot?.querySelector(
+      "[data-custom-cover-help-modal]",
+    );
     const helpBtn = sectionRoot?.querySelector("[data-design-help]");
     const helpVideoFrame = helpModal?.querySelector("[data-help-video-frame]");
     const helpCloseEls = helpModal
@@ -2447,7 +2522,9 @@ class CustomCoverCustomizer extends HTMLElement {
         }
         helpModal.classList.remove("is-active");
         helpModal.setAttribute("aria-hidden", "true");
-        document.documentElement.classList.remove("custom-cover-help-modal-open");
+        document.documentElement.classList.remove(
+          "custom-cover-help-modal-open",
+        );
         if (helpVideoFrame instanceof HTMLIFrameElement) {
           helpVideoFrame.src = "";
         }
@@ -2894,8 +2971,7 @@ class CustomCoverCustomizer extends HTMLElement {
       this.setWarning(
         maxMb > 0
           ? `This file is too large. Maximum upload size is ${maxMb} MB.`
-          : this.dataset.uploadWarning ||
-              "This file is too large to upload.",
+          : this.dataset.uploadWarning || "This file is too large to upload.",
       );
       return;
     }
@@ -3464,12 +3540,27 @@ class CustomCoverCustomizer extends HTMLElement {
     const { element: el, mode } = hit;
     this.selectedElementId = el.id;
     if (el.type === "text") {
+      this.ensureTextElementOutlineAndEffect(el);
       Object.assign(this.textDefaults, {
         textAlign: el.textAlign || "left",
         fontWeight: el.fontWeight || "normal",
         fontStyle: el.fontStyle || "normal",
         underline: Boolean(el.underline),
         strikethrough: Boolean(el.strikethrough),
+        outlineEnabled: Boolean(el.outlineEnabled),
+        outlineWidth: el.outlineWidth,
+        outlineColor: el.outlineColor,
+        textEffect: el.textEffect,
+        curveRadius: el.curveRadius,
+        curveSpacing: el.curveSpacing,
+        arcRadius: el.arcRadius,
+        arcSpacing: el.arcSpacing,
+        stlLeft: el.stlLeft,
+        stlRight: el.stlRight,
+        ltsLeft: el.ltsLeft,
+        ltsRight: el.ltsRight,
+        bulgeLeft: el.bulgeLeft,
+        bulgeRight: el.bulgeRight,
       });
     }
 
@@ -3736,7 +3827,10 @@ class CustomCoverCustomizer extends HTMLElement {
     element.fontFamily = fontInput?.value || element.fontFamily;
     element.fontSize = Number(fontSizeInput?.value || element.fontSize);
     element.color = textColorInput?.value || element.color;
+    this.readTextOutlineEffectFromFormInto(element);
+    this.readTextOutlineEffectFromFormInto(this.textDefaults);
     this.updateColorChrome();
+    this.updateOutlineColorChrome();
     this.render();
     this.updateHiddenProperties();
   }
@@ -3795,6 +3889,7 @@ class CustomCoverCustomizer extends HTMLElement {
       this.syncFormatToolbars();
       this.syncAlignmentControls(this.textDefaults.textAlign);
       this.updateColorChrome();
+      this.syncTextOutlineEffectControls(null);
       return;
     }
 
@@ -3842,6 +3937,774 @@ class CustomCoverCustomizer extends HTMLElement {
       this.syncAlignmentControls(this.textDefaults.textAlign);
       this.updateColorChrome();
     }
+    const textSource =
+      this.getSelectedElement()?.type === "text"
+        ? this.getSelectedElement()
+        : null;
+    this.syncTextOutlineEffectControls(textSource);
+  }
+
+  normalizeTextEffectValue(raw) {
+    const s = String(raw || "").trim();
+    return CUSTOMIZER_TEXT_EFFECT_IDS.includes(s) ? s : "straight";
+  }
+
+  /** @param {number} mag */
+  clampRadiusMagnitude(mag) {
+    return Math.min(2000, Math.max(60, Math.round(Math.abs(mag))));
+  }
+
+  /**
+   * Signed curve/arc radius: sign = bend direction (curve: + up, − down; arc: + down, − up),
+   * magnitude 60–2000 (smaller = tighter).
+   * @param {unknown} raw
+   * @param {unknown} fallbackRaw
+   * @returns {number}
+   */
+  clampSignedTextCurveRadius(raw, fallbackRaw) {
+    const fb = Math.round(Number(fallbackRaw));
+    const fbSafe =
+      !Number.isFinite(fb) || fb === 0
+        ? 320
+        : Math.sign(fb) * this.clampRadiusMagnitude(fb);
+    const v = Math.round(Number(raw));
+    if (!Number.isFinite(v)) return fbSafe;
+    if (v === 0) return fbSafe;
+    return Math.sign(v) * this.clampRadiusMagnitude(v);
+  }
+
+  ensureTextElementOutlineAndEffect(element) {
+    if (!element || element.type !== "text") {
+      return;
+    }
+    const d = this.textDefaults;
+    if (typeof element.outlineEnabled !== "boolean") {
+      element.outlineEnabled = Boolean(d.outlineEnabled);
+    }
+    element.outlineWidth = Math.min(
+      16,
+      Math.max(
+        1,
+        Math.round(
+          Number(element.outlineWidth ?? d.outlineWidth) || d.outlineWidth,
+        ),
+      ),
+    );
+    let oc = String(element.outlineColor || "").trim();
+    if (!oc) {
+      oc = d.outlineColor;
+    }
+    if (!oc.startsWith("#")) {
+      oc = `#${oc}`;
+    }
+    element.outlineColor = oc;
+    element.textEffect = this.normalizeTextEffectValue(
+      element.textEffect ?? d.textEffect,
+    );
+    element.curveRadius = this.clampSignedTextCurveRadius(
+      element.curveRadius,
+      d.curveRadius,
+    );
+    element.curveSpacing = Math.min(
+      48,
+      Math.max(
+        -8,
+        Math.round(Number(element.curveSpacing ?? d.curveSpacing) || 0),
+      ),
+    );
+    element.arcRadius = this.clampSignedTextCurveRadius(
+      element.arcRadius,
+      d.arcRadius,
+    );
+    element.arcSpacing = Math.min(
+      48,
+      Math.max(-8, Math.round(Number(element.arcSpacing ?? d.arcSpacing) || 0)),
+    );
+    const clampSize = (n, def) =>
+      Math.min(220, Math.max(20, Math.round(Number(n) || def)));
+    element.stlLeft = clampSize(element.stlLeft, d.stlLeft);
+    element.stlRight = clampSize(element.stlRight, d.stlRight);
+    element.ltsLeft = clampSize(element.ltsLeft, d.ltsLeft);
+    element.ltsRight = clampSize(element.ltsRight, d.ltsRight);
+    element.bulgeLeft = clampSize(element.bulgeLeft, d.bulgeLeft);
+    element.bulgeRight = clampSize(element.bulgeRight, d.bulgeRight);
+  }
+
+  syncTextOutlineEffectControls(sourceElement) {
+    const outlineEnabled = this.querySelector("[data-text-outline-enabled]");
+    const outlineControls = this.querySelector("[data-text-outline-controls]");
+    const base =
+      sourceElement?.type === "text" ? sourceElement : this.textDefaults;
+
+    if (outlineEnabled) {
+      outlineEnabled.checked = Boolean(base.outlineEnabled);
+    }
+    if (outlineControls) {
+      outlineControls.hidden = !base.outlineEnabled;
+    }
+    const ow = this.querySelector("[data-text-outline-weight]");
+    if (ow) {
+      ow.value = String(base.outlineWidth ?? 3);
+    }
+    const ocol = this.querySelector("[data-text-outline-color]");
+    if (ocol) {
+      ocol.value = base.outlineColor || "#ffffff";
+    }
+    this.updateOutlineColorChrome();
+    const effectSelect = this.querySelector("[data-text-effect]");
+    if (effectSelect) {
+      effectSelect.value = this.normalizeTextEffectValue(base.textEffect);
+    }
+
+    const setRange = (selector, val) => {
+      const node = this.querySelector(selector);
+      if (node) {
+        node.value = String(val);
+      }
+    };
+    setRange('[data-text-effect-radius-for="curve"]', base.curveRadius ?? 320);
+    setRange('[data-text-effect-spacing-for="curve"]', base.curveSpacing ?? 0);
+    setRange('[data-text-effect-radius-for="arc"]', base.arcRadius ?? 320);
+    setRange('[data-text-effect-spacing-for="arc"]', base.arcSpacing ?? 0);
+    setRange(
+      '[data-text-effect-left-size-for="small-to-large"]',
+      base.stlLeft ?? 72,
+    );
+    setRange(
+      '[data-text-effect-right-size-for="small-to-large"]',
+      base.stlRight ?? 140,
+    );
+    setRange(
+      '[data-text-effect-left-size-for="large-to-small"]',
+      base.ltsLeft ?? 140,
+    );
+    setRange(
+      '[data-text-effect-right-size-for="large-to-small"]',
+      base.ltsRight ?? 72,
+    );
+    setRange('[data-text-effect-left-size-for="bulge"]', base.bulgeLeft ?? 80);
+    setRange(
+      '[data-text-effect-right-size-for="bulge"]',
+      base.bulgeRight ?? 80,
+    );
+
+    this.refreshTextEffectPanelVisibility();
+  }
+
+  refreshTextEffectPanelVisibility() {
+    const effectSelect = this.querySelector("[data-text-effect]");
+    const v = this.normalizeTextEffectValue(effectSelect?.value);
+    this.querySelectorAll("[data-text-effect-panel]").forEach((panel) => {
+      const id = panel.getAttribute("data-text-effect-panel");
+      panel.hidden = id !== v;
+    });
+  }
+
+  updateOutlineColorChrome() {
+    const input = this.querySelector("[data-text-outline-color]");
+    const hexEl = this.querySelector("[data-text-outline-hex]");
+    const swatch = this.querySelector("[data-text-outline-swatch]");
+    let val = (input?.value || "#ffffff").trim();
+    if (!val.startsWith("#")) {
+      val = `#${val}`;
+    }
+    if (hexEl) {
+      hexEl.textContent = val.toUpperCase();
+    }
+    if (swatch) {
+      swatch.style.backgroundColor = val;
+    }
+  }
+
+  readTextOutlineEffectFromFormInto(target) {
+    const outlineEnabled = this.querySelector("[data-text-outline-enabled]");
+    const outlineWeight = this.querySelector("[data-text-outline-weight]");
+    const outlineColor = this.querySelector("[data-text-outline-color]");
+    const effectSelect = this.querySelector("[data-text-effect]");
+
+    target.outlineEnabled = Boolean(outlineEnabled?.checked);
+    target.outlineWidth = Math.min(
+      16,
+      Math.max(1, Math.round(Number(outlineWeight?.value) || 3)),
+    );
+    let oc = String(outlineColor?.value || "#ffffff").trim();
+    if (!oc.startsWith("#")) {
+      oc = `#${oc}`;
+    }
+    target.outlineColor = oc;
+    target.textEffect = this.normalizeTextEffectValue(effectSelect?.value);
+
+    const num = (selector, min, max, fallback) => {
+      const raw = this.querySelector(selector);
+      const n = Math.round(Number(raw?.value));
+      if (Number.isFinite(n)) {
+        return Math.min(max, Math.max(min, n));
+      }
+      return fallback;
+    };
+
+    const curveRIn = this.querySelector(
+      '[data-text-effect-radius-for="curve"]',
+    );
+    const arcRIn = this.querySelector('[data-text-effect-radius-for="arc"]');
+    const curveParsed = Math.round(Number(curveRIn?.value));
+    const arcParsed = Math.round(Number(arcRIn?.value));
+    target.curveRadius = this.clampSignedTextCurveRadius(
+      Number.isFinite(curveParsed) ? curveParsed : NaN,
+      target.curveRadius ?? this.textDefaults.curveRadius,
+    );
+    target.arcRadius = this.clampSignedTextCurveRadius(
+      Number.isFinite(arcParsed) ? arcParsed : NaN,
+      target.arcRadius ?? this.textDefaults.arcRadius,
+    );
+    if (curveRIn) curveRIn.value = String(target.curveRadius);
+    if (arcRIn) arcRIn.value = String(target.arcRadius);
+    target.curveSpacing = num(
+      '[data-text-effect-spacing-for="curve"]',
+      -8,
+      48,
+      0,
+    );
+    target.arcSpacing = num('[data-text-effect-spacing-for="arc"]', -8, 48, 0);
+    target.stlLeft = num(
+      '[data-text-effect-left-size-for="small-to-large"]',
+      20,
+      220,
+      72,
+    );
+    target.stlRight = num(
+      '[data-text-effect-right-size-for="small-to-large"]',
+      20,
+      220,
+      140,
+    );
+    target.ltsLeft = num(
+      '[data-text-effect-left-size-for="large-to-small"]',
+      20,
+      220,
+      140,
+    );
+    target.ltsRight = num(
+      '[data-text-effect-right-size-for="large-to-small"]',
+      20,
+      220,
+      72,
+    );
+    target.bulgeLeft = num(
+      '[data-text-effect-left-size-for="bulge"]',
+      20,
+      220,
+      80,
+    );
+    target.bulgeRight = num(
+      '[data-text-effect-right-size-for="bulge"]',
+      20,
+      220,
+      80,
+    );
+  }
+
+  applyTextOutlineEffectFromFormToSelection() {
+    const el = this.getActiveTextElementForStyleUpdate();
+    this.readTextOutlineEffectFromFormInto(this.textDefaults);
+    if (el?.type === "text") {
+      this.readTextOutlineEffectFromFormInto(el);
+    }
+    const outlineControls = this.querySelector("[data-text-outline-controls]");
+    const outlineToggle = this.querySelector("[data-text-outline-enabled]");
+    if (outlineControls) {
+      outlineControls.hidden = !outlineToggle?.checked;
+    }
+    this.render();
+    this.updateHiddenProperties();
+  }
+
+  drawCharWithOptionalOutline(ctx, char, fillRgb, outlineCfg) {
+    if (!outlineCfg.enabled || outlineCfg.width <= 0) {
+      ctx.fillStyle = fillRgb;
+      ctx.fillText(char, 0, 0);
+      return;
+    }
+    ctx.lineJoin = "round";
+    ctx.miterLimit = 2;
+    ctx.lineWidth = outlineCfg.width;
+    ctx.strokeStyle = outlineCfg.color;
+    ctx.strokeText(char, 0, 0);
+    ctx.fillStyle = fillRgb;
+    ctx.fillText(char, 0, 0);
+  }
+
+  getCharSizePxForWidthEffect(element, effect, index, lastIndex, basePx) {
+    const t = lastIndex <= 0 ? 0 : index / lastIndex;
+    let leftPct;
+    let rightPct;
+    if (effect === "small-to-large") {
+      leftPct = (Number(element.stlLeft) || 72) / 100;
+      rightPct = (Number(element.stlRight) || 140) / 100;
+    } else if (effect === "large-to-small") {
+      leftPct = (Number(element.ltsLeft) || 140) / 100;
+      rightPct = (Number(element.ltsRight) || 72) / 100;
+    } else {
+      leftPct = (Number(element.bulgeLeft) || 80) / 100;
+      rightPct = (Number(element.bulgeRight) || 80) / 100;
+    }
+    const l = leftPct * basePx;
+    const r = rightPct * basePx;
+    let s = l + (r - l) * t;
+    if (effect === "bulge") {
+      const amp = Math.min(l, r) * 0.42;
+      s += amp * Math.sin(Math.PI * t);
+    }
+    return Math.max(6, s);
+  }
+
+  getOutlineDrawConfig(element) {
+    const enabled = Boolean(element.outlineEnabled);
+    const width = Math.min(16, Math.max(1, Number(element.outlineWidth) || 0));
+    let color = String(element.outlineColor || "#ffffff").trim();
+    if (!color.startsWith("#")) {
+      color = `#${color}`;
+    }
+    return { enabled, width, color };
+  }
+
+  layoutCurvedLine(
+    ctx,
+    line,
+    fontPx,
+    family,
+    fallback,
+    weight,
+    fontStyle,
+    R,
+    spacingPx,
+    mode,
+  ) {
+    const chars = Array.from(line);
+    ctx.font = `${fontStyle} ${weight} ${fontPx}px ${family}, ${fallback}`;
+    if (!chars.length) {
+      return {
+        width: 20,
+        height: fontPx * 1.25,
+        samples: [],
+        offsetX: 0,
+        offsetY: 0,
+      };
+    }
+    const widths = chars.map((ch) => ctx.measureText(ch).width);
+    const gapTotal = spacingPx * Math.max(0, chars.length - 1);
+    const straightW = Math.max(8, widths.reduce((a, b) => a + b, 0) + gapTotal);
+    const rNum = Number(R);
+    const signed =
+      Number.isFinite(rNum) && rNum !== 0 ? rNum : 320;
+    const absR = Math.max(60, Math.min(2000, Math.abs(signed)));
+    const bendUp = signed > 0;
+    const theta = Math.min(
+      Math.PI * 1.35,
+      Math.max(straightW / Math.max(absR, 1e-6), 0.08),
+    );
+    const centerX = straightW / 2;
+    const baselineRef = fontPx * 0.9;
+    let centerY;
+    let a0;
+    let a1;
+    if (mode === "curve") {
+      if (bendUp) {
+        centerY = baselineRef + absR;
+        a0 = -Math.PI / 2 - theta / 2;
+        a1 = -Math.PI / 2 + theta / 2;
+      } else {
+        centerY = baselineRef - absR;
+        a0 = Math.PI / 2 - theta / 2;
+        a1 = Math.PI / 2 + theta / 2;
+      }
+    } else if (bendUp) {
+      centerY = baselineRef - absR;
+      a0 = Math.PI / 2 - theta / 2;
+      a1 = Math.PI / 2 + theta / 2;
+    } else {
+      centerY = baselineRef + absR;
+      a0 = -Math.PI / 2 - theta / 2;
+      a1 = -Math.PI / 2 + theta / 2;
+    }
+    /** LTR: arc must run so the first character is left of the last (avoid mirrored word order). */
+    if (Math.cos(a0) > Math.cos(a1) + 1e-9) {
+      const t = a0;
+      a0 = a1;
+      a1 = t;
+    }
+    const samples = [];
+    let trail = 0;
+    for (let i = 0; i < chars.length; i += 1) {
+      const ch = chars[i];
+      const w = widths[i];
+      trail += w / 2;
+      const frac = trail / straightW;
+      const fracClamped = Math.min(1, Math.max(0, frac));
+      const a = a0 + (a1 - a0) * fracClamped;
+      const px = centerX + absR * Math.cos(a);
+      const py = centerY + absR * Math.sin(a);
+      const rot = 0;
+      samples.push({ ch, px, py, rot });
+      trail += w / 2;
+      if (i < chars.length - 1) {
+        trail += spacingPx;
+      }
+    }
+    const pad = fontPx * 0.72;
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    for (const s of samples) {
+      minX = Math.min(minX, s.px - pad);
+      maxX = Math.max(maxX, s.px + pad);
+      minY = Math.min(minY, s.py - pad);
+      maxY = Math.max(maxY, s.py + pad);
+    }
+    if (!Number.isFinite(minX)) {
+      minX = 0;
+      maxX = straightW;
+      minY = 0;
+      maxY = fontPx * 1.2;
+    }
+    return {
+      width: Math.max(20, maxX - minX),
+      height: Math.max(fontPx * 1.2, maxY - minY),
+      samples,
+      offsetX: -minX,
+      offsetY: -minY,
+    };
+  }
+
+  drawCurvedLineLayout(ctx, layout, fillRgb, outlineCfg) {
+    ctx.save();
+    ctx.translate(layout.offsetX, layout.offsetY);
+    for (const s of layout.samples) {
+      ctx.save();
+      ctx.translate(s.px, s.py);
+      ctx.rotate(s.rot);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      this.drawCharWithOptionalOutline(ctx, s.ch, fillRgb, outlineCfg);
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  layoutVariableSizeLine(
+    ctx,
+    element,
+    line,
+    effect,
+    baseFontPx,
+    family,
+    fallback,
+    weight,
+    fontStyle0,
+  ) {
+    const chars = Array.from(line);
+    const n = chars.length;
+    const lastIndex = Math.max(n - 1, 1);
+    let x = 0;
+    let minY = 0;
+    let maxY = baseFontPx * 1.2;
+    const placements = [];
+    for (let i = 0; i < n; i += 1) {
+      const ch = chars[i];
+      const sizePx = this.getCharSizePxForWidthEffect(
+        element,
+        effect,
+        i,
+        lastIndex,
+        baseFontPx,
+      );
+      ctx.font = `${fontStyle0} ${weight} ${sizePx}px ${family}, ${fallback}`;
+      const w = ctx.measureText(ch).width;
+      placements.push({ ch, x, sizePx, w });
+      x += w;
+      const ascendApprox = sizePx * 0.88;
+      const descendApprox = sizePx * 0.28;
+      minY = Math.min(minY, -ascendApprox);
+      maxY = Math.max(maxY, descendApprox);
+    }
+    const width = Math.max(20, x);
+    const height = maxY - minY;
+    return { width, height, placements, baselineShift: -minY };
+  }
+
+  drawVariableLineLayout(
+    ctx,
+    layout,
+    fillRgb,
+    outlineCfg,
+    family,
+    fallback,
+    weight,
+    fontStyle0,
+  ) {
+    const by = layout.baselineShift;
+    for (const p of layout.placements) {
+      ctx.font = `${fontStyle0} ${weight} ${p.sizePx}px ${family}, ${fallback}`;
+      ctx.save();
+      ctx.translate(p.x, by);
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+      this.drawCharWithOptionalOutline(ctx, p.ch, fillRgb, outlineCfg);
+      ctx.restore();
+    }
+  }
+
+  drawTextDecorationLines(rawAlign, lineW, drawX) {
+    let x1 = 0;
+    let x2 = lineW;
+    if (rawAlign === "center") {
+      x1 = drawX - lineW / 2;
+      x2 = drawX + lineW / 2;
+    } else if (rawAlign === "right") {
+      x1 = drawX - lineW;
+      x2 = drawX;
+    } else {
+      x1 = 0;
+      x2 = lineW;
+    }
+    return { x1, x2 };
+  }
+
+  renderTextElementToContext(element) {
+    this.ensureTextElementOutlineAndEffect(element);
+    const fontPx = element.fontSize || 24;
+    const family = element.fontFamily || "Arial";
+    const fallback = element.fontFallback || "sans-serif";
+    const weight = element.fontWeight === "bold" ? "bold" : "normal";
+    const fontStyle0 = element.fontStyle === "italic" ? "italic" : "normal";
+    const text = this.normalizeNewlines(element.text || "");
+    const lines = text.length > 0 ? text.split("\n") : [""];
+    const lineHeight = fontPx * 1.2;
+    const effect = this.normalizeTextEffectValue(element.textEffect);
+    element.textEffect = effect;
+    const rawAlign = element.textAlign || "left";
+    const canvasAlign = rawAlign === "justify" ? "left" : rawAlign;
+    const fillRgb = element.color || "#000000";
+    const outlineCfg = this.getOutlineDrawConfig(element);
+
+    if (effect === "straight") {
+      this.ctx.font = `${fontStyle0} ${weight} ${fontPx}px ${family}, ${fallback}`;
+      this.ctx.textBaseline = "alphabetic";
+      let maxW = 20;
+      for (const line of lines) {
+        maxW = Math.max(maxW, this.ctx.measureText(line).width);
+      }
+      element.width = maxW;
+      element.height = Math.max(lineHeight, lines.length * lineHeight);
+      for (let li = 0; li < lines.length; li += 1) {
+        const lineStr = lines[li] ?? "";
+        const lineW = this.ctx.measureText(lineStr).width;
+        let drawX = 0;
+        if (canvasAlign === "center") {
+          this.ctx.textAlign = "center";
+          drawX = maxW / 2;
+        } else if (canvasAlign === "right") {
+          this.ctx.textAlign = "right";
+          drawX = maxW;
+        } else {
+          this.ctx.textAlign = "left";
+          drawX = 0;
+        }
+        const baselineY = li * lineHeight + fontPx * 0.88;
+        if (outlineCfg.enabled && outlineCfg.width > 0) {
+          this.ctx.lineJoin = "round";
+          this.ctx.miterLimit = 2;
+          this.ctx.lineWidth = outlineCfg.width;
+          this.ctx.strokeStyle = outlineCfg.color;
+          this.ctx.strokeText(lineStr, drawX, baselineY);
+        }
+        this.ctx.fillStyle = fillRgb;
+        this.ctx.fillText(lineStr, drawX, baselineY);
+        if ((element.underline || element.strikethrough) && lineStr) {
+          const deco = this.drawTextDecorationLines(
+            rawAlign,
+            lineW,
+            canvasAlign === "center"
+              ? maxW / 2
+              : canvasAlign === "right"
+                ? maxW
+                : 0,
+          );
+          this.ctx.strokeStyle = fillRgb;
+          this.ctx.lineWidth = Math.max(1, fontPx / 14);
+          if (element.underline) {
+            const underlineY = baselineY + fontPx * 0.22;
+            this.ctx.beginPath();
+            this.ctx.moveTo(deco.x1, underlineY);
+            this.ctx.lineTo(deco.x2, underlineY);
+            this.ctx.stroke();
+          }
+          if (element.strikethrough) {
+            const strikeY = baselineY - fontPx * 0.28;
+            this.ctx.beginPath();
+            this.ctx.moveTo(deco.x1, strikeY);
+            this.ctx.lineTo(deco.x2, strikeY);
+            this.ctx.stroke();
+          }
+        }
+      }
+      return;
+    }
+
+    if (effect === "curve" || effect === "arc") {
+      const R =
+        effect === "curve"
+          ? this.clampSignedTextCurveRadius(
+              element.curveRadius,
+              this.textDefaults.curveRadius,
+            )
+          : this.clampSignedTextCurveRadius(
+              element.arcRadius,
+              this.textDefaults.arcRadius,
+            );
+      const spacingPx =
+        effect === "curve"
+          ? Math.min(
+              48,
+              Math.max(-8, Math.round(Number(element.curveSpacing) || 0)),
+            )
+          : Math.min(
+              48,
+              Math.max(-8, Math.round(Number(element.arcSpacing) || 0)),
+            );
+      const layouts = lines.map((line) =>
+        this.layoutCurvedLine(
+          this.ctx,
+          line,
+          fontPx,
+          family,
+          fallback,
+          weight,
+          fontStyle0,
+          R,
+          spacingPx,
+          effect,
+        ),
+      );
+      const maxW = Math.max(20, ...layouts.map((L) => L.width));
+      let totalH = 0;
+      for (let i = 0; i < layouts.length; i += 1) {
+        totalH += layouts[i].height;
+        if (i < layouts.length - 1) {
+          totalH += lineHeight * 0.22;
+        }
+      }
+      element.width = maxW;
+      element.height = Math.max(lineHeight, totalH);
+      let yCursor = 0;
+      for (let li = 0; li < layouts.length; li += 1) {
+        const layout = layouts[li];
+        let offsetX = 0;
+        if (canvasAlign === "center") {
+          offsetX = (maxW - layout.width) / 2;
+        } else if (canvasAlign === "right") {
+          offsetX = maxW - layout.width;
+        }
+        this.ctx.save();
+        this.ctx.translate(offsetX, yCursor);
+        this.drawCurvedLineLayout(this.ctx, layout, fillRgb, outlineCfg);
+        this.ctx.restore();
+        yCursor +=
+          layout.height + (li < layouts.length - 1 ? lineHeight * 0.22 : 0);
+      }
+      return;
+    }
+
+    if (
+      effect === "small-to-large" ||
+      effect === "large-to-small" ||
+      effect === "bulge"
+    ) {
+      const rowLayouts = [];
+      for (const line of lines) {
+        rowLayouts.push(
+          this.layoutVariableSizeLine(
+            this.ctx,
+            element,
+            line,
+            effect,
+            fontPx,
+            family,
+            fallback,
+            weight,
+            fontStyle0,
+          ),
+        );
+      }
+      let maxW = 20;
+      for (const layout of rowLayouts) {
+        maxW = Math.max(maxW, layout.width);
+      }
+      let totalH = 0;
+      for (const layout of rowLayouts) {
+        totalH += layout.height;
+      }
+      totalH += Math.max(0, lines.length - 1) * lineHeight * 0.25;
+      element.width = maxW;
+      element.height = Math.max(lineHeight, totalH);
+      let y0 = 0;
+      for (let li = 0; li < rowLayouts.length; li += 1) {
+        const layout = rowLayouts[li];
+        let offsetX = 0;
+        if (canvasAlign === "center") {
+          offsetX = (maxW - layout.width) / 2;
+        } else if (canvasAlign === "right") {
+          offsetX = maxW - layout.width;
+        }
+        this.ctx.save();
+        this.ctx.translate(offsetX, y0);
+        this.drawVariableLineLayout(
+          this.ctx,
+          layout,
+          fillRgb,
+          outlineCfg,
+          family,
+          fallback,
+          weight,
+          fontStyle0,
+        );
+        if (element.underline || element.strikethrough) {
+          const lineStr = lines[li] ?? "";
+          if (lineStr) {
+            const deco = this.drawTextDecorationLines(
+              rawAlign,
+              layout.width,
+              canvasAlign === "center"
+                ? layout.width / 2
+                : canvasAlign === "right"
+                  ? layout.width
+                  : 0,
+            );
+            this.ctx.strokeStyle = fillRgb;
+            this.ctx.lineWidth = Math.max(1, fontPx / 14);
+            if (element.underline) {
+              const underlineY = layout.baselineShift + fontPx * 1.12;
+              this.ctx.beginPath();
+              this.ctx.moveTo(deco.x1, underlineY);
+              this.ctx.lineTo(deco.x2, underlineY);
+              this.ctx.stroke();
+            }
+            if (element.strikethrough) {
+              const strikeY = layout.baselineShift + fontPx * 0.55;
+              this.ctx.beginPath();
+              this.ctx.moveTo(deco.x1, strikeY);
+              this.ctx.lineTo(deco.x2, strikeY);
+              this.ctx.stroke();
+            }
+          }
+        }
+        this.ctx.restore();
+        y0 +=
+          layout.height + (li < rowLayouts.length - 1 ? lineHeight * 0.25 : 0);
+      }
+      return;
+    }
   }
 
   render() {
@@ -3856,70 +4719,7 @@ class CustomCoverCustomizer extends HTMLElement {
       this.ctx.translate(-element.width / 2, -element.height / 2);
 
       if (element.type === "text") {
-        const fontPx = element.fontSize || 24;
-        const family = element.fontFamily || "Arial";
-        const fallback = element.fontFallback || "sans-serif";
-        const weight = element.fontWeight === "bold" ? "bold" : "normal";
-        const fontStyle = element.fontStyle === "italic" ? "italic" : "normal";
-        const text = this.normalizeNewlines(element.text || "");
-        const lineHeight = fontPx * 1.2;
-        const lines = text.length > 0 ? text.split("\n") : [""];
-        this.ctx.textBaseline = "top";
-        this.ctx.font = `${fontStyle} ${weight} ${fontPx}px ${family}, ${fallback}`;
-        let maxW = 20;
-        for (const line of lines) {
-          maxW = Math.max(maxW, this.ctx.measureText(line).width);
-        }
-        element.width = maxW;
-        element.height = Math.max(lineHeight, lines.length * lineHeight);
-        const rawAlign = element.textAlign || "left";
-        const canvasAlign = rawAlign === "justify" ? "left" : rawAlign;
-        this.ctx.textAlign = canvasAlign;
-        this.ctx.fillStyle = element.color || "#000000";
-
-        lines.forEach((line, lineIndex) => {
-          const y = lineIndex * lineHeight;
-          const lineW = this.ctx.measureText(line).width;
-          let drawX = 0;
-          if (canvasAlign === "center") {
-            drawX = element.width / 2;
-          } else if (canvasAlign === "right") {
-            drawX = element.width;
-          }
-          this.ctx.fillText(line, drawX, y);
-
-          let x1 = 0;
-          let x2 = lineW;
-          if (rawAlign === "center") {
-            x1 = drawX - lineW / 2;
-            x2 = drawX + lineW / 2;
-          } else if (rawAlign === "right") {
-            x1 = drawX - lineW;
-            x2 = drawX;
-          } else {
-            x1 = 0;
-            x2 = lineW;
-          }
-
-          if (element.underline && line) {
-            const underlineY = y + fontPx * 1.12;
-            this.ctx.strokeStyle = element.color || "#000000";
-            this.ctx.lineWidth = Math.max(1, fontPx / 14);
-            this.ctx.beginPath();
-            this.ctx.moveTo(x1, underlineY);
-            this.ctx.lineTo(x2, underlineY);
-            this.ctx.stroke();
-          }
-          if (element.strikethrough && line) {
-            const strikeY = y + fontPx * 0.55;
-            this.ctx.strokeStyle = element.color || "#000000";
-            this.ctx.lineWidth = Math.max(1, fontPx / 14);
-            this.ctx.beginPath();
-            this.ctx.moveTo(x1, strikeY);
-            this.ctx.lineTo(x2, strikeY);
-            this.ctx.stroke();
-          }
-        });
+        this.renderTextElementToContext(element);
       } else if (element.type === "shape") {
         this.drawShapeToContext(element);
       } else if (element.image) {
@@ -4032,6 +4832,9 @@ class CustomCoverCustomizer extends HTMLElement {
         image.onload = () => this.render();
         image.src = restored.src;
         restored.image = image;
+      }
+      if (restored.type === "text") {
+        this.ensureTextElementOutlineAndEffect(restored);
       }
       return restored;
     });
@@ -4211,6 +5014,10 @@ class CustomCoverCustomizer extends HTMLElement {
       return;
     }
     if (element.id !== this.selectedElementId || element.type !== "text") {
+      return;
+    }
+    const caretEffect = this.normalizeTextEffectValue(element.textEffect);
+    if (caretEffect === "curve" || caretEffect === "arc") {
       return;
     }
     if (this._caretBlinkAllowed() && !this._caretBlinkOn) {
@@ -4394,7 +5201,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const fontSizeInput = this.querySelector("[data-font-size-input]");
     const textColorInput = this.querySelector("[data-text-color-input]");
     const style = { ...this.textDefaults };
-    return {
+    const next = {
       id: crypto.randomUUID(),
       type: "text",
       text: this.normalizeNewlines(String(textInput?.value || "")),
@@ -4415,6 +5222,8 @@ class CustomCoverCustomizer extends HTMLElement {
       rotation: 0,
       ...overrides,
     };
+    this.readTextOutlineEffectFromFormInto(next);
+    return next;
   }
 
   async syncTextFromTextareaInput() {
@@ -4810,9 +5619,13 @@ class CustomCoverCustomizer extends HTMLElement {
       this.setDraftNotice("Draft could not be loaded.");
       return;
     }
-    this.elements = payload.elements.map((item) =>
-      this.hydrateElementFromDraft(item),
-    );
+    this.elements = payload.elements.map((item) => {
+      const el = this.hydrateElementFromDraft(item);
+      if (el.type === "text") {
+        this.ensureTextElementOutlineAndEffect(el);
+      }
+      return el;
+    });
     this.selectedElementId =
       this.elements[this.elements.length - 1]?.id || null;
     const variantSelector = this.querySelector("[data-variant-selector]");
@@ -5074,6 +5887,32 @@ class CustomCoverCustomizer extends HTMLElement {
         underline: element.type === "text" ? Boolean(element.underline) : false,
         strikethrough:
           element.type === "text" ? Boolean(element.strikethrough) : false,
+        outlineEnabled:
+          element.type === "text" ? Boolean(element.outlineEnabled) : false,
+        outlineWidth:
+          element.type === "text" ? Number(element.outlineWidth) || 0 : "",
+        outlineColor:
+          element.type === "text" ? String(element.outlineColor || "") : "",
+        textEffect:
+          element.type === "text"
+            ? this.normalizeTextEffectValue(element.textEffect)
+            : "",
+        curveRadius:
+          element.type === "text" ? Number(element.curveRadius) || 0 : "",
+        curveSpacing:
+          element.type === "text" ? Number(element.curveSpacing) || 0 : "",
+        arcRadius:
+          element.type === "text" ? Number(element.arcRadius) || 0 : "",
+        arcSpacing:
+          element.type === "text" ? Number(element.arcSpacing) || 0 : "",
+        stlLeft: element.type === "text" ? Number(element.stlLeft) || 0 : "",
+        stlRight: element.type === "text" ? Number(element.stlRight) || 0 : "",
+        ltsLeft: element.type === "text" ? Number(element.ltsLeft) || 0 : "",
+        ltsRight: element.type === "text" ? Number(element.ltsRight) || 0 : "",
+        bulgeLeft:
+          element.type === "text" ? Number(element.bulgeLeft) || 0 : "",
+        bulgeRight:
+          element.type === "text" ? Number(element.bulgeRight) || 0 : "",
         shapeId: element.type === "shape" ? element.shapeId || "" : "",
         shapeKind: element.type === "shape" ? element.shapeKind || "" : "",
         fill: element.type === "shape" ? element.fill || "" : "",
