@@ -1,4 +1,3 @@
-{% comment %}{% endcomment %}
 {%- assign header_menu = section.settings.menu -%}
 
 <style>
@@ -2389,10 +2388,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
           return (
             value &&
+            value !== '0' &&
             value !== 'Default Title' &&
             name !== 'title' &&
             name !== 'default title' &&
-            name !== 'diameter'
+            !isDiameterPropertyName(option.name)
           );
         });
       }
@@ -2400,14 +2400,42 @@ document.addEventListener('DOMContentLoaded', function () {
       if (Array.isArray(item.variant_options) && item.variant_options.length) {
         return item.variant_options.some(function(value) {
           value = cleanCartValue(value);
-          return value && value !== 'Default Title';
+          return value && value !== '0' && value !== 'Default Title';
         });
       }
 
       return !!(
         item.variant_title &&
+        item.variant_title !== '0' &&
         item.variant_title !== 'Default Title'
       );
+    }
+
+    function getLineItemPropertyValue(item, names) {
+      var targetKeys = {};
+      var properties;
+
+      if (!item || !item.properties) return '';
+
+      names.forEach(function(name) {
+        targetKeys[normalizeCartKey(name)] = true;
+      });
+
+      properties = item.properties;
+
+      return Object.keys(properties).reduce(function(foundValue, propertyName) {
+        var value;
+
+        if (foundValue) return foundValue;
+        if (isHiddenCartProperty(propertyName)) return '';
+        if (!targetKeys[normalizeCartKey(propertyName)]) return '';
+
+        value = cleanCartValue(properties[propertyName]);
+
+        if (!value || value === '0' || value === 'Default Title') return '';
+
+        return value;
+      }, '');
     }
 
     function getAllVariantDetailsHtml(item) {
@@ -2415,6 +2443,30 @@ document.addEventListener('DOMContentLoaded', function () {
       var seen = {};
       var fields = {};
       var itemHasRealVariants = hasRealVariantOptions(item);
+      var lineItemDiameter = getLineItemPropertyValue(item, [
+        'Diameter',
+        'Bell Diameter',
+        'Entered Diameter',
+        'Custom Diameter',
+        'Enter the diameter of your bell here (US inches)',
+        'Enter Diameter',
+        'Diameter Size'
+      ]);
+
+      /*
+        Typed-diameter products save the customer's input as a line-item property.
+        Show that value first, even if Shopify also returns a variant option named
+        "Enter the diameter..." with the placeholder/default value of 0.
+      */
+      if (lineItemDiameter && !itemHasRealVariants) {
+        return `
+          <div class="custom-cart-item-options">
+            <div class="custom-cart-item-option">
+              <strong>Diameter:</strong> ${escapeHtml(lineItemDiameter)}
+            </div>
+          </div>
+        `;
+      }
 
       function addRow(name, value) {
         var normalizedName;
@@ -2423,16 +2475,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!name || isEmptyCartValue(value)) return;
 
-        /*
-          IMPORTANT:
-          Some standard products are carrying Diameter as a metafield/line-item property.
-          If the cart item has real Shopify variants, ignore Diameter and show variants instead.
-        */
-        if (itemHasRealVariants && isDiameterPropertyName(name)) return;
-
         value = cleanCartValue(value);
 
-        if (!value || value === 'Default Title') return;
+        /*
+          IMPORTANT:
+          Shopify can return the typed-diameter product option as a variant option
+          named "Enter the diameter..." with the placeholder/default value of 0.
+          Never print that placeholder in the cart drawer. Only the customer's
+          line-item property Diameter should be shown.
+        */
+        if (!value || value === '0' || value === 'Default Title') return;
+
+        if (isDiameterPropertyName(name)) {
+          if (itemHasRealVariants) return;
+          if (!lineItemDiameter) return;
+        }
 
         normalizedName = normalizeCartKey(name);
         normalizedValue = String(value).toLowerCase();
@@ -2497,7 +2554,7 @@ document.addEventListener('DOMContentLoaded', function () {
           'Diameter Size'
         ]);
 
-        if (diameter) {
+        if (diameter && diameter !== '0') {
           return `
             <div class="custom-cart-item-options">
               <div class="custom-cart-item-option">
@@ -2566,11 +2623,7 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
       }
 
-      /*
-        Fallback:
-        Keep the original label/value display for any product
-        that does not match the standard fields above.
-      */
+
       if (!rows.length) return '';
 
       return `
@@ -3095,9 +3148,330 @@ function renderCartItems(cart) {
       return 'There was an error adding this item to your cart.';
     }
 
+
+    function getNearbyProductScope(form) {
+      return (
+        form.closest('custom-cover-customizer-component') ||
+        form.closest('product-info') ||
+        form.closest('.product') ||
+        form.closest('[data-product]') ||
+        form.closest('section') ||
+        form
+      );
+    }
+
+    function getElementSearchText(scope, element) {
+      var text = '';
+      var id;
+      var label;
+      var wrapper;
+
+      if (!element) return '';
+
+      id = element.id;
+
+      if (id && scope && scope.querySelector) {
+        label = scope.querySelector('label[for="' + id.replace(/"/g, '\\"') + '"]');
+        if (label) {
+          text += ' ' + label.textContent;
+        }
+      }
+
+      wrapper = element.closest('.field, .form-field, .product-form__input, .custom-product-option, .custom-field, .input-wrapper, .product-option, .option-row, .quantity, .quantity-selector, [data-quantity-wrapper], [data-quantity-selector]') || element.parentElement;
+      if (wrapper && wrapper !== scope && String(wrapper.textContent || '').length < 300) {
+        text += ' ' + wrapper.textContent;
+      }
+
+      text += ' ' + (element.name || '');
+      text += ' ' + (element.id || '');
+      text += ' ' + (element.className || '');
+      text += ' ' + (element.getAttribute('aria-label') || '');
+      text += ' ' + (element.getAttribute('placeholder') || '');
+      text += ' ' + (element.getAttribute('data-name') || '');
+      text += ' ' + (element.getAttribute('data-option-name') || '');
+      text += ' ' + (element.getAttribute('data-property-name') || '');
+
+      return String(text || '').toLowerCase();
+    }
+
+    function getCleanNumber(value) {
+      value = String(value || '')
+        .replace(/[^0-9.]/g, '')
+        .trim();
+
+      if (!value) return '';
+
+      return value;
+    }
+
+    function isVisibleCustomField(element) {
+      if (!element) return false;
+      if ((element.type || '').toLowerCase() === 'hidden') return false;
+      if (element.disabled) return false;
+
+      return !!(
+        element.offsetWidth ||
+        element.offsetHeight ||
+        element.getClientRects().length
+      );
+    }
+
+    function isTextLikeCustomInput(element) {
+      var tag;
+      var type;
+
+      if (!element || !element.tagName) return false;
+
+      tag = element.tagName.toLowerCase();
+
+      if (tag === 'textarea') return true;
+      if (tag !== 'input') return false;
+
+      type = (element.getAttribute('type') || 'text').toLowerCase();
+
+      return (
+        type === 'text' ||
+        type === 'number' ||
+        type === 'tel' ||
+        type === 'search'
+      );
+    }
+
+    function findVisibleQuantityValue(form) {
+      var scope = getNearbyProductScope(form);
+      var inputs = scope.querySelectorAll('input, select');
+      var i;
+      var input;
+      var text;
+      var value;
+      var candidates;
+      var candidate;
+
+      for (i = 0; i < inputs.length; i++) {
+        input = inputs[i];
+        text = getElementSearchText(scope, input);
+
+        if (text.indexOf('diameter') !== -1) continue;
+
+        if (
+          input.name === 'quantity' ||
+          text.indexOf('quantity') !== -1 ||
+          text.indexOf('qty') !== -1
+        ) {
+          value = parseInt(getCleanNumber(input.value), 10);
+
+          if (!isNaN(value) && value > 0) {
+            return String(value);
+          }
+        }
+      }
+
+      candidates = scope.querySelectorAll('[data-quantity-value], [data-quantity], .quantity__value, .quantity-value, .quantity-selector span, .quantity span, .product-form__quantity span');
+
+      for (i = 0; i < candidates.length; i++) {
+        candidate = candidates[i];
+        text = getElementSearchText(scope, candidate);
+
+        if (text.indexOf('diameter') !== -1) continue;
+
+        if (
+          text.indexOf('quantity') === -1 &&
+          text.indexOf('qty') === -1 &&
+          !candidate.closest('.quantity, .quantity-selector, .product-form__quantity, [data-quantity-wrapper], [data-quantity-selector]')
+        ) {
+          continue;
+        }
+
+        value = parseInt(getCleanNumber(candidate.getAttribute('data-quantity-value') || candidate.getAttribute('data-quantity') || candidate.textContent), 10);
+
+        if (!isNaN(value) && value > 0) {
+          return String(value);
+        }
+      }
+
+      return '';
+    }
+
+    function findVisibleDiameterInput(form) {
+      var scope = getNearbyProductScope(form);
+      var inputs = scope.querySelectorAll('input, textarea');
+      var i;
+      var input;
+      var text;
+      var name;
+      var explicitDiameterField;
+
+      for (i = 0; i < inputs.length; i++) {
+        input = inputs[i];
+
+        if (!isVisibleCustomField(input)) continue;
+        if (!isTextLikeCustomInput(input)) continue;
+
+        text = getElementSearchText(scope, input);
+        name = String(input.name || '').toLowerCase();
+
+        explicitDiameterField = (
+          text.indexOf('enter the diameter') !== -1 ||
+          text.indexOf('diameter of your bell') !== -1 ||
+          text.indexOf('bell diameter') !== -1 ||
+          text.indexOf('custom diameter') !== -1 ||
+          text.indexOf('entered diameter') !== -1 ||
+          name === 'diameter' ||
+          name === 'properties[diameter]'
+        );
+
+        if (explicitDiameterField) {
+          return input;
+        }
+      }
+
+      return null;
+    }
+
+    function getStoredDiameterValue(input) {
+      var currentValue = input ? getCleanNumber(input.value) : '';
+      var inputSavedValue = input ? getCleanNumber(input.dataset.lastValidDiameter || '') : '';
+
+      if (currentValue && currentValue !== '0') {
+        if (input) input.dataset.lastValidDiameter = currentValue;
+        return currentValue;
+      }
+
+      if (inputSavedValue && inputSavedValue !== '0') return inputSavedValue;
+
+      return '';
+    }
+
+    function findAnyDiameterInput() {
+      return document.querySelector('[data-line-item-property-input], input[name="properties[Diameter]"], input[name="properties[diameter]"]');
+    }
+
+    function findVisibleDiameterValue(form) {
+      var input = findVisibleDiameterInput(form);
+
+      /*
+        Only attach Diameter to add-to-cart requests for products that actually
+        have the diameter input in the same product section. Do not fall back to
+        a global/session diameter value here, or normal variant products can
+        inherit Diameter from another product.
+      */
+      if (!input) return '';
+
+      return getStoredDiameterValue(input);
+    }
+
+    function restoreDiameterInput(input, value) {
+      if (!input || !value || value === '0') return;
+
+      function restore() {
+        if (!input.value || input.value === '0' || String(input.value || '').trim() !== String(value)) {
+          input.value = value;
+        }
+      }
+
+      restore();
+      requestAnimationFrame(restore);
+      setTimeout(restore, 60);
+      setTimeout(restore, 250);
+      setTimeout(restore, 600);
+    }
+
+    function restoreAllDiameterInputs(value) {
+      if (!value || value === '0') return;
+
+      document.querySelectorAll('[data-line-item-property-input], input[name="properties[Diameter]"], input[name="properties[diameter]"]').forEach(function(input) {
+        restoreDiameterInput(input, value);
+      });
+    }
+
+    function deleteDiameterProperties(formData) {
+      if (!formData || typeof formData.delete !== 'function') return;
+
+      formData.delete('properties[Diameter]');
+      formData.delete('properties[diameter]');
+      formData.delete('properties[Bell Diameter]');
+      formData.delete('properties[Entered Diameter]');
+      formData.delete('properties[Custom Diameter]');
+      formData.delete('properties[Enter Diameter]');
+      formData.delete('properties[Diameter Size]');
+      formData.delete('properties[Enter the diameter of your bell here (US inches)]');
+    }
+
+    function forceLatestVariantId(form, formData) {
+      var variantId = '';
+      var scope = getNearbyProductScope(form);
+      var picker = scope && scope.querySelector ? scope.querySelector('variant-picker') : null;
+      var idInput = form.querySelector('[name="id"]');
+
+      if (picker && typeof picker.updateSelectedVariantIdForCart === 'function') {
+        variantId = picker.updateSelectedVariantIdForCart();
+      }
+
+      if (!variantId && picker && picker.dataset.currentVariantId) {
+        variantId = picker.dataset.currentVariantId;
+      }
+
+      if (!variantId && idInput && idInput.value) {
+        variantId = idInput.value;
+      }
+
+      if (variantId) {
+        formData.set('id', variantId);
+
+        if (idInput) {
+          idInput.value = variantId;
+        }
+      }
+
+      return variantId || '';
+    }
+
+    function syncCustomCartFields(form, formData, capturedDiameter, capturedQuantity) {
+      var quantity = capturedQuantity || findVisibleQuantityValue(form);
+      var existingDiameter = '';
+      var diameter;
+
+      if (formData && typeof formData.get === 'function') {
+        existingDiameter = getCleanNumber(
+          formData.get('properties[Diameter]') ||
+          formData.get('properties[diameter]') ||
+          ''
+        );
+      }
+
+      /*
+        Prefer the live visible field, but preserve the hidden Diameter field that
+        variant-main-picker creates inside the product form. This prevents the
+        cart from falling back to Shopify's variant/metafield value of 0.
+      */
+      diameter = capturedDiameter || findVisibleDiameterValue(form) || existingDiameter;
+
+      if (quantity) {
+        formData.set('quantity', quantity);
+      } else if (!formData.get('quantity')) {
+        formData.set('quantity', '1');
+      }
+
+      /*
+        Important:
+        Remove any stale/default/metafield Diameter first.
+        Then add Diameter only when the current product form actually has a typed diameter.
+      */
+      deleteDiameterProperties(formData);
+
+      if (diameter) {
+        formData.set('properties[Diameter]', diameter);
+      }
+    }
+
     function submitAddToCartForm(form, submitter) {
       if (!isAddToCartForm(form)) return;
       if (form.dataset.customAjaxAdding === 'true') return;
+
+      var diameterInput = findVisibleDiameterInput(form);
+      var capturedDiameter = diameterInput ? getStoredDiameterValue(diameterInput) : '';
+
+      var capturedQuantity = findVisibleQuantityValue(form);
 
       var customizer = form.closest && form.closest('custom-cover-customizer-component');
       if (
@@ -3107,8 +3481,11 @@ function renderCartItems(cart) {
         customizer.ensureVariantIdForCart();
       }
 
+      restoreDiameterInput(diameterInput, capturedDiameter);
+      restoreAllDiameterInputs(capturedDiameter);
+
       var formData = new FormData(form);
-      var variantId = formData.get('id');
+      var variantId = forceLatestVariantId(form, formData);
       var button = findAddToCartButton(form, submitter);
 
       if (!variantId || String(variantId).trim() === '') {
@@ -3117,9 +3494,7 @@ function renderCartItems(cart) {
         return;
       }
 
-      if (!formData.get('quantity')) {
-        formData.set('quantity', '1');
-      }
+      syncCustomCartFields(form, formData, capturedDiameter, capturedQuantity);
 
       form.dataset.customAjaxAdding = 'true';
       setButtonLoading(button, true);
@@ -3150,6 +3525,8 @@ function renderCartItems(cart) {
           alert(getCartErrorMessage(error));
         })
         .finally(function() {
+          restoreDiameterInput(diameterInput, capturedDiameter);
+          restoreAllDiameterInputs(capturedDiameter);
           form.dataset.customAjaxAdding = 'false';
           setButtonLoading(button, false);
         });
@@ -3173,7 +3550,6 @@ function renderCartItems(cart) {
       var button = e.target.closest(
         'button[name="add"], [type="submit"].product-form__submit, [data-add-to-cart], button[type="submit"][form^="CustomizerProductForm"]'
       );
-      var button = e.target.closest('button[name="add"], [type="submit"].product-form__submit, [data-add-to-cart]');
       if (!button) return;
 
       var form = button.form || button.closest('form');

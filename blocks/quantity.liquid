@@ -1,209 +1,330 @@
-
-<div class="quantity-selector-container">
-  {% render 'quantity-selector', product: closest.product %}
-  <button
-  type="button"
-  popovertarget="quantity-volume-popup-{{ block.id | default: section.id }}"
-  class="quantity-selector-toolkit new"
->
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M12 8V12" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M12 16H12.01" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-  <p>Add more to save more</p>
-</button>
+{% assign quantity_product = closest.product | default: product %}
+{% assign current_variant = quantity_product.selected_or_first_available_variant %}
+{% assign base_unit_price = current_variant.price | default: quantity_product.price %}
+{% assign popup_id = block.id | default: section.id %}
+{% assign volume_pricing_table = quantity_product.metafields.custom.volume_pricing_table.value %}
 
 <div
-  id="quantity-volume-popup-{{ block.id | default: section.id }}"
-  class="quantity-volume-popup"
-  popover
+  class="quantity-selector-container"
+  data-quantity-volume-root="{{ popup_id }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
 >
-  <button
-    type="button"
-    class="quantity-volume-popup__close"
-    popovertarget="quantity-volume-popup-{{ block.id | default: section.id }}"
-    popovertargetaction="hide"
-    aria-label="Close popup"
-  >
-    ×
-  </button>
+  {% render 'quantity-selector', product: quantity_product %}
 
-  <h3>Volume Pricing</h3>
-  <p class="quantity-volume-popup__subtitle">
-    Save more when you order more. Discounts applied automatically in cart.
-  </p>
+  {% if volume_pricing_table != blank %}
+    <button
+      type="button"
+      popovertarget="quantity-volume-popup-{{ popup_id }}"
+      class="quantity-selector-toolkit new"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 8V12" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 16H12.01" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <p>Add more to save more</p>
+    </button>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Quantity</th>
-        <th>Price per Unit</th>
-        <th>You Save</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>50+</td>
-        <td>$19.49</td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <td>100+</td>
-        <td>$18.99</td>
-        <td>Save $0.50 each</td>
-      </tr>
-      <tr>
-        <td>250+</td>
-        <td>$17.99</td>
-        <td>Save $1.50 each</td>
-      </tr>
-      <tr>
-        <td>500+</td>
-        <td>$16.99</td>
-        <td>Save $2.50 each</td>
-      </tr>
-      <tr>
-        <td>1000+</td>
-        <td>$15.99</td>
-        <td>Save $3.50 each</td>
-      </tr>
-      <tr>
-        <td>2500+</td>
-        <td>$13.99</td>
-        <td>Save $5.50 each</td>
-      </tr>
-      <tr>
-        <td>5000+</td>
-        <td>$11.99</td>
-        <td>Save $7.50 each</td>
-      </tr>
-      <tr>
-        <td>10000+</td>
-        <td>$9.99</td>
-        <td>Save $9.50 each</td>
-      </tr>
-    </tbody>
-  </table>
+    <div
+      id="quantity-volume-popup-{{ popup_id }}"
+      class="quantity-volume-popup"
+      popover
+    >
+      <button
+        type="button"
+        class="quantity-volume-popup__close"
+        popovertarget="quantity-volume-popup-{{ popup_id }}"
+        popovertargetaction="hide"
+        aria-label="Close popup"
+      >
+        ×
+      </button>
 
-  <p class="quantity-volume-popup__note">
-    The discount will automatically apply when you reach the quantity threshold.
-  </p>
-</div>
+      <h3>Volume Pricing</h3>
 
-<style>
-  button.quantity-selector-toolkit.new {
-    width: auto;
-  }
-  .quantity-selector-toolkit {
-    border: 0;
-    background: transparent;
-    padding: 0;
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    color: #1f1f1f;
-  }
+      <p class="quantity-volume-popup__subtitle">
+        Save more when you order more. Discounts applied automatically in cart.
+      </p>
 
-  .quantity-selector-toolkit p {
-    margin: 0;
-  }
+      <table>
+        <thead>
+          <tr>
+            <th>Quantity</th>
+            <th>Price per Unit</th>
+            <th>You Save</th>
+          </tr>
+        </thead>
 
-  .quantity-volume-popup {
-    width: min(660px, calc(100vw - 40px));
-    border: 0;
-    border-radius: 8px;
-    padding: 30px 30px 18px;
-    background: #fff;
-    color: #1f1f1f;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-  }
+        <tbody>
+          {% assign volume_tiers = '50:price_50,100:price_100,250:price_250,500:price_500,1000:price_1000,2500:price_2500,5000:price_5000,10000:price_10000' | split: ',' %}
 
-  .quantity-volume-popup::backdrop {
-    background: rgba(0, 0, 0, 0.82);
-  }
+          {% for volume_tier in volume_tiers %}
+            {% assign tier_parts = volume_tier | split: ':' %}
+            {% assign volume_quantity = tier_parts[0] %}
+            {% assign tier_field_key = tier_parts[1] %}
+            {% assign tier_field = volume_pricing_table[tier_field_key] %}
 
-  .quantity-volume-popup__close {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    border: 0;
-    background: transparent;
-    font-size: 26px;
-    line-height: 1;
-    cursor: pointer;
-    color: #1f1f1f;
-    width: auto !important;
-  }
+            {% if tier_field != blank and tier_field.value != blank %}
+              {% assign tier_price_cents = tier_field.value.amount | default: tier_field.value | plus: 0 %}
+              {% assign save_cents = base_unit_price | minus: tier_price_cents %}
 
-  .quantity-volume-popup h3 {
-    margin: 0 0 4px;
-    color: #0F2E53;
-    font-size: 18px;
-    line-height: 16px;
-    font-weight: 800;
-  }
+              {% if save_cents < 0 %}
+                {% assign save_cents = 0 %}
+              {% endif %}
 
-  .quantity-volume-popup__subtitle {
-    margin: 0 0 24px;
-    font-size: 14px;
-    line-height: 18px;
-    color: #5F5F5F;
-  }
+              <tr>
+                <td>{{ volume_quantity }}+</td>
 
-  .quantity-volume-popup table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
+                <td>
+                  <span
+                    data-tier-price
+                    data-tier-price-cents="{{ tier_price_cents }}"
+                  >
+                    {{ tier_price_cents | money }}
+                  </span>
+                </td>
 
-  .quantity-volume-popup th {
-    padding: 0 0 12px;
-    text-align: left;
-    font-weight: 700;
-    font-size:: 14px;
-    line-height: 18px;
-  }
+                <td>
+                  Save
+                  <span
+                    data-tier-save
+                    data-tier-price-cents="{{ tier_price_cents }}"
+                  >
+                    {{ save_cents | money }}
+                  </span>
+                  each
+                </td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
 
-  .quantity-volume-popup td {
-    padding: 12px 0;
-    color: #5F5F5F;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 18px;
-  }
+      <p class="quantity-volume-popup__note">
+        The discount will automatically apply when you reach the quantity threshold.
+      </p>
+    </div>
 
-  .quantity-volume-popup tbody tr:nth-child(even) { 
-    background: #F3F4F5;
-  }
+    <script type="application/json" data-quantity-volume-variants>
+      {{ quantity_product.variants | json }}
+    </script>
+  {% endif %}
 
-  .quantity-volume-popup__note {
-    padding: 12px 0;
-    color: #5F5F5F;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 18px;
-  }
+  <style>
+    button.quantity-selector-toolkit.new {
+      width: auto;
+    }
 
-  @media screen and (max-width: 749px) {
+    .quantity-selector-toolkit {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #1f1f1f;
+    }
+
+    .quantity-selector-toolkit p {
+      margin: 0;
+    }
+
     .quantity-volume-popup {
-      width: calc(100vw - 32px);
-      padding: 26px 18px 16px;
+      width: min(660px, calc(100vw - 40px));
+      border: 0;
+      border-radius: 8px;
+      padding: 30px 30px 18px;
+      background: #fff;
+      color: #1f1f1f;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    .quantity-volume-popup::backdrop {
+      background: rgba(0, 0, 0, 0.82);
+    }
+
+    .quantity-volume-popup__close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      border: 0;
+      background: transparent;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      color: #1f1f1f;
+      width: auto !important;
     }
 
     .quantity-volume-popup h3 {
+      margin: 0 0 4px;
+      color: #0F2E53;
       font-size: 18px;
+      line-height: 16px;
+      font-weight: 800;
     }
 
-    .quantity-volume-popup table,
     .quantity-volume-popup__subtitle {
-      font-size: 12px;
+      margin: 0 0 24px;
+      font-size: 14px;
+      line-height: 18px;
+      color: #5F5F5F;
     }
-  }
-</style>
+
+    .quantity-volume-popup table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .quantity-volume-popup th {
+      padding: 0 0 12px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .quantity-volume-popup td {
+      padding: 12px 0;
+      color: #5F5F5F;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .quantity-volume-popup tbody tr:nth-child(even) {
+      background: #F3F4F5;
+    }
+
+    .quantity-volume-popup__note {
+      padding: 12px 0;
+      color: #5F5F5F;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    @media screen and (max-width: 749px) {
+      .quantity-volume-popup {
+        width: calc(100vw - 32px);
+        padding: 26px 18px 16px;
+      }
+
+      .quantity-volume-popup h3 {
+        font-size: 18px;
+      }
+
+      .quantity-volume-popup table,
+      .quantity-volume-popup__subtitle {
+        font-size: 12px;
+      }
+    }
+  </style>
+
+  {% if volume_pricing_table != blank %}
+    <script>
+      (() => {
+        const root = document.querySelector('[data-quantity-volume-root="{{ popup_id }}"]');
+
+        if (!root || root.dataset.quantityVolumeReady === 'true') return;
+
+        root.dataset.quantityVolumeReady = 'true';
+
+        const variantJson = root.querySelector('[data-quantity-volume-variants]');
+        const saveEls = root.querySelectorAll('[data-tier-save]');
+        const moneyFormat = root.dataset.moneyFormat || '${{ amount }}';
+        const currency = root.dataset.currency || 'USD';
+
+        let variants = [];
+
+        try {
+          variants = JSON.parse(variantJson.textContent || '[]');
+        } catch (error) {
+          variants = [];
+        }
+
+        const formatMoney = (cents) => {
+          cents = Math.max(0, Number(cents) || 0);
+
+          if (window.Shopify && typeof window.Shopify.formatMoney === 'function') {
+            return window.Shopify.formatMoney(cents, moneyFormat);
+          }
+
+          return new Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: currency
+          }).format(cents / 100);
+        };
+
+        const updateVolumeSavings = (basePriceCents) => {
+          basePriceCents = Number(basePriceCents) || 0;
+
+          saveEls.forEach((saveEl) => {
+            const tierPriceCents = Number(saveEl.dataset.tierPriceCents) || 0;
+            const saveCents = Math.max(0, basePriceCents - tierPriceCents);
+
+            saveEl.textContent = formatMoney(saveCents);
+          });
+        };
+
+        const findCurrentVariantId = () => {
+          const productForm =
+            root.closest('form[action*="/cart/add"]') ||
+            document.querySelector('form[action*="/cart/add"]');
+
+          if (!productForm) return null;
+
+          const variantInput = productForm.querySelector('[name="id"]');
+
+          return variantInput ? variantInput.value : null;
+        };
+
+        const updateFromSelectedVariant = () => {
+          const currentVariantId = findCurrentVariantId();
+
+          if (!currentVariantId || !variants.length) return;
+
+          const currentVariant = variants.find((variant) => {
+            return String(variant.id) === String(currentVariantId);
+          });
+
+          if (!currentVariant || typeof currentVariant.price === 'undefined') return;
+
+          updateVolumeSavings(currentVariant.price);
+        };
+
+        document.addEventListener('change', (event) => {
+          if (!event.target.matches('input, select')) return;
+
+          setTimeout(updateFromSelectedVariant, 80);
+        });
+
+        document.addEventListener('variant:change', (event) => {
+          if (event.detail && event.detail.variant && event.detail.variant.price) {
+            updateVolumeSavings(event.detail.variant.price);
+          } else {
+            setTimeout(updateFromSelectedVariant, 80);
+          }
+        });
+
+        document.addEventListener('product:variant-change', (event) => {
+          if (event.detail && event.detail.variant && event.detail.variant.price) {
+            updateVolumeSavings(event.detail.variant.price);
+          } else {
+            setTimeout(updateFromSelectedVariant, 80);
+          }
+        });
+
+        window.addEventListener('load', updateFromSelectedVariant);
+      })();
+    </script>
+  {% endif %}
 </div>
+
 {% schema %}
 {
   "name": "t:names.quantity",

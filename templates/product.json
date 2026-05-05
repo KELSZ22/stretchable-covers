@@ -826,6 +826,12 @@
             "image": "shopify://shop_images/ca64ac4aa97c21f93731c96e60dc3088ef81b76f.png"
           }
         },
+        "image_CYeXjj": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/instrument.png"
+          }
+        },
         "image_9zWDjc": {
           "type": "image",
           "settings": {
@@ -853,6 +859,7 @@
       },
       "block_order": [
         "image_aEigih",
+        "image_CYeXjj",
         "image_9zWDjc",
         "image_HGEAHn",
         "image_BcNHHn",

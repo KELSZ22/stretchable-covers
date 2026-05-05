@@ -187,8 +187,8 @@
                 value=""
                 placeholder="{{ product_option.selected_value | escape }}"
                 autocomplete="off"
-                inputmode="numeric"
-                pattern="[0-9]*"
+                inputmode="decimal"
+                pattern="[0-9.]*"
                 data-number-only-input
                 data-line-item-property-input
               >
@@ -373,6 +373,10 @@
 
       <script type="application/json">
         {{ product_resource.selected_or_first_available_variant | json }}
+      </script>
+
+      <script type="application/json" data-custom-variants-json>
+        {{ product_resource.variants | json }}
       </script>
     </form>
 
@@ -575,112 +579,280 @@
   </script>
 
   <script>
-    if (!window.variantNumberOnlyInputInit) {
-      window.variantNumberOnlyInputInit = true;
+    if (!window.customVariantPickerCartFixInit) {
+      window.customVariantPickerCartFixInit = true;
 
-      function cleanNumberOnlyValue(input) {
-        if (!input) return;
-        input.value = input.value.replace(/[^0-9]/g, '');
+      function cleanDiameterValue(value) {
+        value = String(value || '')
+          .replace(/[^0-9.]/g, '')
+          .replace(/(\..*)\./g, '$1')
+          .trim();
+
+        return value;
       }
 
-      function findProductForm(input) {
-        if (!input) return null;
+      function escapeCssValue(value) {
+        if (window.CSS && typeof window.CSS.escape === 'function') {
+          return window.CSS.escape(String(value || ''));
+        }
 
-        var picker = input.closest('variant-picker');
+        return String(value || '').replace(/\\/g, '\\\\').replace(/\"/g, '\\\"');
+      }
+
+      function findProductFormFromElement(element) {
+        var picker = element && element.closest ? element.closest('variant-picker') : null;
         var sectionId = picker ? picker.getAttribute('data-section-id') : null;
+        var section;
+        var form;
 
         if (sectionId) {
-          var shopifySection = document.getElementById('shopify-section-' + sectionId);
-          if (shopifySection) {
-            var sectionForm = shopifySection.querySelector('form[action*="/cart/add"]');
-            if (sectionForm) return sectionForm;
-          }
+          section = document.getElementById('shopify-section-' + sectionId);
 
-          var matchingSection = document.querySelector('[data-section-id="' + sectionId + '"]');
-          if (matchingSection) {
-            var matchingSectionForm = matchingSection.querySelector('form[action*="/cart/add"]');
-            if (matchingSectionForm) return matchingSectionForm;
+          if (section) {
+            form = section.querySelector('form[action*="/cart/add"]');
+            if (form) return form;
           }
         }
 
-        var closestSection = input.closest('section, .shopify-section, [data-section-id]');
-        if (closestSection) {
-          var closestForm = closestSection.querySelector('form[action*="/cart/add"]');
-          if (closestForm) return closestForm;
+        section = element && element.closest
+          ? element.closest('section, .shopify-section, [data-section-id], product-info, .product')
+          : null;
+
+        if (section) {
+          form = section.querySelector('form[action*="/cart/add"]');
+          if (form) return form;
         }
 
         return document.querySelector('form[action*="/cart/add"]');
       }
 
-      function syncLineItemProperty(input) {
-        if (!input) return;
-
-        cleanNumberOnlyValue(input);
-
-        var form = findProductForm(input);
-        if (!form) return;
-
-        var hiddenInput = form.querySelector('input[data-linked-line-item-property="' + input.id + '"]');
-
-        if (!input.value) {
-          if (hiddenInput) hiddenInput.remove();
-          return;
-        }
+      function getLinkedDiameterInput(form, input) {
+        var key = input && input.id ? input.id : 'custom-diameter';
+        var hiddenInput = form.querySelector('input[data-custom-diameter-line-item="' + escapeCssValue(key) + '"]');
 
         if (!hiddenInput) {
           hiddenInput = document.createElement('input');
           hiddenInput.type = 'hidden';
-          hiddenInput.setAttribute('data-linked-line-item-property', input.id);
+          hiddenInput.setAttribute('data-custom-diameter-line-item', key);
           form.appendChild(hiddenInput);
         }
 
         hiddenInput.name = 'properties[Diameter]';
-        hiddenInput.value = input.value;
+
+        return hiddenInput;
       }
 
-      function syncAllLineItemProperties() {
-        document.querySelectorAll('[data-line-item-property-input]').forEach(function(input) {
-          syncLineItemProperty(input);
+      function syncDiameterInput(input) {
+        var form;
+        var value;
+        var hiddenInput;
+
+        if (!input) return '';
+
+        form = findProductFormFromElement(input);
+        value = cleanDiameterValue(input.value);
+
+        input.value = value;
+
+        if (!form) return value;
+
+        hiddenInput = getLinkedDiameterInput(form, input);
+
+        if (value && value !== '0') {
+          hiddenInput.value = value;
+          input.dataset.lastValidDiameter = value;
+          return value;
+        }
+
+        hiddenInput.remove();
+        delete input.dataset.lastValidDiameter;
+
+        return '';
+      }
+
+      function syncDiameterInputsInScope(scope) {
+        scope = scope || document;
+
+        scope.querySelectorAll('[data-line-item-property-input]').forEach(function(input) {
+          syncDiameterInput(input);
         });
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', syncAllLineItemProperties);
-      } else {
-        syncAllLineItemProperties();
+      function getPickerVariants(picker) {
+        var json = picker ? picker.querySelector('[data-custom-variants-json]') : null;
+
+        if (!json) return [];
+
+        try {
+          return JSON.parse(json.textContent || '[]');
+        } catch (error) {
+          return [];
+        }
       }
 
-      document.addEventListener('shopify:section:load', function () {
-        syncAllLineItemProperties();
+      function normalizeOption(value) {
+        return String(value || '').trim();
+      }
+
+      function getPickerOptionValues(picker) {
+        var pickerForm = picker ? picker.querySelector('.variant-picker__form') : null;
+        var values = [];
+
+        if (!pickerForm) return values;
+
+        Array.prototype.slice.call(pickerForm.children).forEach(function(optionEl, index) {
+          var select;
+          var checked;
+
+          if (!optionEl.classList || !optionEl.classList.contains('variant-option')) return;
+
+          select = optionEl.querySelector('select');
+          checked = optionEl.querySelector('input[type="radio"]:checked');
+
+          if (select) {
+            values[index] = select.value;
+          } else if (checked) {
+            values[index] = checked.value;
+          }
+        });
+
+        return values;
+      }
+
+      function findMatchingVariant(picker) {
+        var variants = getPickerVariants(picker);
+        var selectedOptions = getPickerOptionValues(picker);
+
+        if (!variants.length || !selectedOptions.length) return null;
+
+        return variants.find(function(variant) {
+          if (!variant || !Array.isArray(variant.options)) return false;
+
+          return selectedOptions.every(function(value, index) {
+            return normalizeOption(variant.options[index]) === normalizeOption(value);
+          });
+        }) || null;
+      }
+
+      function updateSelectedVariantIdForCart(picker) {
+        var variant = findMatchingVariant(picker);
+        var form = findProductFormFromElement(picker);
+        var idInput;
+
+        if (!variant || !variant.id || !form) return '';
+
+        idInput = form.querySelector('[name="id"]');
+
+        if (!idInput) {
+          idInput = document.createElement('input');
+          idInput.type = 'hidden';
+          idInput.name = 'id';
+          form.appendChild(idInput);
+        }
+
+        idInput.value = variant.id;
+        picker.dataset.currentVariantId = variant.id;
+
+        idInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+        return String(variant.id);
+      }
+
+      function prepareVariantPicker(picker) {
+        if (!picker || picker.dataset.customCartVariantFixReady === 'true') return;
+
+        picker.dataset.customCartVariantFixReady = 'true';
+
+        picker.updateSelectedVariantIdForCart = function() {
+          return updateSelectedVariantIdForCart(picker);
+        };
+
+        updateSelectedVariantIdForCart(picker);
+      }
+
+      function prepareAllVariantPickers() {
+        document.querySelectorAll('variant-picker').forEach(prepareVariantPicker);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', prepareAllVariantPickers);
+      } else {
+        prepareAllVariantPickers();
+      }
+
+      document.addEventListener('shopify:section:load', function() {
+        prepareAllVariantPickers();
+        syncDiameterInputsInScope(document);
       });
 
       document.addEventListener('input', function(event) {
-        var input = event.target.closest('[data-number-only-input]');
+        var input = event.target.closest('[data-number-only-input][data-line-item-property-input]');
         if (!input) return;
 
-        syncLineItemProperty(input);
-      });
+        syncDiameterInput(input);
+      }, true);
 
       document.addEventListener('change', function(event) {
-        var input = event.target.closest('[data-number-only-input]');
-        if (!input) return;
+        var diameterInput = event.target.closest('[data-number-only-input][data-line-item-property-input]');
+        var picker = event.target.closest('variant-picker');
 
-        syncLineItemProperty(input);
-      });
+        if (diameterInput) {
+          syncDiameterInput(diameterInput);
+        }
 
-      document.addEventListener('click', function(event) {
-        var addToCartButton = event.target.closest('button[type="submit"], [name="add"], [data-add-to-cart], .product-form__submit');
-        if (!addToCartButton) return;
-
-        syncAllLineItemProperties();
+        if (picker) {
+          updateSelectedVariantIdForCart(picker);
+        }
       }, true);
+
+      ['pointerdown', 'mousedown', 'touchstart', 'click'].forEach(function(eventName) {
+        document.addEventListener(eventName, function(event) {
+          var button = event.target.closest('button[type="submit"], [name="add"], [data-add-to-cart], .product-form__submit');
+          var form;
+          var scope;
+          var picker;
+
+          if (!button) return;
+
+          form = button.form || button.closest('form');
+          if (!form || String(form.getAttribute('action') || '').indexOf('/cart/add') === -1) return;
+
+          scope = form.closest('section, .shopify-section, [data-section-id], product-info, .product') || document;
+          picker = scope.querySelector('variant-picker');
+
+          if (picker) {
+            updateSelectedVariantIdForCart(picker);
+          }
+
+          syncDiameterInputsInScope(scope);
+        }, true);
+      });
 
       document.addEventListener('submit', function(event) {
         var form = event.target;
+        var scope;
+        var picker;
+
         if (!form || !form.matches('form[action*="/cart/add"]')) return;
 
-        syncAllLineItemProperties();
+        scope = form.closest('section, .shopify-section, [data-section-id], product-info, .product') || document;
+        picker = scope.querySelector('variant-picker');
+
+        if (picker) {
+          updateSelectedVariantIdForCart(picker);
+        }
+
+        syncDiameterInputsInScope(scope);
       }, true);
+
+      if (window.MutationObserver) {
+        new MutationObserver(function() {
+          prepareAllVariantPickers();
+        }).observe(document.documentElement, {
+          childList: true,
+          subtree: true
+        });
+      }
     }
   </script>
 {% endunless %}
