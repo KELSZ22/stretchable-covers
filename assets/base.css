@@ -5004,3 +5004,28 @@ product-recommendations:has([data-has-recommendations='false']) {
 .main-widget.yotpo-display-wrapper.yotpo-no-reviews {
     padding: 60px 40px;
 }
+
+
+/* Judge Me 
+.jm-cluster {
+    display: flex!important;
+    flex-direction: column!important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+    */
+
+  button.jm-button.jm-button--primary.jm-action-buttons__button {
+    background: #0F2E53 !important;
+}
+p.jm-text.jm-review-widget-minimal-header__title {
+    font-family: Raleway;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 27px;
+    color: #0F2E53;
+}
+span.jm-star-rating__font-icon {
+    color: #FFBE33 !important;
+}
