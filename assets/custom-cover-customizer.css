@@ -73,9 +73,20 @@
 }
 
 @media screen and (min-width: 990px) {
+  .custom-cover-customizer .custom-cover-customizer__design-bar--header {
+    position: sticky;
+    top: var(--header-height, 0px);
+  }
+
+  .custom-cover-customizer .custom-cover-customizer__left-column {
+    position: sticky;
+    top: var(--header-height, 0px);
+    align-self: start;
+  }
+
   .custom-cover-customizer .custom-cover-customizer__preview {
     position: sticky;
-    top: 1rem;
+    top: calc(var(--header-height, 0px) + 1rem);
     align-self: start;
   }
 
@@ -89,7 +100,7 @@
 .custom-cover-customizer .custom-cover-customizer__design-bar {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: var(--gap-xs);
   margin: 0 0 var(--margin-md);
   padding: var(--padding-2xs) 0 var(--padding-xs);
@@ -97,8 +108,10 @@
 
 .custom-cover-customizer .custom-cover-customizer__design-bar--header {
   grid-column: 1 / -1;
-  position: relative;
-  z-index: 3;
+  position: sticky;
+  top: var(--header-height, 0px);
+  z-index: 20;
+  background: rgb(var(--color-background-rgb));
 }
 
 .custom-cover-customizer .custom-cover-customizer__design-title-wrap {
@@ -299,6 +312,9 @@
 
   .custom-cover-customizer .custom-cover-customizer__design-bar--header {
     order: 1;
+    top: var(--header-height, 0px);
+    z-index: 20;
+    background: #fff;
   }
 
   .custom-cover-customizer .custom-cover-customizer__safe-banner {

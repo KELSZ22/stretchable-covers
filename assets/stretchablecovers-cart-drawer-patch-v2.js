@@ -63,7 +63,12 @@
       '.custom-cart-item-property strong{font-weight:700;color:#333;}',
       '.custom-cart-error{padding:20px;font-family:Lato,Arial,sans-serif;color:#222;}',
       '.custom-cart-item{padding-bottom:18px;}',
-      '.custom-cart-item + .custom-cart-item{border-top:1px solid #eee;}'
+      '.custom-cart-item + .custom-cart-item{border-top:1px solid #eee;}',
+      '.custom-cart-item-price-each{font-size:12px;color:#666;font-weight:400;white-space:nowrap;}',
+      '.custom-cart-item-price-compare{margin-left:6px;font-size:12px;color:#777;text-decoration:line-through;white-space:nowrap;}',
+      '.custom-cart-item-discounts{list-style:none;margin:6px 0 0;padding:0;font-size:12px;color:#2d5b2e;}',
+      '.custom-cart-item-discounts li{display:flex;justify-content:space-between;gap:8px;}',
+      '.custom-cart-summary-discount{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:#2d5b2e;font-weight:600;}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -129,6 +134,18 @@
       var label = normalizePropertyLabel(key);
       return '<div class="custom-cart-item-property"><strong>' + escapeHtml(label) + ':</strong> <span>' + escapeHtml(props[key]) + '</span></div>';
     }).join('') + '</div>';
+  }
+
+  function getLineDiscountsHtml(item) {
+    var allocations = item && Array.isArray(item.line_level_discount_allocations) ? item.line_level_discount_allocations : [];
+    if (!allocations.length) return '';
+
+    return '<ul class="custom-cart-item-discounts">' + allocations.map(function (allocation) {
+      var title = allocation && allocation.discount_application ? allocation.discount_application.title : '';
+      var amount = Number(allocation && allocation.amount ? allocation.amount : 0);
+      if (!title && !amount) return '';
+      return '<li><span>' + escapeHtml(title || 'Discount') + '</span><span>-' + money(amount) + '</span></li>';
+    }).join('') + '</ul>';
   }
 
   function updateHeaderBubble(count) {
@@ -198,15 +215,26 @@
     els.body.classList.remove('is-empty');
     if (els.count) els.count.textContent = '(' + cart.item_count + ')';
     if (els.footer) els.footer.style.display = 'block';
-    if (els.subtotal) els.subtotal.textContent = money(cart.total_price);
     if (els.itemLabel) els.itemLabel.textContent = cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items');
 
     els.body.innerHTML = cart.items.map(function (item) {
       var image = getItemImage(item);
       var quantity = Number(item.quantity || 0);
-      var unitPrice = item.final_price != null ? item.final_price : item.price;
+      var unitPriceCents = Number(item.final_price != null ? item.final_price : item.price) || 0;
+      var lineTotalCents =
+        Number(item.final_line_price != null ? item.final_line_price : unitPriceCents * quantity) || 0;
+      var originalLineCents = Number(item.original_line_price != null ? item.original_line_price : lineTotalCents) || 0;
+      var originalUnitCents = quantity > 0 ? Math.round(originalLineCents / quantity) : unitPriceCents;
       var variantText = getVariantText(item);
       var key = escapeHtml(item.key || '');
+      var hasLineDiscount = originalLineCents > lineTotalCents;
+      var linePriceDisplay =
+        quantity > 1
+          ? money(lineTotalCents) + ' <span class="custom-cart-item-price-each">(' + money(unitPriceCents) + ' each)</span>' + (hasLineDiscount ? '<span class="custom-cart-item-price-compare">' + money(originalUnitCents) + ' each</span>' : '')
+          : money(lineTotalCents);
+      if (hasLineDiscount && quantity === 1) {
+        linePriceDisplay += '<span class="custom-cart-item-price-compare">' + money(originalLineCents) + '</span>';
+      }
 
       return '' +
         '<div class="custom-cart-item" data-cart-key="' + key + '">' +
@@ -219,7 +247,8 @@
                 '<div class="custom-cart-item-title">' + escapeHtml(item.product_title || item.title) + '</div>' +
                 (variantText ? '<div class="custom-cart-item-variant">' + escapeHtml(variantText) + '</div>' : '') +
                 getPropertiesHtml(item) +
-                '<div class="custom-cart-item-price">' + money(unitPrice) + '</div>' +
+                '<div class="custom-cart-item-price">' + linePriceDisplay + '</div>' +
+                getLineDiscountsHtml(item) +
               '</div>' +
               '<button type="button" class="custom-cart-remove" data-key="' + key + '" aria-label="Remove item">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>' +
@@ -237,13 +266,17 @@
     }).join('');
 
     if (els.footer) {
+      var itemsSubtotal = Number(cart.items_subtotal_price != null ? cart.items_subtotal_price : cart.total_price || 0);
+      var totalPrice = Number(cart.total_price || 0);
+      var discountTotal = Number(cart.total_discount != null ? cart.total_discount : Math.max(0, itemsSubtotal - totalPrice));
       els.footer.innerHTML = '' +
         '<div class="custom-cart-subtotal-row">' +
           '<div class="custom-cart-subtotal-row-inner">' +
             '<strong>Subtotal (<span id="customCartItemLabel">' + cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items') + '</span>)</strong>' +
-            '<strong id="customCartSubtotal">' + money(cart.total_price) + '</strong>' +
+            '<strong id="customCartSubtotal">' + money(totalPrice) + '</strong>' +
           '</div>' +
-          '<p>Discounts and promo codes will be calculated at checkout</p>' +
+          (discountTotal > 0 ? '<div class="custom-cart-summary-discount"><span>Discounts</span><span>-' + money(discountTotal) + '</span></div>' : '') +
+          '<p>Shipping, taxes, and promo codes may apply at checkout</p>' +
         '</div>' +
         '<a href="/checkout" class="custom-cart-checkout">Secure Check Out</a>' +
         getDeliveryEstimateHtml();
