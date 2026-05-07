@@ -16,7 +16,7 @@
       "name": "Custom Footer",
       "settings": {
         "logo": "shopify://shop_images/image_3_1_bfa0e4fd-cb7c-40fa-986d-4dc7df1ad793.png",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "description": "America's #1 source for custom-printed stretchable covers. Family-owned. Made in the USA. Shipping to all 50 states and internationally since 2010.",
         "shop_heading": "Shop All",
         "shop_menu": "shop",
         "information_heading": "Information",
@@ -29,7 +29,6 @@
         "trust_image": "shopify://shop_images/image_31.png",
         "payment_label": "Accepted payment method",
         "show_payment_icons": true,
-        "payment_image": "shopify://shop_images/Frame_1000007669.png",
         "address_label": "Address",
         "address_text": "12509 Dover Rd.\nReisterstown, MD 21136",
         "phone_label": "Telephone",

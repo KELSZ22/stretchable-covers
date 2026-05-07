@@ -394,7 +394,7 @@
     min-height: 38px;
     padding: 10px 22px;
     border-radius: 999px;
-    background: {{ section.settings.button_bg }};
+    background: #EB891B;
     color: {{ section.settings.button_text }};
     text-decoration: none;
     font-size: 13px;
@@ -657,7 +657,7 @@
         }
       });
 
-      openFirstVisibleItem();
+      {% comment %} openFirstVisibleItem(); {% endcomment %}
     }
 
     function updateMobileLabel(button) {

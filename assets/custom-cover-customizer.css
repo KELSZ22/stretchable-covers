@@ -3,6 +3,7 @@
   gap: var(--gap-lg);
   grid-template-columns: 1fr;
   position: relative;
+  overflow: visible;
 }
 
 @media screen and (min-width: 990px) {
@@ -72,21 +73,50 @@
   gap: 2rem;
 }
 
+.custom-cover-customizer .section-content-wrapper.spacing-style {
+  overflow: visible;
+}
+
+.custom-cover-customizer {
+  --customizer-sticky-top: var(--navbar-height, var(--header-height, 64px));
+  --customizer-desktop-canvas-size: 750px;
+}
+
 @media screen and (min-width: 990px) {
   .custom-cover-customizer .custom-cover-customizer__design-bar--header {
     position: sticky;
-    top: var(--header-height, 0px);
+    top: var(--customizer-sticky-top);
   }
 
   .custom-cover-customizer .custom-cover-customizer__left-column {
     position: sticky;
-    top: var(--header-height, 0px);
+    top: var(--customizer-sticky-top);
     align-self: start;
+    max-height: var(--customizer-desktop-canvas-size);
+    overflow: visible;
+  }
+
+  .custom-cover-customizer .custom-cover-customizer__panel {
+    max-height: inherit;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .custom-cover-customizer .custom-cover-customizer__app {
+    overflow-y: auto;
+    overflow-x: visible;
+    min-height: 0;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+    padding-right: 12px;
+    margin-right: -12px;
   }
 
   .custom-cover-customizer .custom-cover-customizer__preview {
     position: sticky;
-    top: calc(var(--header-height, 0px) + 1rem);
+    top: calc(var(--customizer-sticky-top) + 1rem);
     align-self: start;
   }
 
@@ -109,9 +139,10 @@
 .custom-cover-customizer .custom-cover-customizer__design-bar--header {
   grid-column: 1 / -1;
   position: sticky;
-  top: var(--header-height, 0px);
+  top: var(--customizer-sticky-top);
   z-index: 20;
   background: rgb(var(--color-background-rgb));
+  align-self: flex-start;
 }
 
 .custom-cover-customizer .custom-cover-customizer__design-title-wrap {
@@ -122,6 +153,11 @@
   width: fit-content;
   max-width: 100%;
   min-width: 0;
+  margin: 0;
+  position: sticky;
+  top: var(--customizer-sticky-top);
+  align-self: flex-start;
+  z-index: 21;
 }
 
 .custom-cover-customizer .custom-cover-customizer__design-title-icon {
@@ -312,7 +348,7 @@
 
   .custom-cover-customizer .custom-cover-customizer__design-bar--header {
     order: 1;
-    top: var(--header-height, 0px);
+    top: var(--customizer-sticky-top);
     z-index: 20;
     background: #fff;
   }

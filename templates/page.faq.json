@@ -57,134 +57,207 @@
         "padding-block-end": 80
       }
     },
-    "custom_faqs_KTipLW": {
-      "type": "custom-faqs",
+    "custon_section_faq_WBYxQJ": {
+      "type": "custon-section-faq",
       "blocks": {
-        "category_RggwnL": {
-          "type": "category",
+        "faq_item_H9CaVw": {
+          "type": "faq_item",
           "settings": {
-            "category_label": "Product & Materials",
-            "category_key": "product-materials"
+            "question": "Is there a minimum order?",
+            "answer": "<p>No. There are no minimum order requirements. You can mix and match sizes, designs, and quantities however you'd like, with no setup fees. And the more you order, the more you save.</p>",
+            "category": "category_1"
           }
         },
-        "category_fPBewp": {
-          "type": "category",
+        "faq_item_bN3ngd": {
+          "type": "faq_item",
           "settings": {
-            "category_label": "Artwork & Printing",
-            "category_key": "artwork-printing"
+            "question": "Do you charge for artwork setup?",
+            "answer": "<p>No setup charges. We'll help you size your artwork to fit our covers at no additional cost. </p><p>Our rule of thumb is simple: <em>whatever you send us is what we'll print.</em> </p><p>For the best results, send us the highest-resolution artwork you have — vector files (.ai, .eps, .pdf) work best, and high-resolution raster files (300+ DPI) also produce excellent results. </p>",
+            "category": "category_1"
           }
         },
-        "category_tWX6CL": {
-          "type": "category",
+        "faq_item_L4PKaA": {
+          "type": "faq_item",
           "settings": {
-            "category_label": "Orders, Payment & Returns",
-            "category_key": "orders-payment-returns"
+            "question": "What is the largest imprint you can print?",
+            "answer": "<p>Our maximum imprint area is <strong>29 inches</strong> in diameter, available on our XXXL JumboPLUS and XXL Jumbo covers.</p>",
+            "category": "category_1"
           }
         },
-        "category_QFNtMU": {
-          "type": "category",
+        "faq_item_kiKHLn": {
+          "type": "faq_item",
           "settings": {
-            "category_label": "Production & Shipping",
-            "category_key": "production-shipping"
+            "question": "What kind of art files do you accept?",
+            "answer": "<p>We accept CorelDraw - .CDR, Adobe Illustrator - .AI, Adobe .EPS (Encapsulated PostScript) files, .PDF, .GIF, .JPG. </p><p>All type fonts should be converted to artwork or curves. All GIF and JPG files - least desired - should be high in resolution, at least 300 DPI</p>",
+            "category": "category_1"
           }
         },
-        "faq_PeefhD": {
-          "type": "faq",
+        "faq_item_xLXzGb": {
+          "type": "faq_item",
           "settings": {
-            "category_key": "product-materials",
-            "question": "What material colors do you have?",
-            "answer": "<p>All of our covers start off white and we can print any background color as long as a number is provided as a guide.</p>"
+            "question": "How do I know what size cover I need?",
+            "answer": "<p>Measure the diameter of the item you want covered at its widest point, then choose the size class that includes that measurement. </p><p>If you're between sizes, choose the smaller one — our covers stretch but cannot shrink. </p><p>If you're unsure, contact us with your measurement and the item type and we'll recommend the right fit.</p>",
+            "category": "category_1"
           }
         },
-        "faq_nnXxyp": {
-          "type": "faq",
+        "faq_item_erBhxE": {
+          "type": "faq_item",
           "settings": {
-            "category_key": "artwork-printing",
+            "question": "Will I see a proof before you print my order?",
+            "answer": "<p>For most custom orders, no as there is no need. What you design on our site will be what you receive.</p><p>If your company requires a proof, we'll send you a digital proof for approval before going to production so you can confirm the artwork looks the way you want it.</p>",
+            "category": "category_1"
+          }
+        },
+        "faq_item_wJAcxt": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What color is the cover material?",
+            "answer": "<p>All of our covers start as white fabric, and we print your chosen background color (and design) directly onto them using dye-sublimation. </p>",
+            "category": "category_2"
+          }
+        },
+        "faq_item_cQTBya": {
+          "type": "faq_item",
+          "settings": {
             "question": "Can you match colors exactly?",
-            "answer": "<p>We can get very close, but final printed output may vary slightly depending on material and production conditions.</p>"
+            "answer": "<p>Not exactly, but we can usually get very close. Dye-sublimation printing has a slightly different color profile than offset or screen printing, so an exact 1-to-1 match isn't guaranteed. If color precision is critical to you, we recommend ordering a small test print first.</p>",
+            "category": "category_2"
           }
         },
-        "faq_wpmYkm": {
-          "type": "faq",
+        "faq_item_3MH39V": {
+          "type": "faq_item",
           "settings": {
-            "category_key": "orders-payment-returns",
-            "question": "Return Policy?",
-            "answer": "<p>Please contact us regarding returns, exchanges, or order issues and we will help review your situation.</p>"
+            "question": "Do the background colors or patterns cover the entire front-facing portion of the item?",
+            "answer": "<p>Yes, in most cases. As long as you provide the correct diameter of the item being covered, your background color or design will be sized to cover the entire front-facing surface.</p>",
+            "category": "category_2"
           }
         },
-        "faq_xFrPgF": {
-          "type": "faq",
+        "faq_item_y9XTFA": {
+          "type": "faq_item",
           "settings": {
-            "category_key": "production-shipping",
-            "question": "How long does production take?",
-            "answer": "<p>Production timelines vary by order size and customization requirements. Reach out for the most accurate lead time.</p>"
+            "question": "Can you print all the way to the elastic edge?",
+            "answer": "<p>Not quite. During production, covers are placed on printing plates, and the portion that wraps around the underside of each plate cannot be printed. </p><p>Your design will fully cover the front-facing surface of the item, but the underside (where the elastic gathers) will remain unprinted. This is normal and consistent across the industry for covers of this style.</p>",
+            "category": "category_2"
+          }
+        },
+        "faq_item_7CAb6e": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What are the covers made of?",
+            "answer": "<p>Highest-quality polyester microfiber. It's durable, machine washable, and holds full-color dye-sublimation prints beautifully without fading or cracking.</p>",
+            "category": "category_3"
+          }
+        },
+        "faq_item_P3EcPe": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Where are your covers manufactured? Made in the USA.",
+            "answer": "<p>All materials are shipped from within the USA, all cutting and sewing is performed in the USA, and all dye-sublimation decorating is done in the USA. 100% American-made.</p>",
+            "category": "category_3"
+          }
+        },
+        "faq_item_kyekxp": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are your covers machine washable?",
+            "answer": "<p>Yes. Our microfiber covers are machine washable on a gentle cycle in cold water. We recommend air drying or tumble drying on low heat to maximize the life of the print and elastic. NOTE: Never use bleach.</p>",
+            "category": "category_3"
+          }
+        },
+        "faq_item_RnHxHE": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your standard production time?",
+            "answer": "<p>Our standard production time is <strong>15–20 working days,</strong> the fastest in the industry for fully custom-printed covers with no minimums.</p>",
+            "category": "category_4"
+          }
+        },
+        "faq_item_kkikka": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer rush production?",
+            "answer": "<p>Yes. If you need your order sooner than 15 working days, we offer a <strong>25% RUSH CHARGE</strong> option calculated on the merchandise total only. <br/><br/>(Rush charges don't apply to shipping, you'll still have several shipping speed options to choose from at checkout, so you can dial in the right balance of cost and speed.)</p>",
+            "category": "category_4"
+          }
+        },
+        "faq_item_PLhkqQ": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What shipping carriers do you use?",
+            "answer": "<p>It depends on the order. We use USPS for most international shipments and smaller domestic orders. For larger U.S. orders, we ship via FedEx or UPS — whichever offers the best combination of delivery time and value for your destination. </p>",
+            "category": "category_4"
+          }
+        },
+        "faq_item_WGhw4W": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you accept purchase orders?",
+            "answer": "<p>We don't accept POs as a standalone form of payment, but we are happy to work with PO-based purchasing as long as a credit card is provided in advance to keep on file. With a card on file, you may use a PO and pay by check within 15 days of the invoice date. If the balance is not paid by day 15, we'll charge the card on file. This policy allows us to serve schools, government agencies, and corporate buyers who require PO documentation while protecting both sides.</p>",
+            "category": "category_4"
+          }
+        },
+        "faq_item_zJcrn6": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>Because every cover is custom-printed specifically for your order, we are unable to accept returns or exchanges. The only exception is when there is a clear error on our part — in that case, we'll make it right immediately at no cost to you. We strongly encourage you to review your artwork carefully before approving production.</p>",
+            "category": "category_4"
           }
         }
       },
       "block_order": [
-        "category_RggwnL",
-        "category_fPBewp",
-        "category_tWX6CL",
-        "category_QFNtMU",
-        "faq_PeefhD",
-        "faq_nnXxyp",
-        "faq_wpmYkm",
-        "faq_xFrPgF"
+        "faq_item_H9CaVw",
+        "faq_item_bN3ngd",
+        "faq_item_L4PKaA",
+        "faq_item_kiKHLn",
+        "faq_item_xLXzGb",
+        "faq_item_erBhxE",
+        "faq_item_wJAcxt",
+        "faq_item_cQTBya",
+        "faq_item_3MH39V",
+        "faq_item_y9XTFA",
+        "faq_item_7CAb6e",
+        "faq_item_P3EcPe",
+        "faq_item_kyekxp",
+        "faq_item_RnHxHE",
+        "faq_item_kkikka",
+        "faq_item_PLhkqQ",
+        "faq_item_WGhw4W",
+        "faq_item_zJcrn6"
       ],
-      "name": "FAQ categories sticky",
+      "name": "FAQ Category Accordion",
       "settings": {
-        "heading": "Frequently Asked Questions",
-        "sidebar_title": "Select by Category",
-        "contact_text": "Have more questions? Reach out so we can assist you.",
-        "contact_button_label": "Contact Us",
-        "contact_button_link": "shopify://pages/contact",
-        "max_width": 1440,
-        "sticky_top": 24,
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "sidebar_radius": 12,
-        "faq_radius": 4,
-        "section_bg_color": "#ffffff",
+        "heading": "FAQs",
+        "category_1": "Ordering, Pricing & Artwork",
+        "category_2": "Colors & Color Matching",
+        "category_3": "Product, Materials & Care",
+        "category_4": "Production, Shipping, Payment & Returns",
+        "category_5": "",
+        "category_6": "",
+        "bottom_text": "Have more questions? Reach out so we can assist you.",
+        "button_label": "Contact Us",
+        "button_link": "shopify://pages/contact",
+        "section_bg": "#ffffff",
         "heading_color": "#1f1f1f",
-        "sidebar_bg_color": "#ffffff",
-        "sidebar_title_color": "#1f1f1f",
+        "category_box_bg": "#ffffff",
+        "category_divider_color": "#e7e7e7",
         "category_text_color": "#6a6a6a",
         "category_active_text_color": "#1f1f1f",
-        "category_divider_color": "#e6e6e6",
-        "faq_closed_bg_color": "#0f2e53",
-        "faq_open_bg_color": "#f3f4f5",
-        "faq_closed_question_color": "#ffffff",
-        "faq_open_question_color": "#1f1f1f",
-        "faq_answer_color": "#666666",
-        "footer_text_color": "#1f1f1f",
-        "button_bg_color": "#db8a1b",
-        "button_text_color": "#ffffff",
-        "heading_font_family": "Raleway",
-        "sidebar_title_font_family": "Lato",
-        "category_font_family": "Lato",
-        "faq_question_font_family": "Lato",
-        "faq_answer_font_family": "Lato",
-        "footer_font_family": "Lato",
-        "button_font_family": "Lato",
-        "heading_size": 32,
-        "sidebar_title_size": 18,
-        "category_font_size": 16,
-        "faq_question_size": 16,
-        "faq_answer_size": 14,
-        "footer_text_size": 14,
-        "button_font_size": 16,
-        "heading_font_weight": "700",
-        "sidebar_title_font_weight": "500",
-        "category_font_weight": "400",
-        "faq_question_font_weight": "700",
-        "faq_answer_font_weight": "400",
-        "footer_font_weight": "500",
-        "button_font_weight": "500"
+        "closed_bg": "#0f2e53",
+        "closed_text": "#ffffff",
+        "open_bg": "#f3f4f5",
+        "open_text": "#1f1f1f",
+        "answer_color": "#7a7a7a",
+        "bottom_text_color": "#1f1f1f",
+        "button_bg": "#eb891b",
+        "button_text": "#ffffff",
+        "padding_top": 40,
+        "padding_bottom": 20
       }
     }
   },
   "order": [
     "main",
-    "custom_faqs_KTipLW"
+    "custon_section_faq_WBYxQJ"
   ]
 }

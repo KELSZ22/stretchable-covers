@@ -43,7 +43,7 @@
               {% assign product_url = selected_product.url %}
               {% assign product_title = block.settings.custom_title | default: selected_product.title %}
               {% assign product_price = first_variant.price | default: selected_product.price %}
-              {% assign product_compare_price = first_variant.compare_at_price | default: selected_product.compare_at_price %}
+              {% assign product_compare_prixce = first_variant.compare_at_price | default: selected_product.compare_at_price %}
               {% assign card_alt = product_title %}
               {% if product_image != blank and product_image.alt != blank %}
                 {% assign card_alt = product_image.alt %}
@@ -51,7 +51,7 @@
 
               <a href="{{ product_url }}" class="sps-card" {{ block.shopify_attributes }}>
                 <div class="sps-card__media">
-                  {% if block.settings.badge_text != blank %}
+                  {% if selected_product.tags contains 'most-ordered' %}
                     <div class="sps-card__badge">
                       <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
 <path d="M5.38565 8.5842L8.07719 10.2087C8.50186 10.4649 9.02565 10.0841 8.91298 9.60145L8.19852 6.5394L10.577 4.47891C10.9518 4.15445 10.7514 3.53857 10.2574 3.49686L7.12656 3.23145L5.90186 0.341656C5.70848 -0.113885 5.06282 -0.113885 4.86944 0.341656L3.64473 3.23145L0.5139 3.49686C0.0199004 3.53857 -0.180516 4.15445 0.194317 4.47891L2.57277 6.5394L1.85832 9.60145C1.74565 10.0841 2.26944 10.4649 2.69411 10.2087L5.38565 8.5842Z" fill="white"/>
@@ -94,7 +94,7 @@
 <path d="M12 3C7.03711 3 3 7.03711 3 12C3 16.9629 7.03711 21 12 21C16.9629 21 21 16.9629 21 12C21 7.03711 16.9629 3 12 3ZM12 4.5C16.1514 4.5 19.5 7.84863 19.5 12C19.5 16.1514 16.1514 19.5 12 19.5C7.84863 19.5 4.5 16.1514 4.5 12C4.5 7.84863 7.84863 4.5 12 4.5ZM12.75 7.5L14.0947 8.84473L8.84473 14.0947L7.5 12.75V16.5H11.25L9.90527 15.1553L15.1553 9.90527L16.5 11.25V7.5H12.75Z" fill="#5F5F5F"/>
 </svg>
                     {% if block.settings.meta_right != blank %}
-                      <span>{{ block.settings.meta_right }}</span>
+                      <span>{{ selected_product.metafields.custom.product_diameter }}</span>
                     {% endif %}
                   </div>
 
@@ -277,7 +277,7 @@
 
   #shopify-section-{{ section.id }} .sps-card__title {
     margin: 0 0 4px;
-    font-size: 20px;
+    font-size: 16px;
     line-height: 28px;
     font-weight: 500;
     color: {{ section.settings.title_color }};
@@ -287,12 +287,13 @@
   #shopify-section-{{ section.id }} .sps-card__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 14px;
+    gap: 5px 5px;
     font-size: 16px;
     line-height: 16px;
     color: {{ section.settings.meta_color }};
     margin-bottom: 6px;
     font-weight: 500px;
+    align-items: center;
   }
 
   #shopify-section-{{ section.id }} .sps-card__price-row {
@@ -309,9 +310,9 @@
   }
 
   #shopify-section-{{ section.id }} .sps-card__price {
-    font-size: 16px;
+    font-size: 20px;
     line-height: 24px;
-    font-weight: 500;
+    font-weight: 700;
     color: {{ section.settings.price_color }};
   }
 
@@ -765,7 +766,7 @@
           "type": "text",
           "id": "meta_left",
           "label": "Meta left",
-          "default": "Diameter"
+          "default": "Product Diameter"
         },
         {
           "type": "text",

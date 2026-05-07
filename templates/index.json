@@ -63,8 +63,8 @@
             "bg_image": "shopify://shop_images/Homepage_Banners.png",
             "bg_image_1024": "shopify://shop_images/Frame_1000008397.png",
             "bg_image_767": "shopify://shop_images/Frame_1000008397_4.png",
-            "rating_text": "#1 Covers in the Industry | Cover over 450,000+ items",
-            "heading": "Custom Stretchable Covers That Bring Messages to Life",
+            "rating_text": "#1 Custom Cover Maker  | Cover over 450,000+ items",
+            "heading": "Custom-Printed Stretchable Covers That Make Your Brand Impossible to Ignore",
             "subheading": "For fleets, marching bands, dealerships, medical facilities & more",
             "button_label": "Get My Custom Cover",
             "button_link": "",
@@ -194,7 +194,7 @@
           "type": "item",
           "settings": {
             "custom_icon": "shopify://shop_images/Vector_3_7942513a-b518-45b0-b4ca-593a533197cf.svg",
-            "heading": "Order as Few as One",
+            "heading": "Order Just 1 or 10,000",
             "text": "No minimum order required."
           }
         },
@@ -273,7 +273,7 @@
       "name": "All Collections Slider",
       "settings": {
         "heading": "Shop by Collections",
-        "subheading": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
+        "subheading": "Find the cover built for your application or start a fully custom design.",
         "view_all_text": "View All",
         "view_all_link": "",
         "enable_autoplay": false,
@@ -354,7 +354,7 @@
         "product_slide_mQUd6G": {
           "type": "product_slide",
           "settings": {
-            "product": "sample-1",
+            "product": "cc-waterproof-stretchable-covers-l-standard-15-18",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -366,7 +366,7 @@
         "product_slide_TWMA3J": {
           "type": "product_slide",
           "settings": {
-            "product": "",
+            "product": "i-stretchable-covers-petite-3",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -378,7 +378,7 @@
         "product_slide_eN8M3N": {
           "type": "product_slide",
           "settings": {
-            "product": "sample-1",
+            "product": "h-stretchable-covers-mini-5-6",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -390,7 +390,7 @@
         "product_slide_xHtdPX": {
           "type": "product_slide",
           "settings": {
-            "product": "sample-1",
+            "product": "g-stretchable-covers-xxs-standard-7-8-5",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -402,7 +402,7 @@
         "product_slide_7RkDH6": {
           "type": "product_slide",
           "settings": {
-            "product": "sample-1",
+            "product": "f-stretchable-covers-xs-standard-9-11",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -414,7 +414,7 @@
         "product_slide_jkJHC7": {
           "type": "product_slide",
           "settings": {
-            "product": "sample-1",
+            "product": "e-stretchable-covers-s-standard-12-14",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -426,7 +426,7 @@
         "product_slide_MKHFep": {
           "type": "product_slide",
           "settings": {
-            "product": "sample-1",
+            "product": "d-stretchable-covers-m-standard-14-17",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -438,7 +438,55 @@
         "product_slide_fceCaQ": {
           "type": "product_slide",
           "settings": {
-            "product": "",
+            "product": "c-stretchable-covers-l-standard-18-20",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_FAXdkX": {
+          "type": "product_slide",
+          "settings": {
+            "product": "b-stretchable-covers-xl-21-23",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_Y7HGzt": {
+          "type": "product_slide",
+          "settings": {
+            "product": "aaastretchable-covers-xxl-jumbo-24-28",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_MDLVEq": {
+          "type": "product_slide",
+          "settings": {
+            "product": "aa-stretchable-covers-xxlfc-jumbo-24-28-full-coverage-printing-on-white-material",
+            "badge_text": "Most Ordered",
+            "custom_title": "",
+            "rating_stars": "★★★★★",
+            "rating_text": "5.0",
+            "meta_left": "Diameter",
+            "meta_right": "30\" - 33\""
+          }
+        },
+        "product_slide_JynADy": {
+          "type": "product_slide",
+          "settings": {
+            "product": "a-stretchable-covers-xxxl-jumboplus-29-34",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -456,12 +504,16 @@
         "product_slide_7RkDH6",
         "product_slide_jkJHC7",
         "product_slide_MKHFep",
-        "product_slide_fceCaQ"
+        "product_slide_fceCaQ",
+        "product_slide_FAXdkX",
+        "product_slide_Y7HGzt",
+        "product_slide_MDLVEq",
+        "product_slide_JynADy"
       ],
       "name": "Selected Products Slider",
       "settings": {
-        "heading": "Shop Best Seller",
-        "subheading": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
+        "heading": "Best-Selling Custom Covers",
+        "subheading": "Our most-ordered sizes ready to customize with your design.",
         "view_all_text": "View All",
         "view_all_link": "shopify://collections/best-seller",
         "enable_autoplay": true,
@@ -554,7 +606,7 @@
       "name": "Customer Gallery Mosaic",
       "settings": {
         "stars_text": "★★★★★",
-        "trusted_text": "Trusted by 50,000 + customers",
+        "trusted_text": "450,000+ Shipped",
         "heading": "Thousands of customers and repeated use.",
         "description": "Trusted by thousands of customers and proven through years of repeated, real-world use across multiple industries.",
         "section_bg": "#ffffff",
@@ -576,16 +628,16 @@
         "faq_item_H9CaVw": {
           "type": "faq_item",
           "settings": {
-            "question": "New",
-            "answer": "<p>29 inches</p>",
-            "category": "category_2"
+            "question": "Is there a minimum order?",
+            "answer": "<p>No. There are no minimum order requirements — order a single<br/>cover or several hundred. <br/><br/>You can mix and match sizes, designs, and quantities however you'd<br/>like, with no setup fees. <br/><br/><strong>And the more you order, the more you save</strong> — quantity discounts<br/>kick in automatically as your order size grows, so larger orders (schools, marching bands,<br/>corporate giveaways, dealer co-ops, safetyprograms) get progressively better per-unit pricing.<br/></p>",
+            "category": "category_1"
           }
         },
         "faq_item_bN3ngd": {
           "type": "faq_item",
           "settings": {
-            "question": "What is the largest imprint you can print?",
-            "answer": "<p>test 123 sample </p>",
+            "question": "Do you charge for artwork setup?",
+            "answer": "<p>No setup charges. We'll help you size your artwork to fit our<br/>covers at no additional cost. <br/><br/>Our rule of thumb is simple: whatever you send us is what we'll<br/>print. For the best results, send us the highest-resolution artwork you have — vector files (.ai,<br/>.eps, .pdf) work best, and high-resolution raster files (300+ DPI) also produce excellent results.<br/><br/>We can discuss possible charges if we have to recreate artwork or clean up art of lower<br/>resolution.</p>",
             "category": "category_1"
           }
         },
@@ -593,39 +645,127 @@
           "type": "faq_item",
           "settings": {
             "question": "What is the largest imprint you can print?",
-            "answer": "<p>asdasda</p>",
+            "answer": "<p>Our maximum imprint area is <strong>29 inches</strong> in diameter, available on our XXXL JumboPLUS and XXL Jumbo covers.</p>",
             "category": "category_1"
           }
         },
         "faq_item_kiKHLn": {
           "type": "faq_item",
           "settings": {
-            "question": "What material colors do you have?",
-            "answer": "<p>We offer a wide range of material colors depending on the product type and print method.</p>",
+            "question": "What kind of art files do you accept?",
+            "answer": "<p>We accept CorelDraw - .CDR, Adobe Illustrator - .AI, Adobe .EPS (Encapsulated PostScript) files, .PDF, .GIF, .JPG. </p><p>All type fonts should be converted to artwork or curves. All GIF and JPG files - least desired - should be high in resolution, at least 300 DPI</p>",
             "category": "category_1"
           }
         },
         "faq_item_xLXzGb": {
           "type": "faq_item",
           "settings": {
-            "question": "Can you match colors exactly?",
-            "answer": "<p>We can get very close, but exact color matching may vary slightly by material and printing method.</p>",
-            "category": "category_2"
+            "question": "How do I know what size cover I need?",
+            "answer": "<p>Measure the diameter of the item you want covered at its widest point, then choose the size class that includes that measurement. </p><p>If you're between sizes, choose the smaller one — our covers stretch but cannot shrink. </p><p>If you're unsure, contact us with your measurement and the item type and we'll recommend the right fit.</p>",
+            "category": "category_1"
           }
         },
         "faq_item_erBhxE": {
           "type": "faq_item",
           "settings": {
-            "question": "Return Policy?",
-            "answer": "<p>Please contact us right away if there is an issue with your order so we can review it.</p>",
+            "question": "Will I see a proof before you print my order?",
+            "answer": "<p>For most custom orders, no as there is no need. What you design on our site will be what you receive.</p><p>If your company requires a proof, we'll send you a digital proof for approval before going to production so you can confirm the artwork looks the way you want it.</p>",
+            "category": "category_1"
+          }
+        },
+        "faq_item_wJAcxt": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What color is the cover material?",
+            "answer": "<p>All of our covers start as white fabric, and we print your chosen background color (and design) directly onto them using dye-sublimation. </p>",
+            "category": "category_2"
+          }
+        },
+        "faq_item_cQTBya": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can you match colors exactly?",
+            "answer": "<p>Not exactly, but we can usually get very close. Dye-sublimation printing has a slightly different color profile than offset or screen printing, so an exact 1-to-1 match isn't guaranteed. If color precision is critical to you, we recommend ordering a small test print first.</p>",
+            "category": "category_2"
+          }
+        },
+        "faq_item_3MH39V": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do the background colors or patterns cover the entire front-facing portion of the item?",
+            "answer": "<p>Yes, in most cases. As long as you provide the correct diameter of the item being covered, your background color or design will be sized to cover the entire front-facing surface.</p>",
+            "category": "category_2"
+          }
+        },
+        "faq_item_y9XTFA": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can you print all the way to the elastic edge?",
+            "answer": "<p>Not quite. During production, covers are placed on printing plates, and the portion that wraps around the underside of each plate cannot be printed. </p><p>Your design will fully cover the front-facing surface of the item, but the underside (where the elastic gathers) will remain unprinted. This is normal and consistent across the industry for covers of this style.</p>",
+            "category": "category_2"
+          }
+        },
+        "faq_item_7CAb6e": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What are the covers made of?",
+            "answer": "<p>Highest-quality polyester microfiber. It's durable, machine washable, and holds full-color dye-sublimation prints beautifully without fading or cracking.</p>",
             "category": "category_3"
           }
         },
-        "faq_item_z8azpt": {
+        "faq_item_P3EcPe": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Where are your covers manufactured? Made in the USA.",
+            "answer": "<p>All materials are shipped from within the USA, all cutting and sewing is performed in the USA, and all dye-sublimation decorating is done in the USA. 100% American-made.</p>",
+            "category": "category_3"
+          }
+        },
+        "faq_item_kyekxp": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are your covers machine washable?",
+            "answer": "<p>Yes. Our microfiber covers are machine washable on a gentle cycle in cold water. We recommend air drying or tumble drying on low heat to maximize the life of the print and elastic. NOTE: Never use bleach.</p>",
+            "category": "category_3"
+          }
+        },
+        "faq_item_RnHxHE": {
           "type": "faq_item",
           "settings": {
             "question": "What is your standard production time?",
-            "answer": "<p>Production time depends on quantity and artwork approval, but standard turnaround is typically discussed before checkout.</p>",
+            "answer": "<p>Our standard production time is <strong>15–20 working days,</strong> the fastest in the industry for fully custom-printed covers with no minimums.</p>",
+            "category": "category_4"
+          }
+        },
+        "faq_item_kkikka": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer rush production?",
+            "answer": "<p>Yes. If you need your order sooner than 15 working days, we offer a <strong>25% RUSH CHARGE</strong> option calculated on the merchandise total only. <br/><br/>(Rush charges don't apply to shipping, you'll still have several shipping speed options to choose from at checkout, so you can dial in the right balance of cost and speed.)</p>",
+            "category": "category_4"
+          }
+        },
+        "faq_item_PLhkqQ": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What shipping carriers do you use?",
+            "answer": "<p>It depends on the order. We use USPS for most international shipments and smaller domestic orders. For larger U.S. orders, we ship via FedEx or UPS — whichever offers the best combination of delivery time and value for your destination. </p>",
+            "category": "category_4"
+          }
+        },
+        "faq_item_WGhw4W": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you accept purchase orders?",
+            "answer": "<p>We don't accept POs as a standalone form of payment, but we are happy to work with PO-based purchasing as long as a credit card is provided in advance to keep on file. With a card on file, you may use a PO and pay by check within 15 days of the invoice date. If the balance is not paid by day 15, we'll charge the card on file. This policy allows us to serve schools, government agencies, and corporate buyers who require PO documentation while protecting both sides.</p>",
+            "category": "category_4"
+          }
+        },
+        "faq_item_zJcrn6": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>Because every cover is custom-printed specifically for your order, we are unable to accept returns or exchanges. The only exception is when there is a clear error on our part — in that case, we'll make it right immediately at no cost to you. We strongly encourage you to review your artwork carefully before approving production.</p>",
             "category": "category_4"
           }
         }
@@ -637,15 +777,26 @@
         "faq_item_kiKHLn",
         "faq_item_xLXzGb",
         "faq_item_erBhxE",
-        "faq_item_z8azpt"
+        "faq_item_wJAcxt",
+        "faq_item_cQTBya",
+        "faq_item_3MH39V",
+        "faq_item_y9XTFA",
+        "faq_item_7CAb6e",
+        "faq_item_P3EcPe",
+        "faq_item_kyekxp",
+        "faq_item_RnHxHE",
+        "faq_item_kkikka",
+        "faq_item_PLhkqQ",
+        "faq_item_WGhw4W",
+        "faq_item_zJcrn6"
       ],
       "name": "FAQ Category Accordion",
       "settings": {
         "heading": "FAQs",
-        "category_1": "Product & Materials",
-        "category_2": "Artwork & Printing",
-        "category_3": "Orders, Payment & Returns",
-        "category_4": "Production & Shipping",
+        "category_1": "Ordering, Pricing & Artwork",
+        "category_2": "Colors & Color Matching",
+        "category_3": "Product, Materials & Care",
+        "category_4": "Production, Shipping, Payment & Returns",
         "category_5": "",
         "category_6": "",
         "bottom_text": "Have more questions? Reach out so we can assist you.",
@@ -734,6 +885,24 @@
             "link": "",
             "open_new_tab": false
           }
+        },
+        "logo_X4fatA": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/KIA_1.jpg",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_LpQYUF": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/Pepsi_Safety.jpg",
+            "alt_text": "",
+            "link": "",
+            "open_new_tab": false
+          }
         }
       },
       "block_order": [
@@ -743,7 +912,9 @@
         "logo_3wQQbA",
         "logo_xyCE3F",
         "logo_WUBQPh",
-        "logo_qQz3ME"
+        "logo_qQz3ME",
+        "logo_X4fatA",
+        "logo_LpQYUF"
       ],
       "name": "Brand Logo Bar",
       "settings": {

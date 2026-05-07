@@ -49,26 +49,12 @@
           <div class="cwt-section__track" data-slider-track>
             {% for block in section.blocks %}
               <div class="cwt-section__card" {{ block.shopify_attributes }}>
-                <div class="cwt-section__card-image-wrap">
-                  {% if block.settings.image != blank %}
-                    <img
-                      src="{{ block.settings.image | image_url: width: 900 }}"
-                      alt="{{ block.settings.image.alt | escape | default: block.settings.author | escape }}"
-                      class="cwt-section__card-image"
-                      loading="lazy"
-                      width="{{ block.settings.image.width }}"
-                      height="{{ block.settings.image.height }}"
-                      draggable="false"
-                    >
-                  {% else %}
-                    {{ 'image' | placeholder_svg_tag: 'cwt-section__card-placeholder' }}
-                  {% endif %}
-                </div>
+
 
                 <div class="cwt-section__card-body">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="33" viewBox="0 0 36 33" fill="none">
-                    <path d="M2.93333 0C1.31267 0 0 1.31267 0 2.93333V14.6667C0 16.2873 1.31267 17.6 2.93333 17.6H8.86016C8.89672 20.2198 8.64045 25.8333 6.10443 29.9979H6.10729C5.92013 30.2865 5.8403 30.6317 5.88175 30.9731C5.9232 31.3146 6.0833 31.6306 6.33407 31.866C6.58484 32.1014 6.91035 32.2413 7.25374 32.2611C7.59713 32.2809 7.93656 32.1795 8.21276 31.9745C8.21276 31.9745 14.6667 27.0518 14.6667 17.6V2.93333C14.6667 1.31267 13.354 0 11.7333 0H2.93333ZM23.4667 0C21.846 0 20.5333 1.31267 20.5333 2.93333V14.6667C20.5333 16.2873 21.846 17.6 23.4667 17.6H29.3935C29.4301 20.2198 29.1738 25.8333 26.6378 29.9979H26.6406C26.4535 30.2865 26.3736 30.6317 26.4151 30.9731C26.4565 31.3146 26.6166 31.6306 26.8674 31.866C27.1182 32.1014 27.4437 32.2413 27.7871 32.2611C28.1305 32.2809 28.4699 32.1795 28.7461 31.9745C28.7461 31.9745 35.2 27.0518 35.2 17.6V2.93333C35.2 1.31267 33.8873 0 32.2667 0H23.4667Z" fill="#0F2E53"/>
-                  </svg>
+                  <svg class="cwt-section__quote-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="33" viewBox="0 0 36 33" fill="none">
+  <path d="M2.93333 0C1.31267 0 0 1.31267 0 2.93333V14.6667C0 16.2873 1.31267 17.6 2.93333 17.6H8.86016C8.89672 20.2198 8.64045 25.8333 6.10443 29.9979H6.10729C5.92013 30.2865 5.8403 30.6317 5.88175 30.9731C5.9232 31.3146 6.0833 31.6306 6.33407 31.866C6.58484 32.1014 6.91035 32.2413 7.25374 32.2611C7.59713 32.2809 7.93656 32.1795 8.21276 31.9745C8.21276 31.9745 14.6667 27.0518 14.6667 17.6V2.93333C14.6667 1.31267 13.354 0 11.7333 0H2.93333ZM23.4667 0C21.846 0 20.5333 1.31267 20.5333 2.93333V14.6667C20.5333 16.2873 21.846 17.6 23.4667 17.6H29.3935C29.4301 20.2198 29.1738 25.8333 26.6378 29.9979H26.6406C26.4535 30.2865 26.3736 30.6317 26.4151 30.9731C26.4565 31.3146 26.6166 31.6306 26.8674 31.866C27.1182 32.1014 27.4437 32.2413 27.7871 32.2611C28.1305 32.2809 28.4699 32.1795 28.7461 31.9745C28.7461 31.9745 35.2 27.0518 35.2 17.6V2.93333C35.2 1.31267 33.8873 0 32.2667 0H23.4667Z" fill="#EB891B"/>
+</svg>
 
                   {% if block.settings.quote != blank %}
                     <div class="cwt-section__quote">{{ block.settings.quote }}</div>
@@ -92,6 +78,17 @@
 </section>
 
 <style>
+
+#shopify-section-{{ section.id }} .cwt-section__card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+#shopify-section-{{ section.id }} .cwt-section__quote-icon {
+  align-self: flex-end;
+  margin-bottom: 10px;
+}
+
   #shopify-section-{{ section.id }}.cwt-section {
     background: {{ section.settings.section_bg }};
   }

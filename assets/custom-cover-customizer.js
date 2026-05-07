@@ -114,7 +114,9 @@ class CustomCoverCustomizer extends HTMLElement {
     this.canvas = section?.querySelector("[data-customizer-canvas]");
     this.form = this.querySelector("form");
     this.warningOutput = this.querySelector("[data-warning-output]");
-    this.uploadWarningOutput = this.querySelector("[data-upload-warning-output]");
+    this.uploadWarningOutput = this.querySelector(
+      "[data-upload-warning-output]",
+    );
 
     if (!this.canvas || !this.form) {
       return;
@@ -2440,12 +2442,19 @@ class CustomCoverCustomizer extends HTMLElement {
       "input",
       () => this.applyTextOutlineEffectFromFormToSelection(),
     );
-    const outlineWeightToggle = this.querySelector("[data-outline-weight-toggle]");
-    const outlineWeightPopover = this.querySelector("[data-outline-weight-popover]");
+    const outlineWeightToggle = this.querySelector(
+      "[data-outline-weight-toggle]",
+    );
+    const outlineWeightPopover = this.querySelector(
+      "[data-outline-weight-popover]",
+    );
     const setOutlineWeightPopover = (open) => {
       if (!outlineWeightToggle || !outlineWeightPopover) return;
       outlineWeightPopover.hidden = !open;
-      outlineWeightToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      outlineWeightToggle.setAttribute(
+        "aria-expanded",
+        open ? "true" : "false",
+      );
     };
     outlineWeightToggle?.addEventListener("click", () => {
       const isOpen = outlineWeightPopover?.hidden === false;
@@ -2453,7 +2462,12 @@ class CustomCoverCustomizer extends HTMLElement {
       setOutlineWeightPopover(shouldOpen);
     });
     this.addEventListener("click", (event) => {
-      if (!outlineWeightToggle || !outlineWeightPopover || outlineWeightPopover.hidden) return;
+      if (
+        !outlineWeightToggle ||
+        !outlineWeightPopover ||
+        outlineWeightPopover.hidden
+      )
+        return;
       const target = event.target;
       if (!(target instanceof Node)) return;
       if (
@@ -2579,7 +2593,9 @@ class CustomCoverCustomizer extends HTMLElement {
       btn.addEventListener("click", () => this.duplicateSelectedElement()),
     );
     flipHorizontalBtns.forEach((btn) =>
-      btn.addEventListener("click", () => this.flipSelectedElement("horizontal")),
+      btn.addEventListener("click", () =>
+        this.flipSelectedElement("horizontal"),
+      ),
     );
     flipVerticalBtns.forEach((btn) =>
       btn.addEventListener("click", () => this.flipSelectedElement("vertical")),
@@ -3042,7 +3058,9 @@ class CustomCoverCustomizer extends HTMLElement {
     if (!element || element.type !== "shape") {
       return;
     }
-    const variant = String(element.shapeVariant || "").trim().toLowerCase();
+    const variant = String(element.shapeVariant || "")
+      .trim()
+      .toLowerCase();
     const defaultEnabled = variant === "outline";
     if (typeof element.strokeEnabled !== "boolean") {
       element.strokeEnabled = defaultEnabled;
@@ -3063,9 +3081,15 @@ class CustomCoverCustomizer extends HTMLElement {
   }
 
   readShapeOutlineFromForm() {
-    const strokeEnabledInput = this.querySelector("[data-shape-outline-enabled]");
-    const strokeWidthInput = this.querySelector("[data-shape-outline-width-input]");
-    const strokeColorInput = this.querySelector("[data-shape-outline-color-input]");
+    const strokeEnabledInput = this.querySelector(
+      "[data-shape-outline-enabled]",
+    );
+    const strokeWidthInput = this.querySelector(
+      "[data-shape-outline-width-input]",
+    );
+    const strokeColorInput = this.querySelector(
+      "[data-shape-outline-color-input]",
+    );
     let strokeColor = String(strokeColorInput?.value || "#000000").trim();
     if (!strokeColor.startsWith("#")) {
       strokeColor = `#${strokeColor}`;
@@ -3519,7 +3543,8 @@ class CustomCoverCustomizer extends HTMLElement {
     const width = def.defaultW;
     const height = def.defaultH;
     const shapeOutlineDefaults = this.readShapeOutlineFromForm();
-    const isOutlineShape = String(def.variant || "").toLowerCase() === "outline";
+    const isOutlineShape =
+      String(def.variant || "").toLowerCase() === "outline";
 
     const element = {
       id: crypto.randomUUID(),
@@ -3577,7 +3602,8 @@ class CustomCoverCustomizer extends HTMLElement {
     this.ctx.lineCap = "round";
     const shouldStroke =
       Boolean(element.strokeEnabled) && Number(element.strokeWidth) > 0;
-    const shouldFill = String(element.shapeVariant || "").toLowerCase() !== "outline";
+    const shouldFill =
+      String(element.shapeVariant || "").toLowerCase() !== "outline";
 
     if (element.paths?.length) {
       const vb = element.viewBox || 24;
@@ -3699,14 +3725,18 @@ class CustomCoverCustomizer extends HTMLElement {
       const maxWidth = this.canvas.width * 0.4;
       const maxHeight = this.canvas.height * 0.4;
       const ratio = Math.min(maxWidth / img.width, maxHeight / img.height, 1);
+      const sameTypeCount = this.elements.filter(
+        (element) => element.type === type,
+      ).length;
+      const stackOffset = Math.min(sameTypeCount, 8) * 14;
 
       const element = {
         id: crypto.randomUUID(),
         type,
         src,
         image: img,
-        x: this.canvas.width / 2,
-        y: this.canvas.height / 2,
+        x: this.canvas.width / 2 + stackOffset,
+        y: this.canvas.height / 2 + stackOffset,
         width: img.width * ratio,
         height: img.height * ratio,
         scale: 1,
@@ -3718,8 +3748,9 @@ class CustomCoverCustomizer extends HTMLElement {
       this.pushHistorySnapshot();
       this.elements.push(element);
       this.selectedElementId = element.id;
-      this.setActiveTool("image");
-      this.toggleToolPanels("image");
+      const nextTool = type === "clipart" ? "clipart" : "image";
+      this.setActiveTool(nextTool);
+      this.toggleToolPanels(nextTool);
       this.syncControlInputs();
       this.render();
       this.updatePrice();
@@ -4441,7 +4472,10 @@ class CustomCoverCustomizer extends HTMLElement {
     const parsedOutlineWeight = Math.round(Number(outlineWeight?.value));
     target.outlineWidth = Math.min(
       16,
-      Math.max(0, Number.isFinite(parsedOutlineWeight) ? parsedOutlineWeight : 3),
+      Math.max(
+        0,
+        Number.isFinite(parsedOutlineWeight) ? parsedOutlineWeight : 3,
+      ),
     );
     let oc = String(outlineColor?.value || "#ffffff").trim();
     if (!oc.startsWith("#")) {
@@ -4606,8 +4640,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const gapTotal = spacingPx * Math.max(0, chars.length - 1);
     const straightW = Math.max(8, widths.reduce((a, b) => a + b, 0) + gapTotal);
     const rNum = Number(R);
-    const signed =
-      Number.isFinite(rNum) && rNum !== 0 ? rNum : 320;
+    const signed = Number.isFinite(rNum) && rNum !== 0 ? rNum : 320;
     const absR = Math.max(60, Math.min(2000, Math.abs(signed)));
     const bendUp = signed > 0;
     const theta = Math.min(
@@ -5499,6 +5532,29 @@ class CustomCoverCustomizer extends HTMLElement {
     this.uploadWarningOutput.textContent = message || "";
   }
 
+  ensureClipartThumbsLoaded() {
+    const clipartPanel = this.querySelector('[data-tool-panel="clipart"]');
+    if (!clipartPanel || clipartPanel.hidden) {
+      return;
+    }
+    const thumbs = clipartPanel.querySelectorAll("img");
+    thumbs.forEach((img) => {
+      if (!(img instanceof HTMLImageElement)) {
+        return;
+      }
+      // Hidden panels + lazy images can miss fetch timing on some browsers.
+      if (img.loading !== "eager") {
+        img.loading = "eager";
+      }
+      if (!img.complete) {
+        const src = img.getAttribute("src");
+        if (src) {
+          img.src = src;
+        }
+      }
+    });
+  }
+
   setActiveTool(tool) {
     this.currentTool = tool;
     const buttons = this.querySelectorAll("[data-tool-button]");
@@ -5525,6 +5581,9 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     if (shapesPanel) {
       shapesPanel.hidden = tool !== "shapes";
+    }
+    if (tool === "clipart") {
+      this.ensureClipartThumbsLoaded();
     }
   }
 
@@ -5614,14 +5673,12 @@ class CustomCoverCustomizer extends HTMLElement {
   async placeNewTextAtCanvasPoint(canvasX, canvasY) {
     const fontInput = this.querySelector("[data-font-input]");
     const textInput = this.querySelector("[data-text-input]");
-    if (textInput) {
-      textInput.value = "";
-    }
+    const textValue = this.normalizeNewlines(String(textInput?.value || ""));
     await this.ensureGoogleFontLoaded(fontInput?.value, { redraw: false });
     const element = this.buildTextElementFromForm({
       x: canvasX,
       y: canvasY,
-      text: "",
+      text: textValue,
     });
     this.elements.push(element);
     this.selectedElementId = element.id;
@@ -5959,6 +6016,38 @@ class CustomCoverCustomizer extends HTMLElement {
 
   hydrateElementFromDraft(item) {
     const next = { ...item };
+    const parsedScale = Number(next.scale);
+    const normalizedScale =
+      Number.isFinite(parsedScale) && parsedScale > 0 ? parsedScale : 1;
+    const parsedWidth = Number(next.width);
+    const parsedHeight = Number(next.height);
+
+    /*
+     * Draft payload stores rendered width/height while runtime state expects
+     * base dimensions + scale. Normalize on load to avoid double-scaling.
+     */
+    if (
+      normalizedScale !== 1 &&
+      Number.isFinite(parsedWidth) &&
+      parsedWidth > 0 &&
+      Number.isFinite(parsedHeight) &&
+      parsedHeight > 0
+    ) {
+      next.width = parsedWidth / normalizedScale;
+      next.height = parsedHeight / normalizedScale;
+    } else {
+      next.width =
+        Number.isFinite(parsedWidth) && parsedWidth > 0 ? parsedWidth : 1;
+      next.height =
+        Number.isFinite(parsedHeight) && parsedHeight > 0 ? parsedHeight : 1;
+    }
+
+    next.scale = normalizedScale;
+    next.x = Number.isFinite(Number(next.x)) ? Number(next.x) : 0;
+    next.y = Number.isFinite(Number(next.y)) ? Number(next.y) : 0;
+    next.rotation = Number.isFinite(Number(next.rotation))
+      ? Number(next.rotation)
+      : 0;
     this.ensureElementFlipState(next);
     if ((next.type === "image" || next.type === "clipart") && next.src) {
       const image = new Image();

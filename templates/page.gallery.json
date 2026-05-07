@@ -120,18 +120,18 @@
           "type": "collection_group",
           "settings": {
             "tab_label": "Trucks & Cars",
-            "image_left": "shopify://shop_images/Rectangle_451.jpg",
-            "image_top_right": "shopify://shop_images/Rectangle_452.jpg",
-            "image_bottom_right": "shopify://shop_images/Rectangle_453.jpg"
+            "image_left": "shopify://shop_images/360_FINAL.png",
+            "image_top_right": "shopify://shop_images/2019_AP_Buying_Program_SELL_SHEET_1.jpg",
+            "image_bottom_right": "shopify://shop_images/DUKEtruckdashboard-800x800.jpg"
           }
         },
         "collection_group_jGNmrx": {
           "type": "collection_group",
           "settings": {
             "tab_label": "Marine & Boating",
-            "image_left": "shopify://shop_images/Rectangle_451.jpg",
-            "image_top_right": "shopify://shop_images/Rectangle_452.jpg",
-            "image_bottom_right": "shopify://shop_images/Rectangle_453.jpg"
+            "image_left": "shopify://shop_images/5_to_drive.jpg",
+            "image_top_right": "shopify://shop_images/US_Naval_Sea_Cadet_Corps_Cover.jpg",
+            "image_bottom_right": "shopify://shop_images/USA_Flag_Full_Color_Cover.jpg"
           }
         }
       },
