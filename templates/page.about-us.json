@@ -15,6 +15,7 @@
         "image_8rTMPp": {
           "type": "image",
           "name": "t:names.image",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/about-us-header.png",
             "link": "",
@@ -150,7 +151,7 @@
                 "text": "<p>Stretchable Covers (originally Cool Wheel Covers) were invented as a way to compensate for the areas of the automobile steering wheel not protected by foldout window shades. The solution was a flexible heat resistant fabric that could be stretched over the entire wheel in seconds and easily stored in the glove compartment when not in use. </p><p>We have found over time, that boating enthusiasts as well as marine dealers really like the added layer of protection for their steering wheels.</p><p>We also discovered that our product had other interesting uses, such as covers for bar stools (extremely popular!), bread baskets in restaurants, tuba  and sousaphone covers in marching bands (also very popular), safety reminders for fleet services and transportation companies, monitor dust covers and even stadium headwear at football games…   We keep finding more and more uses for our unique product.</p>",
                 "width": "100%",
                 "max_width": "none",
-                "alignment": "left",
+                "alignment": "center",
                 "type_preset": "custom",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
@@ -262,10 +263,10 @@
       ],
       "name": "USP Icon Bar",
       "settings": {
-        "bg_color": "#E8E8E8",
-        "border_color": "#1A2438",
+        "bg_color": "#f9fdff",
+        "border_color": "#1a2438",
         "border_width": 2,
-        "icon_color": "#223B63",
+        "icon_color": "#223b63",
         "heading_color": "#111111",
         "text_color": "#333333"
       }
@@ -912,7 +913,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<p>WE ARE 100% MADE IN THE USA!</p>",
+                "text": "<p>We Are 100% Made IN The USA</p>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -940,7 +941,7 @@
                 "text": "<p>We are the manufacturers of the <strong>patent pending </strong>custom imprinted stretchable covers which will keep your steering wheel cooler, protect your bar stools, decorate your marching band tuba or sousaphone bells, promote safety messages, advertise your products, cover your bread baskets, keep the dust off your fans during the winter months, allow you to create your very own custom dartboard face AND protect all of these items for years to come. Our Stretchable Covers have a wide appeal, and are quickly becoming a well-known brand.</p>",
                 "width": "100%",
                 "max_width": "none",
-                "alignment": "left",
+                "alignment": "center",
                 "type_preset": "custom",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
@@ -1100,9 +1101,9 @@
       "name": "Brand Logo Marquee",
       "settings": {
         "heading": "Partnered by Hundred Brands Worldwide",
-        "section_bg": "#FFFFFF",
+        "section_bg": "#f9fdff",
         "heading_color": "#111111",
-        "border_color": "#1A1A1A",
+        "border_color": "#1a1a1a",
         "border_width": 2,
         "logo_max_height": 38,
         "logo_gap": 36,

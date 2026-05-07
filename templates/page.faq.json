@@ -64,7 +64,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Is there a minimum order?",
-            "answer": "<p>No. There are no minimum order requirements. You can mix and match sizes, designs, and quantities however you'd like, with no setup fees. And the more you order, the more you save.</p>",
+            "answer": "<p>No. There are no minimum order requirements — order a single cover or several hundred. You can mix and match sizes, designs, and quantities however you'd like, with no setup fees. <br/><br/><strong>And the more you order, the more you save</strong> — quantity discounts<br/>kick in automatically as your order size grows, so larger orders (schools, marching bands,<br/>corporate giveaways, dealer co-ops, safetyprograms) get progressively better per-unit pricing.<br/></p>",
             "category": "category_1"
           }
         },
@@ -72,7 +72,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Do you charge for artwork setup?",
-            "answer": "<p>No setup charges. We'll help you size your artwork to fit our covers at no additional cost. </p><p>Our rule of thumb is simple: <em>whatever you send us is what we'll print.</em> </p><p>For the best results, send us the highest-resolution artwork you have — vector files (.ai, .eps, .pdf) work best, and high-resolution raster files (300+ DPI) also produce excellent results. </p>",
+            "answer": "<p>No setup charges. We'll help you size your artwork to fit our covers at no additional cost. <br/><br/>Our rule of thumb is simple: whatever you send us is what we'll print. For the best results, send us the highest-resolution artwork you have — vector files (.ai, .eps, .pdf) work best, and high-resolution raster files (300+ DPI) also produce excellent results.<br/><br/>We can discuss possible charges if we have to recreate artwork or clean up art of lower resolution.</p>",
             "category": "category_1"
           }
         },
@@ -96,7 +96,7 @@
           "type": "faq_item",
           "settings": {
             "question": "How do I know what size cover I need?",
-            "answer": "<p>Measure the diameter of the item you want covered at its widest point, then choose the size class that includes that measurement. </p><p>If you're between sizes, choose the smaller one — our covers stretch but cannot shrink. </p><p>If you're unsure, contact us with your measurement and the item type and we'll recommend the right fit.</p>",
+            "answer": "<p>Measure the diameter of the item you want covered at its widest point, then choose the size class that includes that measurement. <br/><br/>If you're between sizes, choose the smaller one — our covers stretch but cannot shrink. </p><p><br/>If you're unsure, contact us with your measurement and the item type and we'll recommend the right fit.</p>",
             "category": "category_1"
           }
         },
@@ -104,7 +104,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Will I see a proof before you print my order?",
-            "answer": "<p>For most custom orders, no as there is no need. What you design on our site will be what you receive.</p><p>If your company requires a proof, we'll send you a digital proof for approval before going to production so you can confirm the artwork looks the way you want it.</p>",
+            "answer": "<p>For most custom orders, no as there is no need. What you design on our site will be what you receive IRL (in real life).<br/><br/>If your company requires a proof, we'll send you a digital proof for approval before going to production so you<br/>can confirm the artwork looks the way you want it.</p>",
             "category": "category_1"
           }
         },
@@ -112,7 +112,7 @@
           "type": "faq_item",
           "settings": {
             "question": "What color is the cover material?",
-            "answer": "<p>All of our covers start as white fabric, and we print your chosen background color (and design) directly onto them using dye-sublimation. </p>",
+            "answer": "<p>All of our covers start as white fabric, and we print your chosen background color (and design) directly onto them using dye-sublimation. <br/><br/>We can produce virtually any background color you want — just provide a Pantone (PMS) color number or RGB color number combination (3 numbers) as a reference</p>",
             "category": "category_2"
           }
         },
@@ -120,7 +120,15 @@
           "type": "faq_item",
           "settings": {
             "question": "Can you match colors exactly?",
-            "answer": "<p>Not exactly, but we can usually get very close. Dye-sublimation printing has a slightly different color profile than offset or screen printing, so an exact 1-to-1 match isn't guaranteed. If color precision is critical to you, we recommend ordering a small test print first.</p>",
+            "answer": "<p>Not exactly, but we can usually get very close.<br/><br/>Dye-sublimation printing has a slightly different color profile than offset or screen printing, so an exact 1-to-1 match isn't guaranteed. If color precision is critical to you, we recommend ordering a small test print first. </p>",
+            "category": "category_2"
+          }
+        },
+        "faq_item_Q6zDDt": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can you match my uniform, team, or paint colors?",
+            "answer": "<p>Yes (as close as possible), with one caveat. If you can provide an exact color number (Pantone PMS, hex, RGB, etc.), we'll print to that reference and get as close as the process allows. <br/><br/>If you don't have a color number but you do have a physical sample — a swatch of fabric, a paint chip, a uniform piece — mail it to us and we'll match it as closely as possible</p>",
             "category": "category_2"
           }
         },
@@ -128,7 +136,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Do the background colors or patterns cover the entire front-facing portion of the item?",
-            "answer": "<p>Yes, in most cases. As long as you provide the correct diameter of the item being covered, your background color or design will be sized to cover the entire front-facing surface.</p>",
+            "answer": "<p>Yes, in most cases. As long as you provide the correct diameter of the item being covered, your background color or design will be sized to cover the entire front-facing surface. <br/><br/>On some of our smaller sizes, you may see a small white border around the very edge — let us know in advance if this is a concern and we'll do our best to minimize it.</p>",
             "category": "category_2"
           }
         },
@@ -136,7 +144,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Can you print all the way to the elastic edge?",
-            "answer": "<p>Not quite. During production, covers are placed on printing plates, and the portion that wraps around the underside of each plate cannot be printed. </p><p>Your design will fully cover the front-facing surface of the item, but the underside (where the elastic gathers) will remain unprinted. This is normal and consistent across the industry for covers of this style.</p>",
+            "answer": "<p>Not quite. During production, covers are placed on printing plates, and the portion that wraps around the underside of each plate cannot be printed. <br/><br/>Your design will fully cover the front-facing surface of the item, but the underside (where the elastic gathers) will remain unprinted. This is normal and consistent across the industry for covers of this style.</p>",
             "category": "category_2"
           }
         },
@@ -160,7 +168,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Are your covers machine washable?",
-            "answer": "<p>Yes. Our microfiber covers are machine washable on a gentle cycle in cold water. We recommend air drying or tumble drying on low heat to maximize the life of the print and elastic. NOTE: Never use bleach.</p>",
+            "answer": "<p>Yes. Our microfiber covers are machine washable on a gentle cycle in cold water. We recommend air drying or tumble drying on low heat to maximize the life of the print and elastic. <br/><br/>NOTE: Never use bleach.</p>",
             "category": "category_3"
           }
         },
@@ -192,7 +200,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Do you accept purchase orders?",
-            "answer": "<p>We don't accept POs as a standalone form of payment, but we are happy to work with PO-based purchasing as long as a credit card is provided in advance to keep on file. With a card on file, you may use a PO and pay by check within 15 days of the invoice date. If the balance is not paid by day 15, we'll charge the card on file. This policy allows us to serve schools, government agencies, and corporate buyers who require PO documentation while protecting both sides.</p>",
+            "answer": "<p>We don't accept POs as a standalone form of payment, but we are happy to work with PO-based purchasing as long as a credit card is provided in advance to keep on file. With a card on file, you may use a PO and pay by check within 15 days of the invoice date. <br/><br/>If the balance is not paid by day 15, we'll charge the card on file. This policy allows us to serve schools, government agencies, and corporate buyers who require PO documentation while protecting both sides.</p>",
             "category": "category_4"
           }
         },
@@ -200,7 +208,7 @@
           "type": "faq_item",
           "settings": {
             "question": "What is your return policy?",
-            "answer": "<p>Because every cover is custom-printed specifically for your order, we are unable to accept returns or exchanges. The only exception is when there is a clear error on our part — in that case, we'll make it right immediately at no cost to you. We strongly encourage you to review your artwork carefully before approving production.</p>",
+            "answer": "<p>Because every cover is custom-printed specifically for your order, we are unable to accept returns or exchanges. The only exception is when there is a clear error on our part — in that case, we'll make it right immediately at no cost to you. <br/><br/>We strongly encourage you to review your artwork carefully before approving production.</p>",
             "category": "category_4"
           }
         }
@@ -214,6 +222,7 @@
         "faq_item_erBhxE",
         "faq_item_wJAcxt",
         "faq_item_cQTBya",
+        "faq_item_Q6zDDt",
         "faq_item_3MH39V",
         "faq_item_y9XTFA",
         "faq_item_7CAb6e",
@@ -254,7 +263,7 @@
         "padding_top": 40,
         "padding_bottom": 20
       }
-    }
+    },
   },
   "order": [
     "main",
