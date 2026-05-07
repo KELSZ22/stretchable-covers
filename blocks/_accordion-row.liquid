@@ -40,7 +40,22 @@
     </summary>
 
     <div class="details-content">
-      {% content_for 'blocks' %}
+      {% if block_settings.heading == 'Specification' %}
+        <table class="specification-table">
+          <tbody>
+            <tr>
+              <th>Country of Origin</th>
+              <td>{{ closest.product.metafields.custom.country_of_origin.value | default: '-' }}</td>
+            </tr>
+            <tr>
+              <th>Fabric</th>
+              <td>{{ closest.product.metafields.custom.fabric.value | default: '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      {% else %}
+        {% content_for 'blocks' %}
+      {% endif %}
     </div>
   </details>
 </accordion-custom>
@@ -117,6 +132,28 @@
   .details[open] .details__toggle-icon-svg--open {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+  }
+
+  .specification-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #D5DEE8;
+  }
+
+  .specification-table th,
+  .specification-table td {
+    padding: 8px;
+    border-bottom: 1px solid #D5DEE8;
+  }
+
+  .specification-table th {
+    border-right: 1px solid #D5DEE8;
+  }
+
+  .specification-table th {
+    text-align: left;
+    font-weight: 600;
+    background: #F9FDFF;
   }
 {% endstylesheet %}
 

@@ -429,7 +429,7 @@
                     "text_Dqpam9": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>{{ closest.product.metafields.custom.specification | metafield_tag }}</p>",
+                        "text": "<p></p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
