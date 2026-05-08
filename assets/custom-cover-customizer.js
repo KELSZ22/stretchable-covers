@@ -2630,6 +2630,7 @@ class CustomCoverCustomizer extends HTMLElement {
     );
     const helpBtn = sectionRoot?.querySelector("[data-design-help]");
     const helpVideoFrame = helpModal?.querySelector("[data-help-video-frame]");
+    const helpVideoElement = helpModal?.querySelector("[data-help-video-element]");
     const helpCloseEls = helpModal
       ? helpModal.querySelectorAll("[data-custom-cover-help-close]")
       : [];
@@ -2648,6 +2649,10 @@ class CustomCoverCustomizer extends HTMLElement {
         );
         if (helpVideoFrame instanceof HTMLIFrameElement) {
           helpVideoFrame.src = "";
+        }
+        if (helpVideoElement instanceof HTMLVideoElement) {
+          helpVideoElement.pause();
+          helpVideoElement.currentTime = 0;
         }
         helpBtn.setAttribute("aria-expanded", "false");
         if (helpBtn.isConnected) {

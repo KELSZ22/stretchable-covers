@@ -61,7 +61,7 @@
         assign video_src = video_src | append: '&enablejsapi=1'
       endif
       assign class = 'js-youtube'
-    else
+    elsif video_type == 'vimeo'
       assign video_src = 'https://player.vimeo.com/video/VIDEO_ID?' | replace: 'VIDEO_ID', video
 
       if video_autoplay == false and video_preview_image != blank
@@ -79,9 +79,12 @@
         assign video_src = video_src | append: '&api=1'
       endif
       assign class = 'js-vimeo'
+    else
+      assign video_src = video
     endif
   %}
-  {% capture video_iframe %}
+  {% capture video_embed %}
+    {% if video_type == 'youtube' or video_type == 'vimeo' %}
       <iframe
         src="{{ video_src }}"
         class="{{ class }}"
@@ -89,6 +92,20 @@
         allowfullscreen
         title="{{ video_alt | escape }}"
       ></iframe>
+    {% else %}
+      <video
+        src="{{ video_src | escape }}"
+        {% if video_autoplay %}
+          autoplay
+          muted
+        {% endif %}
+        {% if video_loop %}
+          loop
+        {% endif %}
+        controls
+        playsinline
+      ></video>
+    {% endif %}
   {% endcapture %}
 {% else %}
   {% liquid
@@ -171,7 +188,7 @@
 
     <template>
       {% if video_from_url %}
-        {{ video_iframe }}
+        {{ video_embed }}
       {% else %}
         {{ video_tag }}
       {% endif %}
@@ -179,7 +196,7 @@
 
     {% if video_autoplay or video_preview_image == blank %}
       {% if video_from_url %}
-        {{ video_iframe }}
+        {{ video_embed }}
       {% else %}
         {{ video_tag }}
       {% endif %}

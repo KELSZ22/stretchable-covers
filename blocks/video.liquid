@@ -1,6 +1,23 @@
 
 
 {% assign block_settings = block.settings %}
+{% liquid
+  assign external_video_type = block_settings.video_url.type
+  assign external_video_value = block_settings.video_url.id
+
+  if block_settings.custom_video_url != blank
+    assign external_video_value = block_settings.custom_video_url | strip
+    assign custom_video_url_downcase = external_video_value | downcase
+
+    if custom_video_url_downcase contains 'youtube.com' or custom_video_url_downcase contains 'youtu.be'
+      assign external_video_type = 'youtube'
+    elsif custom_video_url_downcase contains 'vimeo.com'
+      assign external_video_type = 'vimeo'
+    else
+      assign external_video_type = 'direct'
+    endif
+  endif
+%}
 
 {% capture video_style %}
   {%  render 'spacing-style', settings: block_settings %}
@@ -22,9 +39,9 @@
 {% else %}
   {% render 'video',
     video_from_url: true,
-    video: block_settings.video_url.id,
+    video: external_video_value,
     video_class: 'spacing-style size-style border-style',
-    video_type: block_settings.video_url.type,
+    video_type: external_video_type,
     video_style: video_style,
     video_alt: block_settings.alt,
     video_preview_image: block_settings.cover_image,
@@ -42,7 +59,7 @@
 {% schema %}
 {
   "name": "t:names.video",
-  "tag": null,
+  "tag": "div",
   "settings": [
     {
       "type": "select",
@@ -72,6 +89,13 @@
       "label": "t:settings.video_external_url",
       "info": "t:info.video_external",
       "accept": ["youtube", "vimeo"],
+      "visible_if": "{{ block.settings.source == 'url' }}"
+    },
+    {
+      "type": "text",
+      "id": "custom_video_url",
+      "label": "Custom video URL (any link)",
+      "info": "Paste any full video link, including direct .mp4 URLs.",
       "visible_if": "{{ block.settings.source == 'url' }}"
     },
     {

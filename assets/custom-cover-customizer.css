@@ -2495,8 +2495,8 @@ html.custom-cover-customizer-drawer-open body {
 .custom-cover-customizer .custom-cover-help-modal__dialog {
   position: relative;
   z-index: 1;
-  width: min(100%, 560px);
-  max-height: min(90vh, 720px);
+  width: min(100%, 860px);
+  max-height: min(92vh, 860px);
   overflow: auto;
   margin: auto;
   background: rgb(var(--color-background-rgb));
@@ -2555,6 +2555,7 @@ html.custom-cover-customizer-drawer-open body {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
+  max-height: 72vh;
   border-radius: var(--style-border-radius-inputs, 8px);
   overflow: hidden;
   background: rgb(0 0 0 / 0.06);

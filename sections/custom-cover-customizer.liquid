@@ -1524,22 +1524,36 @@
 
   {%- unless section.settings.design_help_enable == false -%}
     {%- liquid
-      assign design_help_youtube_url = section.settings.design_help_youtube_url | strip
+      assign design_help_video_url = section.settings.design_help_youtube_url | strip
+      assign design_help_video_url_downcase = design_help_video_url | downcase
+      assign design_help_video_type = ''
       assign design_help_youtube_id = ''
+      assign design_help_vimeo_id = ''
       assign design_help_embed_url = ''
-      if design_help_youtube_url != blank
-        if design_help_youtube_url contains 'youtu.be/'
-          assign design_help_youtube_id = design_help_youtube_url | split: 'youtu.be/' | last | split: '?' | first | split: '&' | first | split: '#' | first
-        elsif design_help_youtube_url contains 'youtube.com/embed/'
-          assign design_help_youtube_id = design_help_youtube_url | split: 'embed/' | last | split: '?' | first | split: '&' | first
-        elsif design_help_youtube_url contains 'youtube.com/shorts/'
-          assign design_help_youtube_id = design_help_youtube_url | split: 'shorts/' | last | split: '?' | first | split: '&' | first | split: '/' | first
-        elsif design_help_youtube_url contains 'v='
-          assign design_help_youtube_id = design_help_youtube_url | split: 'v=' | last | split: '&' | first | split: '#' | first
+
+      if design_help_video_url != blank
+        if design_help_video_url_downcase contains 'youtu.be/'
+          assign design_help_youtube_id = design_help_video_url | split: 'youtu.be/' | last | split: '?' | first | split: '&' | first | split: '#' | first
+        elsif design_help_video_url_downcase contains 'youtube.com/embed/'
+          assign design_help_youtube_id = design_help_video_url | split: 'embed/' | last | split: '?' | first | split: '&' | first
+        elsif design_help_video_url_downcase contains 'youtube.com/shorts/'
+          assign design_help_youtube_id = design_help_video_url | split: 'shorts/' | last | split: '?' | first | split: '&' | first | split: '/' | first
+        elsif design_help_video_url_downcase contains 'v='
+          assign design_help_youtube_id = design_help_video_url | split: 'v=' | last | split: '&' | first | split: '#' | first
         endif
-      endif
-      if design_help_youtube_id != blank
-        assign design_help_embed_url = 'https://www.youtube.com/embed/' | append: design_help_youtube_id | append: '?rel=0'
+
+        if design_help_youtube_id != blank
+          assign design_help_video_type = 'youtube'
+          assign design_help_embed_url = 'https://www.youtube.com/embed/' | append: design_help_youtube_id | append: '?rel=0'
+        elsif design_help_video_url_downcase contains 'vimeo.com/'
+          assign design_help_vimeo_id = design_help_video_url | split: 'vimeo.com/' | last | split: '/' | last | split: '?' | first | split: '&' | first | split: '#' | first
+          if design_help_vimeo_id != blank
+            assign design_help_video_type = 'vimeo'
+            assign design_help_embed_url = 'https://player.vimeo.com/video/' | append: design_help_vimeo_id
+          endif
+        else
+          assign design_help_video_type = 'direct'
+        endif
       endif
     -%}
     <div
@@ -1577,16 +1591,28 @@
               {{ section.settings.design_help_body }}
             </div>
           {%- endif -%}
-          {%- if design_help_embed_url != blank -%}
+          {%- if design_help_video_url != blank -%}
             <div class="custom-cover-help-modal__video">
-              <iframe
-                data-help-video-frame
-                class="custom-cover-help-modal__iframe"
-                title="{{ section.settings.design_help_heading | escape }} — video"
-                loading="lazy"
-                src=""
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen></iframe>
+              {%- if design_help_video_type == 'youtube' or design_help_video_type == 'vimeo' -%}
+                <iframe
+                  data-help-video-frame
+                  class="custom-cover-help-modal__iframe"
+                  title="{{ section.settings.design_help_heading | escape }} — video"
+                  loading="lazy"
+                  src=""
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen></iframe>
+              {%- else -%}
+                <video
+                  data-help-video-element
+                  class="custom-cover-help-modal__iframe"
+                  controls
+                  playsinline
+                  preload="metadata"
+                  src="{{ design_help_video_url | escape }}">
+                  Your browser does not support the video tag.
+                </video>
+              {%- endif -%}
             </div>
           {%- endif -%}
         </div>
@@ -1636,10 +1662,10 @@
         "id": "design_help_body",
         "label": "Help modal instructions (optional)"
       }, {
-        "type": "url",
+        "type": "text",
         "id": "design_help_youtube_url",
-        "label": "Instruction video (YouTube URL)",
-        "info": "Paste a watch, youtu.be, Shorts, or embed link. The video loads when the help modal opens."
+        "label": "Instruction video URL",
+        "info": "Supports YouTube, Vimeo, or direct video links (for example, Shopify CDN .mp4)."
       }, {
         "type": "header",
         "content": "Text settings"
