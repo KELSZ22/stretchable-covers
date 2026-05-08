@@ -1,8 +1,8 @@
 {%- assign header_menu = section.settings.menu -%}
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Raleway:wght@400;500;700;800&display=swap');
-  
+  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900 &family=Raleway:wght@400;500;700;800&display=swap');
+
   .header-search {
     width: 100%;
   }
@@ -25,7 +25,8 @@
     border: 0;
     outline: 0;
     background: transparent;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     font-size: 16px;
     font-weight: 400;
     color: #444;
@@ -72,16 +73,19 @@
 
   .topbar-promos span,
   .topbar-right span {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
   }
 
   .custom-header-wrapper {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial
+    , Helvetica
+    , sans-serif;
     width: 100%;
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     background: #fff;
   }
 
@@ -180,7 +184,8 @@
     cursor: pointer;
     padding: 0;
     margin: 0;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     font-size: 14px;
     line-height: 1;
     appearance: none;
@@ -204,7 +209,8 @@
   .topbar-country-code,
   .topbar-country-arrow {
     color: #fff;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     font-size: 14px;
     line-height: 1;
   }
@@ -239,7 +245,8 @@
     padding: 10px 12px;
     border-radius: 7px;
     cursor: pointer;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     font-size: 14px;
     line-height: 1.2;
     text-align: left;
@@ -256,13 +263,15 @@
 
   .topbar-country-option-left span {
     color: #0F2E53;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     font-size: 14px;
   }
 
   .topbar-country-option small {
     color: #0F2E53;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     font-size: 14px;
     white-space: nowrap;
   }
@@ -424,11 +433,11 @@
   }
 
   .custom-header-nav-scroll.is-scrollable {
-     overflow-x: auto;
-  overflow-y: visible;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  cursor: grab;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
   }
 
   .custom-header-nav-scroll.is-scrollable::-webkit-scrollbar {
@@ -439,41 +448,42 @@
     cursor: grabbing;
   }
 
-.header-nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  padding: 8px;
-  margin: 0;
-  width: max-content;
-  min-width: 100%;
-  position: relative;
-}
+  .header-nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 8px;
+    margin: 0;
+    width: max-content;
+    min-width: 100%;
+    position: relative;
+  }
 
-.header-nav-inner > li {
-  list-style: none;
-  position: relative;
-  flex: 0 0 auto;
-}
+  .header-nav-inner > li {
+    list-style: none;
+    position: relative;
+    flex: 0 0 auto;
+  }
 
-.header-nav-inner > li > a {
-  display: block;
-  position: relative;
-  padding: 13px 14px;
-  font-size: 14px;
-  font-weight: 400;
-  color: #222;
-  text-decoration: none;
-  white-space: nowrap;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  transition: color 0.15s ease;
-  font-family: 'Lato', sans-serif;
-}
+  .header-nav-inner > li > a {
+    display: block;
+    position: relative;
+    padding: 13px 14px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #222;
+    text-decoration: none;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    transition: color 0.15s ease;
+    font-family: 'Lato'
+    , sans-serif;
+  }
 
-/* underline base for ALL nav items */
-.header-nav-inner > li > a::after {
+  /* underline base for ALL nav items */
+  .header-nav-inner > li > a::after {
     content: "";
     position: absolute;
     left: 14px;
@@ -486,16 +496,16 @@
     transform-origin: right;
     transition: transform 0.35s ease;
     pointer-events: none;
-}
+  }
 
-/* hover on LI, not only A */
-.header-nav-inner > li:hover > a {
-  color: #0F2E53;
-}
+  /* hover on LI, not only A */
+  .header-nav-inner > li:hover > a {
+    color: #0F2E53;
+  }
 
-.header-nav-inner > li:hover > a::after {
-  transform: scaleX(1);
-}
+  .header-nav-inner > li:hover > a::after {
+    transform: scaleX(1);
+  }
 
 
   .custom-nav-item {
@@ -547,7 +557,7 @@
     min-width: 200px;
     background: #fff;
     border: 1px solid #e5e5e5;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     z-index: 999;
     padding: 8px 0;
   }
@@ -559,7 +569,8 @@
     color: #333;
     text-decoration: none;
     white-space: nowrap;
-    transition: background 0.1s, color 0.1s;
+    transition: background 0.1s
+    , color 0.1s;
   }
 
   .nav-dropdown a:hover {
@@ -594,11 +605,11 @@
     right: 0;
     width: 100%;
     max-width: 100%;
-    height: 100dvh;
+    height: 100 dvh;
     background: #fff;
     z-index: 9999;
     overflow-y: auto;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
     transform: translateX(100%);
     transition: transform 0.3s ease;
   }
@@ -611,7 +622,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 9998;
   }
 
@@ -744,7 +755,7 @@
   .custom-cart-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0, 0, 0, 0.55);
     opacity: 0;
     visibility: hidden;
     transition: 0.25s ease;
@@ -769,7 +780,7 @@
     z-index: 9999;
     display: flex;
     flex-direction: column;
-    box-shadow: -8px 0 30px rgba(0,0,0,0.08);
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.08);
   }
 
   .custom-cart-drawer.open {
@@ -790,7 +801,8 @@
     line-height: 1.15;
     font-weight: 700;
     color: #222;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
   }
 
   .custom-cart-header h2 span {
@@ -843,23 +855,23 @@
   }
 
   .custom-cart-empty h3 {
-    color:  #1F1F1F;
+    color: #1F1F1F;
     font-family: Raleway;
     font-size: 24px;
     font-style: normal;
     font-weight: 800;
-    line-height: 32px; 
+    line-height: 32px;
     margin: 0 0 8px;
   }
 
   .custom-cart-empty p {
-    color:  #1F1F1F;
+    color: #1F1F1F;
     text-align: center;
     font-family: Lato;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
-    line-height: 18px; 
+    line-height: 18px;
     margin: 0 0 22px;
   }
 
@@ -876,12 +888,13 @@
     border-radius: 999px;
     font-weight: 700;
     font-size: 14px;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     margin: 0 auto;
   }
 
   .custom-cart-recommendations {
-    background: rgba(235, 137, 27, 0.14);
+    background: #F5F7F8;
     padding: 25px 20px;
     margin-top: 24px;
   }
@@ -936,7 +949,7 @@
     font-size: 20px;
     font-style: normal;
     font-weight: 500;
-    line-height: 28px; 
+    line-height: 28px;
     margin-bottom: 3px;
   }
 
@@ -949,7 +962,8 @@
     line-height: 1.35;
     color: #6b6b6b;
     margin-bottom: 3px;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
   }
 
   .custom-rec-meta-label {
@@ -969,12 +983,12 @@
   }
 
   .custom-rec-price {
-    color:  #1F1F1F;
+    color: #1F1F1F;
     font-family: Lato;
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
-    line-height: 24px; 
+    line-height: 24px;
   }
 
   .custom-rec-btn {
@@ -988,7 +1002,8 @@
     line-height: 1;
     font-weight: 500;
     white-space: nowrap;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1042,7 +1057,8 @@
     color: #232323;
     margin-bottom: 4px;
     line-height: 1.3;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
   }
 
   .custom-cart-item-meta {
@@ -1053,7 +1069,8 @@
     color: #444;
     margin-bottom: 4px;
     line-height: 1.3;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     display: none;
   }
 
@@ -1075,7 +1092,8 @@
     color: #555;
     margin-bottom: 4px;
     line-height: 1.3;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
   }
 
   .custom-cart-item-options {
@@ -1086,7 +1104,8 @@
     font-size: 13px;
     color: #555;
     line-height: 1.35;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     margin-bottom: 2px;
   }
 
@@ -1111,7 +1130,8 @@
     font-size: 14px;
     color: #222;
     margin-bottom: 10px;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
   }
 
   .custom-cart-item-bottom {
@@ -1165,14 +1185,15 @@
     text-align: center;
     font-size: 16px;
     color: #355b88;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
   }
 
   .custom-cart-footer {
-    padding: 18px 0px 16px;
+    padding: 18px 0 16px;
     margin-top: auto;
   }
-  .custom-cart-subtotal-row{
+  .custom-cart-subtotal-row {
     padding-top: 10px;
   }
   .custom-cart-subtotal-row,
@@ -1196,16 +1217,16 @@
     font-size: 20px;
     font-style: normal;
     font-weight: 800;
-    line-height: 27px; 
+    line-height: 27px;
   }
 
   .custom-cart-subtotal-row p {
-    color:  #1F1F1F;
+    color: #1F1F1F;
     font-family: Lato;
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
-    line-height: 14px; 
+    line-height: 14px;
   }
   .custom-cart-subtotal-row-inner {
     display: flex;
@@ -1221,7 +1242,8 @@
     font-weight: 700;
     padding: 14px 20px;
     border-radius: 999px;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato'
+    , sans-serif;
     margin-bottom: 10px;
   }
 
@@ -1232,7 +1254,7 @@
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
-    line-height: 14px; 
+    line-height: 14px;
     margin-bottom: 12px;
   }
 
@@ -1276,277 +1298,280 @@
     font-size: 10px;
     line-height: 1;
     color: #222;
-    font-family: Arial, sans-serif;
-  } {% endcomment %}
+    font-family: Arial
+    , sans-serif;
+  }
+{% endcomment %}
 
-  @media (max-width: 768px) {
-    .topbar-promos span {
-      font-size: 12px !important;
-    }
-    .topbar-right a {
-      font-size: 12px;
+@media (max-width: 768px) {
+  .topbar-promos span {
+    font-size: 12px !important;
+  }
+  .topbar-right a {
+    font-size: 12px;
   }
 
-    .custom-topbar-container > .custom-header-topbar:not(.mobile) {
-      display: none;
-    }
-
-    .custom-topbar-container > marquee.custom-header-topbar.mobile {
-      display: block;
-      width: 100%;
-      padding: 8px 16px;
-      border: 0;
-    }
-
-    .custom-topbar-container > marquee.custom-header-topbar.mobile .marquee-container {
-      display: inline-flex;
-      align-items: center;
-      gap: 20px;
-      white-space: nowrap;
-    }
-
-    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-promos,
-    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right,
-    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right a {
-      display: inline-flex;
-      align-items: center;
-      white-space: nowrap;
-    }
-
-    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-promos {
-      gap: 10px;
-    }
-
-    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right {
-      gap: 12px;
-    }
-
-    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right a {
-      gap: 8px;
-      text-decoration: none;
-    }
-
-    .custom-topbar-container > marquee.custom-header-topbar.mobile .dot,
-    .custom-topbar-container > marquee.custom-header-topbar.mobile svg {
-      flex: 0 0 auto;
-    }
-
-    .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-flag {
-      display: none;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee {
-      display: block;
-      width: 100%;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-viewport {
-      width: 100%;
-      overflow: hidden;
-      padding: 8px 16px;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-track {
-      display: flex;
-      align-items: center;
-      width: max-content;
-      will-change: transform;
-      animation: mobileTopbarLoop 18s linear infinite;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-group {
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-container {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-shrink: 0;
-      white-space: nowrap;
-      padding-right: 20px;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-promos,
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right,
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right a,
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-flag {
-      display: flex;
-      align-items: center;
-      white-space: nowrap;
-      flex-wrap: nowrap;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-promos {
-      gap: 10px;
-      flex-wrap: nowrap;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right {
-      gap: 12px;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right a {
-      gap: 8px;
-      text-decoration: none;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .dot,
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee svg {
-      flex: 0 0 auto;
-    }
-
-    .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-flag {
-      display: none;
-    }
-
-    .custom-header-main {
-      padding: 10px 16px;
-    }
-
-    .custom-cart-drawer {
-      width: calc(100% - 10px);
-      max-width: calc(100% - 10px);
-      right: 0;
-      top: 0;
-      height: 100vh;
-      border-top-left-radius: 12px;
-      box-shadow: -6px 0 22px rgba(0,0,0,0.14);
-    }
-
-    .custom-cart-header {
-      padding: 18px 18px 16px;
-    }
-
-    .custom-cart-header h2 {
-      font-size: 18px;
-    }
-
-    .custom-cart-header h2 span {
-      font-size: 14px;
-    }
-
-    .custom-cart-empty {
-      padding: 28px 18px 28px;
-    }
-
-    .custom-cart-empty .shop-now-btn {
-      min-width: 170px;
-      height: 40px;
-      font-size: 13px;
-    }
-
-    .custom-cart-recommendations {
-      padding: 14px 10px 14px;
-    }
-
-    .custom-cart-recommendations h4 {
-      font-size: 15px;
-      margin-bottom: 12px;
-    }
-
-    .custom-rec-item {
-      grid-template-columns: 78px 1fr;
-      gap: 12px;
-      align-items: start;
-      padding: 15px;
-      border-radius: 4px;
-    }
-
-    .custom-rec-item img {
-      width: 78px;
-      height: 78px;
-    }
-
-    .custom-rec-content {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .custom-rec-title {
-      font-size: 14px;
-      margin-bottom: 2px;
-    }
-
-    .custom-rec-meta {
-      margin-bottom: 4px;
-    }
-
-    .custom-rec-price {
-      margin-bottom: 8px;
-    }
-
-    .custom-rec-btn {
-      padding: 8px 12px;
-      font-size: 11px;
-    }
-
-    .custom-cart-item {
-      grid-template-columns: 88px 1fr;
-      gap: 14px;
-      padding: 18px 14px 0;
-    }
-
-    .custom-cart-item-image {
-      width: 88px;
-    }
-
-    .custom-cart-item-image img {
-      height: 88px;
-    }
-
-    .custom-cart-item-title {
-      font-size: 14px;
-    }
-
-    .custom-cart-item-meta,
-    .custom-cart-item-price {
-      font-size: 13px;
-    }
-
-    .custom-cart-qty {
-      min-width: 82px;
-      height: 30px;
-    }
-
-    .custom-cart-qty button {
-      width: 24px;
-      height: 28px;
-      font-size: 20px;
-    }
-
-    .custom-cart-qty span {
-      font-size: 15px;
-    }
-
-    .custom-cart-footer {
-      padding: 16px 14px 14px;
-    }
-
-    .custom-cart-subtotal-row strong {
-      font-size: 13px;
-    }
-
-    .custom-cart-checkout {
-      padding: 13px 18px;
-    }
-
-    .custom-cart-payments {
-      gap: 4px;
-    }
-
-    {% comment %} .custom-cart-payment-badge {
-      min-width: 28px;
-      height: 20px;
-      padding: 0 4px;
-      font-size: 9px;
-    } {% endcomment %}
+  .custom-topbar-container > .custom-header-topbar:not(.mobile) {
+    display: none;
   }
+
+  .custom-topbar-container > marquee.custom-header-topbar.mobile {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    border: 0;
+  }
+
+  .custom-topbar-container > marquee.custom-header-topbar.mobile .marquee-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    white-space: nowrap;
+  }
+
+  .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-promos,
+  .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right,
+  .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right a {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-promos {
+    gap: 10px;
+  }
+
+  .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right {
+    gap: 12px;
+  }
+
+  .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-right a {
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .custom-topbar-container > marquee.custom-header-topbar.mobile .dot,
+  .custom-topbar-container > marquee.custom-header-topbar.mobile svg {
+    flex: 0 0 auto;
+  }
+
+  .custom-topbar-container > marquee.custom-header-topbar.mobile .topbar-flag {
+    display: none;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee {
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-viewport {
+    width: 100%;
+    overflow: hidden;
+    padding: 8px 16px;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    will-change: transform;
+    animation: mobileTopbarLoop 18s linear infinite;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .marquee-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding-right: 20px;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-promos,
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right,
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right a,
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-flag {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-promos {
+    gap: 10px;
+    flex-wrap: nowrap;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right {
+    gap: 12px;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-right a {
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .dot,
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee svg {
+    flex: 0 0 auto;
+  }
+
+  .custom-topbar-container > .custom-header-topbar.mobile.js-marquee .topbar-flag {
+    display: none;
+  }
+
+  .custom-header-main {
+    padding: 10px 16px;
+  }
+
+  .custom-cart-drawer {
+    width: calc(100% - 10px);
+    max-width: calc(100% - 10px);
+    right: 0;
+    top: 0;
+    height: 100vh;
+    border-top-left-radius: 12px;
+    box-shadow: -6px 0 22px rgba(0, 0, 0, 0.14);
+  }
+
+  .custom-cart-header {
+    padding: 18px 18px 16px;
+  }
+
+  .custom-cart-header h2 {
+    font-size: 18px;
+  }
+
+  .custom-cart-header h2 span {
+    font-size: 14px;
+  }
+
+  .custom-cart-empty {
+    padding: 28px 18px;
+  }
+
+  .custom-cart-empty .shop-now-btn {
+    min-width: 170px;
+    height: 40px;
+    font-size: 13px;
+  }
+
+  .custom-cart-recommendations {
+    padding: 14px 10px;
+  }
+
+  .custom-cart-recommendations h4 {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .custom-rec-item {
+    grid-template-columns: 78px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 15px;
+    border-radius: 4px;
+  }
+
+  .custom-rec-item img {
+    width: 78px;
+    height: 78px;
+  }
+
+  .custom-rec-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .custom-rec-title {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .custom-rec-meta {
+    margin-bottom: 4px;
+  }
+
+  .custom-rec-price {
+    margin-bottom: 8px;
+  }
+
+  .custom-rec-btn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .custom-cart-item {
+    grid-template-columns: 88px 1fr;
+    gap: 14px;
+    padding: 18px 14px 0;
+  }
+
+  .custom-cart-item-image {
+    width: 88px;
+  }
+
+  .custom-cart-item-image img {
+    height: 88px;
+  }
+
+  .custom-cart-item-title {
+    font-size: 14px;
+  }
+
+  .custom-cart-item-meta,
+  .custom-cart-item-price {
+    font-size: 13px;
+  }
+
+  .custom-cart-qty {
+    min-width: 82px;
+    height: 30px;
+  }
+
+  .custom-cart-qty button {
+    width: 24px;
+    height: 28px;
+    font-size: 20px;
+  }
+
+  .custom-cart-qty span {
+    font-size: 15px;
+  }
+
+  .custom-cart-footer {
+    padding: 16px 14px 14px;
+  }
+
+  .custom-cart-subtotal-row strong {
+    font-size: 13px;
+  }
+
+  .custom-cart-checkout {
+    padding: 13px 18px;
+  }
+
+  .custom-cart-payments {
+    gap: 4px;
+  }
+
+  {% comment %} .custom-cart-payment-badge {
+    min-width: 28px;
+    height: 20px;
+    padding: 0 4px;
+    font-size: 9px;
+  }
+{% endcomment %}
+}
 </style>
 
 <div class="custom-header-wrapper">
@@ -1561,101 +1586,97 @@
       <div class="topbar-right">
         <a href="tel:{{ section.settings.phone_number }}">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+            <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" />
           </svg>
           <span>{{ section.settings.phone_number }}</span>
         </a>
         {%- assign current_country_code = localization.country.iso_code | default: 'US' -%}
         {%- assign current_country_code_downcase = current_country_code | downcase -%}
         {%- assign current_country_name = localization.country.name | default: 'United States' -%}
-        {% comment %}
-        {% form 'localization', id: 'TopbarCountryForm', class: 'topbar-country-form' %}
-          <input
-            type="hidden"
-            name="country_code"
-            value="{{ current_country_code }}"
-            data-topbar-country-input
-          >
-
-          <div class="topbar-country-selector" data-topbar-country-selector>
-            <button
-              type="button"
-              class="topbar-country-button"
-              aria-expanded="false"
-              aria-label="Select country or region"
-              data-topbar-country-button
-            >
-              <img
-                class="topbar-country-flag"
-                src="https://flagcdn.com/w40/{{ current_country_code_downcase }}.png"
-                srcset="https://flagcdn.com/w40/{{ current_country_code_downcase }}.png 1x, https://flagcdn.com/w80/{{ current_country_code_downcase }}.png 2x"
-                width="22"
-                height="14"
-                alt="{{ current_country_name | escape }} flag"
-                loading="eager"
-                data-topbar-current-flag
-              >
-
-              <span class="topbar-country-arrow">▾</span>
-            </button>
-
-            <div class="topbar-country-dropdown" hidden data-topbar-country-dropdown>
-              {% if localization.available_countries.size > 0 %}
-                {% for country in localization.available_countries %}
-                  {%- assign country_code_downcase = country.iso_code | downcase -%}
-
-                  <button
-                    type="button"
-                    class="topbar-country-option {% if country.iso_code == localization.country.iso_code %}is-active{% endif %}"
-                    data-country-code="{{ country.iso_code }}"
-                    data-country-name="{{ country.name | escape }}"
-                    data-country-flag="https://flagcdn.com/w40/{{ country_code_downcase }}.png"
-                    data-country-flag-2x="https://flagcdn.com/w80/{{ country_code_downcase }}.png"
-                  >
-                    <span class="topbar-country-option-left">
-                      <img
-                        class="topbar-country-option-flag"
-                        src="https://flagcdn.com/w40/{{ country_code_downcase }}.png"
-                        srcset="https://flagcdn.com/w40/{{ country_code_downcase }}.png 1x, https://flagcdn.com/w80/{{ country_code_downcase }}.png 2x"
-                        width="22"
-                        height="14"
-                        alt="{{ country.name | escape }} flag"
-                        loading="lazy"
-                      >
-
-                      <span>{{ country.name }}</span>
-                    </span>
-
-                    <small>{{ country.currency.iso_code }}</small>
-                  </button>
-                {% endfor %}
-              {% else %}
-                <button type="button" class="topbar-country-option is-active">
-                  <span class="topbar-country-option-left">
-                    <img
-                      class="topbar-country-option-flag"
-                      src="https://flagcdn.com/w40/us.png"
-                      width="22"
-                      height="14"
-                      alt="United States flag"
-                      loading="lazy"
-                    >
-
-                    <span>United States</span>
-                  </span>
-
-                  <small>{{ shop.currency }}</small>
-                </button>
-              {% endif %}
-            </div>
-          </div>
+      {% comment %} 
+        {% form 'localization', id: 'TopbarCountryForm', class: 'topbar-country-form' %} 
+        <input
+        type="hidden"
+        name="country_code"
+        value="{{ current_country_code }}"
+        data-topbar-country-input 
+        > 
+        <div class="topbar-country-selector" data-topbar-country-selector>
+        <button
+        type="button"
+        class="topbar-country-button"
+        aria-expanded="false"
+        aria-label="Select country or region"
+        data-topbar-country-button
+        >
+        <img
+        class="topbar-country-flag"
+        src="https://flagcdn.com/w40/{{ current_country_code_downcase }}.png"
+        srcset="https://flagcdn.com/w40/{{ current_country_code_downcase }}.png 1x, https://flagcdn.com/w80/{{ current_country_code_downcase }}.png 2x"
+        width="22"
+        height="14"
+        alt="{{ current_country_name | escape }} flag"
+        loading="eager"
+        data-topbar-current-flag
+        >
+        <span class="topbar-country-arrow">▾</span>
+        </button>
+        <div class="topbar-country-dropdown" hidden data-topbar-country-dropdown>
+        {% if localization.available_countries.size > 0 %}
+        {% for country in localization.available_countries %}
+        {%- assign country_code_downcase = country.iso_code | downcase -%}
+        <button
+        type="button"
+        class="topbar-country-option {% if country.iso_code == localization.country.iso_code %}is-active{% endif %}"
+        data-country-code="{{ country.iso_code }}"
+        data-country-name="{{ country.name | escape }}"
+        data-country-flag="https://flagcdn.com/w40/{{ country_code_downcase }}.png"
+        data-country-flag-2x="https://flagcdn.com/w80/{{ country_code_downcase }}.png"
+        >
+        <span class="topbar-country-option-left">
+        <img
+        class="topbar-country-option-flag"
+        src="https://flagcdn.com/w40/{{ country_code_downcase }}.png"
+        srcset="https://flagcdn.com/w40/{{ country_code_downcase }}.png 1x, https://flagcdn.com/w80/{{ country_code_downcase }}.png 2x"
+        width="22"
+        height="14"
+        alt="{{ country.name | escape }} flag"
+        loading="lazy"
+        >
+        <span>{{ country.name }}</span>
+        </span>
+        <small>{{ country.currency.iso_code }}</small>
+        </button>
+        {% endfor %}
+        {% else %}
+        <button type="button" class="topbar-country-option is-active">
+        <span class="topbar-country-option-left">
+        <img
+        class="topbar-country-option-flag"
+        src="https://flagcdn.com/w40/us.png"
+        width="22"
+        height="14"
+        alt="United States flag"
+        loading="lazy"
+        >
+        <span>United States</span>
+        </span>
+        <small>{{ shop.currency }}</small>
+        </button>
+        {% endif %}
+        </div> 
+        </div> 
         {% endform %}
-
-        {% endcomment %}
+      {% endcomment %}
       </div>
-      
+
     </div>
-    <marquee class="custom-header-topbar mobile" behavior="scroll" direction="left" scrollamount="4" loop="-1">
+    <marquee
+      class="custom-header-topbar mobile"
+      behavior="scroll"
+      direction="left"
+      scrollamount="4"
+      loop="-1">
       <div class="marquee-container">
         <div class="topbar-promos">
           <span>No Limit on Colors or Background Designs</span>
@@ -1663,19 +1684,53 @@
           <span>No Minimum Orders Required</span>
         </div>
 
-      <div class="topbar-right">
-        <a href="tel:{{ section.settings.phone_number }}">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
-          </svg>
-          <span>{{ section.settings.phone_number }}</span>
-        </a>
-        <span class="topbar-flag">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="14" viewBox="0 0 22 14"><rect width="22" height="14" fill="#B22234"/><rect y="1.08" width="22" height="1.08" fill="#fff"/><rect y="3.23" width="22" height="1.08" fill="#fff"/><rect y="5.38" width="22" height="1.08" fill="#fff"/><rect y="7.54" width="22" height="1.08" fill="#fff"/><rect y="9.69" width="22" height="1.08" fill="#fff"/><rect y="11.85" width="22" height="1.08" fill="#fff"/><rect width="8.8" height="7.54" fill="#3C3B6E"/></svg>
-      ▾
-        </span>
+        <div class="topbar-right">
+          <a href="tel:{{ section.settings.phone_number }}">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" />
+            </svg>
+            <span>{{ section.settings.phone_number }}</span>
+          </a>
+          <span class="topbar-flag">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="14"
+              viewBox="0 0 22 14"><rect
+                width="22"
+                height="14"
+                fill="#B22234" /><rect
+                y="1.08"
+                width="22"
+                height="1.08"
+                fill="#fff" /><rect
+                y="3.23"
+                width="22"
+                height="1.08"
+                fill="#fff" /><rect
+                y="5.38"
+                width="22"
+                height="1.08"
+                fill="#fff" /><rect
+                y="7.54"
+                width="22"
+                height="1.08"
+                fill="#fff" /><rect
+                y="9.69"
+                width="22"
+                height="1.08"
+                fill="#fff" /><rect
+                y="11.85"
+                width="22"
+                height="1.08"
+                fill="#fff" /><rect
+                width="8.8"
+                height="7.54"
+                fill="#3C3B6E" /></svg>
+            ▾
+          </span>
+        </div>
       </div>
-    </div>
     </marquee>
   </div>
 
@@ -1684,53 +1739,98 @@
       <div class="header-logo">
         <a href="{{ routes.root_url }}">
           {%- if section.settings.logo != blank -%}
-            <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}" loading="eager">
+            <img
+              src="{{ section.settings.logo | img_url: 'master' }}"
+              alt="{{ shop.name }}"
+              loading="eager">
           {%- else -%}
             <span class="logo-text">{{ shop.name }}</span>
           {%- endif -%}
         </a>
       </div>
-      
+
 
       <div class="header-search">
-        {% render 'custom-header-search',
-          search_placeholder: section.settings.search_placeholder,
-          product_1: section.settings.search_product_1,
-          product_2: section.settings.search_product_2,
-          featured_product: section.settings.search_featured_product
+        {% render 'custom-header-search'
+          ,
+ search_placeholder: section.settings.search_placeholder
+          ,
+ product_1: section.settings.search_product_1
+          ,
+ product_2: section.settings.search_product_2
+          ,
+ featured_product: section.settings.search_featured_product
         %}
       </div>
 
       <div class="header-icons">
         <a href="{{ routes.account_url }}" aria-label="Account">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="17" viewBox="0 0 14 17" fill="none">
-  <path d="M11.4211 9.88601C12.4865 9.8861 13.3635 10.763 13.3635 11.8284V12.3167C13.3635 13.5639 12.5729 14.6688 11.3948 15.4202C10.2155 16.1722 8.6087 16.6223 6.73657 16.6223C4.86425 16.6223 3.25678 16.1723 2.07739 15.4202C0.899255 14.6688 0.108643 13.5639 0.108643 12.3167V11.8284C0.108643 10.763 0.985696 9.88612 2.05103 9.88601H11.4211ZM2.05103 11.3264C1.76649 11.3265 1.54907 11.5438 1.54907 11.8284V12.3167C1.54907 12.9449 1.95423 13.6339 2.85181 14.2063C3.74764 14.7776 5.09569 15.1819 6.73657 15.1819C8.37724 15.1818 9.72462 14.7775 10.6204 14.2063C11.518 13.6339 11.9231 12.9449 11.9231 12.3167V11.8284C11.9231 11.5438 11.7057 11.3265 11.4211 11.3264H2.05103ZM6.73657 0.108665C9.03923 0.108922 10.9192 1.98955 10.9192 4.29226C10.919 6.59478 9.03909 8.47462 6.73657 8.47488C4.43384 8.47488 2.55321 6.59494 2.55298 4.29226C2.55298 1.98939 4.4337 0.108665 6.73657 0.108665ZM6.73657 1.5491C5.21461 1.5491 3.99341 2.7703 3.99341 4.29226C3.99363 5.81402 5.21475 7.03445 6.73657 7.03445C8.25817 7.03419 9.47854 5.81387 9.47876 4.29226C9.47876 2.77046 8.25831 1.54935 6.73657 1.5491Z" fill="#1E1E1E" stroke="#1E1E1E" stroke-width="0.218039"/>
-</svg>
-        </a>
-        {% comment %}
-        <a href="#" aria-label="Wishlist">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="17"
+            viewBox="0 0 14 17"
+            fill="none">
+            <path
+              d="M11.4211 9.88601C12.4865 9.8861 13.3635 10.763 13.3635 11.8284V12.3167C13.3635 13.5639 12.5729 14.6688 11.3948 15.4202C10.2155 16.1722 8.6087 16.6223 6.73657 16.6223C4.86425 16.6223 3.25678 16.1723 2.07739 15.4202C0.899255 14.6688 0.108643 13.5639 0.108643 12.3167V11.8284C0.108643 10.763 0.985696 9.88612 2.05103 9.88601H11.4211ZM2.05103 11.3264C1.76649 11.3265 1.54907 11.5438 1.54907 11.8284V12.3167C1.54907 12.9449 1.95423 13.6339 2.85181 14.2063C3.74764 14.7776 5.09569 15.1819 6.73657 15.1819C8.37724 15.1818 9.72462 14.7775 10.6204 14.2063C11.518 13.6339 11.9231 12.9449 11.9231 12.3167V11.8284C11.9231 11.5438 11.7057 11.3265 11.4211 11.3264H2.05103ZM6.73657 0.108665C9.03923 0.108922 10.9192 1.98955 10.9192 4.29226C10.919 6.59478 9.03909 8.47462 6.73657 8.47488C4.43384 8.47488 2.55321 6.59494 2.55298 4.29226C2.55298 1.98939 4.4337 0.108665 6.73657 0.108665ZM6.73657 1.5491C5.21461 1.5491 3.99341 2.7703 3.99341 4.29226C3.99363 5.81402 5.21475 7.03445 6.73657 7.03445C8.25817 7.03419 9.47854 5.81387 9.47876 4.29226C9.47876 2.77046 8.25831 1.54935 6.73657 1.5491Z"
+              fill="#1E1E1E"
+              stroke="#1E1E1E"
+              stroke-width="0.218039" />
           </svg>
         </a>
+        {% comment %} 
+          <a href="#" aria-label="Wishlist"> 
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/> 
+          </svg> 
+          </a>
         {% endcomment %}
-        <a href="{{ routes.cart_url }}" aria-label="Cart" id="customCartTrigger">
-          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="17" viewBox="0 0 19 17" fill="none">
-  <path d="M6.9259 13.9961C7.21121 13.9962 7.48484 14.1098 7.68665 14.3115C7.88858 14.5135 8.00208 14.7877 8.00208 15.0732C8.00206 15.3588 7.88856 15.633 7.68665 15.835C7.48485 16.0366 7.21118 16.1503 6.9259 16.1504C6.64045 16.1504 6.36609 16.0367 6.16418 15.835C5.96227 15.633 5.84877 15.3588 5.84875 15.0732C5.84875 14.7877 5.96225 14.5135 6.16418 14.3115C6.3661 14.1097 6.64041 13.9961 6.9259 13.9961ZM14.2579 13.9961C14.5434 13.9961 14.8177 14.1097 15.0197 14.3115C15.2216 14.5135 15.3351 14.7877 15.3351 15.0732C15.3351 15.3588 15.2216 15.633 15.0197 15.835C14.8177 16.0368 14.5434 16.1504 14.2579 16.1504C13.9726 16.1503 13.699 16.0366 13.4972 15.835C13.2953 15.633 13.1818 15.3588 13.1818 15.0732C13.1818 14.7877 13.2953 14.5135 13.4972 14.3115C13.699 14.1098 13.9726 13.9962 14.2579 13.9961ZM1.01672 0.145508H1.46399C2.09871 0.145508 2.68172 0.439811 3.07239 0.908203L3.11633 0.959961H17.7208C17.8508 0.959983 17.9795 0.988978 18.0968 1.04492C18.2142 1.10092 18.3177 1.18311 18.3995 1.28418C18.4813 1.38519 18.5391 1.50353 18.5695 1.62988C18.5998 1.75618 18.6023 1.88759 18.5753 2.01465L17.3829 7.64844C17.1388 8.79858 16.1096 9.63184 14.9327 9.63184H5.25305L5.29211 9.80859L5.45422 10.5342V10.5381L5.45813 10.5537C5.53613 10.9047 5.83572 11.1445 6.19543 11.1445H15.2784C15.3941 11.1429 15.509 11.1649 15.6163 11.208C15.7237 11.2512 15.822 11.3152 15.9044 11.3965C15.9866 11.4776 16.0522 11.5741 16.0968 11.6807C16.1414 11.7873 16.1642 11.902 16.1642 12.0176C16.1642 12.1332 16.1414 12.2478 16.0968 12.3545C16.0522 12.4612 15.9868 12.5584 15.9044 12.6396C15.822 12.7209 15.7237 12.785 15.6163 12.8281C15.5091 12.8712 15.394 12.8923 15.2784 12.8906H6.19543C5.02853 12.8906 4.0061 12.0713 3.75305 10.9316L1.80481 2.16504C1.7681 1.99912 1.63309 1.8916 1.46399 1.8916H1.01672C0.901188 1.89324 0.786069 1.87212 0.678833 1.8291C0.571481 1.78596 0.473135 1.72185 0.390747 1.64062C0.308352 1.55939 0.243022 1.46221 0.198364 1.35547C0.15374 1.24876 0.130982 1.13422 0.130981 1.01855C0.130981 0.902891 0.153741 0.788349 0.198364 0.681641C0.243022 0.574897 0.308352 0.477722 0.390747 0.396484C0.473136 0.315259 0.57148 0.251147 0.678833 0.208008C0.78607 0.164984 0.901187 0.143874 1.01672 0.145508ZM3.75208 2.88379L4.83899 7.77148L4.86438 7.88574H14.9327C15.2959 7.88574 15.5986 7.64026 15.674 7.28516L16.6056 2.88184L16.6437 2.70605H3.71301L3.75208 2.88379Z" fill="#1E1E1E" stroke="white" stroke-width="0.290718"/>
-</svg>
+        <a
+          href="{{ routes.cart_url }}"
+          aria-label="Cart"
+          id="customCartTrigger">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="19"
+            height="17"
+            viewBox="0 0 19 17"
+            fill="none">
+            <path
+              d="M6.9259 13.9961C7.21121 13.9962 7.48484 14.1098 7.68665 14.3115C7.88858 14.5135 8.00208 14.7877 8.00208 15.0732C8.00206 15.3588 7.88856 15.633 7.68665 15.835C7.48485 16.0366 7.21118 16.1503 6.9259 16.1504C6.64045 16.1504 6.36609 16.0367 6.16418 15.835C5.96227 15.633 5.84877 15.3588 5.84875 15.0732C5.84875 14.7877 5.96225 14.5135 6.16418 14.3115C6.3661 14.1097 6.64041 13.9961 6.9259 13.9961ZM14.2579 13.9961C14.5434 13.9961 14.8177 14.1097 15.0197 14.3115C15.2216 14.5135 15.3351 14.7877 15.3351 15.0732C15.3351 15.3588 15.2216 15.633 15.0197 15.835C14.8177 16.0368 14.5434 16.1504 14.2579 16.1504C13.9726 16.1503 13.699 16.0366 13.4972 15.835C13.2953 15.633 13.1818 15.3588 13.1818 15.0732C13.1818 14.7877 13.2953 14.5135 13.4972 14.3115C13.699 14.1098 13.9726 13.9962 14.2579 13.9961ZM1.01672 0.145508H1.46399C2.09871 0.145508 2.68172 0.439811 3.07239 0.908203L3.11633 0.959961H17.7208C17.8508 0.959983 17.9795 0.988978 18.0968 1.04492C18.2142 1.10092 18.3177 1.18311 18.3995 1.28418C18.4813 1.38519 18.5391 1.50353 18.5695 1.62988C18.5998 1.75618 18.6023 1.88759 18.5753 2.01465L17.3829 7.64844C17.1388 8.79858 16.1096 9.63184 14.9327 9.63184H5.25305L5.29211 9.80859L5.45422 10.5342V10.5381L5.45813 10.5537C5.53613 10.9047 5.83572 11.1445 6.19543 11.1445H15.2784C15.3941 11.1429 15.509 11.1649 15.6163 11.208C15.7237 11.2512 15.822 11.3152 15.9044 11.3965C15.9866 11.4776 16.0522 11.5741 16.0968 11.6807C16.1414 11.7873 16.1642 11.902 16.1642 12.0176C16.1642 12.1332 16.1414 12.2478 16.0968 12.3545C16.0522 12.4612 15.9868 12.5584 15.9044 12.6396C15.822 12.7209 15.7237 12.785 15.6163 12.8281C15.5091 12.8712 15.394 12.8923 15.2784 12.8906H6.19543C5.02853 12.8906 4.0061 12.0713 3.75305 10.9316L1.80481 2.16504C1.7681 1.99912 1.63309 1.8916 1.46399 1.8916H1.01672C0.901188 1.89324 0.786069 1.87212 0.678833 1.8291C0.571481 1.78596 0.473135 1.72185 0.390747 1.64062C0.308352 1.55939 0.243022 1.46221 0.198364 1.35547C0.15374 1.24876 0.130982 1.13422 0.130981 1.01855C0.130981 0.902891 0.153741 0.788349 0.198364 0.681641C0.243022 0.574897 0.308352 0.477722 0.390747 0.396484C0.473136 0.315259 0.57148 0.251147 0.678833 0.208008C0.78607 0.164984 0.901187 0.143874 1.01672 0.145508ZM3.75208 2.88379L4.83899 7.77148L4.86438 7.88574H14.9327C15.2959 7.88574 15.5986 7.64026 15.674 7.28516L16.6056 2.88184L16.6437 2.70605H3.71301L3.75208 2.88379Z"
+              fill="#1E1E1E"
+              stroke="white"
+              stroke-width="0.290718" />
+          </svg>
           {%- if cart.item_count > 0 -%}
             <span class="cart-count">
-              {%- if cart.item_count > 99 -%}99+{%- else -%}{{ cart.item_count }}{%- endif -%}
+              {%- if cart.item_count > 99 -%}99+
+              {%- else -%}
+                {{ cart.item_count }}{%- endif -%}
             </span>
           {%- endif -%}
         </a>
       </div>
 
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+      <button
+        class="mobile-menu-btn"
+        id="mobileMenuBtn"
+        aria-label="Open menu">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="3" y1="12" x2="21" y2="12"/>
-          <line x1="3" y1="18" x2="21" y2="18"/>
+          <line
+            x1="3"
+            y1="6"
+            x2="21"
+            y2="6" />
+          <line
+            x1="3"
+            y1="12"
+            x2="21"
+            y2="12" />
+          <line
+            x1="3"
+            y1="18"
+            x2="21"
+            y2="18" />
         </svg>
       </button>
     </div>
@@ -1744,20 +1844,23 @@
             <a
               href="{{ link.url }}"
               {% if link.links != blank %}
-                class="custom-nav-trigger"
-                aria-expanded="false"
-                aria-haspopup="true"
-              {% endif %}
-            >
+              class="custom-nav-trigger"
+              aria-expanded="false"
+              aria-haspopup="true"
+              {% endif %}>
               {{ link.title }}
             </a>
 
             {%- if link.links != blank -%}
-              {% render 'custom-header-dropdown',
-                link: link,
-                menu2: section.settings.menu2,
-                mega_product_1: section.settings.mega_product_1,
-                mega_product_2: section.settings.mega_product_2
+              {% render 'custom-header-dropdown'
+                ,
+ link: link
+                ,
+ menu2: section.settings.menu2
+                ,
+ mega_product_1: section.settings.mega_product_1
+                ,
+ mega_product_2: section.settings.mega_product_2
               %}
             {%- endif -%}
           </li>
@@ -1767,36 +1870,56 @@
   </nav>
 </div>
 
-{% render 'custom-header-mobile-drawer',
-  header_menu: header_menu,
-  menu2: section.settings.menu2,
-  search_placeholder: section.settings.search_placeholder,
-  search_product_1: section.settings.search_product_1,
-  search_product_2: section.settings.search_product_2,
-  search_featured_product: section.settings.search_featured_product,
-  mega_product_1: section.settings.mega_product_1,
-  mega_product_2: section.settings.mega_product_2
+{% render 'custom-header-mobile-drawer'
+  ,
+ header_menu: header_menu
+  ,
+ menu2: section.settings.menu2
+  ,
+ search_placeholder: section.settings.search_placeholder
+  ,
+ search_product_1: section.settings.search_product_1
+  ,
+ search_product_2: section.settings.search_product_2
+  ,
+ search_featured_product: section.settings.search_featured_product
+  ,
+ mega_product_1: section.settings.mega_product_1
+  ,
+ mega_product_2: section.settings.mega_product_2
 %}
 
 <div class="custom-cart-overlay" id="customCartOverlay"></div>
 
-<div class="custom-cart-drawer" id="customCartDrawer" aria-hidden="true">
+<div
+  class="custom-cart-drawer"
+  id="customCartDrawer"
+  aria-hidden="true">
   <div class="custom-cart-header">
-    <h2>Your Cart <span id="customCartCount">(0)</span></h2>
-    <button type="button" class="custom-cart-close" id="customCartClose" aria-label="Close cart">
+    <h2>Your Cart
+      <span id="customCartCount">(0)</span>
+    </h2>
+    <button
+      type="button"
+      class="custom-cart-close"
+      id="customCartClose"
+      aria-label="Close cart">
       &times;
     </button>
   </div>
 
   <div class="custom-cart-body" id="customCartBody"></div>
 
-  <div class="custom-cart-footer" id="customCartFooter" style="display:none;">
+  <div
+    class="custom-cart-footer"
+    id="customCartFooter"
+    style="display:none;">
     <div class="custom-cart-subtotal-row">
       <div class="custom-cart-subtotal-row-inner">
-      <strong>Subtotal (<span id="customCartItemLabel">0 Items</span>)</strong>
-      <strong id="customCartSubtotal">$0.00</strong>
+        <strong>Subtotal (<span id="customCartItemLabel">0 Items</span>)</strong>
+        <strong id="customCartSubtotal">$0.00</strong>
       </div>
-        <p>Discounts and promo codes will be calculated at checkout</p>
+      <p>Discounts and promo codes will be calculated at checkout</p>
     </div>
 
     <a href="/checkout" class="custom-cart-checkout">Secure Check Out</a>
@@ -1804,7 +1927,7 @@
 </div>
 
 <script type="application/json" id="customCartCollectionUpsellsData">
-[
+  [
   {%- assign cart_upsell_count = 0 -%}
   {%- for cart_item in cart.items -%}
     {%- assign source_collection = cart_item.product.collections.first -%}
@@ -1831,64 +1954,64 @@
       {%- endfor -%}
     {%- endif -%}
   {%- endfor -%}
-]
+  ]
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
   const mobileBreakpoint = 767;
   const marquees = document.querySelectorAll('marquee.custom-header-topbar.mobile');
-
+  
   marquees.forEach(function (marquee) {
     if (marquee.dataset.jsMarqueeInit === 'true') return;
     marquee.dataset.jsMarqueeInit = 'true';
-
+  
     const source = marquee.querySelector('.marquee-container');
     if (!source) return;
-
+  
     const sourceHTML = source.innerHTML;
     let wrapper = null;
     let viewport = null;
     let track = null;
     let resizeTimer = null;
-
+  
     function createWrapper() {
       wrapper = document.createElement('div');
       wrapper.className = 'custom-header-topbar mobile js-marquee';
-
+  
       viewport = document.createElement('div');
       viewport.className = 'marquee-viewport';
-
+  
       track = document.createElement('div');
       track.className = 'marquee-track';
-
+  
       viewport.appendChild(track);
       wrapper.appendChild(viewport);
-
+  
       marquee.insertAdjacentElement('afterend', wrapper);
     }
-
+  
     function buildMarquee() {
       if (!wrapper) createWrapper();
-
+  
       if (window.innerWidth > mobileBreakpoint) {
         wrapper.style.display = 'none';
         marquee.style.display = '';
         return;
       }
-
+  
       wrapper.style.display = 'block';
       marquee.style.display = 'none';
-
+  
       track.innerHTML = '';
-
+  
       const group = document.createElement('div');
       group.className = 'marquee-group';
       track.appendChild(group);
-
+  
       let loops = 0;
       const minWidth = Math.max(viewport.clientWidth, window.innerWidth, 320) + 100;
-
+  
       while (group.scrollWidth < minWidth && loops < 10) {
         const chunk = document.createElement('div');
         chunk.className = 'marquee-container';
@@ -1896,41 +2019,41 @@ document.addEventListener('DOMContentLoaded', function () {
         group.appendChild(chunk);
         loops++;
       }
-
+  
       if (!group.children.length) return;
-
+  
       const clone = group.cloneNode(true);
       clone.setAttribute('aria-hidden', 'true');
       track.appendChild(clone);
-
+  
       wrapper.style.setProperty('--loop-width', group.scrollWidth + 'px');
     }
-
+  
     function handleResize() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(buildMarquee, 120);
     }
-
+  
     buildMarquee();
     window.addEventListener('resize', handleResize);
   });
-});
+  });
 </script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const selectors = document.querySelectorAll('[data-topbar-country-selector]');
-
+  
     function closeAllCountryDropdowns() {
       document.querySelectorAll('[data-topbar-country-dropdown]').forEach(function (dropdown) {
         dropdown.setAttribute('hidden', '');
       });
-
+  
       document.querySelectorAll('[data-topbar-country-button]').forEach(function (button) {
         button.setAttribute('aria-expanded', 'false');
       });
     }
-
+  
     selectors.forEach(function (selector) {
       const form = selector.closest('form');
       const button = selector.querySelector('[data-topbar-country-button]');
@@ -1938,69 +2061,69 @@ document.addEventListener('DOMContentLoaded', function () {
       const countryInput = form ? form.querySelector('[data-topbar-country-input]') : null;
       const currentFlag = selector.querySelector('[data-topbar-current-flag]');
       const options = selector.querySelectorAll('.topbar-country-option[data-country-code]');
-
+  
       if (!form || !button || !dropdown || !countryInput) return;
-
+  
       button.addEventListener('click', function (event) {
         event.preventDefault();
         event.stopPropagation();
-
+  
         const isOpen = !dropdown.hasAttribute('hidden');
-
+  
         closeAllCountryDropdowns();
-
+  
         if (!isOpen) {
           dropdown.removeAttribute('hidden');
           button.setAttribute('aria-expanded', 'true');
         }
       });
-
+  
       dropdown.addEventListener('click', function (event) {
         event.stopPropagation();
       });
-
+  
       options.forEach(function (option) {
         option.addEventListener('click', function (event) {
           event.preventDefault();
           event.stopPropagation();
-
+  
           const countryCode = option.getAttribute('data-country-code');
           const countryName = option.getAttribute('data-country-name') || countryCode;
           const countryFlag = option.getAttribute('data-country-flag');
           const countryFlag2x = option.getAttribute('data-country-flag-2x');
-
+  
           if (!countryCode) return;
-
+  
           countryInput.value = countryCode;
-
+  
           options.forEach(function (item) {
             item.classList.remove('is-active');
           });
-
+  
           option.classList.add('is-active');
-
+  
           if (currentFlag && countryFlag) {
             currentFlag.src = countryFlag;
             currentFlag.alt = countryName + ' flag';
-
+  
             if (countryFlag2x) {
               currentFlag.srcset = countryFlag + ' 1x, ' + countryFlag2x + ' 2x';
             }
           }
-
+  
           closeAllCountryDropdowns();
-
+  
           setTimeout(function () {
             form.submit();
           }, 50);
         });
       });
     });
-
+  
     document.addEventListener('click', function () {
       closeAllCountryDropdowns();
     });
-
+  
     document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') {
         closeAllCountryDropdowns();
@@ -2013,10 +2136,10 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('DOMContentLoaded', function () {
     var navScroll = document.getElementById('CustomHeaderNavScroll');
     if (!navScroll) return;
-
+  
     var navInner = navScroll.querySelector('.header-nav-inner');
     if (!navInner) return;
-
+  
     function updateDesktopNavScroll() {
       if (window.innerWidth <= 900) {
         navScroll.classList.remove('is-scrollable');
@@ -2024,61 +2147,61 @@ document.addEventListener('DOMContentLoaded', function () {
         navScroll.scrollLeft = 0;
         return;
       }
-
+  
       navScroll.classList.remove('is-scrollable');
-
+  
       var navWidth = navInner.scrollWidth;
       var wrapperWidth = navScroll.clientWidth;
-
+  
       if (navWidth > wrapperWidth || window.innerWidth < 1440) {
         navScroll.classList.add('is-scrollable');
       }
     }
-
+  
     updateDesktopNavScroll();
     window.addEventListener('resize', updateDesktopNavScroll);
-
+  
     var isDown = false;
     var startX = 0;
     var scrollLeft = 0;
-
+  
     navScroll.addEventListener('mousedown', function (e) {
       if (!navScroll.classList.contains('is-scrollable')) return;
-
+  
       /*
         Do NOT start the drag-scroll behavior when clicking a real menu link.
         The old behavior could cancel normal anchor clicks when the mouse moved even a tiny bit.
       */
       if (e.target.closest('a')) return;
-
+  
       isDown = true;
       navScroll.classList.add('is-dragging');
       startX = e.pageX - navScroll.offsetLeft;
       scrollLeft = navScroll.scrollLeft;
     });
-
+  
     navScroll.addEventListener('mouseleave', function () {
       isDown = false;
       navScroll.classList.remove('is-dragging');
     });
-
+  
     navScroll.addEventListener('mouseup', function () {
       isDown = false;
       navScroll.classList.remove('is-dragging');
     });
-
+  
     navScroll.addEventListener('mousemove', function (e) {
       if (!isDown) return;
-
+  
       e.preventDefault();
       var x = e.pageX - navScroll.offsetLeft;
       var walk = x - startX;
       navScroll.scrollLeft = scrollLeft - walk;
     });
-
+  
     navScroll.addEventListener('wheel', function (e) {
       if (!navScroll.classList.contains('is-scrollable')) return;
-
+  
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         e.preventDefault();
         navScroll.scrollLeft += e.deltaY;
@@ -2091,12 +2214,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('DOMContentLoaded', function () {
     const navItems = document.querySelectorAll('.custom-nav-item.has-dropdown');
     const desktopBreakpoint = window.matchMedia('(min-width: 901px)');
-
+  
     function isRealLink(href) {
       if (!href) return false;
-
+  
       const cleanHref = href.trim().toLowerCase();
-
+  
       return (
         cleanHref !== '#' &&
         cleanHref !== 'javascript:void(0)' &&
@@ -2104,44 +2227,44 @@ document.addEventListener('DOMContentLoaded', function () {
         !cleanHref.startsWith('javascript:')
       );
     }
-
+  
     function closeAllMenus() {
       navItems.forEach(function (item) {
         const trigger = item.querySelector('.custom-nav-trigger');
         const modal = item.querySelector('.custom-nav-modal');
-
+  
         item.classList.remove('is-open');
         if (trigger) trigger.setAttribute('aria-expanded', 'false');
         if (modal) modal.hidden = true;
       });
     }
-
+  
     navItems.forEach(function (item) {
       const trigger = item.querySelector('.custom-nav-trigger');
       const modal = item.querySelector('.custom-nav-modal');
       const closeBtn = item.querySelector('.custom-nav-modal__close');
-
+  
       if (!trigger || !modal) return;
-
+  
       modal.hidden = true;
-
+  
       item.addEventListener('mouseenter', function () {
         if (!desktopBreakpoint.matches) return;
-
+  
         closeAllMenus();
         item.classList.add('is-open');
         trigger.setAttribute('aria-expanded', 'true');
         modal.hidden = false;
       });
-
+  
       item.addEventListener('mouseleave', function () {
         if (!desktopBreakpoint.matches) return;
-
+  
         item.classList.remove('is-open');
         trigger.setAttribute('aria-expanded', 'false');
         modal.hidden = true;
       });
-
+  
       /*
         IMPORTANT:
         This uses capture mode so the parent mega-menu link runs BEFORE any other theme/app script
@@ -2149,33 +2272,33 @@ document.addEventListener('DOMContentLoaded', function () {
       */
       trigger.addEventListener('click', function (e) {
         const href = trigger.getAttribute('href');
-
+  
         if (desktopBreakpoint.matches) {
           if (isRealLink(href)) {
             e.preventDefault();
             e.stopImmediatePropagation();
             window.location.href = trigger.href;
           }
-
+  
           return;
         }
-
+  
         /*
           MOBILE:
           Keep parent click as dropdown toggle.
         */
         e.preventDefault();
-
+  
         const isOpen = item.classList.contains('is-open');
         closeAllMenus();
-
+  
         if (!isOpen) {
           item.classList.add('is-open');
           trigger.setAttribute('aria-expanded', 'true');
           modal.hidden = false;
         }
       }, true);
-
+  
       if (closeBtn) {
         closeBtn.addEventListener('click', function () {
           item.classList.remove('is-open');
@@ -2184,10 +2307,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       }
     });
-
+  
     document.addEventListener('click', function (e) {
       if (desktopBreakpoint.matches) return;
-
+  
       const clickedInside = e.target.closest('.custom-nav-item.has-dropdown');
       if (!clickedInside) {
         closeAllMenus();
@@ -2202,11 +2325,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var drawer = document.getElementById('mobileNavDrawer');
     var overlay = document.getElementById('mobileNavOverlay');
     var closeBtn = document.getElementById('mobileDrawerClose');
-
+  
     if (!btn || !drawer || !overlay) return;
-
+  
     drawer.setAttribute('aria-hidden', 'true');
-
+  
     function openDrawer() {
       drawer.classList.add('open');
       overlay.classList.add('open');
@@ -2214,7 +2337,7 @@ document.addEventListener('DOMContentLoaded', function () {
       btn.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
     }
-
+  
     function closeDrawer() {
       drawer.classList.remove('open');
       overlay.classList.remove('open');
@@ -2222,46 +2345,46 @@ document.addEventListener('DOMContentLoaded', function () {
       btn.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
     }
-
+  
     btn.addEventListener('click', function(event) {
       event.preventDefault();
-
+  
       if (drawer.classList.contains('open')) {
         closeDrawer();
       } else {
         openDrawer();
       }
     });
-
+  
     overlay.addEventListener('click', closeDrawer);
-
+  
     if (closeBtn) {
       closeBtn.addEventListener('click', closeDrawer);
     }
-
+  
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape') {
         closeDrawer();
       }
     });
-
+  
     document.querySelectorAll('.mobile-sub-toggle').forEach(function(toggle) {
       toggle.addEventListener('click', function() {
         var targetId = this.getAttribute('data-target');
         var sub = document.getElementById(targetId);
-
+  
         if (!sub) return;
-
+  
         var isOpen = sub.classList.contains('open');
-
+  
         document.querySelectorAll('.mobile-submenu.open').forEach(function(el) {
           el.classList.remove('open');
         });
-
+  
         document.querySelectorAll('.mobile-sub-toggle.active').forEach(function(el) {
           el.classList.remove('active');
         });
-
+  
         if (!isOpen) {
           sub.classList.add('open');
           this.classList.add('active');
@@ -2282,7 +2405,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var countEl = document.getElementById('customCartCount');
     var subtotalEl = document.getElementById('customCartSubtotal');
     var itemLabelEl = document.getElementById('customCartItemLabel');
-
+  
     var bestSellers = [
       {% assign best_seller_products = '' %}
       {% if section.settings.best_seller_1 != blank %}
@@ -2296,7 +2419,7 @@ document.addEventListener('DOMContentLoaded', function () {
         {% if best_seller_products != blank %}{% assign best_seller_products = best_seller_products | append: ',' %}{% endif %}
         {% assign best_seller_products = best_seller_products | append: section.settings.best_seller_3.handle %}
       {% endif %}
-
+  
       {% assign bs_products = best_seller_products | split: ',' %}
       {% for product_handle in bs_products %}
         {% assign bs_product = all_products[product_handle] %}
@@ -2311,16 +2434,16 @@ document.addEventListener('DOMContentLoaded', function () {
         {% endif %}
       {% endfor %}
     ];
-
+  
     var collectionUpsells = readCollectionUpsellsFromDocument(document);
-
+  
     function readCollectionUpsellsFromDocument(doc) {
       var script = doc && doc.getElementById
         ? doc.getElementById('customCartCollectionUpsellsData')
         : null;
-
+  
       if (!script) return [];
-
+  
       try {
         return JSON.parse(script.textContent || '[]') || [];
       } catch (error) {
@@ -2328,7 +2451,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return [];
       }
     }
-
+  
     function refreshCollectionUpsells() {
       return fetch(window.location.pathname + '?section_id={{ section.id }}', {
         headers: {
@@ -2347,7 +2470,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return collectionUpsells;
         });
     }
-
+  
     function escapeHtml(str) {
       return String(str || '')
         .replace(/&/g, '&amp;')
@@ -2356,20 +2479,20 @@ document.addEventListener('DOMContentLoaded', function () {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
-
+  
     function money(cents) {
       cents = Number(cents || 0);
-
+  
       if (window.Shopify && typeof window.Shopify.formatMoney === 'function') {
         return window.Shopify.formatMoney(cents, "{{ shop.money_format | escape }}");
       }
-
+  
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: '{{ cart.currency.iso_code | default: shop.currency }}'
       }).format(cents / 100);
     }
-
+  
     function getItemImage(item) {
       if (!item) return '';
       if (typeof item.image === 'string' && item.image !== '') {
@@ -2383,7 +2506,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       return '';
     }
-
+  
     function prettyLabel(name) {
       return String(name || '')
         .replace(/^properties\[/, '')
@@ -2395,32 +2518,32 @@ document.addEventListener('DOMContentLoaded', function () {
           return letter.toUpperCase();
         });
     }
-
+  
     function isHiddenCartProperty(name) {
       name = String(name || '');
       return name.charAt(0) === '_' || name.indexOf('__') === 0;
     }
-
+  
     function isEmptyCartValue(value) {
       if (value == null) return true;
       if (Array.isArray(value)) return value.length === 0;
       return String(value).trim() === '';
     }
-
+  
     function formatCartValue(value) {
       if (Array.isArray(value)) {
         return value.join(', ');
       }
-
+  
       if (typeof value === 'object' && value !== null) {
         if (value.url) return value.url;
         if (value.name) return value.name;
         return JSON.stringify(value);
       }
-
+  
       return String(value);
     }
-
+  
     function normalizeCartKey(name) {
       return String(name || '')
         .replace(/^properties\[/, '')
@@ -2432,34 +2555,34 @@ document.addEventListener('DOMContentLoaded', function () {
         .toLowerCase()
         .replace(/\s+/g, ' ');
     }
-
+  
     function cleanCartValue(value) {
       value = formatCartValue(value);
-
+  
       return String(value || '')
         .replace(/^\s+|\s+$/g, '')
         .replace(/^\|+|\|+$/g, '')
         .replace(/^\s+|\s+$/g, '');
     }
-
+  
     function findCartField(fields, names) {
       var i;
       var key;
-
+  
       for (i = 0; i < names.length; i++) {
         key = normalizeCartKey(names[i]);
-
+  
         if (fields[key] && String(fields[key]).trim() !== '') {
           return fields[key];
         }
       }
-
+  
       return '';
     }
-
+  
     function isDiameterPropertyName(name) {
       var key = normalizeCartKey(name);
-
+  
       return (
         key === 'diameter' ||
         key === 'bell diameter' ||
@@ -2472,15 +2595,15 @@ document.addEventListener('DOMContentLoaded', function () {
         key === 'enter the diameter of your bell here (us inches)'
       );
     }
-
+  
     function hasRealVariantOptions(item) {
       if (!item) return false;
-
+  
       if (Array.isArray(item.options_with_values) && item.options_with_values.length) {
         return item.options_with_values.some(function(option) {
           var name = normalizeCartKey(option.name);
           var value = cleanCartValue(option.value);
-
+  
           return (
             value &&
             value !== '0' &&
@@ -2491,48 +2614,48 @@ document.addEventListener('DOMContentLoaded', function () {
           );
         });
       }
-
+  
       if (Array.isArray(item.variant_options) && item.variant_options.length) {
         return item.variant_options.some(function(value) {
           value = cleanCartValue(value);
           return value && value !== '0' && value !== 'Default Title';
         });
       }
-
+  
       return !!(
         item.variant_title &&
         item.variant_title !== '0' &&
         item.variant_title !== 'Default Title'
       );
     }
-
+  
     function getLineItemPropertyValue(item, names) {
       var targetKeys = {};
       var properties;
-
+  
       if (!item || !item.properties) return '';
-
+  
       names.forEach(function(name) {
         targetKeys[normalizeCartKey(name)] = true;
       });
-
+  
       properties = item.properties;
-
+  
       return Object.keys(properties).reduce(function(foundValue, propertyName) {
         var value;
-
+  
         if (foundValue) return foundValue;
         if (isHiddenCartProperty(propertyName)) return '';
         if (!targetKeys[normalizeCartKey(propertyName)]) return '';
-
+  
         value = cleanCartValue(properties[propertyName]);
-
+  
         if (!value || value === '0' || value === 'Default Title') return '';
-
+  
         return value;
       }, '');
     }
-
+  
     function getAllVariantDetailsHtml(item) {
       var rows = [];
       var seen = {};
@@ -2547,7 +2670,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'Enter Diameter',
         'Diameter Size'
       ]);
-
+  
       /*
         Typed-diameter products save the customer's input as a line-item property.
         Show that value first, even if Shopify also returns a variant option named
@@ -2562,16 +2685,16 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
         `;
       }
-
+  
       function addRow(name, value) {
         var normalizedName;
         var normalizedValue;
         var key;
-
+  
         if (!name || isEmptyCartValue(value)) return;
-
+  
         value = cleanCartValue(value);
-
+  
         /*
           IMPORTANT:
           Shopify can return the typed-diameter product option as a variant option
@@ -2580,30 +2703,30 @@ document.addEventListener('DOMContentLoaded', function () {
           line-item property Diameter should be shown.
         */
         if (!value || value === '0' || value === 'Default Title') return;
-
+  
         if (isDiameterPropertyName(name)) {
           if (itemHasRealVariants) return;
           if (!lineItemDiameter) return;
         }
-
+  
         normalizedName = normalizeCartKey(name);
         normalizedValue = String(value).toLowerCase();
         key = normalizedName + ':' + normalizedValue;
-
+  
         if (seen[key]) return;
         seen[key] = true;
-
+  
         if (!fields[normalizedName]) {
           fields[normalizedName] = value;
         }
-
+  
         rows.push({
           name: prettyLabel(name),
           key: normalizedName,
           value: value
         });
       }
-
+  
       /*
         Shopify variant options:
         This handles options like Imprint, Imprint Size, Color, etc.
@@ -2619,7 +2742,7 @@ document.addEventListener('DOMContentLoaded', function () {
       } else if (item.variant_title && item.variant_title !== 'Default Title') {
         addRow('Variant', item.variant_title);
       }
-
+  
       /*
         Shopify line item properties:
         This handles custom choices like typed Diameter, uploaded design details,
@@ -2631,7 +2754,7 @@ document.addEventListener('DOMContentLoaded', function () {
           addRow(name, item.properties[name]);
         });
       }
-
+  
       /*
         Diameter-entry products:
         Only show Diameter by itself when the product does NOT have real variants.
@@ -2648,7 +2771,7 @@ document.addEventListener('DOMContentLoaded', function () {
           'Enter Diameter',
           'Diameter Size'
         ]);
-
+  
         if (diameter && diameter !== '0') {
           return `
             <div class="custom-cart-item-options">
@@ -2659,7 +2782,7 @@ document.addEventListener('DOMContentLoaded', function () {
           `;
         }
       }
-
+  
       /*
         Standard products:
         Show a single Figma-style line:
@@ -2673,7 +2796,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'Option 2',
         'Option 1'
       ]);
-
+  
       var imprint = findCartField(fields, [
         'Imprint',
         'Print',
@@ -2683,7 +2806,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'Standard Print',
         'Option 1'
       ]);
-
+  
       var color = findCartField(fields, [
         'Color',
         'Colour',
@@ -2691,21 +2814,21 @@ document.addEventListener('DOMContentLoaded', function () {
         'Product Color',
         'Option 3'
       ]);
-
+  
       var formattedParts = [];
-
+  
       if (size) {
         formattedParts.push('Size ' + size);
       }
-
+  
       if (imprint && imprint !== size) {
         formattedParts.push(imprint);
       }
-
+  
       if (color) {
         formattedParts.push(color);
       }
-
+  
       if (formattedParts.length) {
         return `
           <div class="custom-cart-item-options">
@@ -2717,10 +2840,10 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
         `;
       }
-
-
+  
+  
       if (!rows.length) return '';
-
+  
       return `
         <div class="custom-cart-item-options">
           ${rows.map(function(row) {
@@ -2733,11 +2856,11 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       `;
     }
-
+  
     function bestSellersHtml() {
       return bestSellers.map(function(item) {
         var diameterHtml = '';
-
+  
         if (item.diameter && String(item.diameter).trim() !== '') {
           diameterHtml = `
             <div class="custom-rec-meta">
@@ -2750,7 +2873,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
           `;
         }
-
+  
         return `
           <div class="custom-rec-item">
             <img src="${item.image}" alt="${escapeHtml(item.title)}">
@@ -2764,42 +2887,42 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
       }).join('');
     }
-
+  
     function renderCollectionUpsellsHtml(cart) {
       if (!cart || !Array.isArray(cart.items) || !cart.items.length) return '';
       if (!Array.isArray(collectionUpsells) || !collectionUpsells.length) return '';
-
+  
       var cartProductIds = {};
       var cartVariantIds = {};
       var shownProductIds = {};
       var selected = [];
-
+  
       cart.items.forEach(function(item) {
         cartProductIds[String(item.product_id)] = true;
         cartVariantIds[String(item.variant_id)] = true;
       });
-
+  
       collectionUpsells.forEach(function(item) {
         if (!item || !item.productId || !item.variantId) return;
         if (!item.available) return;
         if (cartProductIds[String(item.productId)]) return;
         if (cartVariantIds[String(item.variantId)]) return;
         if (shownProductIds[String(item.productId)]) return;
-
+  
         shownProductIds[String(item.productId)] = true;
         selected.push(item);
       });
-
+  
       selected = selected.slice(0, 1);
-
+  
       if (!selected.length) return '';
-
+  
       return `
         <div class="custom-cart-recommendations custom-cart-recommendations--upsell">
           <h4>Add More, Save More</h4>
           ${selected.map(function(item) {
             var diameterHtml = '';
-
+  
             if (item.diameter && String(item.diameter).trim() !== '') {
               diameterHtml = `
                 <div class="custom-rec-meta">
@@ -2812,25 +2935,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
               `;
             }
-
+  
             return `
               <div class="custom-rec-item">
                 <a href="${item.url}" aria-label="${escapeHtml(item.title)}">
                   <img src="${item.image}" alt="${escapeHtml(item.title)}">
                 </a>
-
+  
                 <div class="custom-rec-content">
                   <div class="custom-rec-title">${escapeHtml(item.title)}</div>
                   ${diameterHtml}
                   <div class="custom-rec-price">${item.price}</div>
                 </div>
-
+  
                 <button
                   type="button"
                   class="custom-rec-btn custom-rec-quick-add"
                   data-variant-id="${escapeHtml(item.variantId)}"
                 >
-                  Quick Add
+                  Customize Now
                 </button>
               </div>
             `;
@@ -2838,15 +2961,15 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       `;
     }
-
+  
     function quickAddUpsell(variantId, button) {
       if (!variantId) return;
-
+  
       if (button) {
         button.disabled = true;
         button.textContent = 'Adding...';
       }
-
+  
       fetch('/cart/add.js', {
         method: 'POST',
         headers: {
@@ -2879,11 +3002,11 @@ document.addEventListener('DOMContentLoaded', function () {
         .finally(function() {
           if (button) {
             button.disabled = false;
-            button.textContent = 'Quick Add';
+            button.textContent = 'Customize Now';
           }
         });
     }
-
+  
     function paymentIconsHtml() {
       return `
         <div class="custom-cart-payments">
@@ -2904,7 +3027,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6797" result="shape"/>
     </filter>
   </defs>
-</svg></span>
+  </svg></span>
           <span class="custom-cart-payment-badge"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="42" viewBox="0 0 56 42" fill="none">
   <g filter="url(#filter0_d_464_6798)">
     <rect x="5.29313" y="5.29142" width="45.304" height="30.8592" rx="3.61119" fill="white" stroke="#D9D9D9" stroke-width="0.65658"/>
@@ -2922,7 +3045,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6798" result="shape"/>
     </filter>
   </defs>
-</svg></span>
+  </svg></span>
           <span class="custom-cart-payment-badge"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="42" viewBox="0 0 56 42" fill="none">
   <g filter="url(#filter0_d_464_6799)">
     <rect x="5.29313" y="5.29142" width="45.304" height="30.8592" rx="3.61119" fill="white" stroke="#D9D9D9" stroke-width="0.65658"/>
@@ -2940,7 +3063,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6799" result="shape"/>
     </filter>
   </defs>
-</svg></span>
+  </svg></span>
           <span class="custom-cart-payment-badge"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="42" viewBox="0 0 56 42" fill="none">
   <g filter="url(#filter0_d_464_6800)">
     <rect x="5.29313" y="5.29142" width="45.304" height="30.8592" rx="3.61119" fill="white" stroke="#D9D9D9" stroke-width="0.65658"/>
@@ -2962,7 +3085,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6800" result="shape"/>
     </filter>
   </defs>
-</svg></span>
+  </svg></span>
           <span class="custom-cart-payment-badge"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="42" viewBox="0 0 56 42" fill="none">
   <g filter="url(#filter0_d_464_6801)">
     <rect x="5.29313" y="5.29142" width="45.304" height="30.8592" rx="3.61119" fill="white" stroke="#D9D9D9" stroke-width="0.65658"/>
@@ -2982,7 +3105,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6801" result="shape"/>
     </filter>
   </defs>
-</svg></span>
+  </svg></span>
           <span class="custom-cart-payment-badge"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="42" viewBox="0 0 56 42" fill="none">
   <g filter="url(#filter0_d_464_6802)">
     <rect x="5.29313" y="5.29142" width="45.304" height="30.8592" rx="3.61119" fill="white" stroke="#D9D9D9" stroke-width="0.65658"/>
@@ -3005,7 +3128,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6802" result="shape"/>
     </filter>
   </defs>
-</svg></span>
+  </svg></span>
           <span class="custom-cart-payment-badge"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="42" viewBox="0 0 56 42" fill="none">
   <g filter="url(#filter0_d_464_6803)">
     <rect x="5.29313" y="5.29142" width="45.304" height="30.8592" rx="3.61119" fill="white" stroke="#D9D9D9" stroke-width="0.65658"/>
@@ -3024,25 +3147,25 @@ document.addEventListener('DOMContentLoaded', function () {
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6803" result="shape"/>
     </filter>
   </defs>
-</svg></span>
+  </svg></span>
           <span class="custom-cart-payment-badge"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="42" viewBox="0 0 56 42" fill="none">
-<g filter="url(#filter0_d_464_6804)">
-<rect x="5.29313" y="5.29142" width="45.304" height="30.8592" rx="3.61119" fill="#5A31F4" stroke="#D9D9D9" stroke-width="0.65658"/>
-<path d="M30.8408 19.4883C30.8408 21.5107 29.423 22.9544 27.4416 22.9544H25.5749C25.5543 22.9544 25.5338 22.9584 25.5148 22.9664C25.4958 22.9743 25.4785 22.9859 25.464 23.0005C25.4494 23.0151 25.4379 23.0324 25.4301 23.0515C25.4223 23.0705 25.4183 23.091 25.4184 23.1116V25.7696C25.4184 25.8112 25.402 25.8511 25.3726 25.8805C25.3433 25.91 25.3035 25.9266 25.262 25.9268H23.9557C23.9247 25.9267 23.8943 25.9174 23.8685 25.9001C23.8427 25.8828 23.8226 25.8583 23.8107 25.8296C23.8028 25.8109 23.7987 25.7907 23.7985 25.7704V16.1786C23.7984 16.158 23.8024 16.1376 23.8102 16.1185C23.818 16.0995 23.8295 16.0821 23.8441 16.0675C23.8586 16.0529 23.8759 16.0413 23.8949 16.0334C23.914 16.0255 23.9344 16.0214 23.955 16.0214H27.4499C29.423 16.0191 30.8408 17.4628 30.8408 19.4883ZM29.2118 19.4883C29.2118 18.3256 28.419 17.4758 27.3436 17.4758H25.5749C25.5543 17.4758 25.5338 17.4798 25.5148 17.4877C25.4958 17.4956 25.4785 17.5072 25.464 17.5218C25.4494 17.5365 25.4379 17.5538 25.4301 17.5729C25.4223 17.5919 25.4183 17.6124 25.4184 17.633V21.3345C25.4184 21.376 25.4349 21.4158 25.4642 21.4451C25.4936 21.4744 25.5334 21.4909 25.5749 21.4909H27.3436C28.419 21.4985 29.2118 20.6479 29.2118 19.4883ZM31.2282 24.0867C31.2146 23.7765 31.2788 23.4679 31.4149 23.1888C31.5509 22.9098 31.7546 22.6692 32.0073 22.4888C32.5169 22.1053 33.3136 21.9071 34.4831 21.8661L35.7286 21.822V21.4545C35.7286 20.7178 35.235 20.4064 34.4421 20.4064C33.6493 20.4064 33.1465 20.6874 33.0311 21.1469C33.0217 21.1792 33.0018 21.2075 32.9746 21.2273C32.9474 21.2471 32.9143 21.2573 32.8807 21.2563H31.6504C31.6278 21.2569 31.6052 21.2525 31.5845 21.2434C31.5637 21.2344 31.5452 21.2208 31.5303 21.2038C31.5153 21.1867 31.5043 21.1666 31.498 21.1448C31.4918 21.1231 31.4904 21.1002 31.494 21.0778C31.6762 19.9888 32.5822 19.161 34.4983 19.161C36.5367 19.161 37.2726 20.1103 37.2726 21.9223V25.7696C37.2722 25.8116 37.2552 25.8517 37.2253 25.8812C37.1954 25.9106 37.155 25.927 37.1131 25.9268H35.8729C35.8314 25.9267 35.7916 25.9104 35.762 25.8813C35.7475 25.8667 35.736 25.8494 35.7282 25.8304C35.7204 25.8113 35.7164 25.791 35.7165 25.7704V25.4826C35.7169 25.4588 35.7101 25.4354 35.6971 25.4156C35.684 25.3957 35.6652 25.3803 35.6431 25.3713C35.6211 25.3623 35.5968 25.3603 35.5736 25.3653C35.5504 25.3704 35.5292 25.3824 35.5129 25.3998C35.1408 25.8046 34.5401 26.097 33.5779 26.097C32.1623 26.097 31.2282 25.3603 31.2282 24.0867ZM35.7286 23.2528V22.9544L34.1156 23.0394C33.2657 23.0827 32.7713 23.4359 32.7713 24.0305C32.7713 24.5682 33.2247 24.8659 34.0168 24.8659C35.093 24.8659 35.7286 24.2849 35.7286 23.2528ZM38.518 28.834V27.7191C38.5183 27.6957 38.5237 27.6727 38.5338 27.6516C38.5439 27.6306 38.5586 27.612 38.5767 27.5972C38.5948 27.5824 38.616 27.5718 38.6386 27.5661C38.6613 27.5604 38.685 27.5597 38.7079 27.5642C38.8978 27.5999 39.0914 27.6181 39.2851 27.6189C39.618 27.6351 39.9468 27.5391 40.2187 27.3463C40.4906 27.1536 40.69 26.8752 40.785 26.5557L40.8655 26.299C40.8772 26.2645 40.8772 26.2271 40.8655 26.1926L38.2811 19.5551C38.2718 19.531 38.2684 19.5051 38.2713 19.4794C38.2742 19.4538 38.2833 19.4292 38.2978 19.4079C38.3123 19.3865 38.3317 19.369 38.3545 19.3568C38.3773 19.3446 38.4026 19.3381 38.4284 19.3379H39.6815C39.7135 19.3382 39.7447 19.3482 39.771 19.3665C39.7972 19.3848 39.8174 19.4105 39.8288 19.4404L41.5839 24.1216C41.5949 24.1527 41.6153 24.1797 41.6422 24.1987C41.6691 24.2178 41.7013 24.228 41.7343 24.228C41.7673 24.228 41.7994 24.2178 41.8264 24.1987C41.8533 24.1797 41.8737 24.1527 41.8847 24.1216L43.4089 19.4533C43.4194 19.4214 43.4398 19.3937 43.4671 19.374C43.4944 19.3544 43.5271 19.3439 43.5607 19.344H44.8571C44.8831 19.3441 44.9086 19.3506 44.9316 19.3628C44.9545 19.3749 44.9742 19.3925 44.9889 19.4139C45.0036 19.4353 45.0129 19.4599 45.016 19.4857C45.0191 19.5115 45.0159 19.5377 45.0067 19.5619L42.2424 26.9331C41.6059 28.6464 40.5146 29.0846 39.3132 29.0846C39.0854 29.0907 38.8575 29.0633 38.6373 29.0033C38.6007 28.9937 38.5686 28.9714 38.5468 28.9404C38.525 28.9094 38.5148 28.8717 38.518 28.834ZM15.4044 15.4685C13.758 15.4568 12.1697 16.0765 10.9662 17.2001C10.9147 17.2472 10.8827 17.3118 10.8762 17.3813C10.8697 17.4508 10.8894 17.5202 10.9313 17.576L11.6763 18.5937C11.7004 18.6275 11.7317 18.6557 11.7679 18.6762C11.8042 18.6967 11.8444 18.709 11.8859 18.7123C11.9274 18.7155 11.9691 18.7097 12.008 18.6951C12.047 18.6805 12.0823 18.6575 12.1115 18.6278C12.5442 18.1952 13.0588 17.8532 13.6253 17.6217C14.1917 17.3903 14.7986 17.274 15.4105 17.2798C17.9652 17.2798 19.2996 19.2027 19.2996 21.1013C19.2996 23.1655 17.8977 24.6176 15.8828 24.6464C14.326 24.6464 13.1527 23.6143 13.1527 22.2511C13.1543 21.9067 13.2323 21.567 13.3811 21.2564C13.5299 20.9458 13.7457 20.6721 14.0131 20.4551C14.0696 20.4078 14.1053 20.3403 14.1126 20.267C14.1198 20.1937 14.098 20.1205 14.0518 20.0632L13.2688 19.0744C13.2452 19.0445 13.2157 19.0196 13.1823 19.0013C13.1489 18.9829 13.1121 18.9715 13.0741 18.9676C13.0362 18.9637 12.9978 18.9674 12.9614 18.9786C12.9249 18.9898 12.891 19.0081 12.8618 19.0326C12.3809 19.42 11.9929 19.9102 11.7261 20.4671C11.4593 21.024 11.3206 21.6336 11.3201 22.2511C11.3201 24.5978 13.3144 26.4387 15.8692 26.4539H15.9034C18.9366 26.4144 21.1298 24.168 21.1298 21.0975C21.1298 18.3711 19.1219 15.4685 15.4052 15.4685H15.4044Z" fill="white"/>
-</g>
-<defs>
-<filter id="filter0_d_464_6804" x="0.00172186" y="1.28746e-05" width="55.8872" height="41.4421" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset/>
-<feGaussianBlur stdDeviation="2.48156"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_464_6804"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6804" result="shape"/>
-</filter>
-</defs>
-</svg></span>
+  <g filter="url(#filter0_d_464_6804)">
+  <rect x="5.29313" y="5.29142" width="45.304" height="30.8592" rx="3.61119" fill="#5A31F4" stroke="#D9D9D9" stroke-width="0.65658"/>
+  <path d="M30.8408 19.4883C30.8408 21.5107 29.423 22.9544 27.4416 22.9544H25.5749C25.5543 22.9544 25.5338 22.9584 25.5148 22.9664C25.4958 22.9743 25.4785 22.9859 25.464 23.0005C25.4494 23.0151 25.4379 23.0324 25.4301 23.0515C25.4223 23.0705 25.4183 23.091 25.4184 23.1116V25.7696C25.4184 25.8112 25.402 25.8511 25.3726 25.8805C25.3433 25.91 25.3035 25.9266 25.262 25.9268H23.9557C23.9247 25.9267 23.8943 25.9174 23.8685 25.9001C23.8427 25.8828 23.8226 25.8583 23.8107 25.8296C23.8028 25.8109 23.7987 25.7907 23.7985 25.7704V16.1786C23.7984 16.158 23.8024 16.1376 23.8102 16.1185C23.818 16.0995 23.8295 16.0821 23.8441 16.0675C23.8586 16.0529 23.8759 16.0413 23.8949 16.0334C23.914 16.0255 23.9344 16.0214 23.955 16.0214H27.4499C29.423 16.0191 30.8408 17.4628 30.8408 19.4883ZM29.2118 19.4883C29.2118 18.3256 28.419 17.4758 27.3436 17.4758H25.5749C25.5543 17.4758 25.5338 17.4798 25.5148 17.4877C25.4958 17.4956 25.4785 17.5072 25.464 17.5218C25.4494 17.5365 25.4379 17.5538 25.4301 17.5729C25.4223 17.5919 25.4183 17.6124 25.4184 17.633V21.3345C25.4184 21.376 25.4349 21.4158 25.4642 21.4451C25.4936 21.4744 25.5334 21.4909 25.5749 21.4909H27.3436C28.419 21.4985 29.2118 20.6479 29.2118 19.4883ZM31.2282 24.0867C31.2146 23.7765 31.2788 23.4679 31.4149 23.1888C31.5509 22.9098 31.7546 22.6692 32.0073 22.4888C32.5169 22.1053 33.3136 21.9071 34.4831 21.8661L35.7286 21.822V21.4545C35.7286 20.7178 35.235 20.4064 34.4421 20.4064C33.6493 20.4064 33.1465 20.6874 33.0311 21.1469C33.0217 21.1792 33.0018 21.2075 32.9746 21.2273C32.9474 21.2471 32.9143 21.2573 32.8807 21.2563H31.6504C31.6278 21.2569 31.6052 21.2525 31.5845 21.2434C31.5637 21.2344 31.5452 21.2208 31.5303 21.2038C31.5153 21.1867 31.5043 21.1666 31.498 21.1448C31.4918 21.1231 31.4904 21.1002 31.494 21.0778C31.6762 19.9888 32.5822 19.161 34.4983 19.161C36.5367 19.161 37.2726 20.1103 37.2726 21.9223V25.7696C37.2722 25.8116 37.2552 25.8517 37.2253 25.8812C37.1954 25.9106 37.155 25.927 37.1131 25.9268H35.8729C35.8314 25.9267 35.7916 25.9104 35.762 25.8813C35.7475 25.8667 35.736 25.8494 35.7282 25.8304C35.7204 25.8113 35.7164 25.791 35.7165 25.7704V25.4826C35.7169 25.4588 35.7101 25.4354 35.6971 25.4156C35.684 25.3957 35.6652 25.3803 35.6431 25.3713C35.6211 25.3623 35.5968 25.3603 35.5736 25.3653C35.5504 25.3704 35.5292 25.3824 35.5129 25.3998C35.1408 25.8046 34.5401 26.097 33.5779 26.097C32.1623 26.097 31.2282 25.3603 31.2282 24.0867ZM35.7286 23.2528V22.9544L34.1156 23.0394C33.2657 23.0827 32.7713 23.4359 32.7713 24.0305C32.7713 24.5682 33.2247 24.8659 34.0168 24.8659C35.093 24.8659 35.7286 24.2849 35.7286 23.2528ZM38.518 28.834V27.7191C38.5183 27.6957 38.5237 27.6727 38.5338 27.6516C38.5439 27.6306 38.5586 27.612 38.5767 27.5972C38.5948 27.5824 38.616 27.5718 38.6386 27.5661C38.6613 27.5604 38.685 27.5597 38.7079 27.5642C38.8978 27.5999 39.0914 27.6181 39.2851 27.6189C39.618 27.6351 39.9468 27.5391 40.2187 27.3463C40.4906 27.1536 40.69 26.8752 40.785 26.5557L40.8655 26.299C40.8772 26.2645 40.8772 26.2271 40.8655 26.1926L38.2811 19.5551C38.2718 19.531 38.2684 19.5051 38.2713 19.4794C38.2742 19.4538 38.2833 19.4292 38.2978 19.4079C38.3123 19.3865 38.3317 19.369 38.3545 19.3568C38.3773 19.3446 38.4026 19.3381 38.4284 19.3379H39.6815C39.7135 19.3382 39.7447 19.3482 39.771 19.3665C39.7972 19.3848 39.8174 19.4105 39.8288 19.4404L41.5839 24.1216C41.5949 24.1527 41.6153 24.1797 41.6422 24.1987C41.6691 24.2178 41.7013 24.228 41.7343 24.228C41.7673 24.228 41.7994 24.2178 41.8264 24.1987C41.8533 24.1797 41.8737 24.1527 41.8847 24.1216L43.4089 19.4533C43.4194 19.4214 43.4398 19.3937 43.4671 19.374C43.4944 19.3544 43.5271 19.3439 43.5607 19.344H44.8571C44.8831 19.3441 44.9086 19.3506 44.9316 19.3628C44.9545 19.3749 44.9742 19.3925 44.9889 19.4139C45.0036 19.4353 45.0129 19.4599 45.016 19.4857C45.0191 19.5115 45.0159 19.5377 45.0067 19.5619L42.2424 26.9331C41.6059 28.6464 40.5146 29.0846 39.3132 29.0846C39.0854 29.0907 38.8575 29.0633 38.6373 29.0033C38.6007 28.9937 38.5686 28.9714 38.5468 28.9404C38.525 28.9094 38.5148 28.8717 38.518 28.834ZM15.4044 15.4685C13.758 15.4568 12.1697 16.0765 10.9662 17.2001C10.9147 17.2472 10.8827 17.3118 10.8762 17.3813C10.8697 17.4508 10.8894 17.5202 10.9313 17.576L11.6763 18.5937C11.7004 18.6275 11.7317 18.6557 11.7679 18.6762C11.8042 18.6967 11.8444 18.709 11.8859 18.7123C11.9274 18.7155 11.9691 18.7097 12.008 18.6951C12.047 18.6805 12.0823 18.6575 12.1115 18.6278C12.5442 18.1952 13.0588 17.8532 13.6253 17.6217C14.1917 17.3903 14.7986 17.274 15.4105 17.2798C17.9652 17.2798 19.2996 19.2027 19.2996 21.1013C19.2996 23.1655 17.8977 24.6176 15.8828 24.6464C14.326 24.6464 13.1527 23.6143 13.1527 22.2511C13.1543 21.9067 13.2323 21.567 13.3811 21.2564C13.5299 20.9458 13.7457 20.6721 14.0131 20.4551C14.0696 20.4078 14.1053 20.3403 14.1126 20.267C14.1198 20.1937 14.098 20.1205 14.0518 20.0632L13.2688 19.0744C13.2452 19.0445 13.2157 19.0196 13.1823 19.0013C13.1489 18.9829 13.1121 18.9715 13.0741 18.9676C13.0362 18.9637 12.9978 18.9674 12.9614 18.9786C12.9249 18.9898 12.891 19.0081 12.8618 19.0326C12.3809 19.42 11.9929 19.9102 11.7261 20.4671C11.4593 21.024 11.3206 21.6336 11.3201 22.2511C11.3201 24.5978 13.3144 26.4387 15.8692 26.4539H15.9034C18.9366 26.4144 21.1298 24.168 21.1298 21.0975C21.1298 18.3711 19.1219 15.4685 15.4052 15.4685H15.4044Z" fill="white"/>
+  </g>
+  <defs>
+  <filter id="filter0_d_464_6804" x="0.00172186" y="1.28746e-05" width="55.8872" height="41.4421" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+  <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+  <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+  <feOffset/>
+  <feGaussianBlur stdDeviation="2.48156"/>
+  <feComposite in2="hardAlpha" operator="out"/>
+  <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0"/>
+  <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_464_6804"/>
+  <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6804" result="shape"/>
+  </filter>
+  </defs>
+  </svg></span>
           <span class="custom-cart-payment-badge"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="42" viewBox="0 0 56 42" fill="none">
   <g filter="url(#filter0_d_464_6805)">
     <rect x="5.29313" y="5.29142" width="45.304" height="30.8592" rx="3.61119" fill="white" stroke="#D9D9D9" stroke-width="0.65658"/>
@@ -3068,15 +3191,15 @@ document.addEventListener('DOMContentLoaded', function () {
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_464_6805" result="shape"/>
     </filter>
   </defs>
-</svg></span>
+  </svg></span>
         </div>
       `;
     }
-
+  
     function addBusinessDays(startDate, businessDays) {
       var date = new Date(startDate);
       var added = 0;
-
+  
       while (added < businessDays) {
         date.setDate(date.getDate() + 1);
         var day = date.getDay();
@@ -3084,10 +3207,10 @@ document.addEventListener('DOMContentLoaded', function () {
           added++;
         }
       }
-
+  
       return date;
     }
-
+  
     function formatDeliveryDate(date) {
       return date.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -3095,28 +3218,28 @@ document.addEventListener('DOMContentLoaded', function () {
         day: 'numeric'
       });
     }
-
+  
     function getCutoffCountdown(cutoffHour) {
       var now = new Date();
       var cutoff = new Date();
       cutoff.setHours(cutoffHour, 0, 0, 0);
-
+  
       if (now > cutoff) {
         cutoff.setDate(cutoff.getDate() + 1);
       }
-
+  
       var diff = cutoff - now;
       var hours = Math.floor(diff / (1000 * 60 * 60));
       var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
+  
       return hours + ' hrs. ' + minutes + ' mins.';
     }
-
+  
     function getDeliveryEstimateHtml() {
       var estimatedDate = addBusinessDays(new Date(), 15);
       var formattedDate = formatDeliveryDate(estimatedDate);
       var countdown = getCutoffCountdown(15);
-
+  
       return `
         <div class="custom-cart-delivery">
           Estimated Delivery by <strong>${formattedDate}</strong>
@@ -3124,12 +3247,12 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       `;
     }
-
+  
     function renderEmptyCart(cart) {
       countEl.textContent = '(' + cart.item_count + ')';
       footerEl.style.display = 'none';
       bodyEl.classList.add('is-empty');
-
+  
       bodyEl.innerHTML = `
         <div class="custom-cart-empty-wrap">
           <div class="custom-cart-empty">
@@ -3137,7 +3260,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <p>Add your custom covers to your cart!</p>
             <a href="/collections/all" class="shop-now-btn">Shop Now</a>
           </div>
-
+  
           <div class="custom-cart-recommendations custom-cart-recommendations--empty">
             <h4>Shop Best Sellers</h4>
             ${bestSellersHtml()}
@@ -3145,24 +3268,24 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       `;
     }
-
-function renderCartItems(cart) {
+  
+  function renderCartItems(cart) {
   bodyEl.classList.remove('is-empty');
   countEl.textContent = '(' + cart.item_count + ')';
   footerEl.style.display = 'block';
-
+  
   var cartItemsHtml = cart.items.map(function(item, index) {
     var variantDetailsHtml = getAllVariantDetailsHtml(item);
     var image = getItemImage(item);
     var quantity = Number(item.quantity || 0);
     var unitPrice = item.final_price != null ? item.final_price : item.price;
-
+  
     return `
       <div class="custom-cart-item">
         <div class="custom-cart-item-image">
           ${image ? `<img src="${image}" alt="${escapeHtml(item.product_title)}">` : ''}
         </div>
-
+  
         <div class="custom-cart-item-details">
           <div class="custom-cart-item-top">
             <div>
@@ -3170,7 +3293,7 @@ function renderCartItems(cart) {
               ${variantDetailsHtml}
               <div class="custom-cart-item-price">${money(unitPrice)}</div>
             </div>
-
+  
             <button type="button" class="custom-cart-remove" data-line="${index + 1}" data-remove="true" aria-label="Remove item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 6h18"></path>
@@ -3181,7 +3304,7 @@ function renderCartItems(cart) {
               </svg>
             </button>
           </div>
-
+  
           <div class="custom-cart-item-bottom">
             <div class="custom-cart-qty">
               <button type="button" data-line="${index + 1}" data-qty="${quantity - 1}">−</button>
@@ -3193,12 +3316,12 @@ function renderCartItems(cart) {
       </div>
     `;
   }).join('');
-
+  
   bodyEl.innerHTML = cartItemsHtml;
-
+  
   footerEl.innerHTML = `
     ${renderCollectionUpsellsHtml(cart)}
-
+  
     <div class="custom-cart-subtotal-row">
       <div class="custom-cart-subtotal-row-inner">
         <strong>Subtotal (<span id="customCartItemLabel">${cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items')}</span>)</strong>
@@ -3206,27 +3329,27 @@ function renderCartItems(cart) {
       </div>
         <p>Discounts and promo codes will be calculated at checkout</p>
     </div>
-
+  
     <a href="/checkout" class="custom-cart-checkout">Secure Check Out</a>
-
+  
     ${getDeliveryEstimateHtml()}
-
+  
     ${paymentIconsHtml()}
   `;
-}
-
-
+  }
+  
+  
     function formatHeaderCartCount(count) {
       count = Number(count || 0);
       return count > 99 ? '99+' : String(count);
     }
-
+  
     function updateHeaderBubble(count) {
       count = Number(count || 0);
-
+  
       var bubble = document.querySelector('.cart-count');
       var displayCount = formatHeaderCartCount(count);
-
+  
       if (!bubble && count > 0) {
         bubble = document.createElement('span');
         bubble.className = 'cart-count';
@@ -3238,7 +3361,7 @@ function renderCartItems(cart) {
         bubble.style.display = count > 0 ? 'flex' : 'none';
       }
     }
-
+  
     function loadCart() {
       return Promise.all([
         fetch('/cart.js', {
@@ -3251,13 +3374,13 @@ function renderCartItems(cart) {
       ])
         .then(function(results) {
           var cart = results[0];
-
+  
           if (cart.item_count === 0) {
             renderEmptyCart(cart);
           } else {
             renderCartItems(cart);
           }
-
+  
           updateHeaderBubble(cart.item_count);
           return cart;
         })
@@ -3267,8 +3390,8 @@ function renderCartItems(cart) {
           throw error;
         });
     }
-
-
+  
+  
     function updateCart(line, quantity) {
       fetch('/cart/change.js', {
         method: 'POST',
@@ -3296,92 +3419,92 @@ function renderCartItems(cart) {
         console.error('Cart update error:', error);
       });
     }
-
-
+  
+  
     function openDrawer(options) {
       options = options || {};
       drawer.classList.add('open');
       overlay.classList.add('open');
       drawer.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-
+  
       if (!options.skipLoad) {
         loadCart();
       }
     }
-
+  
     function closeDrawer() {
       drawer.classList.remove('open');
       overlay.classList.remove('open');
       drawer.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
-
+  
     trigger && trigger.addEventListener('click', function(e) {
       e.preventDefault();
       openDrawer();
     });
-
+  
     closeBtn && closeBtn.addEventListener('click', closeDrawer);
     overlay && overlay.addEventListener('click', closeDrawer);
-
+  
     document.addEventListener('click', function(e) {
       var qtyBtn = e.target.closest('.custom-cart-qty button');
       var removeBtn = e.target.closest('.custom-cart-remove');
       var quickAddBtn = e.target.closest('.custom-rec-quick-add');
-
+  
       if (quickAddBtn) {
         e.preventDefault();
         quickAddUpsell(quickAddBtn.getAttribute('data-variant-id'), quickAddBtn);
         return;
       }
-
+  
       if (qtyBtn) {
         var line = parseInt(qtyBtn.getAttribute('data-line'), 10);
         var qty = parseInt(qtyBtn.getAttribute('data-qty'), 10);
         if (qty < 0) qty = 0;
         updateCart(line, qty);
       }
-
+  
       if (removeBtn) {
         var removeLine = parseInt(removeBtn.getAttribute('data-line'), 10);
         updateCart(removeLine, 0);
       }
     });
-
+  
     function isAddToCartForm(form) {
       if (!form) return false;
       var action = form.getAttribute('action') || '';
       return action.indexOf('/cart/add') !== -1;
     }
-
+  
     function findAddToCartButton(form, submitter) {
       if (submitter && submitter.tagName) return submitter;
-
+  
       return form.querySelector('[type="submit"], button[name="add"], .product-form__submit, [data-add-to-cart]');
     }
-
+  
     function setButtonLoading(button, isLoading) {
       if (!button) return;
-
+  
       if (isLoading) {
         if (!button.dataset.originalText) {
           button.dataset.originalText = button.textContent;
         }
-
+  
         button.disabled = true;
         button.setAttribute('aria-busy', 'true');
         button.textContent = 'Adding...';
       } else {
         button.disabled = false;
         button.removeAttribute('aria-busy');
-
+  
         if (button.dataset.originalText) {
           button.textContent = button.dataset.originalText;
         }
       }
     }
-
+  
     function getCartErrorMessage(error) {
       if (!error) return 'There was an error adding this item to your cart.';
       if (error.description) return error.description;
@@ -3389,8 +3512,8 @@ function renderCartItems(cart) {
       if (typeof error === 'string') return error;
       return 'There was an error adding this item to your cart.';
     }
-
-
+  
+  
     function getNearbyProductScope(form) {
       return (
         form.closest('custom-cover-customizer-component') ||
@@ -3401,29 +3524,29 @@ function renderCartItems(cart) {
         form
       );
     }
-
+  
     function getElementSearchText(scope, element) {
       var text = '';
       var id;
       var label;
       var wrapper;
-
+  
       if (!element) return '';
-
+  
       id = element.id;
-
+  
       if (id && scope && scope.querySelector) {
         label = scope.querySelector('label[for="' + id.replace(/"/g, '\\"') + '"]');
         if (label) {
           text += ' ' + label.textContent;
         }
       }
-
+  
       wrapper = element.closest('.field, .form-field, .product-form__input, .custom-product-option, .custom-field, .input-wrapper, .product-option, .option-row, .quantity, .quantity-selector, [data-quantity-wrapper], [data-quantity-selector]') || element.parentElement;
       if (wrapper && wrapper !== scope && String(wrapper.textContent || '').length < 300) {
         text += ' ' + wrapper.textContent;
       }
-
+  
       text += ' ' + (element.name || '');
       text += ' ' + (element.id || '');
       text += ' ' + (element.className || '');
@@ -3432,45 +3555,45 @@ function renderCartItems(cart) {
       text += ' ' + (element.getAttribute('data-name') || '');
       text += ' ' + (element.getAttribute('data-option-name') || '');
       text += ' ' + (element.getAttribute('data-property-name') || '');
-
+  
       return String(text || '').toLowerCase();
     }
-
+  
     function getCleanNumber(value) {
       value = String(value || '')
         .replace(/[^0-9.]/g, '')
         .trim();
-
+  
       if (!value) return '';
-
+  
       return value;
     }
-
+  
     function isVisibleCustomField(element) {
       if (!element) return false;
       if ((element.type || '').toLowerCase() === 'hidden') return false;
       if (element.disabled) return false;
-
+  
       return !!(
         element.offsetWidth ||
         element.offsetHeight ||
         element.getClientRects().length
       );
     }
-
+  
     function isTextLikeCustomInput(element) {
       var tag;
       var type;
-
+  
       if (!element || !element.tagName) return false;
-
+  
       tag = element.tagName.toLowerCase();
-
+  
       if (tag === 'textarea') return true;
       if (tag !== 'input') return false;
-
+  
       type = (element.getAttribute('type') || 'text').toLowerCase();
-
+  
       return (
         type === 'text' ||
         type === 'number' ||
@@ -3478,7 +3601,7 @@ function renderCartItems(cart) {
         type === 'search'
       );
     }
-
+  
     function findVisibleQuantityValue(form) {
       var scope = getNearbyProductScope(form);
       var inputs = scope.querySelectorAll('input, select');
@@ -3488,34 +3611,34 @@ function renderCartItems(cart) {
       var value;
       var candidates;
       var candidate;
-
+  
       for (i = 0; i < inputs.length; i++) {
         input = inputs[i];
         text = getElementSearchText(scope, input);
-
+  
         if (text.indexOf('diameter') !== -1) continue;
-
+  
         if (
           input.name === 'quantity' ||
           text.indexOf('quantity') !== -1 ||
           text.indexOf('qty') !== -1
         ) {
           value = parseInt(getCleanNumber(input.value), 10);
-
+  
           if (!isNaN(value) && value > 0) {
             return String(value);
           }
         }
       }
-
+  
       candidates = scope.querySelectorAll('[data-quantity-value], [data-quantity], .quantity__value, .quantity-value, .quantity-selector span, .quantity span, .product-form__quantity span');
-
+  
       for (i = 0; i < candidates.length; i++) {
         candidate = candidates[i];
         text = getElementSearchText(scope, candidate);
-
+  
         if (text.indexOf('diameter') !== -1) continue;
-
+  
         if (
           text.indexOf('quantity') === -1 &&
           text.indexOf('qty') === -1 &&
@@ -3523,17 +3646,17 @@ function renderCartItems(cart) {
         ) {
           continue;
         }
-
+  
         value = parseInt(getCleanNumber(candidate.getAttribute('data-quantity-value') || candidate.getAttribute('data-quantity') || candidate.textContent), 10);
-
+  
         if (!isNaN(value) && value > 0) {
           return String(value);
         }
       }
-
+  
       return '';
     }
-
+  
     function findVisibleDiameterInput(form) {
       var scope = getNearbyProductScope(form);
       var inputs = scope.querySelectorAll('input, textarea');
@@ -3542,16 +3665,16 @@ function renderCartItems(cart) {
       var text;
       var name;
       var explicitDiameterField;
-
+  
       for (i = 0; i < inputs.length; i++) {
         input = inputs[i];
-
+  
         if (!isVisibleCustomField(input)) continue;
         if (!isTextLikeCustomInput(input)) continue;
-
+  
         text = getElementSearchText(scope, input);
         name = String(input.name || '').toLowerCase();
-
+  
         explicitDiameterField = (
           text.indexOf('enter the diameter') !== -1 ||
           text.indexOf('diameter of your bell') !== -1 ||
@@ -3561,36 +3684,36 @@ function renderCartItems(cart) {
           name === 'diameter' ||
           name === 'properties[diameter]'
         );
-
+  
         if (explicitDiameterField) {
           return input;
         }
       }
-
+  
       return null;
     }
-
+  
     function getStoredDiameterValue(input) {
       var currentValue = input ? getCleanNumber(input.value) : '';
       var inputSavedValue = input ? getCleanNumber(input.dataset.lastValidDiameter || '') : '';
-
+  
       if (currentValue && currentValue !== '0') {
         if (input) input.dataset.lastValidDiameter = currentValue;
         return currentValue;
       }
-
+  
       if (inputSavedValue && inputSavedValue !== '0') return inputSavedValue;
-
+  
       return '';
     }
-
+  
     function findAnyDiameterInput() {
       return document.querySelector('[data-line-item-property-input], input[name="properties[Diameter]"], input[name="properties[diameter]"]');
     }
-
+  
     function findVisibleDiameterValue(form) {
       var input = findVisibleDiameterInput(form);
-
+  
       /*
         Only attach Diameter to add-to-cart requests for products that actually
         have the diameter input in the same product section. Do not fall back to
@@ -3598,37 +3721,37 @@ function renderCartItems(cart) {
         inherit Diameter from another product.
       */
       if (!input) return '';
-
+  
       return getStoredDiameterValue(input);
     }
-
+  
     function restoreDiameterInput(input, value) {
       if (!input || !value || value === '0') return;
-
+  
       function restore() {
         if (!input.value || input.value === '0' || String(input.value || '').trim() !== String(value)) {
           input.value = value;
         }
       }
-
+  
       restore();
       requestAnimationFrame(restore);
       setTimeout(restore, 60);
       setTimeout(restore, 250);
       setTimeout(restore, 600);
     }
-
+  
     function restoreAllDiameterInputs(value) {
       if (!value || value === '0') return;
-
+  
       document.querySelectorAll('[data-line-item-property-input], input[name="properties[Diameter]"], input[name="properties[diameter]"]').forEach(function(input) {
         restoreDiameterInput(input, value);
       });
     }
-
+  
     function deleteDiameterProperties(formData) {
       if (!formData || typeof formData.delete !== 'function') return;
-
+  
       formData.delete('properties[Diameter]');
       formData.delete('properties[diameter]');
       formData.delete('properties[Bell Diameter]');
@@ -3638,41 +3761,41 @@ function renderCartItems(cart) {
       formData.delete('properties[Diameter Size]');
       formData.delete('properties[Enter the diameter of your bell here (US inches)]');
     }
-
+  
     function forceLatestVariantId(form, formData) {
       var variantId = '';
       var scope = getNearbyProductScope(form);
       var picker = scope && scope.querySelector ? scope.querySelector('variant-picker') : null;
       var idInput = form.querySelector('[name="id"]');
-
+  
       if (picker && typeof picker.updateSelectedVariantIdForCart === 'function') {
         variantId = picker.updateSelectedVariantIdForCart();
       }
-
+  
       if (!variantId && picker && picker.dataset.currentVariantId) {
         variantId = picker.dataset.currentVariantId;
       }
-
+  
       if (!variantId && idInput && idInput.value) {
         variantId = idInput.value;
       }
-
+  
       if (variantId) {
         formData.set('id', variantId);
-
+  
         if (idInput) {
           idInput.value = variantId;
         }
       }
-
+  
       return variantId || '';
     }
-
+  
     function syncCustomCartFields(form, formData, capturedDiameter, capturedQuantity) {
       var quantity = capturedQuantity || findVisibleQuantityValue(form);
       var existingDiameter = '';
       var diameter;
-
+  
       if (formData && typeof formData.get === 'function') {
         existingDiameter = getCleanNumber(
           formData.get('properties[Diameter]') ||
@@ -3680,41 +3803,41 @@ function renderCartItems(cart) {
           ''
         );
       }
-
+  
       /*
         Prefer the live visible field, but preserve the hidden Diameter field that
         variant-main-picker creates inside the product form. This prevents the
         cart from falling back to Shopify's variant/metafield value of 0.
       */
       diameter = capturedDiameter || findVisibleDiameterValue(form) || existingDiameter;
-
+  
       if (quantity) {
         formData.set('quantity', quantity);
       } else if (!formData.get('quantity')) {
         formData.set('quantity', '1');
       }
-
+  
       /*
         Important:
         Remove any stale/default/metafield Diameter first.
         Then add Diameter only when the current product form actually has a typed diameter.
       */
       deleteDiameterProperties(formData);
-
+  
       if (diameter) {
         formData.set('properties[Diameter]', diameter);
       }
     }
-
+  
     function submitAddToCartForm(form, submitter) {
       if (!isAddToCartForm(form)) return;
       if (form.dataset.customAjaxAdding === 'true') return;
-
+  
       var diameterInput = findVisibleDiameterInput(form);
       var capturedDiameter = diameterInput ? getStoredDiameterValue(diameterInput) : '';
-
+  
       var capturedQuantity = findVisibleQuantityValue(form);
-
+  
       var customizer = form.closest && form.closest('custom-cover-customizer-component');
       if (
         customizer &&
@@ -3722,25 +3845,25 @@ function renderCartItems(cart) {
       ) {
         customizer.ensureVariantIdForCart();
       }
-
+  
       restoreDiameterInput(diameterInput, capturedDiameter);
       restoreAllDiameterInputs(capturedDiameter);
-
+  
       var formData = new FormData(form);
       var variantId = forceLatestVariantId(form, formData);
       var button = findAddToCartButton(form, submitter);
-
+  
       if (!variantId || String(variantId).trim() === '') {
         console.error('Add to cart error: missing selected variant id. Make sure the product form has an input/select named "id" that updates when variants change.');
         alert('Please select an available option before adding this item to your cart.');
         return;
       }
-
+  
       syncCustomCartFields(form, formData, capturedDiameter, capturedQuantity);
-
+  
       form.dataset.customAjaxAdding = 'true';
       setButtonLoading(button, true);
-
+  
       fetch('/cart/add.js', {
         method: 'POST',
         headers: {
@@ -3773,110 +3896,103 @@ function renderCartItems(cart) {
           setButtonLoading(button, false);
         });
     }
-
+  
     document.addEventListener('submit', function(e) {
       var form = e.target && e.target.closest ? e.target.closest('form') : null;
       if ((!form || !isAddToCartForm(form)) && e.submitter && e.submitter.form) {
         form = e.submitter.form;
       }
-
+  
       if (!isAddToCartForm(form)) return;
       if (form.hasAttribute('data-custom-ajax-cart-skip')) return;
-
+  
       e.preventDefault();
       e.stopImmediatePropagation();
       submitAddToCartForm(form, e.submitter);
     }, true);
-
+  
     document.addEventListener('click', function(e) {
       var button = e.target.closest(
         'button[name="add"], [type="submit"].product-form__submit, [data-add-to-cart], button[type="submit"][form^="CustomizerProductForm"]'
       );
       if (!button) return;
-
+  
       var form = button.form || button.closest('form');
       if (!isAddToCartForm(form)) return;
       if (form.hasAttribute('data-custom-ajax-cart-skip')) return;
-
+  
       e.preventDefault();
       e.stopImmediatePropagation();
       submitAddToCartForm(form, button);
     }, true);
-
+  
     document.addEventListener('cart:refresh', loadCart);
   })();
 </script>
 
 {% schema %}
-{
-  "name": "Custom Header",
-  "tag": "header",
-  "class": "section-custom-header",
-  "settings": [
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Navigation Menu",
-      "default": "main-menu"
-    },
-    {
-      "type": "link_list",
-      "id": "menu2",
-      "label": "Navigation Menu 2",
-      "default": "main-menu"
-    },
-    {
-      "type": "product",
-      "id": "mega_product_1",
-      "label": "Mega menu product 1"
-    },
-    {
-      "type": "product",
-      "id": "mega_product_2",
-      "label": "Mega menu product 2"
-    },
-    {
-      "type": "product",
-      "id": "search_featured_product",
-      "label": "Search dropdown featured product"
-    },
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo Image"
-    },
-    {
-      "type": "text",
-      "id": "phone_number",
-      "label": "Phone Number",
-      "default": "410-561-0800"
-    },
-    {
-      "type": "text",
-      "id": "search_placeholder",
-      "label": "Search Placeholder Text",
-      "default": "Search Covers"
-    },
-    {
-      "type": "product",
-      "id": "best_seller_1",
-      "label": "Best Sellers Cart 1"
-    },
-    {
-      "type": "product",
-      "id": "best_seller_2",
-      "label": "Best Sellers Cart 2"
-    },
-    {
-      "type": "product",
-      "id": "best_seller_3",
-      "label": "Best Sellers Cart 3"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Custom Header"
-    }
-  ]
-}
+  {
+    "name": "Custom Header",
+    "tag": "header",
+    "class": "section-custom-header",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Navigation Menu",
+        "default": "main-menu"
+      },
+      {
+        "type": "link_list",
+        "id": "menu2",
+        "label": "Navigation Menu 2",
+        "default": "main-menu"
+      },
+      {
+        "type": "product",
+        "id": "mega_product_1",
+        "label": "Mega menu product 1"
+      },
+      {
+        "type": "product",
+        "id": "mega_product_2",
+        "label": "Mega menu product 2"
+      }, {
+        "type": "product",
+        "id": "search_featured_product",
+        "label": "Search dropdown featured product"
+      }, {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo Image"
+      }, {
+        "type": "text",
+        "id": "phone_number",
+        "label": "Phone Number",
+        "default": "410-561-0800"
+      }, {
+        "type": "text",
+        "id": "search_placeholder",
+        "label": "Search Placeholder Text",
+        "default": "Search Covers"
+      }, {
+        "type": "product",
+        "id": "best_seller_1",
+        "label": "Best Sellers Cart 1"
+      }, {
+        "type": "product",
+        "id": "best_seller_2",
+        "label": "Best Sellers Cart 2"
+      }, {
+        "type": "product",
+        "id": "best_seller_3",
+        "label": "Best Sellers Cart 3"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Custom Header"
+      }
+    ]
+  }
 {% endschema %}

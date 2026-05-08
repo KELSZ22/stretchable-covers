@@ -11,7 +11,7 @@
 {% endcapture %}
 
 {% if sold_count_metafield != blank and product_text_content contains '</h1>' %}
-  {% assign sold_count_label = '(' | append: sold_count_metafield.value | append: ' Sold)' | escape %}
+  {% assign sold_count_label = sold_count_metafield.value | escape %}
   {% assign sold_count_inline_html = '<span class="custom-text-logo-row__sold-count-inline">' | append: sold_count_label | append: '</span>' %}
   {% assign h1_open_with_sold = '<h1>' | append: sold_count_inline_html %}
   {% assign product_text_content = product_text_content | replace_first: '<h1>', h1_open_with_sold %}
