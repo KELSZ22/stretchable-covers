@@ -775,7 +775,7 @@
         "block_CGQUgm": {
           "type": "block",
           "settings": {
-            "image": "shopify://shop_images/ece298d0ec2c16f10310d45724b276a6035cb503.png",
+            "image": "shopify://shop_images/1.png",
             "heading": "Pick your product & size",
             "subheading": "Step 1"
           }
@@ -783,7 +783,7 @@
         "block_MViGd7": {
           "type": "block",
           "settings": {
-            "image": "shopify://shop_images/ece298d0ec2c16f10310d45724b276a6035cb503.png",
+            "image": "shopify://shop_images/2.png",
             "heading": "Design your cover using our customizer",
             "subheading": "Step 2"
           }
@@ -791,7 +791,7 @@
         "block_M3mgLt": {
           "type": "block",
           "settings": {
-            "image": "shopify://shop_images/ece298d0ec2c16f10310d45724b276a6035cb503.png",
+            "image": "shopify://shop_images/Untitled_design.png",
             "heading": "Review and place order",
             "subheading": "Step 3"
           }

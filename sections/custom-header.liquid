@@ -1,7 +1,7 @@
 {%- assign header_menu = section.settings.menu -%}
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Raleway:wght@400;500;700;800&display=swap');
   
   .header-search {
     width: 100%;
@@ -881,19 +881,23 @@
   }
 
   .custom-cart-recommendations {
-    background:rgba(235, 137, 27, 0.14);
+    background: rgba(235, 137, 27, 0.14);
     padding: 25px 20px;
+    margin-top: 24px;
+  }
+
+  .custom-cart-recommendations--empty {
     margin-top: auto;
   }
 
   .custom-cart-recommendations h4 {
     text-align: center;
-    color: #1F1F1F;
+    color: var(--Black, #1F1F1F);
     font-family: Raleway;
     font-size: 20px;
     font-style: normal;
     font-weight: 800;
-    line-height: 27px; 
+    line-height: 27px;
     margin: 0 0 20px;
   }
 
@@ -974,10 +978,11 @@
   }
 
   .custom-rec-btn {
-    background: #0F2E53;
+    background: var(--Primary-Color, #0F2E53);
     color: #fff;
     text-decoration: none;
     padding: 10px 14px;
+    border: 0;
     border-radius: 999px;
     font-size: 14px;
     line-height: 1;
@@ -987,6 +992,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .custom-rec-quick-add[disabled] {
+    opacity: 0.65;
+    cursor: not-allowed;
   }
 
   .custom-cart-item {
@@ -1156,10 +1169,18 @@
   }
 
   .custom-cart-footer {
-    padding: 18px 30px 16px;
+    padding: 18px 0px 16px;
     margin-top: auto;
   }
-
+  .custom-cart-subtotal-row{
+    padding-top: 10px;
+  }
+  .custom-cart-subtotal-row,
+  .custom-cart-checkout,
+  .custom-cart-payments {
+    margin-left: 30px !important;
+    margin-right: 30px !important;
+  }
   .custom-cart-subtotal-row {
     display: flex;
     justify-content: space-between;
@@ -1782,6 +1803,37 @@
   </div>
 </div>
 
+<script type="application/json" id="customCartCollectionUpsellsData">
+[
+  {%- assign cart_upsell_count = 0 -%}
+  {%- for cart_item in cart.items -%}
+    {%- assign source_collection = cart_item.product.collections.first -%}
+    {%- if source_collection != blank -%}
+      {%- for rec_product in source_collection.products limit: 8 -%}
+        {%- unless rec_product.id == cart_item.product.id -%}
+          {%- assign rec_variant = rec_product.selected_or_first_available_variant -%}
+          {%- if rec_variant != blank and rec_product.available -%}
+            {%- if cart_upsell_count > 0 -%},{%- endif -%}
+            {
+              "sourceProductId": {{ cart_item.product_id | json }},
+              "productId": {{ rec_product.id | json }},
+              "variantId": {{ rec_variant.id | json }},
+              "title": {{ rec_product.title | json }},
+              "price": {{ rec_product.price | money | json }},
+              "image": {% if rec_product.featured_image != blank %}{{ rec_product.featured_image | image_url: width: 180 | json }}{% else %}""{% endif %},
+              "url": {{ rec_product.url | json }},
+              "available": {{ rec_product.available | json }},
+              "diameter": {{ rec_product.metafields.custom.product_diameter.value | default: rec_product.metafields.custom.product_diameter | json }}
+            }
+            {%- assign cart_upsell_count = cart_upsell_count | plus: 1 -%}
+          {%- endif -%}
+        {%- endunless -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+]
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const mobileBreakpoint = 767;
@@ -2254,11 +2306,47 @@ document.addEventListener('DOMContentLoaded', function () {
             price: {{ bs_product.price | money | json }},
             image: {{ bs_product.featured_image | image_url: width: 160 | json }},
             url: {{ bs_product.url | json }},
-            diameter: {{ bs_product.metafields.custom.diameter.value | default: bs_product.metafields.custom.diameter | json }}
+            diameter: {{ bs_product.metafields.custom.product_diameter.value | default: bs_product.metafields.custom.product_diameter | json }}
           }{% unless forloop.last %},{% endunless %}
         {% endif %}
       {% endfor %}
     ];
+
+    var collectionUpsells = readCollectionUpsellsFromDocument(document);
+
+    function readCollectionUpsellsFromDocument(doc) {
+      var script = doc && doc.getElementById
+        ? doc.getElementById('customCartCollectionUpsellsData')
+        : null;
+
+      if (!script) return [];
+
+      try {
+        return JSON.parse(script.textContent || '[]') || [];
+      } catch (error) {
+        console.error('Collection upsell JSON error:', error);
+        return [];
+      }
+    }
+
+    function refreshCollectionUpsells() {
+      return fetch(window.location.pathname + '?section_id={{ section.id }}', {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+        .then(function(res) { return res.text(); })
+        .then(function(html) {
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(html, 'text/html');
+          collectionUpsells = readCollectionUpsellsFromDocument(doc);
+          return collectionUpsells;
+        })
+        .catch(function(error) {
+          console.error('Collection upsell refresh error:', error);
+          return collectionUpsells;
+        });
+    }
 
     function escapeHtml(str) {
       return String(str || '')
@@ -2677,6 +2765,125 @@ document.addEventListener('DOMContentLoaded', function () {
       }).join('');
     }
 
+    function renderCollectionUpsellsHtml(cart) {
+      if (!cart || !Array.isArray(cart.items) || !cart.items.length) return '';
+      if (!Array.isArray(collectionUpsells) || !collectionUpsells.length) return '';
+
+      var cartProductIds = {};
+      var cartVariantIds = {};
+      var shownProductIds = {};
+      var selected = [];
+
+      cart.items.forEach(function(item) {
+        cartProductIds[String(item.product_id)] = true;
+        cartVariantIds[String(item.variant_id)] = true;
+      });
+
+      collectionUpsells.forEach(function(item) {
+        if (!item || !item.productId || !item.variantId) return;
+        if (!item.available) return;
+        if (cartProductIds[String(item.productId)]) return;
+        if (cartVariantIds[String(item.variantId)]) return;
+        if (shownProductIds[String(item.productId)]) return;
+
+        shownProductIds[String(item.productId)] = true;
+        selected.push(item);
+      });
+
+      selected = selected.slice(0, 1);
+
+      if (!selected.length) return '';
+
+      return `
+        <div class="custom-cart-recommendations custom-cart-recommendations--upsell">
+          <h4>Add More, Save More</h4>
+          ${selected.map(function(item) {
+            var diameterHtml = '';
+
+            if (item.diameter && String(item.diameter).trim() !== '') {
+              diameterHtml = `
+                <div class="custom-rec-meta">
+                  <span class="custom-rec-meta-label">Diameter</span>
+                  <svg class="custom-rec-meta-icon" viewBox="0 0 16 16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="8" cy="8" r="6.25" fill="none" stroke="#8a8a8a" stroke-width="1.2"></circle>
+                    <line x1="11.8" y1="4.2" x2="4.2" y2="11.8" stroke="#8a8a8a" stroke-width="1.2" stroke-linecap="round"></line>
+                  </svg>
+                  <span class="custom-rec-meta-value">${escapeHtml(item.diameter)}</span>
+                </div>
+              `;
+            }
+
+            return `
+              <div class="custom-rec-item">
+                <a href="${item.url}" aria-label="${escapeHtml(item.title)}">
+                  <img src="${item.image}" alt="${escapeHtml(item.title)}">
+                </a>
+
+                <div class="custom-rec-content">
+                  <div class="custom-rec-title">${escapeHtml(item.title)}</div>
+                  ${diameterHtml}
+                  <div class="custom-rec-price">${item.price}</div>
+                </div>
+
+                <button
+                  type="button"
+                  class="custom-rec-btn custom-rec-quick-add"
+                  data-variant-id="${escapeHtml(item.variantId)}"
+                >
+                  Quick Add
+                </button>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function quickAddUpsell(variantId, button) {
+      if (!variantId) return;
+
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Adding...';
+      }
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+          id: Number(variantId),
+          quantity: 1
+        })
+      })
+        .then(function(res) {
+          return res.json().then(function(data) {
+            if (!res.ok) throw data;
+            return data;
+          });
+        })
+        .then(function() {
+          return loadCart();
+        })
+        .then(function() {
+          openDrawer({ skipLoad: true });
+          document.dispatchEvent(new CustomEvent('cart:added'));
+        })
+        .catch(function(error) {
+          console.error('Quick add error:', error);
+          alert(getCartErrorMessage(error));
+        })
+        .finally(function() {
+          if (button) {
+            button.disabled = false;
+            button.textContent = 'Quick Add';
+          }
+        });
+    }
+
     function paymentIconsHtml() {
       return `
         <div class="custom-cart-payments">
@@ -2931,7 +3138,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <a href="/collections/all" class="shop-now-btn">Shop Now</a>
           </div>
 
-          <div class="custom-cart-recommendations">
+          <div class="custom-cart-recommendations custom-cart-recommendations--empty">
             <h4>Shop Best Sellers</h4>
             ${bestSellersHtml()}
           </div>
@@ -2943,10 +3150,8 @@ function renderCartItems(cart) {
   bodyEl.classList.remove('is-empty');
   countEl.textContent = '(' + cart.item_count + ')';
   footerEl.style.display = 'block';
-  subtotalEl.textContent = money(cart.total_price);
-  itemLabelEl.textContent = cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items');
 
-  bodyEl.innerHTML = cart.items.map(function(item, index) {
+  var cartItemsHtml = cart.items.map(function(item, index) {
     var variantDetailsHtml = getAllVariantDetailsHtml(item);
     var image = getItemImage(item);
     var quantity = Number(item.quantity || 0);
@@ -2989,7 +3194,11 @@ function renderCartItems(cart) {
     `;
   }).join('');
 
+  bodyEl.innerHTML = cartItemsHtml;
+
   footerEl.innerHTML = `
+    ${renderCollectionUpsellsHtml(cart)}
+
     <div class="custom-cart-subtotal-row">
       <div class="custom-cart-subtotal-row-inner">
         <strong>Subtotal (<span id="customCartItemLabel">${cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items')}</span>)</strong>
@@ -3005,6 +3214,7 @@ function renderCartItems(cart) {
     ${paymentIconsHtml()}
   `;
 }
+
 
     function formatHeaderCartCount(count) {
       count = Number(count || 0);
@@ -3030,19 +3240,24 @@ function renderCartItems(cart) {
     }
 
     function loadCart() {
-      return fetch('/cart.js', {
-        headers: {
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      })
-        .then(function(res) { return res.json(); })
-        .then(function(cart) {
+      return Promise.all([
+        fetch('/cart.js', {
+          headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        }).then(function(res) { return res.json(); }),
+        refreshCollectionUpsells()
+      ])
+        .then(function(results) {
+          var cart = results[0];
+
           if (cart.item_count === 0) {
             renderEmptyCart(cart);
           } else {
             renderCartItems(cart);
           }
+
           updateHeaderBubble(cart.item_count);
           return cart;
         })
@@ -3052,6 +3267,7 @@ function renderCartItems(cart) {
           throw error;
         });
     }
+
 
     function updateCart(line, quantity) {
       fetch('/cart/change.js', {
@@ -3066,17 +3282,21 @@ function renderCartItems(cart) {
       })
       .then(function(res) { return res.json(); })
       .then(function(cart) {
-        if (cart.item_count === 0) {
-          renderEmptyCart(cart);
-        } else {
-          renderCartItems(cart);
-        }
-        updateHeaderBubble(cart.item_count);
+        return refreshCollectionUpsells().then(function() {
+          if (cart.item_count === 0) {
+            renderEmptyCart(cart);
+          } else {
+            renderCartItems(cart);
+          }
+          updateHeaderBubble(cart.item_count);
+          return cart;
+        });
       })
       .catch(function(error) {
         console.error('Cart update error:', error);
       });
     }
+
 
     function openDrawer(options) {
       options = options || {};
@@ -3108,6 +3328,13 @@ function renderCartItems(cart) {
     document.addEventListener('click', function(e) {
       var qtyBtn = e.target.closest('.custom-cart-qty button');
       var removeBtn = e.target.closest('.custom-cart-remove');
+      var quickAddBtn = e.target.closest('.custom-rec-quick-add');
+
+      if (quickAddBtn) {
+        e.preventDefault();
+        quickAddUpsell(quickAddBtn.getAttribute('data-variant-id'), quickAddBtn);
+        return;
+      }
 
       if (qtyBtn) {
         var line = parseInt(qtyBtn.getAttribute('data-line'), 10);
