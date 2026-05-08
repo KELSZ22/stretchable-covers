@@ -27,6 +27,7 @@ class CustomCoverCustomizer extends HTMLElement {
     this.form = null;
     this.warningOutput = null;
     this.uploadWarningOutput = null;
+    this.backgroundWarningOutput = null;
     this.elements = [];
     this.selectedElementId = null;
     this.dragState = null;
@@ -65,8 +66,17 @@ class CustomCoverCustomizer extends HTMLElement {
       bulgeLeft: 80,
       bulgeRight: 80,
     };
-    /** @type {"text" | "image" | "clipart" | "shapes" | string} */
+    /** @type {"text" | "image" | "clipart" | "shapes" | "background" | string} */
     this.currentTool = "text";
+    this.canvasBackground = {
+      mode: "none",
+      solidColor: "#ffffff",
+      gradientStart: "#ffffff",
+      gradientEnd: "#d7e3ff",
+      gradientDirection: "to bottom",
+      imageSrc: "",
+      image: null,
+    };
     this._caretBlinkOn = true;
     this._caretIntervalId = null;
     /** @type {unknown[] | null} */
@@ -116,6 +126,9 @@ class CustomCoverCustomizer extends HTMLElement {
     this.warningOutput = this.querySelector("[data-warning-output]");
     this.uploadWarningOutput = this.querySelector(
       "[data-upload-warning-output]",
+    );
+    this.backgroundWarningOutput = this.querySelector(
+      "[data-background-warning-output]",
     );
 
     if (!this.canvas || !this.form) {
@@ -1126,6 +1139,25 @@ class CustomCoverCustomizer extends HTMLElement {
     const imageRights = this.querySelector("[data-image-rights]");
     const uploadBox = this.querySelector("[data-upload-box]");
     const uploadDropzone = this.querySelector("[data-upload-dropzone]");
+    const backgroundModeButtons = this.querySelectorAll("[data-background-mode]");
+    const backgroundModePanes = this.querySelectorAll("[data-background-pane]");
+    const backgroundSolidInput = this.querySelector("[data-background-solid-input]");
+    const backgroundGradientStart = this.querySelector(
+      "[data-background-gradient-start]",
+    );
+    const backgroundGradientEnd = this.querySelector(
+      "[data-background-gradient-end]",
+    );
+    const backgroundGradientDirection = this.querySelector(
+      "[data-background-gradient-direction]",
+    );
+    const backgroundUploadInput = this.querySelector(
+      "[data-background-upload-input]",
+    );
+    const backgroundUploadDropzone = this.querySelector(
+      "[data-background-upload-dropzone]",
+    );
+    const backgroundClearBtn = this.querySelector("[data-background-clear]");
     const modeTabs = this.querySelectorAll("[data-mode-tab]");
     const modePanels = this.querySelectorAll("[data-mode-panel]");
     const toolButtons = this.querySelectorAll("[data-tool-button]");
@@ -1346,6 +1378,17 @@ class CustomCoverCustomizer extends HTMLElement {
             block: "nearest",
           });
         }
+        if (tool === "background") {
+          const smoothScroll = !window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
+          this.querySelector(
+            ".custom-cover-customizer__background-panel",
+          )?.scrollIntoView({
+            behavior: smoothScroll ? "smooth" : "auto",
+            block: "nearest",
+          });
+        }
       });
     });
 
@@ -1383,6 +1426,85 @@ class CustomCoverCustomizer extends HTMLElement {
         this.handleUploadFile(file);
       }
     });
+
+    const setBackgroundMode = (mode, { apply = true } = {}) => {
+      backgroundModeButtons.forEach((button) => {
+        const isActive = button.getAttribute("data-background-mode") === mode;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+      backgroundModePanes.forEach((pane) => {
+        pane.hidden = pane.getAttribute("data-background-pane") !== mode;
+      });
+      if (apply) {
+        this.applyCanvasBackgroundFromInputs(mode);
+      }
+    };
+    this._setBackgroundMode = setBackgroundMode;
+
+    backgroundModeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const mode = button.getAttribute("data-background-mode");
+        if (!mode) {
+          return;
+        }
+        setBackgroundMode(mode, { apply: true });
+      });
+    });
+
+    const applySolidBackground = () =>
+      this.applyCanvasBackgroundFromInputs("solid");
+    const applyGradientBackground = () =>
+      this.applyCanvasBackgroundFromInputs("gradient");
+    backgroundSolidInput?.addEventListener("input", () => {
+      this.updateBackgroundSolidChrome();
+      applySolidBackground();
+    });
+    backgroundGradientStart?.addEventListener("input", () => {
+      this.updateBackgroundGradientChrome();
+      applyGradientBackground();
+    });
+    backgroundGradientEnd?.addEventListener("input", () => {
+      this.updateBackgroundGradientChrome();
+      applyGradientBackground();
+    });
+    backgroundGradientDirection?.addEventListener(
+      "change",
+      applyGradientBackground,
+    );
+
+    backgroundUploadInput?.addEventListener("change", (event) =>
+      this.handleBackgroundUpload(event),
+    );
+    backgroundUploadDropzone?.addEventListener("click", () =>
+      backgroundUploadInput?.click(),
+    );
+    backgroundUploadDropzone?.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      backgroundUploadDropzone.classList.add("is-dragover");
+    });
+    backgroundUploadDropzone?.addEventListener("dragleave", () =>
+      backgroundUploadDropzone.classList.remove("is-dragover"),
+    );
+    backgroundUploadDropzone?.addEventListener("drop", (event) => {
+      event.preventDefault();
+      backgroundUploadDropzone.classList.remove("is-dragover");
+      const file = event.dataTransfer?.files?.[0];
+      if (!file) {
+        return;
+      }
+      this.handleBackgroundUploadFile(file);
+    });
+    backgroundClearBtn?.addEventListener("click", () => {
+      this.canvasBackground.mode = "none";
+      this.canvasBackground.image = null;
+      this.canvasBackground.imageSrc = "";
+      this.setBackgroundWarning("");
+      this.render();
+    });
+    setBackgroundMode("solid", { apply: false });
+    this.updateBackgroundSolidChrome();
+    this.updateBackgroundGradientChrome();
 
     this.querySelectorAll("[data-text-align]").forEach((segment) => {
       segment.addEventListener("click", () => {
@@ -3059,6 +3181,54 @@ class CustomCoverCustomizer extends HTMLElement {
     }
   }
 
+  updateBackgroundSolidChrome() {
+    const input = this.querySelector("[data-background-solid-input]");
+    const hexEl = this.querySelector("[data-background-solid-hex]");
+    const swatch = this.querySelector("[data-background-solid-swatch]");
+    let v = (input?.value || "#ffffff").trim();
+    if (!v.startsWith("#")) {
+      v = `#${v}`;
+    }
+    if (hexEl) {
+      hexEl.textContent = v.toUpperCase();
+    }
+    if (swatch) {
+      swatch.style.backgroundColor = v;
+    }
+  }
+
+  updateBackgroundGradientChrome() {
+    const startInput = this.querySelector("[data-background-gradient-start]");
+    const startHex = this.querySelector("[data-background-gradient-start-hex]");
+    const startSwatch = this.querySelector(
+      "[data-background-gradient-start-swatch]",
+    );
+    let start = (startInput?.value || "#ffffff").trim();
+    if (!start.startsWith("#")) {
+      start = `#${start}`;
+    }
+    if (startHex) {
+      startHex.textContent = start.toUpperCase();
+    }
+    if (startSwatch) {
+      startSwatch.style.backgroundColor = start;
+    }
+
+    const endInput = this.querySelector("[data-background-gradient-end]");
+    const endHex = this.querySelector("[data-background-gradient-end-hex]");
+    const endSwatch = this.querySelector("[data-background-gradient-end-swatch]");
+    let end = (endInput?.value || "#d7e3ff").trim();
+    if (!end.startsWith("#")) {
+      end = `#${end}`;
+    }
+    if (endHex) {
+      endHex.textContent = end.toUpperCase();
+    }
+    if (endSwatch) {
+      endSwatch.style.backgroundColor = end;
+    }
+  }
+
   ensureShapeElementOutline(element) {
     if (!element || element.type !== "shape") {
       return;
@@ -3167,9 +3337,31 @@ class CustomCoverCustomizer extends HTMLElement {
     input.value = "";
   }
 
+  parseUploadFileType(file) {
+    const mime = String(file?.type || "").toLowerCase();
+    const name = String(file?.name || "").trim().toLowerCase();
+    const isSvg =
+      mime === "image/svg+xml" || name.endsWith(".svg") || name.endsWith(".svgz");
+    const isAi =
+      name.endsWith(".ai") ||
+      mime.includes("illustrator") ||
+      mime === "application/postscript" ||
+      mime === "application/illustrator" ||
+      mime === "application/vnd.adobe.illustrator";
+    const isImage = mime.startsWith("image/") || isSvg;
+    return { isImage, isSvg, isAi };
+  }
+
   handleUploadFile(file) {
-    const mime = String(file.type || "").toLowerCase();
-    if (mime && !mime.startsWith("image/")) {
+    const { isImage, isAi } = this.parseUploadFileType(file);
+    if (isAi) {
+      this.setWarning("");
+      this.setUploadWarning(
+        "Adobe Illustrator (.AI) files cannot render directly in browsers. Please export this file as SVG or PDF and upload again.",
+      );
+      return;
+    }
+    if (!isImage) {
       this.setWarning("");
       this.setUploadWarning("Please upload an image file.");
       return;
@@ -3195,6 +3387,66 @@ class CustomCoverCustomizer extends HTMLElement {
         return;
       }
       this.addImageElement(reader.result, "image");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  handleBackgroundUpload(event) {
+    const input = event.target;
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+    this.handleBackgroundUploadFile(file);
+    input.value = "";
+  }
+
+  handleBackgroundUploadFile(file) {
+    const { isImage, isAi } = this.parseUploadFileType(file);
+    if (isAi) {
+      this.setBackgroundWarning(
+        "Adobe Illustrator (.AI) files cannot render directly in browsers. Please export as SVG or PDF, then upload the exported file.",
+      );
+      return;
+    }
+    if (!isImage) {
+      this.setBackgroundWarning("Please upload an image file for the canvas background.");
+      return;
+    }
+
+    const maxBytes = Number(this.dataset.maxUploadBytes || 0);
+    const maxMb = Number(this.dataset.maxUploadMb || 0);
+    if (maxBytes > 0 && file.size > maxBytes) {
+      this.setBackgroundWarning(
+        maxMb > 0
+          ? `This file is too large. Maximum upload size is ${maxMb} MB.`
+          : this.dataset.uploadWarning || "This file is too large to upload.",
+      );
+      return;
+    }
+
+    this.setBackgroundWarning("");
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== "string") {
+        return;
+      }
+      const image = new Image();
+      image.onload = () => {
+        this.canvasBackground.mode = "image";
+        this.canvasBackground.imageSrc = reader.result;
+        this.canvasBackground.image = image;
+        if (typeof this._setBackgroundMode === "function") {
+          this._setBackgroundMode("image", { apply: false });
+        }
+        this.render();
+      };
+      image.onerror = () => {
+        this.setBackgroundWarning(
+          "This file could not be rendered. Please upload a supported image format.",
+        );
+      };
+      image.src = reader.result;
     };
     reader.readAsDataURL(file);
   }
@@ -5058,6 +5310,7 @@ class CustomCoverCustomizer extends HTMLElement {
 
   render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.drawCanvasBackground();
 
     this.elements.forEach((element) => {
       this.ctx.save();
@@ -5537,6 +5790,96 @@ class CustomCoverCustomizer extends HTMLElement {
     this.uploadWarningOutput.textContent = message || "";
   }
 
+  setBackgroundWarning(message) {
+    if (!this.backgroundWarningOutput) {
+      return;
+    }
+    this.backgroundWarningOutput.textContent = message || "";
+  }
+
+  applyCanvasBackgroundFromInputs(mode) {
+    if (mode === "solid") {
+      const solidInput = this.querySelector("[data-background-solid-input]");
+      this.canvasBackground.mode = "solid";
+      this.canvasBackground.solidColor = solidInput?.value || "#ffffff";
+      this.render();
+      return;
+    }
+    if (mode === "gradient") {
+      const startInput = this.querySelector("[data-background-gradient-start]");
+      const endInput = this.querySelector("[data-background-gradient-end]");
+      const directionInput = this.querySelector(
+        "[data-background-gradient-direction]",
+      );
+      this.canvasBackground.mode = "gradient";
+      this.canvasBackground.gradientStart = startInput?.value || "#ffffff";
+      this.canvasBackground.gradientEnd = endInput?.value || "#d7e3ff";
+      this.canvasBackground.gradientDirection =
+        directionInput?.value || "to bottom";
+      this.render();
+      return;
+    }
+    if (mode === "image") {
+      this.canvasBackground.mode = this.canvasBackground.image ? "image" : "none";
+      this.render();
+    }
+  }
+
+  applyCanvasEdgeClipPath() {
+    const radius = Math.min(this.canvas.width, this.canvas.height) / 2;
+    this.ctx.beginPath();
+    this.ctx.arc(this.canvas.width / 2, this.canvas.height / 2, radius, 0, Math.PI * 2);
+    this.ctx.closePath();
+    this.ctx.clip();
+  }
+
+  drawBackgroundImageCover(image) {
+    if (!image?.width || !image?.height) {
+      return;
+    }
+    const canvasW = this.canvas.width;
+    const canvasH = this.canvas.height;
+    const scale = Math.max(canvasW / image.width, canvasH / image.height);
+    const drawW = image.width * scale;
+    const drawH = image.height * scale;
+    const drawX = (canvasW - drawW) / 2;
+    const drawY = (canvasH - drawH) / 2;
+    this.ctx.drawImage(image, drawX, drawY, drawW, drawH);
+  }
+
+  drawCanvasBackground() {
+    if (!this.canvasBackground || this.canvasBackground.mode === "none") {
+      return;
+    }
+    this.ctx.save();
+    this.applyCanvasEdgeClipPath();
+    if (this.canvasBackground.mode === "solid") {
+      this.ctx.fillStyle = this.canvasBackground.solidColor || "#ffffff";
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    } else if (this.canvasBackground.mode === "gradient") {
+      const dir = this.canvasBackground.gradientDirection || "to bottom";
+      let x0 = 0;
+      let y0 = 0;
+      let x1 = 0;
+      let y1 = this.canvas.height;
+      if (dir === "to right") {
+        x1 = this.canvas.width;
+        y1 = 0;
+      } else if (dir === "135deg") {
+        x1 = this.canvas.width;
+        y1 = this.canvas.height;
+      }
+      const gradient = this.ctx.createLinearGradient(x0, y0, x1, y1);
+      gradient.addColorStop(0, this.canvasBackground.gradientStart || "#ffffff");
+      gradient.addColorStop(1, this.canvasBackground.gradientEnd || "#d7e3ff");
+      this.ctx.fillStyle = gradient;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    } else if (this.canvasBackground.mode === "image" && this.canvasBackground.image) {
+      this.drawBackgroundImageCover(this.canvasBackground.image);
+    }
+    this.ctx.restore();
+  }
+
   ensureClipartThumbsLoaded() {
     const clipartPanel = this.querySelector('[data-tool-panel="clipart"]');
     if (!clipartPanel || clipartPanel.hidden) {
@@ -5574,9 +5917,13 @@ class CustomCoverCustomizer extends HTMLElement {
     const imagePanel = this.querySelector('[data-tool-panel="image"]');
     const clipartPanel = this.querySelector('[data-tool-panel="clipart"]');
     const shapesPanel = this.querySelector('[data-tool-panel="shapes"]');
+    const backgroundPanel = this.querySelector('[data-tool-panel="background"]');
     if (textPanel) {
       textPanel.hidden =
-        tool === "image" || tool === "clipart" || tool === "shapes";
+        tool === "image" ||
+        tool === "clipart" ||
+        tool === "shapes" ||
+        tool === "background";
     }
     if (imagePanel) {
       imagePanel.hidden = tool !== "image";
@@ -5586,6 +5933,9 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     if (shapesPanel) {
       shapesPanel.hidden = tool !== "shapes";
+    }
+    if (backgroundPanel) {
+      backgroundPanel.hidden = tool !== "background";
     }
     if (tool === "clipart") {
       this.ensureClipartThumbsLoaded();

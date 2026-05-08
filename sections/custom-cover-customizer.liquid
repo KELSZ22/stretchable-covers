@@ -468,10 +468,17 @@
                           <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">{{- 'icon-customizer-tool-shapes.svg' | inline_asset_content -}}</span>
                           <span>{{ section.settings.shapes_section_heading | escape }}</span>
                         </button>
+                        <button
+                          type="button"
+                          class="custom-cover-customizer__tool"
+                          data-tool-button="background">
+                          <span class="custom-cover-customizer__tool-icon custom-cover-customizer__tool-icon--svg" aria-hidden="true">{{- 'icon-customizer-tool-background.svg' | inline_asset_content -}}</span>
+                          <span>{{ section.settings.background_button_label | escape }}</span>
+                        </button>
                       </div>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,.svg,.ai"
                         data-upload-input
                         class="custom-cover-customizer__hidden-upload">
                     </div>
@@ -542,6 +549,130 @@
                       </div>
                     </div>
 
+                    <div
+                      class="custom-cover-customizer__background-panel"
+                      data-tool-panel="background"
+                      hidden>
+                      <div class="custom-cover-customizer__background-mode" role="radiogroup" aria-label="Background style">
+                        <button type="button" class="custom-cover-customizer__background-mode-btn is-active" data-background-mode="solid" aria-pressed="true">Solid</button>
+                        <button type="button" class="custom-cover-customizer__background-mode-btn" data-background-mode="gradient" aria-pressed="false">Gradient</button>
+                        <button type="button" class="custom-cover-customizer__background-mode-btn" data-background-mode="image" aria-pressed="false">Image</button>
+                      </div>
+
+                      <div class="custom-cover-customizer__background-pane custom-cover-customizer__text-color-row" data-background-pane="solid">
+                        <label class="custom-cover-customizer__label" for="CustomizerBackgroundSolid-{{ section.id }}">
+                          Solid color
+                        </label>
+                        <label class="custom-cover-customizer__color-chip">
+                          <span class="visually-hidden">Solid color</span>
+                          <input
+                            id="CustomizerBackgroundSolid-{{ section.id }}"
+                            class="custom-cover-customizer__color-native"
+                            type="color"
+                            value="#ffffff"
+                            data-background-solid-input
+                            aria-label="Solid color">
+                          <span
+                            class="custom-cover-customizer__color-swatch"
+                            data-background-solid-swatch
+                            aria-hidden="true"
+                            style="background-color: #ffffff"></span>
+                          <span class="custom-cover-customizer__color-hex" data-background-solid-hex>#FFFFFF</span>
+                        </label>
+                      </div>
+
+                      <div class="custom-cover-customizer__background-pane" data-background-pane="gradient" hidden>
+                        <div class="custom-cover-customizer__background-gradient-row">
+                          <div class="custom-cover-customizer__background-gradient-field custom-cover-customizer__group">
+                            <label class="custom-cover-customizer__label" for="CustomizerBackgroundGradientStart-{{ section.id }}">
+                              Gradient start
+                            </label>
+                            <label class="custom-cover-customizer__color-chip">
+                              <span class="visually-hidden">Gradient start color</span>
+                              <input
+                                id="CustomizerBackgroundGradientStart-{{ section.id }}"
+                                class="custom-cover-customizer__color-native"
+                                type="color"
+                                value="#ffffff"
+                                data-background-gradient-start
+                                aria-label="Gradient start color">
+                              <span
+                                class="custom-cover-customizer__color-swatch"
+                                data-background-gradient-start-swatch
+                                aria-hidden="true"
+                                style="background-color: #ffffff"></span>
+                              <span class="custom-cover-customizer__color-hex" data-background-gradient-start-hex>#FFFFFF</span>
+                            </label>
+                          </div>
+                          <div class="custom-cover-customizer__background-gradient-field custom-cover-customizer__group">
+                            <label class="custom-cover-customizer__label" for="CustomizerBackgroundGradientEnd-{{ section.id }}">
+                              Gradient end
+                            </label>
+                            <label class="custom-cover-customizer__color-chip">
+                              <span class="visually-hidden">Gradient end color</span>
+                              <input
+                                id="CustomizerBackgroundGradientEnd-{{ section.id }}"
+                                class="custom-cover-customizer__color-native"
+                                type="color"
+                                value="#d7e3ff"
+                                data-background-gradient-end
+                                aria-label="Gradient end color">
+                              <span
+                                class="custom-cover-customizer__color-swatch"
+                                data-background-gradient-end-swatch
+                                aria-hidden="true"
+                                style="background-color: #d7e3ff"></span>
+                              <span class="custom-cover-customizer__color-hex" data-background-gradient-end-hex>#D7E3FF</span>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="custom-cover-customizer__background-direction-field">
+                          <label class="custom-cover-customizer__label" for="CustomizerBackgroundGradientDirection-{{ section.id }}">
+                            Direction
+                          </label>
+                          <select
+                            id="CustomizerBackgroundGradientDirection-{{ section.id }}"
+                            class="custom-cover-customizer__background-direction"
+                            data-background-gradient-direction>
+                            <option value="to bottom">Top to bottom</option>
+                            <option value="to right">Left to right</option>
+                            <option value="135deg">Diagonal</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="custom-cover-customizer__background-pane" data-background-pane="image" hidden>
+                        <p
+                          class="custom-cover-customizer__warning custom-cover-customizer__warning--upload"
+                          aria-live="polite"
+                          data-background-warning-output></p>
+                        <input
+                          type="file"
+                          accept="image/*,.svg,.ai"
+                          data-background-upload-input
+                          class="custom-cover-customizer__hidden-upload">
+                        <button
+                          type="button"
+                          class="custom-cover-customizer__dropzone"
+                          data-background-upload-dropzone>
+                          <span class="custom-cover-customizer__dropzone-label">
+                            Upload a background image
+                          </span>
+                          <span class="custom-cover-customizer__dropzone-formats">
+                            Accepts JPG, PNG, SVG, and WebP
+                          </span>
+                          <span class="custom-cover-customizer__dropzone-max">
+                            Max file size:
+                            {{ section.settings.max_upload_mb | default: 10 }} MB
+                          </span>
+                        </button>
+                      </div>
+
+                      <button type="button" class="custom-cover-customizer__background-clear" data-background-clear>
+                        Clear background
+                      </button>
+                    </div>
+
                     {%- comment -%} ===== CLIPART PANEL ===== {%- endcomment -%}
                     <div
                       class="custom-cover-customizer__clipart-panel"
@@ -566,8 +697,16 @@
                       {%- assign seen_cat_keys = '' -%}
                       {%- assign ordered_cat_keys = '' -%}
                       {%- assign ordered_cat_names = '' -%}
+                      {%- assign clipart_page_size = 50 -%}
 
                         {%- if clipart_metaobjects_collection != blank -%}
+                        {%- paginate clipart_metaobjects_collection.values by clipart_page_size -%}
+                        <div
+                          data-clipart-pagination
+                          data-clipart-current-page="{{ paginate.current_page }}"
+                          data-clipart-total-pages="{{ paginate.pages }}"
+                          data-clipart-page-param="{{ paginate.page_param | escape }}"
+                          data-clipart-section-id="{{ section.id }}">
 
                         {%- comment -%} Pass 1: collect unique categories in encounter order {%- endcomment -%}
                         {%- for clipart in clipart_metaobjects_collection.values -%}
@@ -600,9 +739,9 @@
                               {%- continue -%}{%- endif -%}
                             {%- assign current_cat_name = cat_name_list[forloop.index0] -%}
 
-                            <div class="custom-cover-customizer__clipart-category">
+                            <div class="custom-cover-customizer__clipart-category" data-clipart-category="{{ cat_key | escape }}">
                               <p class="custom-cover-customizer__clipart-category-name">{{ current_cat_name | escape }}</p>
-                              <div class="custom-cover-customizer__clipart-list">
+                              <div class="custom-cover-customizer__clipart-list" data-clipart-list>
                                 {%- for clipart in clipart_metaobjects_collection.values -%}
                                   {%- assign clipart_image = clipart.image.value | default: clipart.image -%}
                                   {%- if clipart_image == blank -%}
@@ -636,6 +775,8 @@
                             Add clipart items in Shopify Admin → Content → Metaobjects
                           </p>
                         {%- endif -%}
+                        </div>
+                        {%- endpaginate -%}
 
                       {%- endif -%}
                     </div>
@@ -1928,6 +2069,11 @@
         "id": "image_button_label",
         "label": "Image button label",
         "default": "Image"
+      }, {
+        "type": "text",
+        "id": "background_button_label",
+        "label": "Background button label",
+        "default": "Background"
       }, {
         "type": "text",
         "id": "image_rights_label",
