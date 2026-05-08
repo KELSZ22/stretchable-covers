@@ -76,7 +76,7 @@
           if forloop.index == 1 and product_resource.options_with_values.size > 1
             assign show_sizing_guide = true
             assign guide_display_type = 'icon'
-          elsif forloop.index == 2
+          elsif forloop.index == 2 and product_option_name_downcase != 'imprint size'
             assign show_sizing_guide = true
             assign guide_display_type = 'text'
           endif

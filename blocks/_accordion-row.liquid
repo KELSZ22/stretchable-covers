@@ -1,4 +1,5 @@
 {% assign block_settings = block.settings %}
+{% capture accordion_block_content %}{% content_for 'blocks' %}{% endcapture %}
 
 <accordion-custom
   {% if block_settings.open_by_default %}
@@ -40,7 +41,7 @@
     </summary>
 
     <div class="details-content">
-    {% if block_settings.heading == 'Specification' %}
+      {% if block_settings.heading == 'Specification' %}
         <table class="specification-table">
           <tbody>
             <tr>
@@ -53,8 +54,23 @@
             </tr>
           </tbody>
         </table>
+      {% elsif block_settings.heading == 'Materials' %}
+        {% assign materials_metafield = closest.product.metafields.custom.materials_used %}
+        {% if materials_metafield == blank %}
+          {% assign materials_metafield = closest.product.metafields.custom.materials %}
+        {% endif %}
+
+        {% if materials_metafield != blank %}
+          {% if materials_metafield.type == 'rich_text_field' %}
+            {{ materials_metafield | metafield_tag }}
+          {% else %}
+            {{ materials_metafield.value | escape }}
+          {% endif %}
+        {% else %}
+          {{ accordion_block_content }}
+        {% endif %}
       {% else %}
-        {% content_for 'blocks' %}
+        {{ accordion_block_content }}
       {% endif %}
     </div>
   </details>
