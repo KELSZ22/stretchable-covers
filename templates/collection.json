@@ -86,6 +86,9 @@
         "text_tqQTNE",
         "text_twGGkJ"
       ],
+      "custom_css": [
+        "h1 {color: #0f2e53;}"
+      ],
       "name": "Collection heading",
       "settings": {
         "content_direction": "column",

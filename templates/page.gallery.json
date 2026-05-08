@@ -98,7 +98,7 @@
         "marquee_speed": 36,
         "move_direction": "left",
         "section_bg": "#dfe2e6",
-        "heading_color": "#202124",
+        "heading_color": "#0f2e53",
         "subheading_color": "#4d525b",
         "padding_top": 60,
         "padding_bottom": 60
@@ -139,6 +139,9 @@
         "collection_group_qQ4mbq",
         "collection_group_BJLWpL",
         "collection_group_jGNmrx"
+      ],
+      "custom_css": [
+        "h2{color:red;}"
       ],
       "name": "Gallery Showcase",
       "settings": {

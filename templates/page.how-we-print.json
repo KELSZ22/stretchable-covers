@@ -42,6 +42,9 @@
       "block_order": [
         "heading"
       ],
+      "custom_css": [
+        "h2{color:#0F2E53;}"
+      ],
       "name": "How We Print",
       "settings": {
         "content_direction": "column",

@@ -64,7 +64,12 @@
           {% if product_1 != blank %}
             <a href="{{ product_1.url }}" class="custom-search-dropdown__product">
               {% if product_1.featured_image != blank %}
-                <img src="{{ product_1.featured_image | image_url: width: 240 }}" alt="{{ product_1.title | escape }}">
+                <img
+                  src="{{ product_1.featured_image | image_url: width: 240 }}"
+                  alt="{{ product_1.title | escape }}"
+                  width="240"
+                  height="240"
+                >
               {% endif %}
               <span>{{ product_1.title }}</span>
             </a>
@@ -73,7 +78,12 @@
           {% if product_2 != blank %}
             <a href="{{ product_2.url }}" class="custom-search-dropdown__product">
               {% if product_2.featured_image != blank %}
-                <img src="{{ product_2.featured_image | image_url: width: 240 }}" alt="{{ product_2.title | escape }}">
+                <img
+                  src="{{ product_2.featured_image | image_url: width: 240 }}"
+                  alt="{{ product_2.title | escape }}"
+                  width="240"
+                  height="240"
+                >
               {% endif %}
               <span>{{ product_2.title }}</span>
             </a>
@@ -81,66 +91,6 @@
         </div>
       </div>
 
-      <div class="custom-search-dropdown__col custom-search-dropdown__col--right">
-        <h4 class="custom-search-dropdown__title" data-featured-title>Featured Product</h4>
-
-        <div data-featured-panel>
-          {% if featured_product != blank %}
-            {% assign featured_variant = featured_product.selected_or_first_available_variant %}
-
-            <a href="{{ featured_product.url }}" class="custom-search-dropdown__featured custom-search-dropdown__featured-product">
-              <div class="custom-search-dropdown__featured-image-wrap">
-                {% if featured_product.featured_image != blank %}
-                  <img
-                    src="{{ featured_product.featured_image | image_url: width: 500 }}"
-                    alt="{{ featured_product.title | escape }}"
-                    loading="lazy"
-                  >
-                {% else %}
-                  <div class="custom-search-dropdown__featured-placeholder">
-                    No image
-                  </div>
-                {% endif %}
-              </div>
-
-              <span class="heading-search-featured">
-                {{ featured_product.title }}
-              </span>
-
-              <div class="custom-search-featured-price">
-                {% if featured_variant.compare_at_price > featured_variant.price %}
-                  <span class="custom-search-featured-price-current">
-                    {{ featured_variant.price | money }}
-                  </span>
-                  <span class="custom-search-featured-price-compare">
-                    {{ featured_variant.compare_at_price | money }}
-                  </span>
-                {% else %}
-                  <span class="custom-search-featured-price-current">
-                    {{ featured_variant.price | money }}
-                  </span>
-                {% endif %}
-              </div>
-            </a>
-          {% else %}
-            <div class="custom-search-dropdown__featured custom-search-dropdown__featured-product custom-search-dropdown__featured-product--empty">
-              <div class="custom-search-dropdown__featured-image-wrap">
-                <div class="custom-search-dropdown__featured-placeholder">
-                  Select product
-                </div>
-              </div>
-
-              <span class="heading-search-featured">
-                Featured product
-              </span>
-
-              <p class="text-search-featured">
-                Choose a product in the header section settings.
-              </p>
-            </div>
-          {% endif %}
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -244,7 +194,7 @@
   }
 
   .custom-search-dropdown__col.custom-search-dropdown__col--middle {
-    width: 60%;
+    width: 80%;
     position: relative;
   }
 
@@ -318,8 +268,15 @@
     align-items: center;
   }
 
+  .custom-search-dropdown__product {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
   .custom-search-dropdown__product img {
     width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     display: block;
     border-radius: 6px;
     margin-bottom: 8px;
