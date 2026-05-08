@@ -235,6 +235,7 @@
     "remove_all_items_confirmation": "Remove all {{ count }} items from your cart?",
     "remove_one_item_confirmation": "Remove 1 item from your cart?",
     "reviews": "reviews",
+    "shop_all": "Shop all",
     "read_more": "Read more...",
     "search_input_label": "Search",
     "search_input_placeholder": "Search",

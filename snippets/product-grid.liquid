@@ -108,6 +108,11 @@
         <p>
           {{ 'content.use_fewer_filters_html' | t: link: collection.url, class: 'main-collection-grid__empty-link' }}
         </p>
+        <a class="button main-collection-grid__empty-button" href="{{ routes.all_products_collection_url }}">
+          <span class="button-text">
+            {{ 'content.shop_all' | t }}
+          </span>
+        </a>
       </div>
     {% else %}
       {% if enable_infinite_scroll %}
@@ -217,5 +222,28 @@
 
   .main-collection-grid__empty-title {
     margin: 0;
+  }
+
+  .main-collection-grid__empty-button {
+    margin-top: var(--padding-xs);
+    display: flex;
+    width: 153px;
+    padding: 10px 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 9999px;
+    background: #eb891b;
+    color: #fff;
+    font-family: Lato;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+  }
+
+  .main-collection-grid__empty-button .button-text {
+    color: inherit;
+    font: inherit;
   }
 {% endstylesheet %}

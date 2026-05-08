@@ -43,13 +43,13 @@
               {% assign product_url = selected_product.url %}
               {% assign product_title = block.settings.custom_title | default: selected_product.title %}
               {% assign product_price = first_variant.price | default: selected_product.price %}
-              {% assign product_compare_prixce = first_variant.compare_at_price | default: selected_product.compare_at_price %}
+              {% assign product_compare_price = first_variant.compare_at_price | default: selected_product.compare_at_price %}
               {% assign card_alt = product_title %}
               {% if product_image != blank and product_image.alt != blank %}
                 {% assign card_alt = product_image.alt %}
               {% endif %}
 
-              <a href="{{ product_url }}" class="sps-card" {{ block.shopify_attributes }}>
+              <a href="{{ product_url }}" class="sps-card" data-price="{{ product_price | default: 0 }}" {{ block.shopify_attributes }}>
                 <div class="sps-card__media">
                   {% if selected_product.tags contains 'most-ordered' %}
                     <div class="sps-card__badge">
@@ -503,6 +503,7 @@
     function buildSlider() {
       stopAutoSlide();
       clearClones();
+      sortOriginalCardsByPriceDesc();
 
       var originals = getOriginalCards();
       var visibleCount = getVisibleCount();
@@ -551,6 +552,22 @@
       });
 
       startAutoSlide();
+    }
+
+    function sortOriginalCardsByPriceDesc() {
+      var originalCards = getOriginalCards();
+
+      if (originalCards.length <= 1) return;
+
+      originalCards
+        .sort(function(a, b) {
+          var priceA = parseInt(a.getAttribute('data-price'), 10) || 0;
+          var priceB = parseInt(b.getAttribute('data-price'), 10) || 0;
+          return priceB - priceA;
+        })
+        .forEach(function(card) {
+          track.appendChild(card);
+        });
     }
 
     function goToSlide(index) {
