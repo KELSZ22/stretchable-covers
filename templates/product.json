@@ -775,7 +775,7 @@
         "block_CGQUgm": {
           "type": "block",
           "settings": {
-            "image": "shopify://shop_images/1.png",
+            "image": "shopify://shop_images/1_c0abee09-1e19-46a7-bd40-cbc2cbdd8e05.png",
             "heading": "Pick your product & size",
             "subheading": "Step 1"
           }
@@ -783,7 +783,7 @@
         "block_MViGd7": {
           "type": "block",
           "settings": {
-            "image": "shopify://shop_images/2.png",
+            "image": "shopify://shop_images/2_7dafd5d9-5244-4ee1-8c36-b01b2f0aecbe.png",
             "heading": "Design your cover using our customizer",
             "subheading": "Step 2"
           }
@@ -791,7 +791,7 @@
         "block_M3mgLt": {
           "type": "block",
           "settings": {
-            "image": "shopify://shop_images/Untitled_design.png",
+            "image": "shopify://shop_images/Stretchable_Covers_Tutorial_Assets_1.png",
             "heading": "Review and place order",
             "subheading": "Step 3"
           }
