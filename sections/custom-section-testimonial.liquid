@@ -82,11 +82,14 @@
 #shopify-section-{{ section.id }} .cwt-section__card-body {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 #shopify-section-{{ section.id }} .cwt-section__quote-icon {
   align-self: flex-end;
   margin-bottom: 10px;
+  flex-shrink: 0;
 }
 
   #shopify-section-{{ section.id }}.cwt-section {
@@ -235,9 +238,7 @@
     flex: 0 0 calc((100% - 32px) / 3);
     min-width: calc((100% - 32px) / 3);
     max-height: 268px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(235, 137, 27, 0.6) transparent;
+    overflow: hidden;
     background: {{ section.settings.card_bg }};
     border-radius: 4px;
     box-shadow: 0 4px 28.8px 0 rgba(0, 0, 0, 0.12);
@@ -245,23 +246,6 @@
     user-select: none;
     -webkit-user-select: none;
     padding: 24px;
-  }
-
-  #shopify-section-{{ section.id }} .cwt-section__card::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  #shopify-section-{{ section.id }} .cwt-section__card::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  #shopify-section-{{ section.id }} .cwt-section__card::-webkit-scrollbar-thumb {
-    background: rgba(235, 137, 27, 0.6);
-    border-radius: 4px;
-  }
-
-  #shopify-section-{{ section.id }} .cwt-section__card::-webkit-scrollbar-thumb:hover {
-    background: rgba(235, 137, 27, 0.85);
   }
 
   #shopify-section-{{ section.id }} .cwt-section__card-image-wrap {
@@ -299,6 +283,28 @@
     margin-bottom: 16px;
     margin-top: 10px;
     font-style: italic;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(235, 137, 27, 0.6) transparent;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__quote::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__quote::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__quote::-webkit-scrollbar-thumb {
+    background: rgba(235, 137, 27, 0.6);
+    border-radius: 4px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__quote::-webkit-scrollbar-thumb:hover {
+    background: rgba(235, 137, 27, 0.85);
   }
 
   #shopify-section-{{ section.id }} .cwt-section__author {
@@ -308,6 +314,7 @@
     color: {{ section.settings.author_color }};
     margin-bottom: 4px;
     font-style: italic;
+    flex-shrink: 0;
   }
 
   #shopify-section-{{ section.id }} .cwt-section__role {
@@ -316,6 +323,7 @@
     font-weight: 600;
     color: {{ section.settings.role_color }};
     font-style: italic;
+    flex-shrink: 0;
   }
 
   @media screen and (max-width: 1366px) {
