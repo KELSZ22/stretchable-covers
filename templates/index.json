@@ -272,7 +272,7 @@
       ],
       "name": "All Collections Slider",
       "settings": {
-        "heading": "Shop by Collections",
+        "heading": "Shop By Collections",
         "subheading": "Find the cover built for your application or start a fully custom design.",
         "view_all_text": "View All",
         "view_all_link": "",
@@ -607,7 +607,7 @@
       "settings": {
         "stars_text": "★★★★★",
         "trusted_text": "450,000+ Shipped",
-        "heading": "Thousands of customers and repeated use.",
+        "heading": "Thousands Of Customers And Repeated Use",
         "description": "Trusted by thousands of customers and proven through years of repeated, real-world use across multiple industries.",
         "section_bg": "#ffffff",
         "stars_color": "#eb891b",
@@ -927,7 +927,7 @@
       ],
       "name": "Brand Logo Bar",
       "settings": {
-        "heading": "Partnered by Hundred Brands Worldwide",
+        "heading": "Partnered By Hundred Brands Worldwide",
         "section_bg": "#f9fdff",
         "heading_color": "#1f1f1f",
         "border_color": "#1a1a1a",
@@ -1020,7 +1020,7 @@
       "type": "custom-section-newspaper",
       "name": "Newsletter Subscribe Bar",
       "settings": {
-        "heading": "Stay Updated with Stretchable Covers",
+        "heading": "Stay Updated With Stretchable Covers",
         "subheading": "Be the first to know about new designs, custom solutions, and product updates.",
         "placeholder": "Enter your email",
         "button_label": "Subscribe",
