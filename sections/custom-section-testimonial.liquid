@@ -234,14 +234,34 @@
   #shopify-section-{{ section.id }} .cwt-section__card {
     flex: 0 0 calc((100% - 32px) / 3);
     min-width: calc((100% - 32px) / 3);
+    max-height: 268px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(235, 137, 27, 0.6) transparent;
     background: {{ section.settings.card_bg }};
     border-radius: 4px;
     box-shadow: 0 4px 28.8px 0 rgba(0, 0, 0, 0.12);
-    overflow: hidden;
     margin: 10px 16px;
     user-select: none;
     -webkit-user-select: none;
     padding: 24px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__card::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__card::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__card::-webkit-scrollbar-thumb {
+    background: rgba(235, 137, 27, 0.6);
+    border-radius: 4px;
+  }
+
+  #shopify-section-{{ section.id }} .cwt-section__card::-webkit-scrollbar-thumb:hover {
+    background: rgba(235, 137, 27, 0.85);
   }
 
   #shopify-section-{{ section.id }} .cwt-section__card-image-wrap {
