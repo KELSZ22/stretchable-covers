@@ -1294,53 +1294,314 @@
     "custom_section_testimonial_aGKFWw": {
       "type": "custom-section-testimonial",
       "blocks": {
-        "testimonial_7iNcqG": {
+        "testimonial_EqBHXC": {
           "type": "testimonial",
           "settings": {
             "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
             "author": "Cathy Powell",
             "role": "University Health Care System"
+          }
+        },
+        "testimonial_jTHrrp": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Love the waterproof exam stool covers! Just got them today from shipping and receiving. Thank you so much for your patience with me as me moved through this process! We'll be ordering many more.",
+            "author": "Marilyn Thomas",
+            "role": "University Health Care System"
+          }
+        },
+        "testimonial_7iNcqG": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The FANTASTIC covers arrived today, and I couldn't be happier with them. They are brilliant. Good quality fabric, stitching, and printing. Thank you for a quality product! And I am glad to see you promoting 'Made in the USA.' Here in Australia, my family and many of my friends and colleagues are attempting to support Made in Australia. How else do we keep jobs in our own country?\n\nI know I will be the centre of attention with these covers. When I end up with other bands, I will contact you again to get more covers!!",
+            "author": "Sue Bradley",
+            "role": ""
+          }
+        },
+        "testimonial_Ti9dRe": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I just wanted to send a quick email about my order - I received the shipment today with my printed sousaphone covers and wanted to provide you with some positive feedback:\n\nI was blown away by how good they look! I put one of them on my sousaphone, and it looks fantastic. I wasn't sure how well the artwork I provided would look once it was actually printed, but the artwork came out great.\n\nI can't believe how fast y'all got them printed, shipped, and delivered to me.  I will definitely recommend you to the other sousa players in our band and to players in the Austin community.\n\nThanks again for providing fantastic customer service!",
+            "author": "Gary Cox",
+            "role": ""
+          }
+        },
+        "testimonial_DwA6yg": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "You totally blew me away! Thank you so much for getting that done and to me in time for our event!! Definitely such a pleasure buying from you and I am so happy with the final product!! Keep up the amazing work! And thank you again for everything! You’re a great guy! Have a fantastic holiday weekend!!\nThanks a million!",
+            "author": "Sheena Rodebaugh",
+            "role": ""
           }
         },
         "testimonial_Rxx3k9": {
           "type": "testimonial",
           "settings": {
-            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
-            "author": "Cathy Powell",
-            "role": "University Health Care System"
+            "quote": "OMG!! Are you a magician?! That's amazing, and they're GORGEOUS! THANK YOU!!!",
+            "author": "Cynthia Stanton",
+            "role": ""
           }
         },
         "testimonial_ga8gYW": {
           "type": "testimonial",
           "settings": {
-            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
-            "author": "Cathy Powell",
-            "role": "University Health Care System"
+            "quote": "Thank you so much.  I received my Sousaphone covers today and they are PERFECT. Absolutely what I was looking for.\nThe material is great and goes on the instruments so easily. I just love them.\nI will be sure to tell other bands about Stretchable Covers. I can't wait to show them off.\nSuper job. Thanks!",
+            "author": "Melita Quesada",
+            "role": ""
           }
         },
         "testimonial_7NLLUM": {
           "type": "testimonial",
           "settings": {
-            "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
-            "author": "Cathy Powell",
-            "role": "University Health Care System"
+            "quote": "Received the covers yesterday and they are wonderful. Thank you for all of your help. \nAs a retired band director, I appreciate your fast service and the ability to order less than 10. \nHopefully we can work together with another cash strapped program in the future. Again, we really appreciate you.",
+            "author": "Sue Cechal",
+            "role": ""
           }
         },
         "testimonial_NzgwM3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The cover looks great as usual. I appreciate the quick turnaround.",
+            "author": "Kayla Bright",
+            "role": "Knox County Middle School, Cheerleading StateChampions"
+          }
+        },
+        "testimonial_TXLmGN": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Ordered 2 bell covers to see how they were in both printing and sizing. They were perfect and the kids loved them. \nNeeded 3 more and wanted them before our next game so I placed my order on Sunday. I emailed the company and got a response before they opened Monday morning. I was told it'll be handled. They weren't lying. Within a few hours I had order confirmation and shipping confirmation with upgraded shipping to get them to me a day early. \nTo say that they prioritize customer service and satisfaction over anything else is an understatement. My order was pretty small but it still mattered and that is awesome. \nI wish more businesses operated like this these days. Will definitely be ordering from this company next time. Thank you!",
+            "author": "Joe Stevenson",
+            "role": ""
+          }
+        },
+        "testimonial_Ka8xLf": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I love working with you guys!",
+            "author": "Shawn Tretter",
+            "role": "(Brass Animals)"
+          }
+        },
+        "testimonial_HWHNNm": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Paul, I do believe I’ve already said to you that you ROCK!  \nIs there another word equally expressive that connotes something like “you’re the best” or “gee whiz, you are SOOOO responsive”?\nI’m thinking that “thank you, Paul” truly expresses my admiration for your skills, so . . . .\n . . .  thank you!",
+            "author": "Lee Urban",
+            "role": ""
+          }
+        },
+        "testimonial_4zPTxk": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Thank you Paul! I really appreciate your great customer service!  I am very excited about these covers.  It was a pleasure talking with you today. Thanks so much for your help. Many Thanks",
+            "author": "Joyce Leonard",
+            "role": ""
+          }
+        },
+        "testimonial_zYhntm": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Hey Paul,\n\nThanks for the emails and keeping me up to date. Seriously, awesome efficiency! \nBig thank you!",
+            "author": "Dan Di Marzo",
+            "role": ""
+          }
+        },
+        "testimonial_PET4aJ": {
           "type": "testimonial",
           "settings": {
             "quote": "WOW!! You guys are awesome! I'm so glad I found you. You are the very top of my list of excellent companies. The bell covers arrived and are perfect! Just what we needed for our community band's 100th anniversary. We can't put to words the celebration. Thanks again!",
             "author": "Cathy Powell",
             "role": "University Health Care System"
           }
+        },
+        "testimonial_V4Lr7r": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The cover looks great as usual. I appreciate the quick turnaround.",
+            "author": "Chris Bonura",
+            "role": ""
+          }
+        },
+        "testimonial_78mTBN": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "We received the covers today and they look great! Thank you!!",
+            "author": "Lizzie Steele - Washington Commanders",
+            "role": ""
+          }
+        },
+        "testimonial_dVXhDf": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Hey Paul,  \n\nThought I'd follow up on the covers we received today. \n\nWe are so absolutely satisfied! Thanks so much for these, great service top to bottom. Pat yourself on the back. \n\nThanks again, we'll be in touch when we need more products. \n\nMany thanks.",
+            "author": "Antony Stevens - Strayhorns",
+            "role": ""
+          }
+        },
+        "testimonial_HREk3z": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The new covers have arrived and they look great!!\n\nWhat a legend.  Thanks so much!\"",
+            "author": "Simon Czestochowski",
+            "role": "Back Chat Brass"
+          }
+        },
+        "testimonial_QbKqqM": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Received the covers today. They look great!\nI did not expect it was possible to have the border added too! Thanks for doing that. I appreciate your judgment on this! Very pleased.",
+            "author": "Paul Andrejko",
+            "role": ""
+          }
+        },
+        "testimonial_8aYxN3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Very Happy to place another order with you guys again this year for my Mardi Gras theme park bands. Unfortunately, theme park projects are always so last minute (nature of the beast), but you guys are always my shining light with how fast you're able to turn things around. So thank you again for that. Thanks so much for everything you do, and let me know if there's anything that I can do to help get more accounts. Thanks again!",
+            "author": "Aaron Watson",
+            "role": ""
+          }
+        },
+        "testimonial_WzQfnw": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I was overjoyed to open the sousaphone covers today!! \nOur season opening event is tomorrow and our players were able to practice with the covers on tonight.\nThey look great, thank you!",
+            "author": "Deanna Golden",
+            "role": ""
+          }
+        },
+        "testimonial_bKQXVw": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Hi! We are VERY happy with our sousaphone bell covers!  We performed with them last Friday and they were a hit!! Thank you!",
+            "author": "Lisa A. Hazlett",
+            "role": ""
+          }
+        },
+        "testimonial_cxPJJ6": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I am replying to the following:  \n\n'Unfortunately, the artwork you sent was not high quality enough to print, as it was a graphic of a graphic and too low in resolution. So, I took the liberty of\nre-drawing the design for you to make it crystal clear :) Free of charge of\ncourse since I made the executive decision for you. Have terrific performances this season! Thanks. Paul'\n\nThat was certainly above and beyond expectations! Thank you so much for doing that! They look fantastic.",
+            "author": "Kevin Vaselakes",
+            "role": ""
+          }
+        },
+        "testimonial_4nLdGk": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Our covers look amazing! Thank you so much for your quick work and professionalism. We will be using these in the NYC St. Patrick's Day parade next month! \n\nThanks again!",
+            "author": "Candice Crismond",
+            "role": ""
+          }
+        },
+        "testimonial_MnqeKg": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Fabulous! Thank you!\nYou guys have been great with everything. I really appreciate your customer service.",
+            "author": "Michelle Solie",
+            "role": ""
+          }
+        },
+        "testimonial_XVzaRm": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Covers arrived today – thank you so much! They look fantastic as usual!",
+            "author": "Brian Redmond",
+            "role": ""
+          }
+        },
+        "testimonial_z3P49f": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Hi Paul! Keep meaning to let you know - we received the covers for the Sousaphones and they look great - thanks for all your help with this, I appreciate it",
+            "author": "Lynn Reda",
+            "role": ""
+          }
+        },
+        "testimonial_L3H4ry": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The highest quality product and service - every time! Even my small orders get prompt attention and processing. Thanks - Stretchable Covers!",
+            "author": "Jerry Embree",
+            "role": ""
+          }
+        },
+        "testimonial_ni3GxK": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The covers look absolutely amazing, and I can't thank you enough for helping with this whole process.",
+            "author": "Benjamin Cendan",
+            "role": ""
+          }
+        },
+        "testimonial_JHeDHi": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "HI PAUL! Thanks again for unbelievable customer service!  Here's your cover at home plate at NATS park with players from the National Symphony! \n\nYou da' man (again)!",
+            "author": "Steve Dumaine",
+            "role": ""
+          }
+        },
+        "testimonial_qny4xy": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Thanks again for your help. The covers fit and look great!  And came in so quickly. Couldn’t be more pleased",
+            "author": "Janet Hitz",
+            "role": ""
+          }
+        },
+        "testimonial_pYp7RJ": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "\"Thanks so much for the time you put in to this order, you definitely went above and beyond. I will definitely recommend your company to other bands here in Australia. I'm very excited to get them out into our bands!",
+            "author": "SGT Carla Allmich-Caira",
+            "role": "Tech Sergeant Public Relations, Recruiting and Social Media Admin HQ Australian Army Band"
+          }
+        },
+        "testimonial_MpgrJV": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "\" Hi Paul. The cover went down really well at its first outing at the Upton-upon-Severn Folk Festival and was photographed many times over the weekend.\nThere aren't all that many Sousas in use in the UK compared to the US - certainly not many at folk festivals and the cover stood out a treat.\n\nThank you also for your very speedy service. It would have beaten a UK supplier, particularly over the bank holiday here. Thanks again.\"",
+            "author": "Mark Johnson",
+            "role": "University Health Care System"
+          }
         }
       },
       "block_order": [
+        "testimonial_EqBHXC",
+        "testimonial_jTHrrp",
         "testimonial_7iNcqG",
+        "testimonial_Ti9dRe",
+        "testimonial_DwA6yg",
         "testimonial_Rxx3k9",
         "testimonial_ga8gYW",
         "testimonial_7NLLUM",
-        "testimonial_NzgwM3"
+        "testimonial_NzgwM3",
+        "testimonial_TXLmGN",
+        "testimonial_Ka8xLf",
+        "testimonial_HWHNNm",
+        "testimonial_4zPTxk",
+        "testimonial_zYhntm",
+        "testimonial_PET4aJ",
+        "testimonial_V4Lr7r",
+        "testimonial_78mTBN",
+        "testimonial_dVXhDf",
+        "testimonial_HREk3z",
+        "testimonial_QbKqqM",
+        "testimonial_8aYxN3",
+        "testimonial_WzQfnw",
+        "testimonial_bKQXVw",
+        "testimonial_cxPJJ6",
+        "testimonial_4nLdGk",
+        "testimonial_MnqeKg",
+        "testimonial_XVzaRm",
+        "testimonial_z3P49f",
+        "testimonial_L3H4ry",
+        "testimonial_ni3GxK",
+        "testimonial_JHeDHi",
+        "testimonial_qny4xy",
+        "testimonial_pYp7RJ",
+        "testimonial_MpgrJV"
       ],
       "name": "Testimonial Slider",
       "settings": {

@@ -585,7 +585,7 @@
                         <div class="custom-cover-customizer__background-gradient-row">
                           <div class="custom-cover-customizer__background-gradient-field custom-cover-customizer__group">
                             <label class="custom-cover-customizer__label" for="CustomizerBackgroundGradientStart-{{ section.id }}">
-                              Gradient start
+                              Color 1
                             </label>
                             <label class="custom-cover-customizer__color-chip">
                               <span class="visually-hidden">Gradient start color</span>
@@ -606,7 +606,7 @@
                           </div>
                           <div class="custom-cover-customizer__background-gradient-field custom-cover-customizer__group">
                             <label class="custom-cover-customizer__label" for="CustomizerBackgroundGradientEnd-{{ section.id }}">
-                              Gradient end
+                              Color 2
                             </label>
                             <label class="custom-cover-customizer__color-chip">
                               <span class="visually-hidden">Gradient end color</span>
@@ -625,19 +625,6 @@
                               <span class="custom-cover-customizer__color-hex" data-background-gradient-end-hex>#D7E3FF</span>
                             </label>
                           </div>
-                        </div>
-                        <div class="custom-cover-customizer__background-direction-field">
-                          <label class="custom-cover-customizer__label" for="CustomizerBackgroundGradientDirection-{{ section.id }}">
-                            Direction
-                          </label>
-                          <select
-                            id="CustomizerBackgroundGradientDirection-{{ section.id }}"
-                            class="custom-cover-customizer__background-direction"
-                            data-background-gradient-direction>
-                            <option value="to bottom">Top to bottom</option>
-                            <option value="to right">Left to right</option>
-                            <option value="135deg">Diagonal</option>
-                          </select>
                         </div>
                       </div>
 
@@ -666,6 +653,18 @@
                             {{ section.settings.max_upload_mb | default: 10 }} MB
                           </span>
                         </button>
+                        <div class="custom-cover-customizer__background-scale-row" data-background-scale-row hidden>
+                          <label class="custom-cover-customizer__label" for="BackgroundImageScale-{{ section.id }}">Zoom</label>
+                          <input
+                            id="BackgroundImageScale-{{ section.id }}"
+                            type="range"
+                            class="custom-cover-customizer__range-input"
+                            data-background-image-scale
+                            min="0.2"
+                            max="3"
+                            step="0.05"
+                            value="1">
+                        </div>
                       </div>
 
                       <button type="button" class="custom-cover-customizer__background-clear" data-background-clear>
@@ -733,6 +732,17 @@
                           {%- assign cat_key_list = ordered_cat_keys | split: '~~~' -%}
                           {%- assign cat_name_list = ordered_cat_names | split: '~~~' -%}
 
+                          {%- comment -%} Category filter select {%- endcomment -%}
+                          <div class="custom-cover-customizer__clipart-filters" data-clipart-filters>
+                            <select class="custom-cover-customizer__clipart-filter-select" data-clipart-filter-select aria-label="Filter clipart by category">
+                              <option value="all" selected>All Categories</option>
+                              {%- for cat_key in cat_key_list -%}
+                                {%- if cat_key == blank -%}{%- continue -%}{%- endif -%}
+                                <option value="{{ cat_key | escape }}">{{ cat_name_list[forloop.index0] | escape }}</option>
+                              {%- endfor -%}
+                            </select>
+                          </div>
+
                           {%- comment -%} Pass 2: render each category section {%- endcomment -%}
                           {%- for cat_key in cat_key_list -%}
                             {%- if cat_key == blank -%}
@@ -774,6 +784,16 @@
                           <p class="custom-cover-customizer__message custom-cover-customizer__clipart-empty">
                             Add clipart items in Shopify Admin → Content → Metaobjects
                           </p>
+                        {%- endif -%}
+
+                        {%- if paginate.pages > 1 and paginate.current_page < paginate.pages -%}
+                          <button
+                            type="button"
+                            class="custom-cover-customizer__clipart-load-more"
+                            data-clipart-load-more
+                            data-next-page="{{ paginate.current_page | plus: 1 }}">
+                            Load more clipart…
+                          </button>
                         {%- endif -%}
                         </div>
                         {%- endpaginate -%}
@@ -1650,6 +1670,11 @@
               <span class="custom-cover-customizer__preview-footer-price-amount" data-preview-footer-price-total>{{- 0 | money -}}</span>
             </p>
           </div>
+        </div>
+        <div class="custom-cover-customizer__preview-footer-ctas">
+          {% render 'custom-cover-customizer-design-bar-actions'
+            , section_id: section.id
+            , menu_variant: 'preview-footer' %}
         </div>
       </div>
     </div>

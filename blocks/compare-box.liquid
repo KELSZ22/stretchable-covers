@@ -4,6 +4,20 @@
   assign current_image = product.featured_image | default: product.images.first
   assign testimonial_count = 0
 
+  assign current_compare_title = block.settings.current_product_value
+  if current_compare_title == blank
+    if current_variant.title != blank and current_variant.title != 'Default Title'
+      assign current_compare_title = current_variant.title
+    else
+      assign current_compare_title = product.title
+    endif
+  endif
+
+  assign current_table_price = block.settings.table_price_value
+  if current_table_price == blank
+    assign current_table_price = current_variant.price | default: product.price | money
+  endif
+
   if block.settings.quote != blank
     assign testimonial_count = testimonial_count | plus: 1
   endif
@@ -40,6 +54,22 @@
     }
   </script>
 
+  <script type="application/json" data-compare-defaults-json>
+    {
+      "product_value": {{ current_compare_title | json }},
+      "table_price_value": {{ current_table_price | json }},
+      "colors": {{ block.settings.colors_value | json }},
+      "imprint": {{ block.settings.imprint_value | json }},
+      "imprint_sizes": {{ block.settings.imprint_sizes_value | json }},
+      "materials": {{ block.settings.materials_value | json }},
+      "country_origin": {{ block.settings.country_origin_value | json }},
+      "product_badge": {{ block.settings.product_badge | json }},
+      "modal_rating_text": {{ block.settings.modal_rating_text | json }},
+      "dimension_label": {{ block.settings.dimension_label | json }},
+      "dimension_value": {{ block.settings.dimension_value | json }}
+    }
+  </script>
+
   <div class="product-compare-box__top">
     {% if block.settings.heading != blank %}
       <div class="product-compare-box__heading">
@@ -56,11 +86,11 @@
     >
       <span class="product-compare-box__button-icon" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-  <path d="M14 8C14 6.4087 13.3679 4.88258 12.2426 3.75736C11.1174 2.63214 9.5913 2 8 2C6.32263 2.00631 4.71265 2.66082 3.50667 3.82667L2 5.33333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M2 2V5.33333H5.33333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M2 8C2 9.5913 2.63214 11.1174 3.75736 12.2426C4.88258 13.3679 6.4087 14 8 14C9.67737 13.9937 11.2874 13.3392 12.4933 12.1733L14 10.6667" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M10.6667 10.6666H14.0001V14" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+          <path d="M14 8C14 6.4087 13.3679 4.88258 12.2426 3.75736C11.1174 2.63214 9.5913 2 8 2C6.32263 2.00631 4.71265 2.66082 3.50667 3.82667L2 5.33333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 2V5.33333H5.33333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 8C2 9.5913 2.63214 11.1174 3.75736 12.2426C4.88258 13.3679 6.4087 14 8 14C9.67737 13.9937 11.2874 13.3392 12.4933 12.1733L14 10.6667" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10.6667 10.6666H14.0001V14" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </span>
       <span>{{ block.settings.button_label }}</span>
     </button>
@@ -173,8 +203,6 @@
             <path d="M3.5 1.5L7 5L3.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-
-       
       {% endif %}
     </div>
   {% endif %}
@@ -193,10 +221,7 @@
       tabindex="-1"
     ></button>
 
-    <div
-      class="product-compare-modal__dialog"
-      tabindex="-1"
-    >
+    <div class="product-compare-modal__dialog" tabindex="-1">
       <div class="product-compare-modal__header">
         <h3 id="CompareModalTitle-{{ block.id }}" class="product-compare-modal__title">
           {{ block.settings.modal_heading }}
@@ -208,74 +233,100 @@
           data-compare-modal-close
           aria-label="Close compare modal"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M4.5 4.5L13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M13.5 4.5L4.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M5.5 5.5L16.5 16.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M16.5 5.5L5.5 16.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
           </svg>
         </button>
       </div>
 
       <div class="product-compare-modal__body">
-        <div class="product-compare-modal__top">
-          <div class="product-compare-modal__column">
-            <div class="product-compare-modal__column-label">Current product</div>
+        <div class="product-compare-modal__hero" data-compare-hero>
+          <div class="product-compare-modal__product-hero product-compare-modal__product-hero--current">
+            <div class="product-compare-modal__current-media">
+              {% if current_image != blank %}
+                <img
+                  src="{{ current_image | image_url: width: 360 }}"
+                  alt="{{ current_image.alt | default: product.title | escape }}"
+                  loading="lazy"
+                  width="180"
+                  height="180"
+                >
+              {% else %}
+                <div class="product-compare-modal__image-placeholder">No image</div>
+              {% endif %}
 
-            <div class="product-compare-product-card product-compare-product-card--current">
-              <div class="product-compare-product-card__media">
-                {% if current_image != blank %}
-                  <img
-                    src="{{ current_image | image_url: width: 720 }}"
-                    alt="{{ current_image.alt | default: product.title | escape }}"
-                    loading="lazy"
-                    width="240"
-                    height="240"
-                  >
-                {% else %}
-                  <div class="product-compare-product-card__media-placeholder">No image</div>
+              {% if block.settings.product_badge != blank %}
+                <span class="product-compare-modal__badge">{{ block.settings.product_badge }}</span>
+              {% endif %}
+            </div>
+
+            <div class="product-compare-modal__current-info">
+              <div class="product-compare-modal__rating-row">
+                <div class="product-compare-modal__stars" aria-label="{{ block.settings.modal_star_count }} out of 5 stars">
+                  {% for i in (1..5) %}
+                    <svg class="product-compare-modal__star {% if i <= block.settings.modal_star_count %}is-filled{% endif %}" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 14 14" fill="none">
+                      <path d="M7 1.16699L8.80166 4.81765L12.8333 5.40515L9.91666 8.24683L10.605 12.2618L7 10.3668L3.395 12.2618L4.08333 8.24683L1.16666 5.40515L5.19833 4.81765L7 1.16699Z" fill="currentColor"/>
+                    </svg>
+                  {% endfor %}
+                </div>
+
+                {% if block.settings.modal_rating_text != blank %}
+                  <span class="product-compare-modal__rating-text">{{ block.settings.modal_rating_text }}</span>
                 {% endif %}
               </div>
 
-              <div class="product-compare-product-card__content">
-                <div class="product-compare-product-card__title">{{ product.title }}</div>
+              <div class="product-compare-modal__product-title">
+                {{ product.title }}
+              </div>
 
-                {% if product.vendor != blank %}
-                  <div class="product-compare-product-card__vendor">{{ product.vendor }}</div>
-                {% endif %}
+              {% if block.settings.dimension_value != blank %}
+                <div class="product-compare-modal__dimension">
+                  <span>{{ block.settings.dimension_label }}</span>
 
-                <div class="product-compare-product-card__price">
-                  {{ current_variant.price | default: product.price | money }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.3"/>
+                    <path d="M5.75 12.25L12.25 5.75" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                  </svg>
+
+                  <span>{{ block.settings.dimension_value }}</span>
                 </div>
+              {% endif %}
 
-                <a href="{{ product.url }}" class="product-compare-product-card__link">
-                  View product
-                </a>
+              <div class="product-compare-modal__current-price">
+                {{ current_variant.price | default: product.price | money }}
               </div>
             </div>
           </div>
 
-          <div class="product-compare-modal__column">
-            <div class="product-compare-modal__column-label">Search another product</div>
+          <div class="product-compare-modal__right-slot" data-compare-right-slot>
+            <div class="product-compare-modal__search-card" data-compare-search-card>
+              <div class="product-compare-modal__search-title">
+                {{ block.settings.search_title }}
+              </div>
 
-            <div class="product-compare-modal__search-wrap">
-              <label class="visually-hidden" for="CompareSearch-{{ block.id }}">
-                Search product
-              </label>
+              <div class="product-compare-modal__search-wrap">
+                <label class="visually-hidden" for="CompareSearch-{{ block.id }}">
+                  Search product
+                </label>
 
-              <input
-                id="CompareSearch-{{ block.id }}"
-                class="product-compare-modal__search-input"
-                type="search"
-                placeholder="{{ block.settings.search_placeholder }}"
-                autocomplete="off"
-                data-compare-search-input
-              >
+                <input
+                  id="CompareSearch-{{ block.id }}"
+                  class="product-compare-modal__search-input"
+                  type="search"
+                  placeholder="{{ block.settings.search_placeholder }}"
+                  autocomplete="off"
+                  data-compare-search-input
+                >
 
-              <div class="product-compare-modal__search-results" data-compare-search-results></div>
-            </div>
+                <span class="product-compare-modal__search-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <circle cx="10" cy="10" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M15 15L19 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </span>
 
-            <div class="product-compare-modal__selected-product" data-compare-selected-card>
-              <div class="product-compare-modal__empty">
-                Search and select a product to compare.
+                <div class="product-compare-modal__search-results" data-compare-search-results></div>
               </div>
             </div>
           </div>
@@ -283,65 +334,61 @@
 
         <div class="product-compare-modal__table-wrap">
           <table class="product-compare-modal__table">
-            <thead>
+            <colgroup>
+              <col class="product-compare-modal__table-col product-compare-modal__table-col--label">
+              <col class="product-compare-modal__table-col product-compare-modal__table-col--current">
+              <col class="product-compare-modal__table-col product-compare-modal__table-col--compare">
+            </colgroup>
+
+            <thead class="product-compare-modal__thead-hidden">
               <tr>
                 <th scope="col">Field</th>
                 <th scope="col">Current product</th>
                 <th scope="col">Selected product</th>
               </tr>
             </thead>
+
             <tbody>
               <tr>
                 <th scope="row">Product</th>
-                <td>{{ product.title }}</td>
-                <td data-compare-field="title">—</td>
+                <td>{{ current_compare_title }}</td>
+                <td data-compare-field="title">-</td>
               </tr>
+
               <tr>
                 <th scope="row">Price</th>
-                <td>{{ current_variant.price | default: product.price | money }}</td>
-                <td data-compare-field="price">—</td>
+                <td>{{ current_table_price }}</td>
+                <td data-compare-field="price">-</td>
               </tr>
+
               <tr>
-                <th scope="row">Vendor</th>
-                <td>{{ product.vendor | default: '—' }}</td>
-                <td data-compare-field="vendor">—</td>
+                <th scope="row">Colors</th>
+                <td>{{ block.settings.colors_value }}</td>
+                <td data-compare-field="colors">-</td>
               </tr>
+
               <tr>
-                <th scope="row">Type</th>
-                <td>{{ product.type | default: '—' }}</td>
-                <td data-compare-field="type">—</td>
+                <th scope="row">Imprint</th>
+                <td>{{ block.settings.imprint_value }}</td>
+                <td data-compare-field="imprint">-</td>
               </tr>
+
               <tr>
-                <th scope="row">Availability</th>
-                <td>
-                  {% if current_variant.available or product.available %}
-                    In stock
-                  {% else %}
-                    Out of stock
-                  {% endif %}
-                </td>
-                <td data-compare-field="available">—</td>
+                <th scope="row">Imprint Sizes</th>
+                <td>{{ block.settings.imprint_sizes_value }}</td>
+                <td data-compare-field="imprint_sizes">-</td>
               </tr>
+
               <tr>
-                <th scope="row">SKU</th>
-                <td>{{ current_variant.sku | default: '—' }}</td>
-                <td data-compare-field="sku">—</td>
+                <th scope="row">Materials</th>
+                <td>{{ block.settings.materials_value }}</td>
+                <td data-compare-field="materials">-</td>
               </tr>
+
               <tr>
-                <th scope="row">Variant</th>
-                <td>
-                  {% if current_variant.title != blank and current_variant.title != 'Default Title' %}
-                    {{ current_variant.title }}
-                  {% else %}
-                    —
-                  {% endif %}
-                </td>
-                <td data-compare-field="variant_title">—</td>
-              </tr>
-              <tr>
-                <th scope="row">Description</th>
-                <td>{{ product.description | strip_html | strip_newlines | truncate: 180 | default: '—' }}</td>
-                <td data-compare-field="description">—</td>
+                <th scope="row">Country of Origin</th>
+                <td>{{ block.settings.country_origin_value }}</td>
+                <td data-compare-field="country_origin">-</td>
               </tr>
             </tbody>
           </table>
@@ -354,6 +401,24 @@
 {% stylesheet %}
   body.compare-modal-open {
     overflow: hidden;
+  }
+
+  .product-compare-box,
+  .product-compare-box * {
+    box-sizing: border-box;
+  }
+
+  .product-compare-box .visually-hidden,
+  .product-compare-modal .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
   }
 
   .product-compare-box {
@@ -372,7 +437,7 @@
     margin-bottom: 14px;
     border-bottom: 1px solid #C5C5C5;
     padding-bottom: 16px;
-}
+  }
 
   .product-compare-box__heading {
     font-size: 13px;
@@ -399,7 +464,7 @@
     cursor: pointer;
     white-space: nowrap;
     transition: 0.25s ease;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
   }
 
   .product-compare-box__button:hover {
@@ -440,7 +505,7 @@
     line-height: 18px;
     color: #222222;
     margin-bottom: 10px;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-style: italic;
     font-weight: 700;
   }
@@ -455,7 +520,7 @@
     font-size: 14px;
     line-height: 16px;
     font-weight: 400;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
   }
 
   .product-compare-box__reviews {
@@ -514,31 +579,6 @@
     right: 0;
   }
 
-  .product-compare-box__dots {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 14px;
-  }
-
-  .product-compare-box__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: 0;
-    background: #c7c7c7;
-    padding: 0;
-    cursor: pointer;
-    transition: 0.25s ease;
-  }
-
-  .product-compare-box__dot.is-active {
-    background: #0F2E53;
-    transform: scale(1.15);
-  }
-
-  /* Native <dialog> + showModal() use the top layer (above sticky header). */
   dialog.product-compare-modal {
     position: fixed;
     inset: 0;
@@ -547,16 +587,17 @@
     height: 100%;
     max-height: none;
     margin: 0;
-    padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px));
+    padding: 16px;
     border: none;
     background: transparent;
     color: inherit;
     box-sizing: border-box;
     overflow: hidden;
+    z-index: 999999;
   }
 
   dialog.product-compare-modal::backdrop {
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(0, 0, 0, 0.78);
   }
 
   dialog.product-compare-modal[open] {
@@ -591,19 +632,17 @@
     grid-row: 1;
     z-index: 1;
     position: relative;
-    width: 100%;
-    max-width: 1120px;
-    max-height: calc(100vh - 32px);
-    max-height: min(calc(100vh - 32px), calc(100dvh - 32px));
+    width: min(1050px, calc(100vw - 32px));
+    height: min(628px, calc(100vh - 32px));
     margin: 0;
     background: #ffffff;
-    border-radius: 18px;
+    border-radius: 8px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     min-height: 0;
-    flex: 0 1 auto;
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+    font-family: Lato, Arial, sans-serif;
   }
 
   .product-compare-modal__header {
@@ -611,24 +650,28 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 20px 24px;
-    border-bottom: 1px solid #e6e6e6;
+    padding: 24px 24px 0;
     flex-shrink: 0;
   }
 
   .product-compare-modal__title {
     margin: 0;
-    font-size: 20px;
-    line-height: 24px;
-    color: #111111;
+    color: #0F2E53;
+    font-family: Lato, sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 28px;
+    letter-spacing: -0.02em;
+    text-transform: none;
   }
 
   .product-compare-modal__close {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #d8d8d8;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #d5dbe2;
     background: #ffffff;
-    color: #111111;
+    color: #555555;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -639,6 +682,11 @@
     flex-shrink: 0;
   }
 
+  .product-compare-modal__close svg {
+    width: 17px;
+    height: 17px;
+  }
+
   .product-compare-modal__close:hover {
     background: #0F2E53;
     border-color: #0F2E53;
@@ -646,132 +694,231 @@
   }
 
   .product-compare-modal__body {
-    padding: 24px;
+    padding: 0 24px 28px;
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  .product-compare-modal__top {
+  .product-compare-modal__hero {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 24px;
-    margin-bottom: 24px;
+    grid-template-columns: 530px minmax(0, 1fr);
+    align-items: center;
+    gap: 0;
+    padding: 38px 0 34px;
+    border-bottom: 1px solid #d7dde4;
   }
 
-  .product-compare-modal__column-label {
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #0F2E53;
-    margin-bottom: 10px;
-  }
-
-  .product-compare-product-card {
-    border: 1px solid #e6e6e6;
-    border-radius: 14px;
-    padding: 16px;
+  .product-compare-modal__product-hero,
+  .product-compare-modal__selected-hero {
     display: grid;
-    grid-template-columns: 120px minmax(0, 1fr);
-    gap: 16px;
-    min-height: 152px;
-    align-items: start;
-  }
-
-  .product-compare-product-card__media {
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: center;
+    gap: 22px;
+    min-width: 0;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #f4f4f4;
   }
 
-  .product-compare-product-card__media img {
+  .product-compare-modal__right-slot {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .product-compare-modal__current-media {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.22);
+    align-self: center;
+    justify-self: start;
+  }
+
+  .product-compare-modal__current-media img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    border-radius: 999px;
   }
 
-  .product-compare-product-card__media-placeholder {
+  .product-compare-modal__image-placeholder {
     width: 100%;
     height: 100%;
+    border-radius: 999px;
+    background: #f4f4f4;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #777777;
+    font-size: 11px;
     text-align: center;
-    font-size: 12px;
-    line-height: 16px;
-    color: #666666;
-    padding: 12px;
+    padding: 10px;
   }
 
-  .product-compare-product-card__content {
+  .product-compare-modal__badge {
+    position: absolute;
+    top: -10px;
+    right: -2px;
+    min-width: 25px;
+    min-height: 18px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #e23a3a;
+    border: 1px solid #e6e6e6;
+    font-family: Lato, sans-serif;
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 800;
+    text-align: center;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.10);
+  }
+
+  .product-compare-modal__current-info {
     min-width: 0;
+    width: 100%;
   }
 
-  .product-compare-product-card__title {
-    font-size: 16px;
-    line-height: 22px;
-    font-weight: 600;
-    color: #111111;
-    margin-bottom: 6px;
+  .product-compare-modal__rating-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
   }
 
-  .product-compare-product-card__vendor {
-    font-size: 13px;
-    line-height: 18px;
-    color: #666666;
-    margin-bottom: 8px;
-  }
-
-  .product-compare-product-card__price {
-    font-size: 18px;
-    line-height: 22px;
-    font-weight: 700;
-    color: #0F2E53;
-    margin-bottom: 10px;
-  }
-
-  .product-compare-product-card__link {
+  .product-compare-modal__stars {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    line-height: 18px;
-    font-weight: 600;
-    color: #0F2E53;
-    text-decoration: none;
+    gap: 0;
+    color: #dedede;
+    flex-shrink: 0;
   }
 
-  .product-compare-product-card__link:hover {
-    text-decoration: underline;
+  .product-compare-modal__star {
+    width: 14px;
+    height: 14px;
+  }
+
+  .product-compare-modal__star.is-filled {
+    color: #ff9300;
+  }
+
+  .product-compare-modal__rating-text {
+    color: #1F1F1F;
+    font-family: Lato, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+  }
+
+  .product-compare-modal__product-title {
+    color: #1F1F1F;
+    font-family: Lato, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    margin: 0;
+    letter-spacing: 0;
+  }
+
+  .product-compare-modal__dimension {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #5F5F5F;
+    font-family: Lato, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    margin: 0;
+  }
+
+  .product-compare-modal__dimension svg {
+    width: 16px;
+    height: 16px;
+    color: #4a4a4a;
+    flex-shrink: 0;
+  }
+
+  .product-compare-modal__current-price {
+    color: #1F1F1F;
+    font-family: Lato, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    margin: 0;
+  }
+
+  .product-compare-modal__search-card {
+    width: 100%;
+    min-height: 150px;
+    border: 1px dashed #cdd3da;
+    border-radius: 12px;
+    padding: 26px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+
+  .product-compare-modal__search-title {
+    color: #c1c1c1;
+    text-align: center;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 12px;
+    font-weight: 400;
   }
 
   .product-compare-modal__search-wrap {
     position: relative;
-    margin-bottom: 12px;
+    width: 100%;
   }
 
   .product-compare-modal__search-input {
     width: 100%;
-    min-height: 48px;
+    min-height: 40px;
     border-radius: 999px;
-    border: 1px solid #d8d8d8;
+    border: 1px solid #d5d5d5;
     background: #ffffff;
-    padding: 12px 18px;
+    padding: 9px 42px 9px 18px;
     font-size: 14px;
-    line-height: 20px;
+    line-height: 18px;
     color: #111111;
     outline: none;
+    box-shadow: none;
+  }
+
+  .product-compare-modal__search-input::placeholder {
+    color: #686868;
+    opacity: 1;
   }
 
   .product-compare-modal__search-input:focus {
     border-color: #0F2E53;
-    box-shadow: 0 0 0 3px rgba(21, 63, 114, 0.08);
+    box-shadow: 0 0 0 3px rgba(15, 46, 83, 0.08);
+  }
+
+  .product-compare-modal__search-icon {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    color: #111111;
+    display: inline-flex;
+    pointer-events: none;
+  }
+
+  .product-compare-modal__search-icon svg {
+    width: 18px;
+    height: 18px;
   }
 
   .product-compare-modal__search-results {
@@ -779,7 +926,7 @@
     top: calc(100% + 8px);
     left: 0;
     right: 0;
-    z-index: 5;
+    z-index: 20;
     background: #ffffff;
     border: 1px solid #e6e6e6;
     border-radius: 14px;
@@ -805,7 +952,7 @@
     background: #ffffff;
     padding: 12px 16px;
     display: grid;
-    grid-template-columns: 56px minmax(0, 1fr);
+    grid-template-columns: 50px minmax(0, 1fr);
     gap: 12px;
     text-align: left;
     cursor: pointer;
@@ -822,9 +969,9 @@
   }
 
   .product-compare-modal__result-image {
-    width: 56px;
-    height: 56px;
-    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     overflow: hidden;
     background: #f4f4f4;
   }
@@ -837,86 +984,110 @@
   }
 
   .product-compare-modal__result-image-placeholder {
-    width: 56px;
-    height: 56px;
-    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     background: #f4f4f4;
   }
 
   .product-compare-modal__result-title {
-    font-size: 14px;
-    line-height: 19px;
+    font-size: 13px;
+    line-height: 18px;
     font-weight: 600;
     color: #111111;
     margin-bottom: 4px;
   }
 
   .product-compare-modal__result-meta {
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 11px;
+    line-height: 15px;
     color: #666666;
-  }
-
-  .product-compare-modal__selected-product {
-    min-height: 152px;
-  }
-
-  .product-compare-modal__empty {
-    min-height: 152px;
-    border: 1px dashed #d8d8d8;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 20px;
-    color: #666666;
-    font-size: 14px;
-    line-height: 20px;
   }
 
   .product-compare-modal__table-wrap {
     overflow-x: auto;
+    padding-top: 18px;
   }
 
   .product-compare-modal__table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 760px;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .product-compare-modal__table-col--label {
+    width: 150px;
+  }
+
+  .product-compare-modal__table-col--current {
+    width: 380px;
+  }
+
+  .product-compare-modal__table-col--compare {
+    width: auto;
+  }
+
+  .product-compare-modal__thead-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
   }
 
   .product-compare-modal__table th,
   .product-compare-modal__table td {
-    padding: 14px 16px;
-    border-bottom: 1px solid #ececec;
+    padding: 7px 14px 7px 0;
+    border-bottom: 0;
     vertical-align: top;
     text-align: left;
-    font-size: 14px;
-    line-height: 20px;
-    color: #111111;
-  }
-
-  .product-compare-modal__table thead th {
-    font-size: 13px;
-    line-height: 18px;
-    color: #0F2E53;
-    font-weight: 700;
-    background: #f8fbff;
+    font-family: Lato, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    line-height: 24px;
   }
 
   .product-compare-modal__table tbody th {
-    width: 180px;
+    color: #0F2E53;
     font-weight: 700;
-    background: #fcfcfc;
+    white-space: nowrap;
+    padding-right: 18px;
+  }
+
+  .product-compare-modal__table tbody td {
+    color: #5F5F5F;
+    font-weight: 500;
+  }
+
+  .product-compare-modal__table tbody td:nth-child(2) {
+    padding-left: 0;
+    padding-right: 24px;
+  }
+
+  .product-compare-modal__table tbody td:nth-child(3) {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   @media screen and (max-width: 768px) {
     .product-compare-box {
       padding: 16px;
     }
+
     .product-compare-box__top {
       flex-direction: column;
-}
+      align-items: stretch;
+    }
+
+    .product-compare-box__button {
+      width: 100%;
+    }
+
+    .product-compare-box__slide {
+      padding-left: 34px;
+      padding-right: 34px;
+    }
 
     .product-compare-box__nav {
       top: 38%;
@@ -924,31 +1095,212 @@
       height: 24px;
     }
 
+    dialog.product-compare-modal {
+      padding: 8px;
+    }
+
     .product-compare-modal__dialog {
-      width: 100%;
+      width: min(310px, calc(100vw - 24px));
+      height: auto;
       max-height: calc(100vh - 16px);
       max-height: min(calc(100vh - 16px), calc(100dvh - 16px));
-      border-radius: 14px;
+      border-radius: 12px;
+      overflow: hidden;
     }
 
-    dialog.product-compare-modal {
-      padding: max(8px, env(safe-area-inset-top, 0px)) 8px max(8px, env(safe-area-inset-bottom, 0px));
+    .product-compare-modal__header {
+      padding: 10px 10px 0;
+      gap: 8px;
     }
 
-    .product-compare-modal__header,
+    .product-compare-modal__title {
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .product-compare-modal__close {
+      width: 24px;
+      height: 24px;
+      border-color: #d5d5d5;
+    }
+
+    .product-compare-modal__close svg {
+      width: 14px;
+      height: 14px;
+    }
+
     .product-compare-modal__body {
-      padding: 16px;
+      padding: 0 10px 14px;
+      overflow: auto;
     }
 
-    .product-compare-modal__top {
-      grid-template-columns: 1fr;
-      gap: 18px;
+    .product-compare-modal__hero {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      column-gap: 0;
+      row-gap: 0;
+      padding: 26px 0 18px;
+      border-bottom: 1px solid #e3e6ea;
     }
 
-    .product-compare-product-card {
-      grid-template-columns: 84px minmax(0, 1fr);
-      gap: 12px;
-      min-height: 120px;
+    .product-compare-modal__product-hero,
+    .product-compare-modal__selected-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0;
+      width: 100%;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .product-compare-modal__right-slot {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .product-compare-modal__current-media {
+      width: 58px;
+      height: 58px;
+      justify-self: center;
+      align-self: center;
+      box-shadow: 0 7px 15px rgba(0, 0, 0, 0.16);
+    }
+
+    .product-compare-modal__badge {
+      top: -7px;
+      right: -4px;
+      min-width: 19px;
+      min-height: 13px;
+      padding: 0 4px;
+      font-size: 7px;
+      line-height: 11px;
+    }
+
+    .product-compare-modal__product-hero .product-compare-modal__current-info,
+    .product-compare-modal__selected-hero .product-compare-modal__current-info {
+      display: none;
+    }
+
+    .product-compare-modal__search-card {
+      min-height: 76px;
+      padding: 7px 6px;
+      border-radius: 10px;
+      border: 1px dashed #d7d7d7;
+    }
+
+    .product-compare-modal__search-title {
+      font-size: 12px;
+      line-height: 14px;
+      margin-bottom: 7px;
+    }
+
+    .product-compare-modal__search-input {
+      min-height: 31px;
+      padding: 7px 30px 7px 12px;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .product-compare-modal__search-icon {
+      right: 10px;
+    }
+
+    .product-compare-modal__search-icon svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .product-compare-modal__search-results {
+      left: -6px;
+      right: -6px;
+      z-index: 40;
+    }
+
+    .product-compare-modal__result {
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 9px;
+      padding: 9px 10px;
+    }
+
+    .product-compare-modal__result-image,
+    .product-compare-modal__result-image-placeholder {
+      width: 38px;
+      height: 38px;
+    }
+
+    .product-compare-modal__table-wrap {
+      overflow: visible;
+      padding-top: 10px;
+    }
+
+    .product-compare-modal__table {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      table-layout: auto;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .product-compare-modal__table colgroup {
+      display: none;
+    }
+
+    .product-compare-modal__table tbody {
+      display: block;
+      width: 100%;
+    }
+
+    .product-compare-modal__table tbody tr {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 16px;
+      width: 100%;
+    }
+
+    .product-compare-modal__table tbody th {
+      display: none;
+    }
+
+    .product-compare-modal__table tbody td {
+      display: block;
+      width: 100%;
+      padding: 8px 0;
+      color: #666666;
+      font-size: 13px;
+      line-height: 16px;
+      font-weight: 400;
+      text-align: center;
+      vertical-align: top;
+      word-break: normal;
+      overflow-wrap: break-word;
+    }
+
+    .product-compare-modal__table tbody td:nth-child(2),
+    .product-compare-modal__table tbody td:nth-child(3) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  @media screen and (max-width: 360px) {
+    .product-compare-modal__dialog {
+      width: calc(100vw - 20px);
+    }
+
+    .product-compare-modal__table tbody tr {
+      column-gap: 10px;
+    }
+
+    .product-compare-modal__table tbody td {
+      font-size: 12.5px;
+      line-height: 15.5px;
     }
   }
 {% endstylesheet %}
@@ -964,6 +1316,7 @@
         }
 
         const track = slider.querySelector('[data-compare-track]');
+
         if (!track) {
           return;
         }
@@ -971,7 +1324,6 @@
         const slides = Array.from(track.children);
         const prevButton = slider.querySelector('[data-compare-prev]');
         const nextButton = slider.querySelector('[data-compare-next]');
-        const dots = Array.from(slider.querySelectorAll('[data-compare-dot]'));
         const autoplayEnabled = slider.dataset.autoplay === 'true';
         const autoplaySpeed = parseInt(slider.dataset.autoplaySpeed, 10) || 5000;
 
@@ -983,12 +1335,6 @@
 
           slides.forEach((slide, index) => {
             slide.setAttribute('aria-hidden', index === currentIndex ? 'false' : 'true');
-          });
-
-          dots.forEach((dot, index) => {
-            const isActive = index === currentIndex;
-            dot.classList.toggle('is-active', isActive);
-            dot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
           });
         }
 
@@ -1034,13 +1380,6 @@
           });
         }
 
-        dots.forEach((dot) => {
-          dot.addEventListener('click', () => {
-            goToSlide(Number(dot.dataset.index));
-            startAutoplay();
-          });
-        });
-
         slider.addEventListener('mouseenter', stopAutoplay);
         slider.addEventListener('mouseleave', startAutoplay);
         slider.addEventListener('focusin', stopAutoplay);
@@ -1068,15 +1407,18 @@
         const dialog = modal ? modal.querySelector('.product-compare-modal__dialog') : null;
         const searchInput = modal ? modal.querySelector('[data-compare-search-input]') : null;
         const resultsWrap = modal ? modal.querySelector('[data-compare-search-results]') : null;
-        const selectedCardWrap = modal ? modal.querySelector('[data-compare-selected-card]') : null;
+        const rightSlot = modal ? modal.querySelector('[data-compare-right-slot]') : null;
         const currentProductScript = box.querySelector('[data-current-product-json]');
+        const defaultsScript = box.querySelector('[data-compare-defaults-json]');
         const currentProduct = currentProductScript ? JSON.parse(currentProductScript.textContent) : null;
+        const compareDefaults = defaultsScript ? JSON.parse(defaultsScript.textContent) : {};
         const compareFields = modal ? modal.querySelectorAll('[data-compare-field]') : [];
+
         let lastFocusedElement = null;
         let searchTimer = null;
         let activeRequest = 0;
 
-        if (!modal || !openButton || !dialog || !searchInput || !resultsWrap || !selectedCardWrap || !currentProduct) {
+        if (!modal || !openButton || !dialog || !searchInput || !resultsWrap || !rightSlot || !currentProduct) {
           return;
         }
 
@@ -1097,7 +1439,7 @@
 
         function normalizeVariantTitle(value) {
           if (!value || value === 'Default Title') {
-            return '—';
+            return '';
           }
 
           return value;
@@ -1112,7 +1454,7 @@
               currency: shopCurrency
             }).format(numeric / 100);
           } catch (error) {
-            return (numeric / 100).toFixed(2);
+            return '$' + (numeric / 100).toFixed(2);
           }
         }
 
@@ -1159,46 +1501,59 @@
           resultsWrap.classList.remove('is-visible');
         }
 
-        function renderSelectedCard(product) {
-          const imageMarkup = product.image
-            ? '<div class="product-compare-product-card__media"><img src="' + escapeHtml(product.image) + '" alt="' + escapeHtml(product.image_alt || product.title) + '" loading="lazy"></div>'
-            : '<div class="product-compare-product-card__media"><div class="product-compare-product-card__media-placeholder">No image</div></div>';
+        function renderStars() {
+          let stars = '';
 
-          selectedCardWrap.innerHTML =
-            '<div class="product-compare-product-card">' +
-              imageMarkup +
-              '<div class="product-compare-product-card__content">' +
-                '<div class="product-compare-product-card__title">' + escapeHtml(product.title || 'Untitled product') + '</div>' +
-                (product.vendor ? '<div class="product-compare-product-card__vendor">' + escapeHtml(product.vendor) + '</div>' : '') +
-                '<div class="product-compare-product-card__price">' + escapeHtml(formatMoney(product.price)) + '</div>' +
-                '<a href="' + escapeHtml(product.url) + '" class="product-compare-product-card__link">View product</a>' +
+          for (let i = 1; i <= 5; i++) {
+            stars += '<svg class="product-compare-modal__star is-filled" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M7 1.16699L8.80166 4.81765L12.8333 5.40515L9.91666 8.24683L10.605 12.2618L7 10.3668L3.395 12.2618L4.08333 8.24683L1.16666 5.40515L5.19833 4.81765L7 1.16699Z" fill="currentColor"/></svg>';
+          }
+
+          return stars;
+        }
+
+        function renderSelectedHero(product) {
+          const imageMarkup = product.image
+            ? '<img src="' + escapeHtml(product.image) + '" alt="' + escapeHtml(product.image_alt || product.title) + '" loading="lazy" width="180" height="180">'
+            : '<div class="product-compare-modal__image-placeholder">No image</div>';
+
+          rightSlot.innerHTML =
+            '<div class="product-compare-modal__selected-hero">' +
+              '<div class="product-compare-modal__current-media">' +
+                imageMarkup +
+                (compareDefaults.product_badge ? '<span class="product-compare-modal__badge">' + escapeHtml(compareDefaults.product_badge) + '</span>' : '') +
+              '</div>' +
+              '<div class="product-compare-modal__current-info">' +
+                '<div class="product-compare-modal__rating-row">' +
+                  '<div class="product-compare-modal__stars" aria-label="5 out of 5 stars">' + renderStars() + '</div>' +
+                  (compareDefaults.modal_rating_text ? '<span class="product-compare-modal__rating-text">' + escapeHtml(compareDefaults.modal_rating_text) + '</span>' : '') +
+                '</div>' +
+                '<div class="product-compare-modal__product-title">' + escapeHtml(product.title || 'Untitled product') + '</div>' +
+                '<div class="product-compare-modal__dimension">' +
+                  '<span>' + escapeHtml(compareDefaults.dimension_label || 'Diameter') + '</span>' +
+                  '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.3"/><path d="M5.75 12.25L12.25 5.75" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+                  '<span>' + escapeHtml(compareDefaults.dimension_value || '') + '</span>' +
+                '</div>' +
+                '<div class="product-compare-modal__current-price">' + escapeHtml(formatMoney(product.price)) + '</div>' +
               '</div>' +
             '</div>';
         }
 
         function updateComparison(product) {
+          const productDisplayName = compareDefaults.product_value || normalizeVariantTitle(product.variant_title) || product.title || '-';
+
           const map = {
-            title: product.title || '—',
-            price: formatMoney(product.price),
-            vendor: product.vendor || '—',
-            type: product.type || '—',
-            available: product.available ? 'In stock' : 'Out of stock',
-            sku: product.sku || '—',
-            variant_title: normalizeVariantTitle(product.variant_title),
-            description: product.description || '—'
+            title: productDisplayName,
+            price: compareDefaults.table_price_value || formatMoney(product.price),
+            colors: compareDefaults.colors || '-',
+            imprint: compareDefaults.imprint || '-',
+            imprint_sizes: compareDefaults.imprint_sizes || '-',
+            materials: compareDefaults.materials || '-',
+            country_origin: compareDefaults.country_origin || '-'
           };
 
           compareFields.forEach((field) => {
             const key = field.dataset.compareField;
-            field.textContent = typeof map[key] !== 'undefined' ? map[key] : '—';
-          });
-        }
-
-        function resetComparison() {
-          selectedCardWrap.innerHTML = '<div class="product-compare-modal__empty">Search and select a product to compare.</div>';
-
-          compareFields.forEach((field) => {
-            field.textContent = '—';
+            field.textContent = typeof map[key] !== 'undefined' ? map[key] : '-';
           });
         }
 
@@ -1214,6 +1569,7 @@
             const imageUrl = item.featured_image && item.featured_image.url
               ? item.featured_image.url
               : (item.image || '');
+
             const imageMarkup = imageUrl
               ? '<div class="product-compare-modal__result-image"><img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml((item.featured_image && item.featured_image.alt) || item.title || '') + '" loading="lazy"></div>'
               : '<div class="product-compare-modal__result-image-placeholder"></div>';
@@ -1239,9 +1595,7 @@
                 return;
               }
 
-              searchInput.value = button.querySelector('.product-compare-modal__result-title') ? button.querySelector('.product-compare-modal__result-title').textContent.trim() : searchInput.value;
               clearResults();
-              selectedCardWrap.innerHTML = '<div class="product-compare-modal__empty">Loading product…</div>';
 
               try {
                 const response = await fetch((window.Shopify && window.Shopify.routes && window.Shopify.routes.root ? window.Shopify.routes.root : '/') + 'products/' + encodeURIComponent(handle) + '.js', {
@@ -1257,13 +1611,10 @@
                 const ajaxProduct = await response.json();
                 const normalized = normalizeAjaxProduct(ajaxProduct);
 
-                renderSelectedCard(normalized);
+                renderSelectedHero(normalized);
                 updateComparison(normalized);
               } catch (error) {
-                selectedCardWrap.innerHTML = '<div class="product-compare-modal__empty">Could not load that product. Try another one.</div>';
-                compareFields.forEach((field) => {
-                  field.textContent = '—';
-                });
+                setResultState('Could not load that product. Try another one.');
               }
             });
           });
@@ -1377,7 +1728,6 @@
           }, 250);
         });
 
-        resetComparison();
         box.dataset.compareModalInit = 'true';
       });
     }
@@ -1420,13 +1770,98 @@
       "type": "text",
       "id": "modal_heading",
       "label": "Modal heading",
-      "default": "Compare products"
+      "default": "Compare Products"
+    },
+    {
+      "type": "text",
+      "id": "product_badge",
+      "label": "Product image badge",
+      "default": "XL"
+    },
+    {
+      "type": "range",
+      "id": "modal_star_count",
+      "label": "Modal star count",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "modal_rating_text",
+      "label": "Modal rating text",
+      "default": "5.0"
+    },
+    {
+      "type": "text",
+      "id": "dimension_label",
+      "label": "Dimension label",
+      "default": "Diameter"
+    },
+    {
+      "type": "text",
+      "id": "dimension_value",
+      "label": "Dimension value",
+      "default": "18’ - 20’"
+    },
+    {
+      "type": "text",
+      "id": "search_title",
+      "label": "Search title",
+      "default": "Search and select a product to compare"
     },
     {
       "type": "text",
       "id": "search_placeholder",
       "label": "Search placeholder",
-      "default": "Search a product"
+      "default": "Search a Product"
+    },
+    {
+      "type": "header",
+      "content": "Compare table values"
+    },
+    {
+      "type": "text",
+      "id": "current_product_value",
+      "label": "Product value override",
+      "default": "B XL 21\" - 23\""
+    },
+    {
+      "type": "text",
+      "id": "table_price_value",
+      "label": "Table price value",
+      "default": "$22.99"
+    },
+    {
+      "type": "text",
+      "id": "colors_value",
+      "label": "Colors value",
+      "default": "Safety Orange / White / Safety Yellow"
+    },
+    {
+      "type": "text",
+      "id": "imprint_value",
+      "label": "Imprint value",
+      "default": "Standard / Full Coverage / No Imprint"
+    },
+    {
+      "type": "text",
+      "id": "imprint_sizes_value",
+      "label": "Imprint sizes value",
+      "default": "24 Different Imprint Sizes"
+    },
+    {
+      "type": "text",
+      "id": "materials_value",
+      "label": "Materials value",
+      "default": "100% High Quality Polyester Micro Fiber"
+    },
+    {
+      "type": "text",
+      "id": "country_origin_value",
+      "label": "Country of origin value",
+      "default": "Made in the USA"
     },
     {
       "type": "header",

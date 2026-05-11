@@ -73,10 +73,15 @@ class CustomCoverCustomizer extends HTMLElement {
       solidColor: "#ffffff",
       gradientStart: "#ffffff",
       gradientEnd: "#d7e3ff",
-      gradientDirection: "to bottom",
+      gradientX1: 0.5,
+      gradientY1: 0,
+      gradientX2: 0.5,
+      gradientY2: 1,
       imageSrc: "",
       image: null,
+      imageScale: 1,
     };
+    this._gradientDrag = null;
     this._caretBlinkOn = true;
     this._caretIntervalId = null;
     /** @type {unknown[] | null} */
@@ -1148,9 +1153,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const backgroundGradientEnd = this.querySelector(
       "[data-background-gradient-end]",
     );
-    const backgroundGradientDirection = this.querySelector(
-      "[data-background-gradient-direction]",
-    );
+    /* gradient direction is now controlled by dragging handles on the canvas */
     const backgroundUploadInput = this.querySelector(
       "[data-background-upload-input]",
     );
@@ -1468,11 +1471,6 @@ class CustomCoverCustomizer extends HTMLElement {
       this.updateBackgroundGradientChrome();
       applyGradientBackground();
     });
-    backgroundGradientDirection?.addEventListener(
-      "change",
-      applyGradientBackground,
-    );
-
     backgroundUploadInput?.addEventListener("change", (event) =>
       this.handleBackgroundUpload(event),
     );
@@ -1499,9 +1497,19 @@ class CustomCoverCustomizer extends HTMLElement {
       this.canvasBackground.mode = "none";
       this.canvasBackground.image = null;
       this.canvasBackground.imageSrc = "";
+      this.canvasBackground.imageScale = 1;
       this.setBackgroundWarning("");
+      this.toggleBackgroundScaleRow(false);
       this.render();
     });
+
+    const bgScaleInput = this.querySelector("[data-background-image-scale]");
+    if (bgScaleInput) {
+      bgScaleInput.addEventListener("input", () => {
+        this.canvasBackground.imageScale = Number(bgScaleInput.value) || 1;
+        this.render();
+      });
+    }
     setBackgroundMode("solid", { apply: false });
     this.updateBackgroundSolidChrome();
     this.updateBackgroundGradientChrome();
@@ -1581,18 +1589,13 @@ class CustomCoverCustomizer extends HTMLElement {
       },
     );
 
-    clipartButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        setMode("editor");
-        this.setActiveTool("clipart");
-        this.toggleToolPanels("clipart");
-        const src = button.getAttribute("data-src");
-        if (!src) {
-          return;
-        }
-        this.addImageElement(src, "clipart");
-      });
-    });
+    this.bindClipartButtons(clipartButtons);
+    this.bindClipartCategoryFilters();
+
+    const loadMoreBtn = this.querySelector("[data-clipart-load-more]");
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener("click", () => this.loadMoreClipart());
+    }
 
     templateButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -2655,10 +2658,15 @@ class CustomCoverCustomizer extends HTMLElement {
         this.canvas.style.cursor = "grab";
         return;
       }
-      if (this.dragState) {
+      if (this.dragState || this._gradientDrag) {
         return;
       }
       const point = this.getPointer(event);
+      const gradHit = this.hitTestGradientHandle(point.x, point.y);
+      if (gradHit) {
+        this.canvas.style.cursor = gradHit === "line" ? "move" : "grab";
+        return;
+      }
       const hit = this.hitTestTopInteraction(point.x, point.y);
       if (!hit) {
         this.canvas.style.cursor = this.currentTool === "text" ? "text" : "";
@@ -3401,6 +3409,11 @@ class CustomCoverCustomizer extends HTMLElement {
     input.value = "";
   }
 
+  toggleBackgroundScaleRow(visible) {
+    const row = this.querySelector("[data-background-scale-row]");
+    if (row) row.hidden = !visible;
+  }
+
   handleBackgroundUploadFile(file) {
     const { isImage, isAi } = this.parseUploadFileType(file);
     if (isAi) {
@@ -3436,6 +3449,10 @@ class CustomCoverCustomizer extends HTMLElement {
         this.canvasBackground.mode = "image";
         this.canvasBackground.imageSrc = reader.result;
         this.canvasBackground.image = image;
+        this.canvasBackground.imageScale = 1;
+        const scaleInput = this.querySelector("[data-background-image-scale]");
+        if (scaleInput) scaleInput.value = "1";
+        this.toggleBackgroundScaleRow(true);
         if (typeof this._setBackgroundMode === "function") {
           this._setBackgroundMode("image", { apply: false });
         }
@@ -4058,6 +4075,27 @@ class CustomCoverCustomizer extends HTMLElement {
       (event.type === "mousedown" && event.button === 0);
 
     const point = this.getPointer(event);
+
+    const gradHandle = this.hitTestGradientHandle(point.x, point.y);
+    if (gradHandle && isPrimaryPointer) {
+      const bg = this.canvasBackground;
+      const cw = this.canvas.width;
+      const ch = this.canvas.height;
+      this._gradientDrag = {
+        handle: gradHandle,
+        startX: point.x,
+        startY: point.y,
+        origX1: bg.gradientX1 ?? 0.5,
+        origY1: bg.gradientY1 ?? 0,
+        origX2: bg.gradientX2 ?? 0.5,
+        origY2: bg.gradientY2 ?? 1,
+        cw,
+        ch,
+      };
+      this.canvas.style.cursor = gradHandle === "line" ? "move" : "grabbing";
+      return;
+    }
+
     const hit = this.hitTestTopInteraction(point.x, point.y);
 
     if (!hit && this.currentTool === "text" && isPrimaryPointer) {
@@ -4152,6 +4190,32 @@ class CustomCoverCustomizer extends HTMLElement {
       this.viewPanY =
         this.viewPanDrag.panY + (clientY - this.viewPanDrag.startY);
       this.applyCanvasViewportTransform();
+      return;
+    }
+
+    if (this._gradientDrag) {
+      if (event.cancelable) event.preventDefault();
+      const point = this.getPointer(event);
+      const gd = this._gradientDrag;
+      const cw = gd.cw;
+      const ch = gd.ch;
+      const clamp = (v) => Math.max(0, Math.min(1, v));
+
+      if (gd.handle === "line") {
+        const dx = (point.x - gd.startX) / cw;
+        const dy = (point.y - gd.startY) / ch;
+        this.canvasBackground.gradientX1 = clamp(gd.origX1 + dx);
+        this.canvasBackground.gradientY1 = clamp(gd.origY1 + dy);
+        this.canvasBackground.gradientX2 = clamp(gd.origX2 + dx);
+        this.canvasBackground.gradientY2 = clamp(gd.origY2 + dy);
+      } else if (gd.handle === "start") {
+        this.canvasBackground.gradientX1 = clamp(point.x / cw);
+        this.canvasBackground.gradientY1 = clamp(point.y / ch);
+      } else {
+        this.canvasBackground.gradientX2 = clamp(point.x / cw);
+        this.canvasBackground.gradientY2 = clamp(point.y / ch);
+      }
+      this.render();
       return;
     }
 
@@ -4284,6 +4348,12 @@ class CustomCoverCustomizer extends HTMLElement {
   }
 
   handlePointerUp() {
+    if (this._gradientDrag) {
+      this._gradientDrag = null;
+      this.canvas.style.cursor = "";
+      this.updateHiddenProperties();
+      return;
+    }
     if (this.viewPanDrag) {
       this.viewPanDrag = null;
       if (this.canvas && this.viewPanMode) {
@@ -4337,7 +4407,7 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     if (
       target.closest(
-        ".custom-cover-customizer__design-bar, .custom-cover-customizer__panel, .custom-cover-customizer__preview-top-actions",
+        ".custom-cover-customizer__design-bar, .custom-cover-customizer__panel, .custom-cover-customizer__preview-top-actions, .custom-cover-customizer__preview-footer-ctas",
       )
     ) {
       return;
@@ -5346,6 +5416,10 @@ class CustomCoverCustomizer extends HTMLElement {
     if (editingText?.type === "text") {
       this.drawTextCaretIfEditing(editingText);
     }
+
+    if (this.canvasBackground.mode === "gradient" && this.currentTool === "background") {
+      this.drawGradientHandles();
+    }
   }
 
   drawHandleDisk(center, radius = CUSTOMIZER_HANDLE_RADIUS_PX) {
@@ -5368,6 +5442,86 @@ class CustomCoverCustomizer extends HTMLElement {
     this.ctx.rect(center.x - r, center.y - r, r * 2, r * 2);
     this.ctx.fill();
     this.ctx.stroke();
+  }
+
+  drawGradientHandles() {
+    const bg = this.canvasBackground;
+    const cw = this.canvas.width;
+    const ch = this.canvas.height;
+    const x1 = (bg.gradientX1 ?? 0.5) * cw;
+    const y1 = (bg.gradientY1 ?? 0) * ch;
+    const x2 = (bg.gradientX2 ?? 0.5) * cw;
+    const y2 = (bg.gradientY2 ?? 1) * ch;
+    const hr = 12;
+
+    this.ctx.save();
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(x1, y1);
+    this.ctx.lineTo(x2, y2);
+    this.ctx.strokeStyle = "rgba(0,0,0,0.45)";
+    this.ctx.lineWidth = 4;
+    this.ctx.stroke();
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(x1, y1);
+    this.ctx.lineTo(x2, y2);
+    this.ctx.strokeStyle = "rgba(255,255,255,0.9)";
+    this.ctx.lineWidth = 2;
+    this.ctx.stroke();
+
+    const drawHandle = (cx, cy, color) => {
+      this.ctx.beginPath();
+      this.ctx.arc(cx, cy, hr + 2, 0, Math.PI * 2);
+      this.ctx.fillStyle = "rgba(0,0,0,0.3)";
+      this.ctx.fill();
+
+      this.ctx.beginPath();
+      this.ctx.arc(cx, cy, hr, 0, Math.PI * 2);
+      this.ctx.fillStyle = color;
+      this.ctx.fill();
+      this.ctx.strokeStyle = "#fff";
+      this.ctx.lineWidth = 3;
+      this.ctx.stroke();
+      this.ctx.strokeStyle = "rgba(0,0,0,0.5)";
+      this.ctx.lineWidth = 1;
+      this.ctx.stroke();
+    };
+
+    drawHandle(x1, y1, bg.gradientStart || "#ffffff");
+    drawHandle(x2, y2, bg.gradientEnd || "#d7e3ff");
+
+    this.ctx.restore();
+  }
+
+  hitTestGradientHandle(px, py) {
+    if (this.canvasBackground.mode !== "gradient" || this.currentTool !== "background") {
+      return null;
+    }
+    const bg = this.canvasBackground;
+    const cw = this.canvas.width;
+    const ch = this.canvas.height;
+    const hr = 16;
+    const x1 = (bg.gradientX1 ?? 0.5) * cw;
+    const y1 = (bg.gradientY1 ?? 0) * ch;
+    const x2 = (bg.gradientX2 ?? 0.5) * cw;
+    const y2 = (bg.gradientY2 ?? 1) * ch;
+
+    const d1 = Math.hypot(px - x1, py - y1);
+    const d2 = Math.hypot(px - x2, py - y2);
+    if (d1 <= hr && d1 <= d2) return "start";
+    if (d2 <= hr) return "end";
+
+    const lineLen = Math.hypot(x2 - x1, y2 - y1);
+    if (lineLen < 1) return null;
+    const t = Math.max(0, Math.min(1,
+      ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / (lineLen * lineLen),
+    ));
+    const closestX = x1 + t * (x2 - x1);
+    const closestY = y1 + t * (y2 - y1);
+    if (Math.hypot(px - closestX, py - closestY) <= 8) return "line";
+
+    return null;
   }
 
   removeElementById(id) {
@@ -5808,14 +5962,9 @@ class CustomCoverCustomizer extends HTMLElement {
     if (mode === "gradient") {
       const startInput = this.querySelector("[data-background-gradient-start]");
       const endInput = this.querySelector("[data-background-gradient-end]");
-      const directionInput = this.querySelector(
-        "[data-background-gradient-direction]",
-      );
       this.canvasBackground.mode = "gradient";
       this.canvasBackground.gradientStart = startInput?.value || "#ffffff";
       this.canvasBackground.gradientEnd = endInput?.value || "#d7e3ff";
-      this.canvasBackground.gradientDirection =
-        directionInput?.value || "to bottom";
       this.render();
       return;
     }
@@ -5839,9 +5988,11 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     const canvasW = this.canvas.width;
     const canvasH = this.canvas.height;
-    const scale = Math.max(canvasW / image.width, canvasH / image.height);
-    const drawW = image.width * scale;
-    const drawH = image.height * scale;
+    const baseScale = Math.max(canvasW / image.width, canvasH / image.height);
+    const userScale = Number(this.canvasBackground.imageScale) || 1;
+    const finalScale = baseScale * userScale;
+    const drawW = image.width * finalScale;
+    const drawH = image.height * finalScale;
     const drawX = (canvasW - drawW) / 2;
     const drawY = (canvasH - drawH) / 2;
     this.ctx.drawImage(image, drawX, drawY, drawW, drawH);
@@ -5857,23 +6008,18 @@ class CustomCoverCustomizer extends HTMLElement {
       this.ctx.fillStyle = this.canvasBackground.solidColor || "#ffffff";
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     } else if (this.canvasBackground.mode === "gradient") {
-      const dir = this.canvasBackground.gradientDirection || "to bottom";
-      let x0 = 0;
-      let y0 = 0;
-      let x1 = 0;
-      let y1 = this.canvas.height;
-      if (dir === "to right") {
-        x1 = this.canvas.width;
-        y1 = 0;
-      } else if (dir === "135deg") {
-        x1 = this.canvas.width;
-        y1 = this.canvas.height;
-      }
-      const gradient = this.ctx.createLinearGradient(x0, y0, x1, y1);
-      gradient.addColorStop(0, this.canvasBackground.gradientStart || "#ffffff");
-      gradient.addColorStop(1, this.canvasBackground.gradientEnd || "#d7e3ff");
+      const cw = this.canvas.width;
+      const ch = this.canvas.height;
+      const bg = this.canvasBackground;
+      const x1 = (bg.gradientX1 ?? 0.5) * cw;
+      const y1 = (bg.gradientY1 ?? 0) * ch;
+      const x2 = (bg.gradientX2 ?? 0.5) * cw;
+      const y2 = (bg.gradientY2 ?? 1) * ch;
+      const gradient = this.ctx.createLinearGradient(x1, y1, x2, y2);
+      gradient.addColorStop(0, bg.gradientStart || "#ffffff");
+      gradient.addColorStop(1, bg.gradientEnd || "#d7e3ff");
       this.ctx.fillStyle = gradient;
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.fillRect(0, 0, cw, ch);
     } else if (this.canvasBackground.mode === "image" && this.canvasBackground.image) {
       this.drawBackgroundImageCover(this.canvasBackground.image);
     }
@@ -5890,7 +6036,6 @@ class CustomCoverCustomizer extends HTMLElement {
       if (!(img instanceof HTMLImageElement)) {
         return;
       }
-      // Hidden panels + lazy images can miss fetch timing on some browsers.
       if (img.loading !== "eager") {
         img.loading = "eager";
       }
@@ -5901,6 +6046,123 @@ class CustomCoverCustomizer extends HTMLElement {
         }
       }
     });
+  }
+
+  bindClipartButtons(buttons) {
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (typeof this.setMode === "function") this.setMode("editor");
+        this.setActiveTool("clipart");
+        this.toggleToolPanels("clipart");
+        const src = button.getAttribute("data-src");
+        if (!src) return;
+        this.addImageElement(src, "clipart");
+      });
+    });
+  }
+
+  bindClipartCategoryFilters() {
+    const filterSelect = this.querySelector("[data-clipart-filter-select]");
+    if (!filterSelect) return;
+
+    filterSelect.addEventListener("change", () => {
+      const filterKey = filterSelect.value;
+      const categories = this.querySelectorAll("[data-clipart-category]");
+      categories.forEach((cat) => {
+        if (filterKey === "all" || cat.dataset.clipartCategory === filterKey) {
+          cat.removeAttribute("hidden");
+        } else {
+          cat.setAttribute("hidden", "");
+        }
+      });
+      this.ensureClipartThumbsLoaded();
+    });
+  }
+
+  async loadMoreClipart() {
+    const paginationWrap = this.querySelector("[data-clipart-pagination]");
+    const loadMoreBtn = this.querySelector("[data-clipart-load-more]");
+    if (!paginationWrap || !loadMoreBtn) return;
+
+    const nextPage = Number(loadMoreBtn.dataset.nextPage);
+    const totalPages = Number(paginationWrap.dataset.clipartTotalPages);
+    const sectionId = paginationWrap.dataset.clipartSectionId;
+    if (!nextPage || !sectionId) return;
+
+    loadMoreBtn.disabled = true;
+    loadMoreBtn.textContent = "Loading…";
+
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set("section_id", sectionId);
+      url.searchParams.set(
+        paginationWrap.dataset.clipartPageParam || "page",
+        String(nextPage),
+      );
+      const res = await fetch(url.toString(), {
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const html = await res.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const remotePagination = doc.querySelector("[data-clipart-pagination]");
+      if (!remotePagination) return;
+
+      const remoteCategories = remotePagination.querySelectorAll(
+        "[data-clipart-category]",
+      );
+      const filterSelect = this.querySelector("[data-clipart-filter-select]");
+      const activeFilter = filterSelect ? filterSelect.value : "all";
+
+      remoteCategories.forEach((remoteCat) => {
+        const catKey = remoteCat.dataset.clipartCategory;
+        const existingCat = paginationWrap.querySelector(
+          `[data-clipart-category="${catKey}"]`,
+        );
+        const remoteButtons = remoteCat.querySelectorAll("[data-add-clipart]");
+
+        if (existingCat) {
+          const list = existingCat.querySelector("[data-clipart-list]");
+          if (list) {
+            remoteButtons.forEach((btn) => list.appendChild(btn));
+          }
+        } else {
+          paginationWrap.insertBefore(remoteCat, loadMoreBtn);
+
+          if (filterSelect && catKey && !filterSelect.querySelector(`option[value="${catKey}"]`)) {
+            const catLabel = remoteCat.querySelector(".custom-cover-customizer__clipart-category-name");
+            const option = document.createElement("option");
+            option.value = catKey;
+            option.textContent = catLabel ? catLabel.textContent.trim() : catKey;
+            filterSelect.appendChild(option);
+          }
+
+          if (activeFilter !== "all" && catKey !== activeFilter) {
+            remoteCat.setAttribute("hidden", "");
+          }
+        }
+
+        this.bindClipartButtons(remoteButtons);
+      });
+
+      const newPage = nextPage + 1;
+      if (newPage <= totalPages) {
+        loadMoreBtn.dataset.nextPage = String(newPage);
+        loadMoreBtn.disabled = false;
+        loadMoreBtn.textContent = "Load more clipart…";
+      } else {
+        loadMoreBtn.remove();
+      }
+
+      paginationWrap.dataset.clipartCurrentPage = String(nextPage);
+      this.ensureClipartThumbsLoaded();
+    } catch (err) {
+      console.error("[Customizer] Failed to load more clipart:", err);
+      loadMoreBtn.disabled = false;
+      loadMoreBtn.textContent = "Load more clipart…";
+    }
   }
 
   setActiveTool(tool) {
@@ -6504,6 +6766,72 @@ class CustomCoverCustomizer extends HTMLElement {
       designTitleInput.value = draft.title || designTitleInput.value;
       designTitleInput.dispatchEvent(new Event("input", { bubbles: true }));
     }
+
+    const bg = payload.canvasBackground;
+    if (bg && bg.mode && bg.mode !== "none") {
+      this.canvasBackground.mode = bg.mode;
+      this.canvasBackground.solidColor = bg.solidColor || "#ffffff";
+      this.canvasBackground.gradientStart = bg.gradientStart || "#ffffff";
+      this.canvasBackground.gradientEnd = bg.gradientEnd || "#d7e3ff";
+      if (bg.gradientX1 != null) {
+        this.canvasBackground.gradientX1 = Number(bg.gradientX1);
+        this.canvasBackground.gradientY1 = Number(bg.gradientY1);
+        this.canvasBackground.gradientX2 = Number(bg.gradientX2);
+        this.canvasBackground.gradientY2 = Number(bg.gradientY2);
+      } else {
+        const legacyDirMap = { "to bottom": 180, "to right": 90, "135deg": 135 };
+        const deg = typeof bg.gradientDirection === "number"
+          ? bg.gradientDirection
+          : (legacyDirMap[bg.gradientDirection] ?? 180);
+        const rad = ((deg - 90) * Math.PI) / 180;
+        this.canvasBackground.gradientX1 = 0.5 - Math.cos(rad) * 0.5;
+        this.canvasBackground.gradientY1 = 0.5 - Math.sin(rad) * 0.5;
+        this.canvasBackground.gradientX2 = 0.5 + Math.cos(rad) * 0.5;
+        this.canvasBackground.gradientY2 = 0.5 + Math.sin(rad) * 0.5;
+      }
+
+      const solidInput = this.querySelector("[data-background-solid-input]");
+      if (solidInput) solidInput.value = this.canvasBackground.solidColor;
+
+      const gradStartInput = this.querySelector("[data-background-gradient-start]");
+      if (gradStartInput) gradStartInput.value = this.canvasBackground.gradientStart;
+
+      const gradEndInput = this.querySelector("[data-background-gradient-end]");
+      if (gradEndInput) gradEndInput.value = this.canvasBackground.gradientEnd;
+
+      this.canvasBackground.imageScale = Number(bg.imageScale) || 1;
+      const scaleInput = this.querySelector("[data-background-image-scale]");
+      if (scaleInput) scaleInput.value = String(this.canvasBackground.imageScale);
+
+      if (bg.mode === "image" && bg.imageSrc) {
+        const image = new Image();
+        image.onload = () => {
+          this.canvasBackground.image = image;
+          this.canvasBackground.imageSrc = bg.imageSrc;
+          this.canvasBackground.mode = "image";
+          this.toggleBackgroundScaleRow(true);
+          if (typeof this._setBackgroundMode === "function") {
+            this._setBackgroundMode("image", { apply: false });
+          }
+          this.render();
+        };
+        image.src = bg.imageSrc;
+      } else {
+        if (typeof this._setBackgroundMode === "function") {
+          this._setBackgroundMode(bg.mode, { apply: false });
+        }
+      }
+
+      this.updateBackgroundSolidChrome();
+      this.updateBackgroundGradientChrome();
+    } else {
+      this.canvasBackground.mode = "none";
+      this.canvasBackground.image = null;
+      this.canvasBackground.imageSrc = "";
+      this.canvasBackground.imageScale = 1;
+      this.toggleBackgroundScaleRow(false);
+    }
+
     this.syncControlInputs();
     this.render();
     this.updatePrice();
@@ -6762,6 +7090,18 @@ class CustomCoverCustomizer extends HTMLElement {
       livePrice: this.moneyFormatter.format(this.getLiveTotalCents() / 100),
       imageRightsConfirmed:
         this.querySelector("[data-image-rights]")?.checked || false,
+      canvasBackground: {
+        mode: this.canvasBackground.mode || "none",
+        solidColor: this.canvasBackground.solidColor || "#ffffff",
+        gradientStart: this.canvasBackground.gradientStart || "#ffffff",
+        gradientEnd: this.canvasBackground.gradientEnd || "#d7e3ff",
+        gradientX1: this.canvasBackground.gradientX1 ?? 0.5,
+        gradientY1: this.canvasBackground.gradientY1 ?? 0,
+        gradientX2: this.canvasBackground.gradientX2 ?? 0.5,
+        gradientY2: this.canvasBackground.gradientY2 ?? 1,
+        imageSrc: this.canvasBackground.imageSrc || "",
+        imageScale: this.canvasBackground.imageScale ?? 1,
+      },
     };
 
     if (jsonTarget) {

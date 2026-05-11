@@ -696,6 +696,10 @@
     text-align: center;
   }
 
+  .custom-cover-customizer .custom-cover-customizer__preview-top-actions {
+    display: none;
+  }
+
   .custom-cover-customizer .custom-cover-customizer__preview {
     order: 3;
     gap: 20px;
@@ -1227,13 +1231,11 @@
   padding: 8px 10px;
 }
 
-.custom-cover-customizer .custom-cover-customizer__background-direction {
-  padding: 0.5rem;
-}
-
-.custom-cover-customizer .custom-cover-customizer__background-direction-field {
-  display: grid;
-  gap: 0;
+.custom-cover-customizer .custom-cover-customizer__gradient-hint {
+  margin: 0;
+  font-size: var(--font-size--sm);
+  color: rgb(var(--color-foreground-rgb) / 0.55);
+  line-height: 1.4;
 }
 
 .custom-cover-customizer [data-background-pane][hidden] {
@@ -1353,6 +1355,16 @@
   opacity: 0.92;
 }
 
+.custom-cover-customizer .custom-cover-customizer__background-scale-row {
+  display: grid;
+  gap: 6px;
+  margin-top: 15px;
+}
+
+.custom-cover-customizer .custom-cover-customizer__background-scale-row[hidden] {
+  display: none !important;
+}
+
 .custom-cover-customizer .custom-cover-customizer__clipart-panel {
   display: grid;
   max-height: 400px;
@@ -1364,6 +1376,37 @@
 .custom-cover-customizer .custom-cover-customizer__clipart-title {
   margin: 25px 0 15px;
   font-size: 14px;
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart-filters {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgb(var(--color-background-rgb));
+  padding-block: var(--padding-2xs);
+  margin-bottom: var(--gap-xs);
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart-filter-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgb(var(--color-foreground-rgb) / 0.18);
+  border-radius: var(--style-border-radius-inputs);
+  background: rgb(var(--color-background-rgb));
+  color: rgb(var(--color-foreground-rgb));
+  font-size: var(--font-size--sm);
+  line-height: 1.4;
+  cursor: pointer;
+  appearance: auto;
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart-filter-select:focus-visible {
+  outline: 2px solid rgb(var(--color-button-rgb));
+  outline-offset: 2px;
+}
+
+.custom-cover-customizer .custom-cover-customizer__clipart-category[hidden] {
+  display: none;
 }
 
 .custom-cover-customizer .custom-cover-customizer__clipart-list {
