@@ -2214,6 +2214,101 @@
   document.addEventListener('DOMContentLoaded', function () {
     const navItems = document.querySelectorAll('.custom-nav-item.has-dropdown');
     const desktopBreakpoint = window.matchMedia('(min-width: 901px)');
+    const steeringCollectionPath = '/collections/steering-wheel-covers';
+
+    function buildURLWithChildFilters(item, trigger) {
+      const baseUrl = new URL(trigger.href, window.location.origin);
+      if (normalizePath(baseUrl.pathname) !== steeringCollectionPath) {
+        return baseUrl.toString();
+      }
+      const childLinks = item.querySelectorAll('.custom-nav-modal a[href]');
+      const uniqueFilterEntries = new Set();
+      const discoveredFilterKeys = new Set();
+
+      function toTitleCase(value) {
+        return value
+          .toLowerCase()
+          .replace(/\b\w/g, function (char) {
+            return char.toUpperCase();
+          });
+      }
+
+      function getCollectionTitleFromPath(pathname) {
+        const segments = pathname.split('/').filter(Boolean);
+        const collectionHandle = segments.length >= 2 ? segments[1] : '';
+        if (collectionHandle === '') return '';
+        return toTitleCase(collectionHandle.replace(/-/g, ' '));
+      }
+
+      childLinks.forEach(function (childLink) {
+        let childUrl;
+        try {
+          childUrl = new URL(childLink.href, window.location.origin);
+        } catch (_error) {
+          return;
+        }
+
+        childUrl.searchParams.forEach(function (value, key) {
+          if (!key.startsWith('filter.')) return;
+          discoveredFilterKeys.add(key);
+          uniqueFilterEntries.add(key + '::' + value);
+        });
+      });
+
+      const parentTitle = (trigger.textContent || '').trim();
+      const pathCollectionTitle = getCollectionTitleFromPath(baseUrl.pathname);
+
+      // Always include the category metafield key used by collection facets in this theme.
+      discoveredFilterKeys.add('filter.p.m.custom.collections');
+
+      if ((parentTitle !== '' || pathCollectionTitle !== '') && discoveredFilterKeys.size > 0) {
+        const parentFilterCandidates = new Set();
+        if (parentTitle !== '') {
+          parentFilterCandidates.add(parentTitle);
+          parentFilterCandidates.add(parentTitle + ' Covers');
+          parentFilterCandidates.add(toTitleCase(parentTitle));
+          parentFilterCandidates.add(toTitleCase(parentTitle) + ' Covers');
+        }
+        if (pathCollectionTitle !== '') {
+          parentFilterCandidates.add(pathCollectionTitle);
+        }
+
+        discoveredFilterKeys.forEach(function (key) {
+          parentFilterCandidates.forEach(function (candidate) {
+            uniqueFilterEntries.add(key + '::' + candidate);
+          });
+        });
+      }
+
+      uniqueFilterEntries.forEach(function (entry) {
+        const separatorIndex = entry.indexOf('::');
+        if (separatorIndex === -1) return;
+
+        const key = entry.slice(0, separatorIndex);
+        const value = entry.slice(separatorIndex + 2);
+        if (!baseUrl.searchParams.getAll(key).includes(value)) {
+          baseUrl.searchParams.append(key, value);
+        }
+      });
+
+      return baseUrl.toString();
+    }
+
+    function hasFilterParams(url) {
+      let hasAnyFilter = false;
+      url.searchParams.forEach(function (_value, key) {
+        if (key.startsWith('filter.')) {
+          hasAnyFilter = true;
+        }
+      });
+      return hasAnyFilter;
+    }
+
+    function normalizePath(pathname) {
+      if (!pathname) return '/';
+      const normalized = pathname.replace(/\/+$/, '');
+      return normalized === '' ? '/' : normalized;
+    }
   
     function isRealLink(href) {
       if (!href) return false;
@@ -2277,7 +2372,7 @@
           if (isRealLink(href)) {
             e.preventDefault();
             e.stopImmediatePropagation();
-            window.location.href = trigger.href;
+            window.location.href = buildURLWithChildFilters(item, trigger);
           }
   
           return;
@@ -2316,6 +2411,59 @@
         closeAllMenus();
       }
     });
+
+    (function autoApplyFiltersFromCollectionNav() {
+      const currentUrl = new URL(window.location.href);
+      if (!currentUrl.pathname.startsWith('/collections/')) return;
+      if (hasFilterParams(currentUrl)) return;
+
+      const currentPath = normalizePath(currentUrl.pathname);
+      if (currentPath !== steeringCollectionPath) return;
+      let matchingItem = null;
+      let matchingTrigger = null;
+
+      navItems.forEach(function (item) {
+        const trigger = item.querySelector('.custom-nav-trigger');
+        if (!trigger) return;
+
+        let triggerUrl;
+        try {
+          triggerUrl = new URL(trigger.href, window.location.origin);
+        } catch (_error) {
+          return;
+        }
+
+        if (normalizePath(triggerUrl.pathname) === currentPath) {
+          matchingItem = item;
+          matchingTrigger = trigger;
+        }
+      });
+
+      let nextUrlString = currentUrl.toString();
+      if (matchingItem && matchingTrigger) {
+        nextUrlString = buildURLWithChildFilters(matchingItem, matchingTrigger);
+      } else {
+        // Deterministic fallback: set collection category filter from handle.
+        const fallbackUrl = new URL(currentUrl.toString());
+        const fallbackCollectionTitle = getCollectionTitleFromPath(currentUrl.pathname);
+        if (fallbackCollectionTitle !== '') {
+          fallbackUrl.searchParams.append('filter.p.m.custom.collections', fallbackCollectionTitle);
+        }
+        nextUrlString = fallbackUrl.toString();
+      }
+
+      let nextUrl;
+      try {
+        nextUrl = new URL(nextUrlString, window.location.origin);
+      } catch (_error) {
+        return;
+      }
+
+      if (!hasFilterParams(nextUrl)) return;
+      if (nextUrl.toString() === currentUrl.toString()) return;
+
+      window.location.replace(nextUrl.toString());
+    })();
   });
 </script>
 

@@ -21,6 +21,11 @@ const SEARCH_QUERY = 'q';
 class FacetsFormComponent extends Component {
   requiredRefs = ['facetsForm'];
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.#autoSelectCollectionCategoryWithChildren();
+  }
+
   /**
    * Creates URL parameters from form data
    * @param {FormData} [formData] - Optional form data to use instead of the main form
@@ -78,6 +83,77 @@ class FacetsFormComponent extends Component {
     this.dispatchEvent(new FilterUpdateEvent(this.createURLParameters()));
     this.#updateSection();
   };
+
+  /**
+   * Auto-select the collection category filter and its child values when landing
+   * on a collection page without filter query params.
+   */
+  #autoSelectCollectionCategoryWithChildren() {
+    const url = new URL(window.location.href);
+    if (!url.pathname.startsWith('/collections/')) return;
+    const segments = url.pathname.split('/').filter(Boolean);
+    const collectionHandle = segments.length >= 2 ? segments[1] : '';
+    if (collectionHandle !== 'steering-wheel-covers') return;
+
+    let hasFilterParams = false;
+    url.searchParams.forEach((_value, key) => {
+      if (key.startsWith('filter.')) hasFilterParams = true;
+    });
+    if (hasFilterParams) return;
+
+    const collectionTitle = this.#getCollectionTitleFromPath(url.pathname);
+    if (!collectionTitle) return;
+
+    const categoryInputs = Array.from(
+      this.refs.facetsForm.querySelectorAll('input[type="checkbox"][name="filter.p.m.custom.collections"]')
+    );
+    if (!categoryInputs.length) return;
+
+    const parentInput = categoryInputs.find((input) => {
+      if (!(input instanceof HTMLInputElement)) return false;
+      return this.#normalizeFilterText(input.value) === this.#normalizeFilterText(collectionTitle);
+    });
+    if (!(parentInput instanceof HTMLInputElement)) return;
+
+    let didChange = false;
+    if (!parentInput.checked) {
+      parentInput.checked = true;
+      didChange = true;
+    }
+
+    const parentItem = parentInput.closest('li.facets__inputs-list-item');
+    let sibling = parentItem?.nextElementSibling;
+
+    while (sibling instanceof HTMLElement && sibling.classList.contains('facets__inputs-list-item--category-child')) {
+      const childInput = sibling.querySelector('input[type="checkbox"][name="filter.p.m.custom.collections"]');
+      if (childInput instanceof HTMLInputElement && !childInput.checked && !childInput.disabled) {
+        childInput.checked = true;
+        didChange = true;
+      }
+      sibling = sibling.nextElementSibling;
+    }
+
+    if (didChange) {
+      this.updateFilters();
+    }
+  }
+
+  #getCollectionTitleFromPath(pathname) {
+    const segments = pathname.split('/').filter(Boolean);
+    const collectionHandle = segments.length >= 2 ? segments[1] : '';
+    if (!collectionHandle) return '';
+    return collectionHandle
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  #normalizeFilterText(value) {
+    return (value || '')
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }
 
   /**
    * Updates the section
