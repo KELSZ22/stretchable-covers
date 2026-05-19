@@ -92,10 +92,11 @@
     </div>
 
     <div class="custom-cover-customizer__left-column">
-      {%- assign safe_banner_text = section.settings.safe_area_warning | strip -%}
-      {%- if safe_banner_text == blank -%}
-        {%- assign safe_banner_text = "Can't print up to the end of the edge" -%}
+      {%- assign safe_warning_text = section.settings.safe_area_warning | strip -%}
+      {%- if safe_warning_text == blank -%}
+        {%- assign safe_warning_text = "Can't print up to the end of the edge" -%}
       {%- endif -%}
+      {%- assign safe_banner_text = safe_warning_text -%}
       <div
         class="custom-cover-customizer__safe-banner"
         role="status"
@@ -147,7 +148,7 @@
           data-max-upload-bytes="{{ section.settings.max_upload_mb | default: 10 | times: 1048576 | round }}"
           data-max-upload-mb="{{ section.settings.max_upload_mb | default: 10 }}"
           data-block-outside-safe-area="{{ section.settings.block_outside_safe_area }}"
-          data-safe-warning="{{ section.settings.safe_area_warning | escape }}"
+          data-safe-warning="{{ safe_warning_text | escape }}"
           data-upload-warning="{{ section.settings.upload_warning | escape }}"
           data-font-fallback="{{ section.settings.font_fallback | escape }}"
           data-google-font-library="{{ font_library_mode | escape }}"
@@ -157,6 +158,7 @@
           data-currency-code="{{ cart.currency.iso_code }}"
           data-money-format="{{ shop.money_format | escape }}"
           data-include-preview="{{ section.settings.include_preview_data }}"
+          data-design-export-format="{{ section.settings.design_export_format | default: 'png' }}"
           data-imprint-variant-size-option="{{ section.settings.variant_imprint_size_option | escape }}"
           data-imprint-variant-type-option="{{ section.settings.variant_imprint_type_option | escape }}"
           data-imprint-variant-color-option="{{ section.settings.variant_imprint_color_option | escape }}">
@@ -218,18 +220,28 @@
               data-safe-area-status>
             <input
               type="hidden"
-              name="properties[_Customizer Preview]"
-              data-preview-image>
+              data-preview-image
+              disabled
+              aria-hidden="true"
+              tabindex="-1">
             <input
               type="hidden"
-              name="properties[_Customizer Preview Token]"
-              data-preview-token>
+              data-preview-token
+              disabled
+              aria-hidden="true"
+              tabindex="-1">
+            <input
+              type="hidden"
+              name="properties[_Design file format]"
+              value=""
+              data-design-file-format-property>
             <input
               type="file"
-              name="properties[Design Image]"
+              name="properties[_Design Image]"
               data-design-file-upload
-              accept="image/*"
-              hidden>
+              accept="image/png,image/svg+xml,.png,.svg"
+              class="visually-hidden"
+              tabindex="-1">
             <input
               type="hidden"
               name="properties[_Imprint size]"
@@ -2402,6 +2414,22 @@
         "id": "include_preview_data",
         "label": "Include preview image in line item properties",
         "default": false
+      }, {
+        "type": "select",
+        "id": "design_export_format",
+        "label": "Design file format on orders",
+        "info": "Uploaded to Shopify CDN on the hidden _Design Image line item property (merchant orders). SVG embeds raster artwork for print compatibility. Checkout shows Design title only.",
+        "default": "png",
+        "options": [
+          {
+            "value": "png",
+            "label": "PNG"
+          },
+          {
+            "value": "svg",
+            "label": "SVG"
+          }
+        ]
       }, {
         "type": "header",
         "content": "t:content.padding"

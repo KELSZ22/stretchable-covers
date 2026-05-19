@@ -168,8 +168,16 @@
       lower === 'imprint type' ||
       lower === 'cover imprint' ||
       lower === 'print size' ||
-      lower === 'design image'
+      lower === 'design image' ||
+      lower === 'design file format'
     );
+  }
+
+  function getLineItemDesignImageUrl(props) {
+    props = props || {};
+    var designImage = props['_Design Image'] || props['Design Image'];
+    if (!designImage) return '';
+    return String(designImage).trim();
   }
 
   function formatDiameterDisplay(value) {
@@ -235,24 +243,31 @@
     }
   }
 
+  function isAllowedDesignPreviewUrl(url) {
+    url = String(url || '').trim();
+    if (!url || url.indexOf('data:') !== -1) return false;
+    return (
+      url.indexOf('/uploads/') !== -1 ||
+      url.indexOf('cdn.shopify.com') !== -1 ||
+      /^https?:\/\//i.test(url)
+    );
+  }
+
   function resolveDesignPreviewSrc(item) {
     var props = item && item.properties ? item.properties : {};
-    var designImage = props['Design Image'];
-    if (designImage && String(designImage).indexOf('/uploads/') !== -1) {
-      return String(designImage).trim();
+    var designImage = getLineItemDesignImageUrl(props);
+    if (designImage && isAllowedDesignPreviewUrl(designImage)) {
+      return designImage;
     }
-    var customizerPreview = props['_Customizer Preview'] || props['Customizer Preview'];
-    if (customizerPreview && String(customizerPreview).trim().length > 10) {
-      return String(customizerPreview).trim();
-    }
-    var token = props['_Customizer Preview Token'] || props['Customizer Preview Token'];
-    return readCachedPreviewByToken(item && item.product_id, token);
+    return '';
   }
 
   function getDesignPreviewUrlForAttr(previewSrc) {
     previewSrc = String(previewSrc || '').trim();
     if (!previewSrc) return '';
-    if (previewSrc.indexOf('/uploads/') !== -1) return previewSrc;
+    if (previewSrc.indexOf('/uploads/') !== -1 || previewSrc.indexOf('cdn.shopify.com') !== -1) {
+      return previewSrc;
+    }
     if (/^https?:\/\//i.test(previewSrc)) return previewSrc;
     return '';
   }
@@ -283,21 +298,11 @@
     var token = (trigger.getAttribute('data-design-preview-token') || '').trim();
     var productId = (trigger.getAttribute('data-design-preview-product-id') || 'unknown-product').trim();
 
-    if (src) {
-      if (src.indexOf('/uploads/') !== -1 || /^https?:\/\//i.test(src)) {
-        return src;
-      }
-      if (src.indexOf('data:') === 0 && src.length >= 64) {
-        return src;
-      }
+    if (isAllowedDesignPreviewUrl(src)) {
+      return src;
     }
 
-    if (token) {
-      var cached = readCachedPreviewByToken(productId, token);
-      if (cached) return cached;
-    }
-
-    return src;
+    return '';
   }
 
   function getPropertiesHtml(item) {
@@ -330,15 +335,6 @@
       return '<div class="custom-cart-item-property"><strong>' + escapeHtml(label) + ':</strong> <span>' + escapeHtml(value) + '</span></div>';
     }).join('');
 
-    if (previewSrc && !designTitle) {
-      html += '<div class="custom-cart-item-property custom-cart-item-design-preview">' +
-        '<button type="button" class="custom-cart-design-link" ' +
-        getDesignPreviewTriggerAttrs(item, previewSrc) + ' ' +
-        'data-design-title="' + escapeHtml(designTitle || 'Custom Design') + '" ' +
-        'data-design-preview-title="' + escapeHtml(designTitle || 'Custom Design') + '">' +
-        '<img src="' + escapeHtml(getDesignPreviewUrlForAttr(previewSrc) || previewSrc) + '" alt="Custom design preview" class="custom-cart-design-thumb" width="80" height="80">' +
-        '</button></div>';
-    }
 
     html += '</div>';
     return html;
@@ -673,8 +669,8 @@
   }
 
   function openDesignModal(src, title, trigger) {
-    var resolvedSrc = resolveDesignPreviewSrcFromTrigger(trigger) || String(src || '').trim();
-    if (!resolvedSrc) return;
+    var resolvedSrc = resolveDesignPreviewSrcFromTrigger(trigger);
+    if (!isAllowedDesignPreviewUrl(resolvedSrc)) return;
 
     ensureDesignModal();
 

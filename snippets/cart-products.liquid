@@ -200,8 +200,11 @@
                     or item.selling_plan_allocation != null
                   -%}
                     <dl class="cart-items__variants">
-                      {%- assign customizer_preview_cdn = item.properties['Design Image'] -%}
-                      {%- assign customizer_preview = customizer_preview_cdn | default: item.properties['_Customizer Preview'] | default: item.properties['Customizer Preview'] -%}
+                      {%- assign customizer_preview_cdn = item.properties['_Design Image'] | default: item.properties['Design Image'] | strip -%}
+                      {%- assign customizer_preview = '' -%}
+                      {%- if customizer_preview_cdn contains '/uploads/' or customizer_preview_cdn contains 'cdn.shopify.com' -%}
+                        {%- assign customizer_preview = customizer_preview_cdn -%}
+                      {%- endif -%}
                       {%- assign customizer_preview_token = item.properties['_Customizer Preview Token'] | default: item.properties['Customizer Preview Token'] -%}
                       {%- if item.product.has_only_default_variant == false and item.item_components.size == 0 -%}
                         {%- for option in item.options_with_values -%}
@@ -232,12 +235,8 @@
                           assign property_name_lower = property.first | downcase
 
                           if property.last != blank and property_first_char != '_'
-                            unless property_name_lower == 'imprint size' or property_name_lower == 'imprint' or property_name_lower == 'imprint type' or property_name_lower == 'cover imprint' or property_name_lower == 'diameter' or property_name_lower == 'product diameter' or property_name_lower == 'product variant diameter'
-                              if property.first == 'Design Image' and item.properties['Design title'] != blank and customizer_preview != blank
-                                assign show_cart_property = false
-                              else
-                                assign show_cart_property = true
-                              endif
+                            unless property_name_lower == 'imprint size' or property_name_lower == 'imprint' or property_name_lower == 'imprint type' or property_name_lower == 'cover imprint' or property_name_lower == 'diameter' or property_name_lower == 'product diameter' or property_name_lower == 'product variant diameter' or property_name_lower == 'design image' or property_name_lower == 'design file format'
+                              assign show_cart_property = true
                             endunless
                           endif
                         -%}
@@ -257,25 +256,7 @@
                                 >
                                   {{ property.last }}
                                 </button>
-                              {%- elsif property.first == 'Design Image' and property.last contains '/uploads/' -%}
-                                <button
-                                  type="button"
-                                  class="button button-unstyled cart-items__design-image-link"
-                                  data-design-preview-open
-                                  data-design-preview-src="{{ property.last | escape }}"
-                                  data-design-preview-token=""
-                                  data-design-preview-product-id="{{ item.product_id }}"
-                                  data-design-preview-title="{{ item.properties['Design title'] | default: 'Custom Design' | escape }}"
-                                >
-                                  <img
-                                    src="{{ property.last }}"
-                                    alt="Custom design preview"
-                                    class="cart-items__design-image-thumbnail"
-                                    loading="lazy"
-                                    width="80"
-                                    height="80">
-                                </button>
-                              {%- elsif property.last contains '/uploads/' -%}
+                              {%- elsif property.last contains '/uploads/' or property.last contains 'cdn.shopify.com' -%}
                                 <a href="{{ property.last }}">{{ property.last | split: '/' | last }}</a>
                               {%- else -%}
                                 {{ property.last }}
@@ -452,24 +433,14 @@
           if (!trigger) return;
           event.preventDefault();
           const previewSrc = (trigger.getAttribute("data-design-preview-src") || "").trim();
-          const previewToken = (trigger.getAttribute("data-design-preview-token") || "").trim();
-          const productId = (trigger.getAttribute("data-design-preview-product-id") || "unknown-product").trim();
-          let resolvedPreviewSrc = previewSrc;
-          if ((!resolvedPreviewSrc || resolvedPreviewSrc.length < 64) && previewToken) {
-            try {
-              const storageKey = `custom-cover-preview:v1:${productId || "unknown-product"}`;
-              const raw = window.localStorage.getItem(storageKey);
-              if (raw) {
-                const map = JSON.parse(raw);
-                const cached = map?.[previewToken]?.image;
-                if (cached) {
-                  resolvedPreviewSrc = String(cached).trim();
-                }
-              }
-            } catch (error) {
-              // Keep fallback behavior when local cache is unavailable.
-            }
-          }
+          const resolvedPreviewSrc =
+            previewSrc &&
+            previewSrc.indexOf("data:") === -1 &&
+            (previewSrc.indexOf("/uploads/") !== -1 ||
+              previewSrc.indexOf("cdn.shopify.com") !== -1 ||
+              /^https?:\/\//i.test(previewSrc))
+              ? previewSrc
+              : "";
           if (!resolvedPreviewSrc) return;
           image.removeAttribute("srcset");
           image.src = resolvedPreviewSrc;

@@ -159,7 +159,7 @@
         "shape_label_ellipse": "Ellipse",
         "shape_label_triangle": "Triangle",
         "shape_price_adjustment": 0,
-        "include_preview_data": true,
+        "include_preview_data": false,
         "padding-block-start": 40,
         "padding-block-end": 64
       }

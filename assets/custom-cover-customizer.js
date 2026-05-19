@@ -3969,6 +3969,7 @@ class CustomCoverCustomizer extends HTMLElement {
       element.shapeVariant = def.variant;
     }
     this.ensureShapeElementOutline(element);
+    element.scale = this.clampElementScaleToSafeArea(element, element.scale || 1);
 
     this.pushHistorySnapshot();
     this.elements.push(element);
@@ -4113,6 +4114,15 @@ class CustomCoverCustomizer extends HTMLElement {
 
   addImageElement(src, type) {
     const img = new Image();
+    if (/^https?:/i.test(String(src || ""))) {
+      img.crossOrigin = "anonymous";
+    }
+    img.onerror = () => {
+      if (img.crossOrigin) {
+        img.crossOrigin = "";
+        img.src = src;
+      }
+    };
     img.onload = () => {
       const maxWidth = this.canvas.width * 0.4;
       const maxHeight = this.canvas.height * 0.4;
@@ -4136,6 +4146,8 @@ class CustomCoverCustomizer extends HTMLElement {
         flipY: 1,
         rotation: 0,
       };
+
+      element.scale = this.clampElementScaleToSafeArea(element, element.scale || 1);
 
       this.pushHistorySnapshot();
       this.elements.push(element);
@@ -4373,9 +4385,9 @@ class CustomCoverCustomizer extends HTMLElement {
         Math.hypot(point.x - center.x, point.y - center.y),
       );
       const ratio = nowDist / this.dragState.startDist;
-      element.scale = Math.min(
-        4,
-        Math.max(0.15, this.dragState.startScale * ratio),
+      element.scale = this.clampElementScaleToSafeArea(
+        element,
+        this.dragState.startScale * ratio,
       );
     } else if (this.dragState.mode === "rotate") {
       const center = this.localToCanvas(
@@ -4564,14 +4576,55 @@ class CustomCoverCustomizer extends HTMLElement {
   }
 
   getElementBounds(element) {
-    const width = element.width * element.scale;
-    const height = element.height * element.scale;
+    return this.getElementWorldBounds(element);
+  }
+
+  getSafeAreaInsetTolerance() {
+    return 2;
+  }
+
+  getSafeAreaWarningMessage() {
+    const message = String(this.dataset.safeWarning || "").trim();
+    return message || "Can't print up to the end of the edge";
+  }
+
+  getElementWorldBounds(element) {
+    const corners = this.getElementWorldCorners(element);
+    const xs = corners.map((point) => point.x);
+    const ys = corners.map((point) => point.y);
     return {
-      left: element.x,
-      top: element.y,
-      right: element.x + width,
-      bottom: element.y + height,
+      left: Math.min(...xs),
+      top: Math.min(...ys),
+      right: Math.max(...xs),
+      bottom: Math.max(...ys),
     };
+  }
+
+  elementFitsSafeAreaAtScale(element, scale) {
+    const savedScale = element.scale;
+    element.scale = scale;
+    const fits = this.elementFitsSafeArea(element);
+    element.scale = savedScale;
+    return fits;
+  }
+
+  clampElementScaleToSafeArea(element, proposedScale) {
+    const minScale = 0.15;
+    const maxScale = 4;
+    let scale = Math.min(maxScale, Math.max(minScale, Number(proposedScale) || 1));
+
+    if (this.elementFitsSafeAreaAtScale(element, scale)) {
+      return scale;
+    }
+
+    for (let attempt = 0; attempt < 80 && scale > minScale; attempt += 1) {
+      scale = Math.max(minScale, Math.round((scale - 0.05) * 100) / 100);
+      if (this.elementFitsSafeAreaAtScale(element, scale)) {
+        return scale;
+      }
+    }
+
+    return minScale;
   }
 
   updateSelectedTextStyle() {
@@ -5526,8 +5579,7 @@ class CustomCoverCustomizer extends HTMLElement {
     });
 
     const safe = this.elementsWithinSafeArea();
-    const safeWarning = (this.dataset.safeWarning || "").trim();
-    this.setWarning(safe ? "" : safeWarning);
+    this.setWarning(safe ? "" : this.getSafeAreaWarningMessage());
     this.updateHiddenProperties();
 
     const editingText = this.getSelectedElement();
@@ -5989,29 +6041,35 @@ class CustomCoverCustomizer extends HTMLElement {
     ];
   }
 
-  elementFullyInsideCircle(element, cx, cy, r) {
-    const tol = 1;
+  elementFullyInsideCircle(element, cx, cy, r, tolerance) {
+    const tol = Number.isFinite(tolerance)
+      ? tolerance
+      : this.getSafeAreaInsetTolerance();
     const corners = this.getElementWorldCorners(element);
     return corners.every((p) => Math.hypot(p.x - cx, p.y - cy) <= r + tol);
   }
 
-  elementsWithinSafeArea() {
+  elementFitsSafeArea(element) {
+    const tol = this.getSafeAreaInsetTolerance();
     if (this.getSafeAreaShape() === "rectangle") {
       const safe = this.getSafeAreaBounds();
-      return this.elements.every((element) => {
-        const bounds = this.getElementBounds(element);
-        return (
-          bounds.left >= safe.left &&
-          bounds.top >= safe.top &&
-          bounds.right <= safe.right &&
-          bounds.bottom <= safe.bottom
-        );
-      });
+      const bounds = this.getElementWorldBounds(element);
+      return (
+        bounds.left >= safe.left - tol &&
+        bounds.top >= safe.top - tol &&
+        bounds.right <= safe.right + tol &&
+        bounds.bottom <= safe.bottom + tol
+      );
     }
     const { cx, cy, r } = this.getCircleSafeMetrics();
-    return this.elements.every((element) =>
-      this.elementFullyInsideCircle(element, cx, cy, r),
-    );
+    return this.elementFullyInsideCircle(element, cx, cy, r, tol);
+  }
+
+  elementsWithinSafeArea() {
+    if (!this.elements.length) {
+      return true;
+    }
+    return this.elements.every((element) => this.elementFitsSafeArea(element));
   }
 
   getLiveTotalCents() {
@@ -7186,7 +7244,7 @@ class CustomCoverCustomizer extends HTMLElement {
           element.type === "shape" ? String(element.strokeColor || "") : "",
         src:
           element.type === "image" || element.type === "clipart"
-            ? element.src
+            ? this.sanitizeSerializedValueForCartProperty(element.src)
             : "",
         x: Math.round(element.x),
         y: Math.round(element.y),
@@ -7218,13 +7276,18 @@ class CustomCoverCustomizer extends HTMLElement {
         gradientY1: this.canvasBackground.gradientY1 ?? 0,
         gradientX2: this.canvasBackground.gradientX2 ?? 0.5,
         gradientY2: this.canvasBackground.gradientY2 ?? 1,
-        imageSrc: this.canvasBackground.imageSrc || "",
+        imageSrc: this.sanitizeSerializedValueForCartProperty(
+          this.canvasBackground.imageSrc || "",
+        ),
         imageScale: this.canvasBackground.imageScale ?? 1,
       },
     };
 
     if (jsonTarget) {
+      jsonTarget.disabled = false;
+      jsonTarget.setAttribute("name", "properties[_Customizer JSON]");
       jsonTarget.value = JSON.stringify(payload);
+      this.trimCustomizerJsonForCartSubmit();
     }
     if (imprintSizeProperty) {
       imprintSizeProperty.value = payload.imprintSize || "";
@@ -7239,59 +7302,236 @@ class CustomCoverCustomizer extends HTMLElement {
     if (statusTarget) {
       statusTarget.value = payload.safeAreaPass ? "PASS" : "FAIL";
     }
-    const previewDataUrl = this.createCartPreviewDataUrl();
-    const previewToken = this.ensurePreviewToken();
-    this.savePreviewByToken(previewToken, previewDataUrl);
+    // Production artwork is uploaded as properties[_Design Image] (Shopify CDN).
+    // Do not send base64 previews on the line item — they truncate and block file upload.
     if (previewTokenTarget) {
-      previewTokenTarget.value = previewToken;
+      previewTokenTarget.value = "";
     }
     if (previewTarget) {
-      previewTarget.value = previewDataUrl;
+      previewTarget.value = "";
+    }
+    const formatProperty = this.form?.querySelector(
+      "[data-design-file-format-property]",
+    );
+    if (formatProperty) {
+      formatProperty.value = this.getDesignExportFormatLabel();
     }
   }
 
-  handleSubmit(event) {
-    this.setQuantity(this.getQuantity(), { silent: true });
-    this.ensureVariantIdForCart();
-    const variantSelector = this.querySelector("[data-variant-selector]");
-    if (!variantSelector?.value) {
-      event.preventDefault();
-      this.setWarning("Please select a color before saving.");
-      return;
-    }
-    const blockOutside = this.dataset.blockOutsideSafeArea === "true";
-    const safe = this.elementsWithinSafeArea();
-    if (blockOutside && !safe) {
-      event.preventDefault();
-      this.setWarning((this.dataset.safeWarning || "").trim());
-      return;
-    }
-    this.updateHiddenProperties();
-    this.attachCanvasFileSync();
+  getDesignExportFormat() {
+    const format = String(this.dataset.designExportFormat || "png")
+      .trim()
+      .toLowerCase();
+    return format === "svg" ? "svg" : "png";
   }
 
-  attachCanvasFileSync() {
-    if (!this.canvas) {
-      return;
+  getDesignExportFormatLabel() {
+    return this.getDesignExportFormat() === "svg" ? "SVG" : "PNG";
+  }
+
+  getDesignExportBaseName() {
+    const designTitle = this.querySelector("[data-design-title-input]");
+    return this.sanitizeFilename(designTitle?.value || "design");
+  }
+
+  dataUrlToBlob(dataUrl, mimeType) {
+    const base64 = String(dataUrl || "").split(",")[1] || "";
+    if (!base64) {
+      return null;
     }
-    const fileInput = this.form.querySelector("[data-design-file-upload]");
-    if (!fileInput) {
-      return;
-    }
-    const dataUrl = this.canvas.toDataURL("image/png");
-    const byteString = atob(dataUrl.split(",")[1]);
+    const byteString = atob(base64);
     const ab = new ArrayBuffer(byteString.length);
     const ia = new Uint8Array(ab);
     for (let i = 0; i < byteString.length; i += 1) {
       ia[i] = byteString.charCodeAt(i);
     }
-    const blob = new Blob([ab], { type: "image/png" });
-    const designTitle = this.querySelector("[data-design-title-input]");
-    const fileName = `${this.sanitizeFilename(designTitle?.value || "design")}.png`;
-    const file = new File([blob], fileName, { type: "image/png" });
+    return new Blob([ab], { type: mimeType });
+  }
+
+  createDesignPngFile() {
+    if (!this.canvas) {
+      return null;
+    }
+    let dataUrl = "";
+    try {
+      dataUrl = this.canvas.toDataURL("image/png");
+    } catch (error) {
+      console.warn("[Customizer] PNG export failed:", error);
+      return null;
+    }
+    const blob = this.dataUrlToBlob(dataUrl, "image/png");
+    if (!blob) {
+      return null;
+    }
+    const fileName = `${this.getDesignExportBaseName()}.png`;
+    return new File([blob], fileName, { type: "image/png" });
+  }
+
+  createDesignSvgFile() {
+    if (!this.canvas) {
+      return null;
+    }
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    if (!width || !height) {
+      return null;
+    }
+    const pngDataUrl = this.canvas.toDataURL("image/png");
+    const svgMarkup = [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+      `<image width="${width}" height="${height}" href="${pngDataUrl}"/>`,
+      "</svg>",
+    ].join("");
+    const fileName = `${this.getDesignExportBaseName()}.svg`;
+    return new File([svgMarkup], fileName, {
+      type: "image/svg+xml",
+    });
+  }
+
+  assignDesignFileToInput(fileInput, file) {
+    if (!fileInput || !file) {
+      return false;
+    }
     const dataTransfer = new DataTransfer();
     dataTransfer.items.add(file);
     fileInput.files = dataTransfer.files;
+    return fileInput.files.length > 0;
+  }
+
+  clearLineItemPreviewProperties() {
+    const previewTarget = this.form?.querySelector("[data-preview-image]");
+    const previewTokenTarget = this.form?.querySelector("[data-preview-token]");
+    if (previewTarget) {
+      previewTarget.value = "";
+      previewTarget.disabled = true;
+    }
+    if (previewTokenTarget) {
+      previewTokenTarget.value = "";
+      previewTokenTarget.disabled = true;
+    }
+  }
+
+  sanitizeSerializedValueForCartProperty(value) {
+    const serialized = String(value || "").trim();
+    if (
+      !serialized ||
+      serialized.startsWith("data:") ||
+      serialized.startsWith("blob:")
+    ) {
+      return "";
+    }
+    return serialized;
+  }
+
+  /**
+   * Large line item properties break multipart cart/add (including file upload).
+   * Drop _Customizer JSON from the POST when it would exceed Shopify limits.
+   */
+  trimCustomizerJsonForCartSubmit() {
+    const jsonTarget = this.form?.querySelector("[data-customizer-json]");
+    if (!jsonTarget) {
+      return;
+    }
+    const serialized = String(jsonTarget.value || "");
+    if (serialized.length > 240) {
+      jsonTarget.removeAttribute("name");
+      jsonTarget.value = "";
+      jsonTarget.disabled = true;
+    }
+  }
+
+  /**
+   * Ensures the exported design file is on the FormData payload for cart/add.js.
+   * @param {FormData} formData
+   * @returns {boolean}
+   */
+  syncDesignFileToFormData(formData) {
+    if (!formData || typeof formData.append !== "function") {
+      return false;
+    }
+    const fileInput = this.form?.querySelector("[data-design-file-upload]");
+    const file = fileInput?.files?.[0];
+    if (!file) {
+      return false;
+    }
+    if (typeof formData.delete === "function") {
+      formData.delete("properties[_Customizer Preview]");
+      formData.delete("properties[_Customizer Preview Token]");
+      formData.delete("properties[Customizer Preview]");
+      formData.delete("properties[Customizer Preview Token]");
+      formData.delete("properties[_Design Image]");
+      formData.delete("properties[Design Image]");
+      const customizerJson = formData.get("properties[_Customizer JSON]");
+      if (customizerJson && String(customizerJson).length > 240) {
+        formData.delete("properties[_Customizer JSON]");
+      }
+    }
+    formData.append("properties[_Design Image]", file, file.name);
+    return true;
+  }
+
+  /**
+   * Validates, syncs hidden fields, and attaches PNG/SVG to the _Design Image file property.
+   * @returns {{ ok: boolean, message?: string }}
+   */
+  prepareForCartAdd() {
+    this.clearLineItemPreviewProperties();
+    this.setQuantity(this.getQuantity(), { silent: true });
+    this.ensureVariantIdForCart();
+    const variantSelector = this.querySelector("[data-variant-selector]");
+    if (!variantSelector?.value) {
+      return { ok: false, message: "Please select a color before saving." };
+    }
+    const blockOutside = this.dataset.blockOutsideSafeArea === "true";
+    const safe = this.elementsWithinSafeArea();
+    if (blockOutside && !safe) {
+      return {
+        ok: false,
+        message: this.getSafeAreaWarningMessage(),
+      };
+    }
+    this.updateHiddenProperties();
+    this.clearLineItemPreviewProperties();
+    const attached = this.attachCanvasFileSync();
+    if (!attached) {
+      return {
+        ok: false,
+        message: "Could not export your design file. Please try again.",
+      };
+    }
+    this.trimCustomizerJsonForCartSubmit();
+    return { ok: true };
+  }
+
+  handleSubmit(event) {
+    const result = this.prepareForCartAdd();
+    if (!result.ok) {
+      event.preventDefault();
+      if (result.message) {
+        this.setWarning(result.message);
+      }
+    }
+  }
+
+  /**
+   * Attaches exported canvas artwork to properties[_Design Image] for Shopify CDN upload.
+   * @returns {boolean}
+   */
+  attachCanvasFileSync() {
+    if (!this.canvas) {
+      return false;
+    }
+    const fileInput = this.form?.querySelector("[data-design-file-upload]");
+    if (!fileInput) {
+      return false;
+    }
+    const exportFormat = this.getDesignExportFormat();
+    const designFile =
+      exportFormat === "svg"
+        ? this.createDesignSvgFile()
+        : this.createDesignPngFile();
+    return this.assignDesignFileToInput(fileInput, designFile);
   }
 }
 
