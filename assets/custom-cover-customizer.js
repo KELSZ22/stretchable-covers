@@ -2962,6 +2962,8 @@ class CustomCoverCustomizer extends HTMLElement {
       }
     });
 
+    this.bindQuantityControls(urlParams);
+
     this.form.addEventListener("submit", (event) => this.handleSubmit(event));
     if (this._onDesignKeydown) {
       window.removeEventListener("keydown", this._onDesignKeydown);
@@ -3371,6 +3373,84 @@ class CustomCoverCustomizer extends HTMLElement {
     }
     const selected = selector.options[selector.selectedIndex];
     this.variantPriceCents = Number(selected?.getAttribute("data-price") || 0);
+  }
+
+  getQuantityInput() {
+    const sectionRoot = this.closest(".custom-cover-customizer");
+    return sectionRoot?.querySelector("[data-customizer-quantity]");
+  }
+
+  getQuantityMin() {
+    const input = this.getQuantityInput();
+    const parsed = parseInt(String(input?.min || "1"), 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+  }
+
+  parseQuantityValue(raw, min) {
+    const floorMin = min ?? this.getQuantityMin();
+    const n = Math.floor(Number(raw));
+    if (!Number.isFinite(n) || n < floorMin) {
+      return floorMin;
+    }
+    const input = this.getQuantityInput();
+    const maxAttr = input?.max;
+    if (maxAttr) {
+      const max = parseInt(String(maxAttr), 10);
+      if (Number.isFinite(max) && n > max) {
+        return max;
+      }
+    }
+    return n;
+  }
+
+  getQuantity() {
+    return this.parseQuantityValue(this.getQuantityInput()?.value);
+  }
+
+  setQuantity(value, options = {}) {
+    const input = this.getQuantityInput();
+    if (!input) {
+      return;
+    }
+    const qty = this.parseQuantityValue(value);
+    input.value = String(qty);
+    if (!options.silent) {
+      this.updatePrice();
+    }
+  }
+
+  adjustQuantity(delta) {
+    const input = this.getQuantityInput();
+    const step = parseInt(String(input?.step || "1"), 10) || 1;
+    this.setQuantity(this.getQuantity() + delta * step);
+  }
+
+  bindQuantityControls(urlParams) {
+    const sectionRoot = this.closest(".custom-cover-customizer");
+    const quantityInput = this.getQuantityInput();
+    const quantityMinus = sectionRoot?.querySelector(
+      "[data-customizer-quantity-minus]",
+    );
+    const quantityPlus = sectionRoot?.querySelector(
+      "[data-customizer-quantity-plus]",
+    );
+    if (!quantityInput) {
+      return;
+    }
+
+    const prefillRaw = (urlParams?.get("quantity") || "").trim();
+    const prefillQty = Math.max(1, parseInt(prefillRaw, 10) || 1);
+    quantityInput.value = String(prefillQty);
+
+    const syncQuantity = () => this.setQuantity(this.getQuantity());
+    quantityMinus?.addEventListener("click", () => this.adjustQuantity(-1));
+    quantityPlus?.addEventListener("click", () => this.adjustQuantity(1));
+    quantityInput.addEventListener("change", syncQuantity);
+    quantityInput.addEventListener("blur", syncQuantity);
+  }
+
+  getLineTotalCents() {
+    return this.getLiveTotalCents() * this.getQuantity();
   }
 
   handleUpload(event) {
@@ -5962,7 +6042,7 @@ class CustomCoverCustomizer extends HTMLElement {
     );
     if (totalEl) {
       totalEl.textContent = this.moneyFormatter.format(
-        this.getLiveTotalCents() / 100,
+        this.getLineTotalCents() / 100,
       );
     }
     this.updateHiddenProperties();
@@ -7125,7 +7205,8 @@ class CustomCoverCustomizer extends HTMLElement {
           }
         : null,
       safeAreaPass: this.elementsWithinSafeArea(),
-      livePrice: this.moneyFormatter.format(this.getLiveTotalCents() / 100),
+      quantity: this.getQuantity(),
+      livePrice: this.moneyFormatter.format(this.getLineTotalCents() / 100),
       imageRightsConfirmed:
         this.querySelector("[data-image-rights]")?.checked || false,
       canvasBackground: {
@@ -7170,6 +7251,7 @@ class CustomCoverCustomizer extends HTMLElement {
   }
 
   handleSubmit(event) {
+    this.setQuantity(this.getQuantity(), { silent: true });
     this.ensureVariantIdForCart();
     const variantSelector = this.querySelector("[data-variant-selector]");
     if (!variantSelector?.value) {

@@ -344,6 +344,18 @@
           url.searchParams.set("imprint_text", normalize(imprintFields.type));
         if (color) url.searchParams.set("color", color);
 
+        var quantityValue = 1;
+        if (form) {
+          var quantityField = form.querySelector('[name="quantity"]');
+          var parsedQty = quantityField
+            ? parseInt(String(quantityField.value || "").trim(), 10)
+            : NaN;
+          if (Number.isFinite(parsedQty) && parsedQty > 0) {
+            quantityValue = parsedQty;
+          }
+        }
+        url.searchParams.set("quantity", String(quantityValue));
+
         window.location.href = url.toString();
       });
     })();

@@ -290,6 +290,10 @@
   width: 100%;
 }
 
+.custom-cover-customizer .custom-cover-customizer__group--quantity {
+  margin-block-start: 0;
+}
+
 @media screen and (min-width: 990px) {
   .custom-cover-customizer .custom-cover-customizer__design-overflow {
     display: none;

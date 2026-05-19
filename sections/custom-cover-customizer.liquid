@@ -206,10 +206,6 @@
               value="">
             <input
               type="hidden"
-              name="quantity"
-              value="1">
-            <input
-              type="hidden"
               name="return_to"
               value="/cart">
             <input
@@ -424,6 +420,9 @@
                             {% endunless %}
                           </select>
                         </div>
+                      </div>
+                      <div class="custom-cover-customizer__group custom-cover-customizer__group--quantity">
+                        {% render 'custom-cover-customizer-quantity', section_id: section.id %}
                       </div>
                       <div
                         class="custom-cover-customizer__group"
@@ -1685,8 +1684,8 @@
               {%- endunless -%}
             </div>
             <p class="custom-cover-customizer__preview-footer-price">
-              <span class="custom-cover-customizer__preview-footer-price-label">Total:</span>
-              <span class="custom-cover-customizer__preview-footer-price-amount" data-preview-footer-price-total>{{- 0 | money -}}</span>
+                <span class="custom-cover-customizer__preview-footer-price-label">Total:</span>
+                <span class="custom-cover-customizer__preview-footer-price-amount" data-preview-footer-price-total>{{- 0 | money -}}</span>
             </p>
           </div>
         </div>

@@ -1,0 +1,262 @@
+{%- comment -%}
+  Product-page quantity UI for the cover customizer (controlled by custom-cover-customizer.js).
+  @param section_id {String} Section id for form association
+{%- endcomment -%}
+
+<div class="quantity-selector-wrapper custom-cover-customizer__quantity-field">
+  <span class="mobile-quantity">Quantity</span>
+
+  <div
+    class="quantity-selector"
+    data-customizer-quantity-root
+    role="group"
+    aria-label="{{ 'accessibility.quantity' | t }}">
+    <button
+      class="button quantity-minus button-unstyled"
+      type="button"
+      name="minus"
+      data-customizer-quantity-minus>
+      <span class="visually-hidden">{{ 'accessibility.decrease_quantity' | t }}</span>
+      <span class="svg-wrapper icon-minus">
+        {{- 'icon-minus.svg' | inline_asset_content -}}
+      </span>
+    </button>
+
+    <input
+      type="number"
+      id="CustomizerQuantity-{{ section_id }}"
+      name="quantity"
+      form="CustomizerProductForm-{{ section_id }}"
+      value="1"
+      min="1"
+      step="1"
+      data-customizer-quantity
+      aria-label="{{ 'accessibility.quantity' | t }}">
+
+    <button
+      class="button quantity-plus button-unstyled"
+      type="button"
+      name="plus"
+      data-customizer-quantity-plus>
+      <span class="visually-hidden">{{ 'accessibility.increase_quantity' | t }}</span>
+      <span class="svg-wrapper icon-plus">
+        {{- 'icon-plus.svg' | inline_asset_content -}}
+      </span>
+    </button>
+  </div>
+</div>
+
+{% stylesheet %}
+  .custom-cover-customizer .quantity-selector-wrapper.custom-cover-customizer__quantity-field {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    width: 100%;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .mobile-quantity {
+    display: inline-flex;
+    align-items: center;
+    font-size: 16px;
+    line-height: 1;
+    color: #222;
+    margin: 0;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector {
+    display: flex !important;
+    align-items: stretch;
+    width: auto !important;
+    min-width: 120px !important;
+    max-width: none !important;
+    height: 40px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: none;
+    box-sizing: border-box;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    .quantity-minus,
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    .quantity-plus {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #222;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    .quantity-minus {
+    border-right: 1px solid #d9d9d9;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    .quantity-plus {
+    border-left: 1px solid #d9d9d9;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    input {
+    display: block;
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0;
+    background: transparent;
+    color: #222;
+    font-size: 14px;
+    line-height: 40px;
+    text-align: center;
+    box-shadow: none !important;
+    outline: none;
+    appearance: textfield;
+    -moz-appearance: textfield;
+    box-sizing: border-box;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    input::-webkit-outer-spin-button,
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    input::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    .svg-wrapper {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 13px !important;
+    height: 13px !important;
+    color: #222;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    svg {
+    display: block;
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    button:disabled,
+  .custom-cover-customizer
+    .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+    .quantity-selector
+    input:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  @media screen and (max-width: 749px) {
+    .custom-cover-customizer .quantity-selector-wrapper.custom-cover-customizer__quantity-field {
+      gap: 10px;
+    }
+
+    .custom-cover-customizer
+      .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+      .mobile-quantity {
+      font-size: 14px;
+    }
+
+    .custom-cover-customizer
+      .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+      .quantity-selector {
+      min-width: 120px !important;
+      height: 40px !important;
+      border-radius: 10px;
+    }
+
+    .custom-cover-customizer
+      .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+      .quantity-selector
+      .quantity-minus,
+    .custom-cover-customizer
+      .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+      .quantity-selector
+      .quantity-plus,
+    .custom-cover-customizer
+      .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+      .quantity-selector
+      input {
+      flex: 0 0 40px !important;
+      width: 40px !important;
+      min-width: 40px !important;
+      max-width: 40px !important;
+      height: 100% !important;
+    }
+
+    .custom-cover-customizer
+      .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+      .quantity-selector
+      input {
+      font-size: 13px;
+      line-height: 40px;
+    }
+
+    .custom-cover-customizer
+      .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+      .quantity-selector
+      .svg-wrapper,
+    .custom-cover-customizer
+      .quantity-selector-wrapper.custom-cover-customizer__quantity-field
+      .quantity-selector
+      svg {
+      width: 12px !important;
+      height: 12px !important;
+    }
+  }
+{% endstylesheet %}
