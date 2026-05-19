@@ -659,9 +659,17 @@
         hiddenInput = getLinkedDiameterInput(form, input);
 
         if (value && value !== '0') {
-          hiddenInput.value = value;
+          var formattedValue = value;
+
+          if (window.CustomDiameterFormat && typeof window.CustomDiameterFormat.formatDiameterDisplay === 'function') {
+            formattedValue = window.CustomDiameterFormat.formatDiameterDisplay(value);
+          } else {
+            formattedValue = value + "'";
+          }
+
+          hiddenInput.value = formattedValue;
           input.dataset.lastValidDiameter = value;
-          return value;
+          return formattedValue;
         }
 
         hiddenInput.remove();

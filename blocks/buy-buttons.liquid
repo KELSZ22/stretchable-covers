@@ -64,17 +64,24 @@
           value="{{ product.selected_or_first_available_variant.id }}"
         >
 
-        <input
-          type="hidden"
-          name="properties[product_diameter]"
-          value="{{ product.metafields.custom.product_diameter.value | default: product.metafields.custom.product_diameter }}"
-        >
-
-        <input
-          type="hidden"
-          name="properties[product_variant_diameter]"
-          value="{{ product.selected_or_first_available_variant.metafields.custom.product_variant_diameter.value | default: product.selected_or_first_available_variant.metafields.custom.product_variant_diameter }}"
-        >
+        {%- liquid
+          assign line_item_diameter = product.selected_or_first_available_variant.metafields.custom.product_variant_diameter.value | default: product.selected_or_first_available_variant.metafields.custom.product_variant_diameter
+          if line_item_diameter == blank
+            assign line_item_diameter = product.metafields.custom.product_diameter.value | default: product.metafields.custom.product_diameter
+          endif
+        -%}
+        {%- if line_item_diameter != blank -%}
+          {%- capture line_item_diameter_formatted -%}
+            {%- render 'custom-diameter-format', value: line_item_diameter -%}
+          {%- endcapture -%}
+          {%- assign line_item_diameter_formatted = line_item_diameter_formatted | strip -%}
+          <input
+            type="hidden"
+            name="properties[Diameter]"
+            value="{{ line_item_diameter_formatted | escape }}"
+            data-diameter-line-item
+          >
+        {%- endif -%}
 
         {%- if block_settings.gift_card_form and product.gift_card? -%}
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section, block: block -%}

@@ -68,7 +68,32 @@
       '.custom-cart-item-price-compare{margin-left:6px;font-size:12px;color:#777;text-decoration:line-through;white-space:nowrap;}',
       '.custom-cart-item-discounts{list-style:none;margin:6px 0 0;padding:0;font-size:12px;color:#2d5b2e;}',
       '.custom-cart-item-discounts li{display:flex;justify-content:space-between;gap:8px;}',
-      '.custom-cart-summary-discount{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:#2d5b2e;font-weight:600;}'
+      '.custom-cart-summary-discount{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:#2d5b2e;font-weight:600;}',
+      '.custom-cart-design-link{display:inline-block;cursor:pointer;background:none;border:none;padding:0;font:inherit;color:inherit;}',
+      '.custom-cart-design-thumb{display:block;width:80px;height:80px;object-fit:contain;border-radius:6px;border:1px solid #e5e5e5;margin-top:4px;}',
+      '.custom-cart-design-label{font-size:13px;font-family:Lato,sans-serif;font-weight:400;color:#555;line-height:1.35;}',
+      '.custom-cart-design-title-link{display:inline;cursor:pointer;background:none;border:none;padding:0;font-size:13px;font-family:Lato,sans-serif;font-weight:400;color:#555;text-decoration:underline;text-underline-offset:2px;line-height:1.35;}',
+      '.custom-cart-design-modal-overlay{position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s ease;}',
+      '.custom-cart-design-modal-overlay.open{opacity:1;pointer-events:auto;}',
+      '.custom-cart-design-modal{background:#fff;border-radius:10px;padding:20px;max-width:min(92vw,700px);max-height:90vh;overflow:auto;position:relative;box-shadow:0 8px 30px rgba(0,0,0,.18);}',
+      '.custom-cart-design-modal-close{position:absolute;top:10px;right:10px;width:32px;height:32px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:999px;}',
+      '.custom-cart-design-modal-close:hover{background:rgba(0,0,0,.06);}',
+      '.custom-cart-design-modal-heading{margin:0 0 4px;font-size:18px;font-weight:700;line-height:1.2;}',
+      '.custom-cart-design-modal-title{margin:0 0 12px;font-size:14px;font-weight:500;color:#555;}',
+      '.custom-cart-design-modal-image{display:block;width:auto;max-width:min(84vw,640px);height:auto;max-height:calc(90vh - 10rem);margin:0 auto;object-fit:contain;border-radius:6px;}',
+      '.custom-cart-qty{position:relative;}',
+      '.custom-cart-qty-value{display:inline-block;min-width:24px;text-align:center;}',
+      '.custom-cart-item.is-updating{opacity:.72;}',
+      '.custom-cart-item.is-updating .custom-cart-qty button,.custom-cart-item.is-updating .custom-cart-remove{cursor:wait;}',
+      '.custom-cart-qty.is-loading .custom-cart-qty-value{visibility:hidden;}',
+      '.custom-cart-qty.is-loading::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border:2px solid rgba(53,91,136,.25);border-top-color:#355b88;border-radius:50%;animation:custom-cart-qty-spin .65s linear infinite;}',
+      '.custom-cart-body.is-cart-updating,.custom-cart-footer.is-cart-updating{cursor:wait;}',
+      '.custom-cart-footer.is-cart-updating .custom-cart-checkout{pointer-events:none;opacity:.7;}',
+      '@keyframes custom-cart-qty-spin{to{transform:rotate(360deg);}}',
+      '.custom-diameter-meta{display:flex;align-items:center;gap:6px;margin:4px 0 0;color:#5f5f5f;font-family:Lato,Arial,sans-serif;font-size:14px;line-height:18px;}',
+      '.custom-diameter-meta__label,.custom-diameter-meta__value{color:inherit;font:inherit;}',
+      '.custom-diameter-meta__icon{display:inline-flex;width:18px;height:18px;flex:0 0 18px;}',
+      '.custom-diameter-meta__icon svg{display:block;width:18px;height:18px;}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -116,24 +141,207 @@
     return normalized.replace(/\b\w/g, function (char) { return char.toUpperCase(); });
   }
 
+  var DIAMETER_ICON_SVG =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">' +
+    '<path d="M9 0C4.03711 0 0 4.03711 0 9C0 13.9629 4.03711 18 9 18C13.9629 18 18 13.9629 18 9C18 4.03711 13.9629 0 9 0ZM9 1.5C13.1514 1.5 16.5 4.84863 16.5 9C16.5 13.1514 13.1514 16.5 9 16.5C4.84863 16.5 1.5 13.1514 1.5 9C1.5 4.84863 4.84863 1.5 9 1.5ZM9.75 4.5L11.0947 5.84473L5.84473 11.0947L4.5 9.75V13.5H8.25L6.90527 12.1553L12.1553 6.90527L13.5 8.25V4.5H9.75Z" fill="#5F5F5F"/></svg>';
+
+  function isDiameterPropertyKey(key) {
+    var lower = String(key || '').replace(/^_+/, '').trim().toLowerCase();
+    return (
+      lower === 'diameter' ||
+      lower === 'product diameter' ||
+      lower === 'product variant diameter' ||
+      lower === 'variant diameter' ||
+      lower === 'bell diameter' ||
+      lower === 'entered diameter' ||
+      lower === 'custom diameter' ||
+      lower === 'diameter size'
+    );
+  }
+
+  function isCartHiddenDetailProperty(key) {
+    var lower = String(key || '').replace(/^_+/, '').trim().toLowerCase();
+    return (
+      isDiameterPropertyKey(key) ||
+      lower === 'imprint size' ||
+      lower === 'imprint' ||
+      lower === 'imprint type' ||
+      lower === 'cover imprint' ||
+      lower === 'print size' ||
+      lower === 'design image'
+    );
+  }
+
+  function formatDiameterDisplay(value) {
+    if (window.CustomDiameterFormat && typeof window.CustomDiameterFormat.formatDiameterDisplay === 'function') {
+      return window.CustomDiameterFormat.formatDiameterDisplay(value);
+    }
+    return String(value || '').trim();
+  }
+
+  function getLineItemDiameter(item) {
+    var props = item && item.properties ? item.properties : {};
+    var propertyName;
+    var value;
+
+    for (propertyName in props) {
+      if (!Object.prototype.hasOwnProperty.call(props, propertyName)) continue;
+      if (!isDiameterPropertyKey(propertyName)) continue;
+      if (propertyName.charAt(0) === '_') continue;
+
+      value = String(props[propertyName] == null ? '' : props[propertyName]).trim();
+      if (value && value !== '0' && value !== 'Default Title') {
+        return formatDiameterDisplay(value);
+      }
+    }
+
+    return '';
+  }
+
+  function getDiameterDisplayHtml(item) {
+    var value = getLineItemDiameter(item);
+    if (!value) return '';
+
+    return (
+      '<div class="custom-cart-item-diameter custom-diameter-meta">' +
+        '<span class="custom-diameter-meta__label">Diameter</span>' +
+        '<span class="custom-diameter-meta__icon">' + DIAMETER_ICON_SVG + '</span>' +
+        '<span class="custom-diameter-meta__value">' + escapeHtml(value) + '</span>' +
+      '</div>'
+    );
+  }
+
   function shouldShowProperty(key, value) {
-    if (!key || key.charAt(0) === '_') return false;
+    if (!key) return false;
+    if (key.charAt(0) === '_') return false;
+    if (isCartHiddenDetailProperty(key)) return false;
     if (value === null || value === undefined || String(value).trim() === '') return false;
     return true;
   }
 
+  function readCachedPreviewByToken(productId, token) {
+    if (!token) return '';
+
+    try {
+      var storageKey = 'custom-cover-preview:v1:' + (productId || 'unknown-product');
+      var raw = window.localStorage.getItem(storageKey);
+      if (!raw) return '';
+
+      var map = JSON.parse(raw);
+      var cached = map && map[token] && map[token].image;
+      return cached ? String(cached).trim() : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function resolveDesignPreviewSrc(item) {
+    var props = item && item.properties ? item.properties : {};
+    var designImage = props['Design Image'];
+    if (designImage && String(designImage).indexOf('/uploads/') !== -1) {
+      return String(designImage).trim();
+    }
+    var customizerPreview = props['_Customizer Preview'] || props['Customizer Preview'];
+    if (customizerPreview && String(customizerPreview).trim().length > 10) {
+      return String(customizerPreview).trim();
+    }
+    var token = props['_Customizer Preview Token'] || props['Customizer Preview Token'];
+    return readCachedPreviewByToken(item && item.product_id, token);
+  }
+
+  function getDesignPreviewUrlForAttr(previewSrc) {
+    previewSrc = String(previewSrc || '').trim();
+    if (!previewSrc) return '';
+    if (previewSrc.indexOf('/uploads/') !== -1) return previewSrc;
+    if (/^https?:\/\//i.test(previewSrc)) return previewSrc;
+    return '';
+  }
+
+  function getDesignPreviewTriggerAttrs(item, previewSrc) {
+    var props = item && item.properties ? item.properties : {};
+    var token = String(props['_Customizer Preview Token'] || props['Customizer Preview Token'] || '').trim();
+    var productId = String(item && item.product_id ? item.product_id : 'unknown-product').trim();
+    var attrSrc = getDesignPreviewUrlForAttr(previewSrc);
+
+    return (
+      'data-design-drawer-open data-design-preview-open ' +
+      'data-design-src="' + escapeHtml(attrSrc) + '" ' +
+      'data-design-preview-src="' + escapeHtml(attrSrc) + '" ' +
+      'data-design-preview-token="' + escapeHtml(token) + '" ' +
+      'data-design-preview-product-id="' + escapeHtml(productId) + '"'
+    );
+  }
+
+  function resolveDesignPreviewSrcFromTrigger(trigger) {
+    if (!trigger) return '';
+
+    var src = (
+      trigger.getAttribute('data-design-preview-src') ||
+      trigger.getAttribute('data-design-src') ||
+      ''
+    ).trim();
+    var token = (trigger.getAttribute('data-design-preview-token') || '').trim();
+    var productId = (trigger.getAttribute('data-design-preview-product-id') || 'unknown-product').trim();
+
+    if (src) {
+      if (src.indexOf('/uploads/') !== -1 || /^https?:\/\//i.test(src)) {
+        return src;
+      }
+      if (src.indexOf('data:') === 0 && src.length >= 64) {
+        return src;
+      }
+    }
+
+    if (token) {
+      var cached = readCachedPreviewByToken(productId, token);
+      if (cached) return cached;
+    }
+
+    return src;
+  }
+
   function getPropertiesHtml(item) {
     var props = item && item.properties ? item.properties : {};
+    var previewSrc = resolveDesignPreviewSrc(item);
+    var designTitle = props['Design title'] || '';
     var keys = Object.keys(props).filter(function (key) {
       return shouldShowProperty(key, props[key]);
     });
 
-    if (!keys.length) return '';
+    if (!keys.length && !previewSrc) return '';
 
-    return '<div class="custom-cart-item-properties">' + keys.map(function (key) {
+    var html = '<div class="custom-cart-item-properties">';
+
+    html += keys.map(function (key) {
       var label = normalizePropertyLabel(key);
-      return '<div class="custom-cart-item-property"><strong>' + escapeHtml(label) + ':</strong> <span>' + escapeHtml(props[key]) + '</span></div>';
-    }).join('') + '</div>';
+      var value = props[key];
+
+      if (key === 'Design title' && previewSrc) {
+        return '<div class="custom-cart-item-property">' +
+          '<span class="custom-cart-design-label">' + escapeHtml(label) + ':</span> ' +
+          '<button type="button" class="custom-cart-design-title-link" ' +
+          getDesignPreviewTriggerAttrs(item, previewSrc) + ' ' +
+          'data-design-title="' + escapeHtml(value) + '" ' +
+          'data-design-preview-title="' + escapeHtml(value) + '">' +
+          escapeHtml(value) +
+          '</button></div>';
+      }
+
+      return '<div class="custom-cart-item-property"><strong>' + escapeHtml(label) + ':</strong> <span>' + escapeHtml(value) + '</span></div>';
+    }).join('');
+
+    if (previewSrc && !designTitle) {
+      html += '<div class="custom-cart-item-property custom-cart-item-design-preview">' +
+        '<button type="button" class="custom-cart-design-link" ' +
+        getDesignPreviewTriggerAttrs(item, previewSrc) + ' ' +
+        'data-design-title="' + escapeHtml(designTitle || 'Custom Design') + '" ' +
+        'data-design-preview-title="' + escapeHtml(designTitle || 'Custom Design') + '">' +
+        '<img src="' + escapeHtml(getDesignPreviewUrlForAttr(previewSrc) || previewSrc) + '" alt="Custom design preview" class="custom-cart-design-thumb" width="80" height="80">' +
+        '</button></div>';
+    }
+
+    html += '</div>';
+    return html;
   }
 
   function getLineDiscountsHtml(item) {
@@ -246,6 +454,7 @@
               '<div>' +
                 '<div class="custom-cart-item-title">' + escapeHtml(item.product_title || item.title) + '</div>' +
                 (variantText ? '<div class="custom-cart-item-variant">' + escapeHtml(variantText) + '</div>' : '') +
+                getDiameterDisplayHtml(item) +
                 getPropertiesHtml(item) +
                 '<div class="custom-cart-item-price">' + linePriceDisplay + '</div>' +
                 getLineDiscountsHtml(item) +
@@ -256,9 +465,9 @@
             '</div>' +
             '<div class="custom-cart-item-bottom">' +
               '<div class="custom-cart-qty">' +
-                '<button type="button" data-key="' + key + '" data-qty="' + (quantity - 1) + '">−</button>' +
-                '<span>' + quantity + '</span>' +
-                '<button type="button" data-key="' + key + '" data-qty="' + (quantity + 1) + '">+</button>' +
+                '<button type="button" data-key="' + key + '" data-qty="' + (quantity - 1) + '" aria-label="Decrease quantity">−</button>' +
+                '<span class="custom-cart-qty-value">' + quantity + '</span>' +
+                '<button type="button" data-key="' + key + '" data-qty="' + (quantity + 1) + '" aria-label="Increase quantity">+</button>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -286,6 +495,24 @@
   function loadCart(callback) {
     return fetch('/cart.js', { headers: { Accept: 'application/json' } })
       .then(function (res) { return res.json(); })
+      .then(function (cart) {
+        if (
+          window.CustomDiameterFormat &&
+          typeof window.CustomDiameterFormat.normalizeCartDiameters === 'function'
+        ) {
+          return window.CustomDiameterFormat.normalizeCartDiameters()
+            .then(function (updated) {
+              if (!updated) return cart;
+              return fetch('/cart.js', { headers: { Accept: 'application/json' } }).then(function (r) {
+                return r.json();
+              });
+            })
+            .catch(function () {
+              return cart;
+            });
+        }
+        return cart;
+      })
       .then(function (cart) {
         renderCart(cart);
         if (callback) callback(cart);
@@ -322,8 +549,81 @@
     document.body.style.overflow = '';
   }
 
+  var cartQuantityUpdatesInFlight = 0;
+
+  function findCartItemByKey(key) {
+    var items = document.querySelectorAll('.custom-cart-item[data-cart-key]');
+    var match = null;
+
+    items.forEach(function (item) {
+      if (item.getAttribute('data-cart-key') === key) {
+        match = item;
+      }
+    });
+
+    return match;
+  }
+
+  function setCartKeyLoading(key, isLoading) {
+    if (!key) return;
+
+    var item = findCartItemByKey(key);
+    if (!item) return;
+
+    item.classList.toggle('is-updating', !!isLoading);
+
+    if (isLoading) {
+      item.setAttribute('aria-busy', 'true');
+    } else {
+      item.removeAttribute('aria-busy');
+    }
+
+    item.querySelectorAll('.custom-cart-qty button, .custom-cart-remove').forEach(function (btn) {
+      btn.disabled = !!isLoading;
+    });
+
+    var qty = item.querySelector('.custom-cart-qty');
+    if (qty) {
+      qty.classList.toggle('is-loading', !!isLoading);
+    }
+  }
+
+  function setCartDrawerUpdating(isLoading) {
+    var els = getEls();
+
+    if (els.body) {
+      els.body.classList.toggle('is-cart-updating', !!isLoading);
+    }
+
+    if (els.footer) {
+      els.footer.classList.toggle('is-cart-updating', !!isLoading);
+    }
+  }
+
+  function beginCartQuantityUpdate(key) {
+    cartQuantityUpdatesInFlight += 1;
+    setCartKeyLoading(key, true);
+    setCartDrawerUpdating(true);
+  }
+
+  function endCartQuantityUpdate(key) {
+    cartQuantityUpdatesInFlight = Math.max(0, cartQuantityUpdatesInFlight - 1);
+    setCartKeyLoading(key, false);
+
+    if (cartQuantityUpdatesInFlight === 0) {
+      setCartDrawerUpdating(false);
+    }
+  }
+
   function updateCartByKey(key, quantity) {
     if (!key) return;
+
+    var updatingItem = findCartItemByKey(key);
+    if (updatingItem && updatingItem.classList.contains('is-updating')) {
+      return;
+    }
+
+    beginCartQuantityUpdate(key);
 
     return fetch('/cart/change.js', {
       method: 'POST',
@@ -333,14 +633,72 @@
       },
       body: JSON.stringify({ id: key, quantity: Math.max(0, Number(quantity || 0)) })
     })
-      .then(function (res) { return res.json(); })
+      .then(function (res) {
+        return res.json().then(function (cart) {
+          if (!res.ok) {
+            throw cart;
+          }
+          return cart;
+        });
+      })
       .then(function (cart) {
         renderCart(cart);
         document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
       })
       .catch(function (error) {
         console.error('[StretchableCartDrawer] Cart update error:', error);
+      })
+      .finally(function () {
+        endCartQuantityUpdate(key);
       });
+  }
+
+  function ensureDesignModal() {
+    if (document.getElementById('customCartDesignOverlay') && document.getElementById('customCartDesignImage')) {
+      return;
+    }
+    var overlay = document.createElement('div');
+    overlay.id = 'customCartDesignOverlay';
+    overlay.className = 'custom-cart-design-modal-overlay';
+    overlay.innerHTML =
+      '<div class="custom-cart-design-modal">' +
+        '<button type="button" class="custom-cart-design-modal-close" id="customCartDesignClose" data-design-modal-close aria-label="Close preview">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>' +
+        '</button>' +
+        '<p class="custom-cart-design-modal-heading">Design Preview</p>' +
+        '<p class="custom-cart-design-modal-title" id="customCartDesignTitle" data-design-modal-title></p>' +
+        '<img class="custom-cart-design-modal-image" id="customCartDesignImage" data-design-modal-image src="" alt="Design preview">' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+
+  function openDesignModal(src, title, trigger) {
+    var resolvedSrc = resolveDesignPreviewSrcFromTrigger(trigger) || String(src || '').trim();
+    if (!resolvedSrc) return;
+
+    ensureDesignModal();
+
+    var overlay = document.getElementById('customCartDesignOverlay');
+    var img = document.getElementById('customCartDesignImage');
+    var titleEl = document.getElementById('customCartDesignTitle');
+    if (!overlay) return;
+
+    if (img) {
+      img.removeAttribute('srcset');
+      img.src = resolvedSrc;
+      img.alt = (title || 'Design') + ' preview';
+    }
+
+    if (titleEl) {
+      titleEl.textContent = title || '';
+    }
+
+    overlay.classList.add('open');
+  }
+
+  function closeDesignModal() {
+    var overlay = $('#customCartDesignOverlay');
+    if (overlay) overlay.classList.remove('open');
   }
 
   function bind() {
@@ -368,6 +726,9 @@
       var qtyBtn = event.target.closest && event.target.closest('.custom-cart-qty button[data-key]');
       if (!qtyBtn) return;
 
+      var qtyItem = qtyBtn.closest('.custom-cart-item');
+      if (qtyItem && qtyItem.classList.contains('is-updating')) return;
+
       event.preventDefault();
       event.stopImmediatePropagation();
       updateCartByKey(qtyBtn.getAttribute('data-key'), parseInt(qtyBtn.getAttribute('data-qty'), 10));
@@ -377,9 +738,36 @@
       var removeBtn = event.target.closest && event.target.closest('.custom-cart-remove[data-key]');
       if (!removeBtn) return;
 
+      var removeItem = removeBtn.closest('.custom-cart-item');
+      if (removeItem && removeItem.classList.contains('is-updating')) return;
+
       event.preventDefault();
       event.stopImmediatePropagation();
       updateCartByKey(removeBtn.getAttribute('data-key'), 0);
+    }, true);
+
+    document.addEventListener('click', function (event) {
+      var trigger = event.target.closest && event.target.closest('[data-design-drawer-open], [data-design-preview-open]');
+      if (!trigger) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openDesignModal(
+        trigger.getAttribute('data-design-src') || '',
+        trigger.getAttribute('data-design-title') ||
+          trigger.getAttribute('data-design-preview-title') ||
+          'Custom Design',
+        trigger
+      );
+    }, true);
+
+    document.addEventListener('click', function (event) {
+      var close = event.target.closest && event.target.closest('[data-design-modal-close], #customCartDesignOverlay');
+      if (!close) return;
+      if (event.target.closest('.custom-cart-design-modal') && !event.target.closest('[data-design-modal-close]')) return;
+
+      event.preventDefault();
+      closeDesignModal();
     }, true);
 
     document.addEventListener('cart:refresh', function (event) {
@@ -394,7 +782,13 @@
     });
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') closeDrawer();
+      if (event.key !== 'Escape') return;
+      var designOverlay = $('#customCartDesignOverlay');
+      if (designOverlay && designOverlay.classList.contains('open')) {
+        closeDesignModal();
+        return;
+      }
+      closeDrawer();
     });
 
     log('[StretchableCartDrawer] Patch loaded');

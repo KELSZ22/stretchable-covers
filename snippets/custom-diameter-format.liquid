@@ -1,0 +1,42 @@
+{%- liquid
+  assign diameter_raw = value | default: diameter_value | strip
+  assign diameter_formatted = diameter_raw
+
+  if diameter_formatted != blank
+    assign has_feet_mark = false
+    if diameter_formatted contains "'" or diameter_formatted contains '′'
+      assign has_feet_mark = true
+    endif
+
+    unless has_feet_mark
+      if diameter_formatted contains '-'
+        assign diameter_parts = diameter_formatted | split: '-'
+        assign diameter_min = diameter_parts[0] | strip
+        assign diameter_max = diameter_parts[1] | strip
+        unless diameter_min contains "'"
+          assign diameter_min = diameter_min | append: "'"
+        endunless
+        unless diameter_max contains "'"
+          assign diameter_max = diameter_max | append: "'"
+        endunless
+        assign diameter_formatted = diameter_min | append: ' - ' | append: diameter_max
+      elsif diameter_formatted.size == 4
+        assign diameter_test = diameter_formatted | plus: 0
+        if diameter_test > 0
+          assign diameter_min = diameter_formatted | slice: 0, 2
+          assign diameter_max = diameter_formatted | slice: 2, 2
+          if diameter_min == diameter_max
+            assign diameter_formatted = diameter_min | append: "'"
+          else
+            assign diameter_formatted = diameter_min | append: "'" | append: ' - ' | append: diameter_max | append: "'"
+          endif
+        else
+          assign diameter_formatted = diameter_formatted | append: "'"
+        endif
+      else
+        assign diameter_formatted = diameter_formatted | append: "'"
+      endif
+    endunless
+  endif
+-%}
+{{- diameter_formatted -}}

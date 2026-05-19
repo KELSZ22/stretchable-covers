@@ -1114,6 +1114,36 @@
     font-weight: 700;
   }
 
+  .custom-diameter-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0 0;
+    color: #5f5f5f;
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .custom-diameter-meta__label,
+  .custom-diameter-meta__value {
+    color: inherit;
+    font: inherit;
+  }
+
+  .custom-diameter-meta__icon {
+    display: inline-flex;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+  }
+
+  .custom-diameter-meta__icon svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
   .custom-cart-item-option--inline {
     display: flex;
     flex-wrap: wrap;
@@ -1124,6 +1154,120 @@
   .custom-cart-item-sep {
     color: #777;
     padding: 0 4px;
+  }
+
+  .custom-cart-design-label {
+    font-size: 13px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    color: #555;
+    line-height: 1.35;
+  }
+
+  .custom-cart-design-title-btn {
+    display: inline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    color: #555;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    line-height: 1.35;
+  }
+
+  .custom-cart-design-thumb-btn {
+    display: inline-block;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .custom-cart-design-thumb-img {
+    display: block;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 6px;
+    border: 1px solid #e5e5e5;
+    margin-top: 4px;
+  }
+
+  .custom-cart-design-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100001;
+    background: rgba(0, 0, 0, .45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+  }
+
+  .custom-cart-design-modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .custom-cart-design-modal {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: min(92vw, 700px);
+    max-height: 90vh;
+    overflow: auto;
+    position: relative;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .18);
+  }
+
+  .custom-cart-design-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+  }
+
+  .custom-cart-design-modal-close:hover {
+    background: rgba(0, 0, 0, .06);
+  }
+
+  .custom-cart-design-modal-heading {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .custom-cart-design-modal-title {
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+  }
+
+  .custom-cart-design-modal-image {
+    display: block;
+    width: auto;
+    max-width: min(84vw, 640px);
+    height: auto;
+    max-height: calc(90vh - 10rem);
+    margin: 0 auto;
+    object-fit: contain;
+    border-radius: 6px;
   }
 
   .custom-cart-item-price {
@@ -1187,6 +1331,59 @@
     color: #355b88;
     font-family: 'Lato'
     , sans-serif;
+  }
+
+  .custom-cart-qty {
+    position: relative;
+  }
+
+  .custom-cart-qty-value {
+    display: inline-block;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .custom-cart-item.is-updating {
+    opacity: 0.72;
+  }
+
+  .custom-cart-item.is-updating .custom-cart-qty button,
+  .custom-cart-item.is-updating .custom-cart-remove {
+    cursor: wait;
+  }
+
+  .custom-cart-qty.is-loading .custom-cart-qty-value {
+    visibility: hidden;
+  }
+
+  .custom-cart-qty.is-loading::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border: 2px solid rgba(53, 91, 136, 0.25);
+    border-top-color: #355b88;
+    border-radius: 50%;
+    animation: custom-cart-qty-spin 0.65s linear infinite;
+  }
+
+  .custom-cart-body.is-cart-updating,
+  .custom-cart-footer.is-cart-updating {
+    cursor: wait;
+  }
+
+  .custom-cart-footer.is-cart-updating .custom-cart-checkout {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  @keyframes custom-cart-qty-spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .custom-cart-footer {
@@ -1923,6 +2120,17 @@
     </div>
 
     <a href="/checkout" class="custom-cart-checkout">Secure Check Out</a>
+  </div>
+</div>
+
+<div class="custom-cart-design-modal-overlay" id="customCartDesignOverlay">
+  <div class="custom-cart-design-modal">
+    <button type="button" class="custom-cart-design-modal-close" id="customCartDesignClose" aria-label="Close preview">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
+    </button>
+    <p class="custom-cart-design-modal-heading">Design Preview</p>
+    <p class="custom-cart-design-modal-title" id="customCartDesignTitle"></p>
+    <img class="custom-cart-design-modal-image" id="customCartDesignImage" src="" alt="Design preview">
   </div>
 </div>
 
@@ -2671,6 +2879,23 @@
       name = String(name || '');
       return name.charAt(0) === '_' || name.indexOf('__') === 0;
     }
+
+    function isCartHiddenDetailProperty(name) {
+      var key = normalizeCartKey(name);
+      return (
+        isDiameterPropertyName(name) ||
+        key === 'imprint size' ||
+        key === 'imprint' ||
+        key === 'imprint type' ||
+        key === 'cover imprint' ||
+        key === 'print size' ||
+        key === 'design image'
+      );
+    }
+
+    function isPrivateCartProperty(name) {
+      return isHiddenCartProperty(name);
+    }
   
     function isEmptyCartValue(value) {
       if (value == null) return true;
@@ -2793,7 +3018,7 @@
         var value;
   
         if (foundValue) return foundValue;
-        if (isHiddenCartProperty(propertyName)) return '';
+        if (isPrivateCartProperty(propertyName)) return '';
         if (!targetKeys[normalizeCartKey(propertyName)]) return '';
   
         value = cleanCartValue(properties[propertyName]);
@@ -2804,6 +3029,159 @@
       }, '');
     }
   
+    function resolveDesignPreviewSrc(item) {
+      var props = item && item.properties ? item.properties : {};
+      var designImage = props['Design Image'];
+      if (designImage && String(designImage).indexOf('/uploads/') !== -1) {
+        return String(designImage).trim();
+      }
+      var customizerPreview = props['_Customizer Preview'] || props['Customizer Preview'];
+      if (customizerPreview && String(customizerPreview).trim().length > 10) {
+        return String(customizerPreview).trim();
+      }
+      var token = props['_Customizer Preview Token'] || props['Customizer Preview Token'];
+      if (token) {
+        try {
+          var productId = item.product_id || 'unknown-product';
+          var storageKey = 'custom-cover-preview:v1:' + productId;
+          var raw = window.localStorage.getItem(storageKey);
+          if (raw) {
+            var map = JSON.parse(raw);
+            var cached = map && map[token] && map[token].image;
+            if (cached) return String(cached).trim();
+          }
+        } catch (e) { /* localStorage unavailable */ }
+      }
+      return '';
+    }
+
+    function getDesignPreviewUrlForAttr(previewSrc) {
+      previewSrc = String(previewSrc || '').trim();
+      if (!previewSrc) return '';
+      if (previewSrc.indexOf('/uploads/') !== -1) return previewSrc;
+      if (/^https?:\/\//i.test(previewSrc)) return previewSrc;
+      return '';
+    }
+
+    function getDesignPreviewTriggerAttrs(item, previewSrc) {
+      var props = item && item.properties ? item.properties : {};
+      var token = String(props['_Customizer Preview Token'] || props['Customizer Preview Token'] || '').trim();
+      var productId = String(item && item.product_id ? item.product_id : 'unknown-product').trim();
+      var attrSrc = getDesignPreviewUrlForAttr(previewSrc);
+
+      return (
+        'data-design-preview-open data-design-drawer-open ' +
+        'data-design-src="' + escapeHtml(attrSrc) + '" ' +
+        'data-design-preview-src="' + escapeHtml(attrSrc) + '" ' +
+        'data-design-preview-token="' + escapeHtml(token) + '" ' +
+        'data-design-preview-product-id="' + escapeHtml(productId) + '"'
+      );
+    }
+
+    function resolveDesignPreviewSrcFromTrigger(trigger) {
+      if (!trigger) return '';
+
+      var src = (
+        trigger.getAttribute('data-design-preview-src') ||
+        trigger.getAttribute('data-design-src') ||
+        ''
+      ).trim();
+      var token = (trigger.getAttribute('data-design-preview-token') || '').trim();
+      var productId = (trigger.getAttribute('data-design-preview-product-id') || 'unknown-product').trim();
+
+      if (src) {
+        if (src.indexOf('/uploads/') !== -1 || /^https?:\/\//i.test(src)) {
+          return src;
+        }
+        if (src.indexOf('data:') === 0 && src.length >= 64) {
+          return src;
+        }
+      }
+
+      if (token) {
+        try {
+          var storageKey = 'custom-cover-preview:v1:' + productId;
+          var raw = window.localStorage.getItem(storageKey);
+          if (raw) {
+            var map = JSON.parse(raw);
+            var cached = map && map[token] && map[token].image;
+            if (cached) return String(cached).trim();
+          }
+        } catch (e) { /* localStorage unavailable */ }
+      }
+
+      return src;
+    }
+
+    var DIAMETER_ICON_SVG =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">' +
+      '<path d="M9 0C4.03711 0 0 4.03711 0 9C0 13.9629 4.03711 18 9 18C13.9629 18 18 13.9629 18 9C18 4.03711 13.9629 0 9 0ZM9 1.5C13.1514 1.5 16.5 4.84863 16.5 9C16.5 13.1514 13.1514 16.5 9 16.5C4.84863 16.5 1.5 13.1514 1.5 9C1.5 4.84863 4.84863 1.5 9 1.5ZM9.75 4.5L11.0947 5.84473L5.84473 11.0947L4.5 9.75V13.5H8.25L6.90527 12.1553L12.1553 6.90527L13.5 8.25V4.5H9.75Z" fill="#5F5F5F"/></svg>';
+
+    function formatDiameterDisplay(value) {
+      if (window.CustomDiameterFormat && typeof window.CustomDiameterFormat.formatDiameterDisplay === 'function') {
+        return window.CustomDiameterFormat.formatDiameterDisplay(value);
+      }
+      return cleanCartValue(value);
+    }
+
+    function getDiameterMetaHtml(value) {
+      value = formatDiameterDisplay(cleanCartValue(value));
+      if (!value || value === '0') return '';
+
+      return (
+        '<div class="custom-cart-item-diameter custom-diameter-meta">' +
+          '<span class="custom-diameter-meta__label">Diameter</span>' +
+          '<span class="custom-diameter-meta__icon">' + DIAMETER_ICON_SVG + '</span>' +
+          '<span class="custom-diameter-meta__value">' + escapeHtml(value) + '</span>' +
+        '</div>'
+      );
+    }
+
+    function getDesignPreviewHtml(item) {
+      var props = item && item.properties ? item.properties : {};
+      var previewSrc = resolveDesignPreviewSrc(item);
+      var designTitle = cleanCartValue(props['Design title'] || '');
+      var designImage = props['Design Image'];
+      var hasDesignImage = designImage && String(designImage).indexOf('/uploads/') !== -1;
+      var previewTriggerAttrs = getDesignPreviewTriggerAttrs(item, previewSrc);
+      var html = '';
+
+      if (designTitle) {
+        if (previewSrc) {
+          html += `<div class="custom-cart-item-option">
+            <span class="custom-cart-design-label">Design Title:</span>
+            <button type="button" class="custom-cart-design-title-btn" ${previewTriggerAttrs}
+              data-design-title="${escapeHtml(designTitle)}"
+              data-design-preview-title="${escapeHtml(designTitle)}">${escapeHtml(designTitle)}</button>
+          </div>`;
+        } else {
+          html += `<div class="custom-cart-item-option">
+            <span class="custom-cart-design-label">Design Title:</span> ${escapeHtml(designTitle)}
+          </div>`;
+        }
+      }
+
+      if (hasDesignImage && !designTitle) {
+        html += `<div class="custom-cart-item-option">
+          <button type="button" class="custom-cart-design-thumb-btn" data-design-preview-open
+            data-design-src="${escapeHtml(designImage)}"
+            data-design-title="${escapeHtml(designTitle || 'Custom Design')}">
+            <img src="${escapeHtml(designImage)}" alt="Custom design preview" class="custom-cart-design-thumb-img" width="80" height="80">
+          </button>
+        </div>`;
+      } else if (previewSrc && !designTitle) {
+        html += `<div class="custom-cart-item-option">
+          <button type="button" class="custom-cart-design-thumb-btn" data-design-preview-open
+            data-design-src="${escapeHtml(previewSrc)}"
+            data-design-title="${escapeHtml(designTitle || 'Custom Design')}">
+            <img src="${escapeHtml(previewSrc)}" alt="Custom design preview" class="custom-cart-design-thumb-img" width="80" height="80">
+          </button>
+        </div>`;
+      }
+
+      return html;
+    }
+
     function getAllVariantDetailsHtml(item) {
       var rows = [];
       var seen = {};
@@ -2827,9 +3205,8 @@
       if (lineItemDiameter && !itemHasRealVariants) {
         return `
           <div class="custom-cart-item-options">
-            <div class="custom-cart-item-option">
-              <strong>Diameter:</strong> ${escapeHtml(lineItemDiameter)}
-            </div>
+            ${getDiameterMetaHtml(lineItemDiameter)}
+            ${getDesignPreviewHtml(item)}
           </div>
         `;
       }
@@ -2856,6 +3233,10 @@
           if (itemHasRealVariants) return;
           if (!lineItemDiameter) return;
         }
+
+        if (isCartHiddenDetailProperty(name)) return;
+
+        if (isDiameterPropertyName(name)) return;
   
         normalizedName = normalizeCartKey(name);
         normalizedValue = String(value).toLowerCase();
@@ -2898,7 +3279,8 @@
       */
       if (item.properties) {
         Object.keys(item.properties).forEach(function(name) {
-          if (isHiddenCartProperty(name)) return;
+          if (isPrivateCartProperty(name)) return;
+          if (name === 'Design title' || name === 'Design Image') return;
           addRow(name, item.properties[name]);
         });
       }
@@ -2923,13 +3305,24 @@
         if (diameter && diameter !== '0') {
           return `
             <div class="custom-cart-item-options">
-              <div class="custom-cart-item-option">
-                <strong>Diameter:</strong> ${escapeHtml(diameter)}
-              </div>
+              ${getDiameterMetaHtml(diameter)}
+              ${getDesignPreviewHtml(item)}
             </div>
           `;
         }
       }
+
+      var diameterForDisplay = lineItemDiameter || findCartField(fields, [
+        'Diameter',
+        'Product Diameter',
+        'Product Variant Diameter',
+        'Bell Diameter',
+        'Entered Diameter',
+        'Custom Diameter',
+        'Enter Diameter',
+        'Diameter Size'
+      ]);
+      var diameterMetaHtml = getDiameterMetaHtml(diameterForDisplay);
   
       /*
         Standard products:
@@ -2944,7 +3337,7 @@
         'Option 2',
         'Option 1'
       ]);
-  
+
       var imprint = findCartField(fields, [
         'Imprint',
         'Print',
@@ -2954,7 +3347,7 @@
         'Standard Print',
         'Option 1'
       ]);
-  
+
       var color = findCartField(fields, [
         'Color',
         'Colour',
@@ -2962,17 +3355,17 @@
         'Product Color',
         'Option 3'
       ]);
-  
+
       var formattedParts = [];
-  
+
       if (size) {
         formattedParts.push('Size ' + size);
       }
-  
+
       if (imprint && imprint !== size) {
         formattedParts.push(imprint);
       }
-  
+
       if (color) {
         formattedParts.push(color);
       }
@@ -2985,15 +3378,20 @@
                 return `<span>${escapeHtml(part)}</span>`;
               }).join('<span class="custom-cart-item-sep"> | </span>')}
             </div>
+            ${diameterMetaHtml}
+            ${getDesignPreviewHtml(item)}
           </div>
         `;
       }
   
   
-      if (!rows.length) return '';
-  
+      var designHtml = getDesignPreviewHtml(item);
+
+      if (!rows.length && !designHtml && !diameterMetaHtml) return '';
+
       return `
         <div class="custom-cart-item-options">
+          ${diameterMetaHtml}
           ${rows.map(function(row) {
             return `
               <div class="custom-cart-item-option">
@@ -3001,6 +3399,7 @@
               </div>
             `;
           }).join('')}
+          ${designHtml}
         </div>
       `;
     }
@@ -3017,7 +3416,7 @@
                 <circle cx="8" cy="8" r="6.25" fill="none" stroke="#8a8a8a" stroke-width="1.2"></circle>
                 <line x1="11.8" y1="4.2" x2="4.2" y2="11.8" stroke="#8a8a8a" stroke-width="1.2" stroke-linecap="round"></line>
               </svg>
-              <span class="custom-rec-meta-value">${escapeHtml(item.diameter)}</span>
+              <span class="custom-rec-meta-value">${escapeHtml(formatDiameterDisplay(item.diameter))}</span>
             </div>
           `;
         }
@@ -3079,7 +3478,7 @@
                     <circle cx="8" cy="8" r="6.25" fill="none" stroke="#8a8a8a" stroke-width="1.2"></circle>
                     <line x1="11.8" y1="4.2" x2="4.2" y2="11.8" stroke="#8a8a8a" stroke-width="1.2" stroke-linecap="round"></line>
                   </svg>
-                  <span class="custom-rec-meta-value">${escapeHtml(item.diameter)}</span>
+                  <span class="custom-rec-meta-value">${escapeHtml(formatDiameterDisplay(item.diameter))}</span>
                 </div>
               `;
             }
@@ -3429,7 +3828,7 @@
     var unitPrice = item.final_price != null ? item.final_price : item.price;
   
     return `
-      <div class="custom-cart-item">
+      <div class="custom-cart-item" data-cart-line="${index + 1}">
         <div class="custom-cart-item-image">
           ${image ? `<img src="${image}" alt="${escapeHtml(item.product_title)}">` : ''}
         </div>
@@ -3455,9 +3854,9 @@
   
           <div class="custom-cart-item-bottom">
             <div class="custom-cart-qty">
-              <button type="button" data-line="${index + 1}" data-qty="${quantity - 1}">−</button>
-              <span>${quantity}</span>
-              <button type="button" data-line="${index + 1}" data-qty="${quantity + 1}">+</button>
+              <button type="button" data-line="${index + 1}" data-qty="${quantity - 1}" aria-label="Decrease quantity">−</button>
+              <span class="custom-cart-qty-value">${quantity}</span>
+              <button type="button" data-line="${index + 1}" data-qty="${quantity + 1}" aria-label="Increase quantity">+</button>
             </div>
           </div>
         </div>
@@ -3522,6 +3921,33 @@
       ])
         .then(function(results) {
           var cart = results[0];
+
+          if (
+            window.CustomDiameterFormat &&
+            typeof window.CustomDiameterFormat.normalizeCartDiameters === 'function'
+          ) {
+            return window.CustomDiameterFormat.normalizeCartDiameters()
+              .then(function(updated) {
+                if (!updated) return results;
+                return Promise.all([
+                  fetch('/cart.js', {
+                    headers: {
+                      'Accept': 'application/json',
+                      'X-Requested-With': 'XMLHttpRequest'
+                    }
+                  }).then(function(res) { return res.json(); }),
+                  results[1]
+                ]);
+              })
+              .catch(function() {
+                return results;
+              });
+          }
+
+          return results;
+        })
+        .then(function(results) {
+          var cart = results[0];
   
           if (cart.item_count === 0) {
             renderEmptyCart(cart);
@@ -3540,18 +3966,79 @@
     }
   
   
+    var cartQuantityUpdatesInFlight = 0;
+
+    function setCartLineLoading(line, isLoading) {
+      if (!bodyEl || !line) return;
+
+      var item = bodyEl.querySelector('.custom-cart-item[data-cart-line="' + line + '"]');
+      if (!item) return;
+
+      item.classList.toggle('is-updating', !!isLoading);
+
+      if (isLoading) {
+        item.setAttribute('aria-busy', 'true');
+      } else {
+        item.removeAttribute('aria-busy');
+      }
+
+      item.querySelectorAll('.custom-cart-qty button, .custom-cart-remove').forEach(function(btn) {
+        btn.disabled = !!isLoading;
+      });
+
+      var qty = item.querySelector('.custom-cart-qty');
+      if (qty) {
+        qty.classList.toggle('is-loading', !!isLoading);
+      }
+    }
+
+    function setCartDrawerUpdating(isLoading) {
+      if (bodyEl) {
+        bodyEl.classList.toggle('is-cart-updating', !!isLoading);
+      }
+
+      if (footerEl) {
+        footerEl.classList.toggle('is-cart-updating', !!isLoading);
+      }
+    }
+
+    function beginCartQuantityUpdate(line) {
+      cartQuantityUpdatesInFlight += 1;
+      setCartLineLoading(line, true);
+      setCartDrawerUpdating(true);
+    }
+
+    function endCartQuantityUpdate(line) {
+      cartQuantityUpdatesInFlight = Math.max(0, cartQuantityUpdatesInFlight - 1);
+      setCartLineLoading(line, false);
+
+      if (cartQuantityUpdatesInFlight === 0) {
+        setCartDrawerUpdating(false);
+      }
+    }
+
     function updateCart(line, quantity) {
-      fetch('/cart/change.js', {
+      beginCartQuantityUpdate(line);
+
+      return fetch('/cart/change.js', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
         },
         body: JSON.stringify({
           line: line,
           quantity: quantity
         })
       })
-      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        return res.json().then(function(cart) {
+          if (!res.ok) {
+            throw cart;
+          }
+          return cart;
+        });
+      })
       .then(function(cart) {
         return refreshCollectionUpsells().then(function() {
           if (cart.item_count === 0) {
@@ -3565,6 +4052,9 @@
       })
       .catch(function(error) {
         console.error('Cart update error:', error);
+      })
+      .finally(function() {
+        endCartQuantityUpdate(line);
       });
     }
   
@@ -3608,15 +4098,55 @@
       }
   
       if (qtyBtn) {
+        var qtyItem = qtyBtn.closest('.custom-cart-item');
+        if (qtyItem && qtyItem.classList.contains('is-updating')) return;
+
         var line = parseInt(qtyBtn.getAttribute('data-line'), 10);
         var qty = parseInt(qtyBtn.getAttribute('data-qty'), 10);
         if (qty < 0) qty = 0;
         updateCart(line, qty);
+        return;
       }
-  
+
       if (removeBtn) {
+        var removeItem = removeBtn.closest('.custom-cart-item');
+        if (removeItem && removeItem.classList.contains('is-updating')) return;
+
         var removeLine = parseInt(removeBtn.getAttribute('data-line'), 10);
         updateCart(removeLine, 0);
+        return;
+      }
+
+      var designTrigger = e.target.closest('[data-design-preview-open], [data-design-drawer-open]');
+      if (designTrigger) {
+        e.preventDefault();
+        var designOverlay = document.getElementById('customCartDesignOverlay');
+        var designImage = document.getElementById('customCartDesignImage');
+        var designTitleEl = document.getElementById('customCartDesignTitle');
+        var designTitleText =
+          designTrigger.getAttribute('data-design-title') ||
+          designTrigger.getAttribute('data-design-preview-title') ||
+          'Custom Design';
+        var designSrc = resolveDesignPreviewSrcFromTrigger(designTrigger);
+        if (!designSrc) return;
+        if (designImage) {
+          designImage.removeAttribute('srcset');
+          designImage.src = designSrc;
+          designImage.alt = designTitleText + ' preview';
+        }
+        if (designTitleEl) { designTitleEl.textContent = designTitleText; }
+        if (designOverlay) { designOverlay.classList.add('open'); }
+      }
+
+      var designClose = e.target.closest('#customCartDesignClose');
+      if (designClose) {
+        e.preventDefault();
+        var dOverlay = document.getElementById('customCartDesignOverlay');
+        if (dOverlay) dOverlay.classList.remove('open');
+      }
+
+      if (e.target.id === 'customCartDesignOverlay') {
+        e.target.classList.remove('open');
       }
     });
   
@@ -3844,14 +4374,18 @@
     function getStoredDiameterValue(input) {
       var currentValue = input ? getCleanNumber(input.value) : '';
       var inputSavedValue = input ? getCleanNumber(input.dataset.lastValidDiameter || '') : '';
-  
+      var formattedValue;
+
       if (currentValue && currentValue !== '0') {
+        formattedValue = formatDiameterDisplay(currentValue);
         if (input) input.dataset.lastValidDiameter = currentValue;
-        return currentValue;
+        return formattedValue;
       }
-  
-      if (inputSavedValue && inputSavedValue !== '0') return inputSavedValue;
-  
+
+      if (inputSavedValue && inputSavedValue !== '0') {
+        return formatDiameterDisplay(inputSavedValue);
+      }
+
       return '';
     }
   
@@ -3945,19 +4479,24 @@
       var diameter;
   
       if (formData && typeof formData.get === 'function') {
-        existingDiameter = getCleanNumber(
-          formData.get('properties[Diameter]') ||
-          formData.get('properties[diameter]') ||
-          ''
-        );
+        if (window.CustomDiameterFormat && typeof window.CustomDiameterFormat.readDiameterFromFormData === 'function') {
+          existingDiameter = window.CustomDiameterFormat.readDiameterFromFormData(formData);
+        } else {
+          existingDiameter = String(
+            formData.get('properties[Diameter]') ||
+            formData.get('properties[diameter]') ||
+            ''
+          ).trim();
+        }
       }
-  
+
       /*
         Prefer the live visible field, but preserve the hidden Diameter field that
         variant-main-picker creates inside the product form. This prevents the
         cart from falling back to Shopify's variant/metafield value of 0.
       */
       diameter = capturedDiameter || findVisibleDiameterValue(form) || existingDiameter;
+      diameter = formatDiameterDisplay(diameter);
   
       if (quantity) {
         formData.set('quantity', quantity);
@@ -3991,11 +4530,17 @@
         customizer &&
         typeof customizer.ensureVariantIdForCart === 'function'
       ) {
+        if (typeof customizer.updateHiddenProperties === 'function') {
+          customizer.updateHiddenProperties();
+        }
         customizer.ensureVariantIdForCart();
       }
   
-      restoreDiameterInput(diameterInput, capturedDiameter);
-      restoreAllDiameterInputs(capturedDiameter);
+      var restoreDiameter = diameterInput
+        ? (diameterInput.dataset.lastValidDiameter || getCleanNumber(capturedDiameter))
+        : '';
+      restoreDiameterInput(diameterInput, restoreDiameter);
+      restoreAllDiameterInputs(restoreDiameter);
   
       var formData = new FormData(form);
       var variantId = forceLatestVariantId(form, formData);
@@ -4038,8 +4583,8 @@
           alert(getCartErrorMessage(error));
         })
         .finally(function() {
-          restoreDiameterInput(diameterInput, capturedDiameter);
-          restoreAllDiameterInputs(capturedDiameter);
+          restoreDiameterInput(diameterInput, restoreDiameter);
+          restoreAllDiameterInputs(restoreDiameter);
           form.dataset.customAjaxAdding = 'false';
           setButtonLoading(button, false);
         });

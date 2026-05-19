@@ -200,7 +200,8 @@
                     or item.selling_plan_allocation != null
                   -%}
                     <dl class="cart-items__variants">
-                      {%- assign customizer_preview = item.properties['_Customizer Preview'] | default: item.properties['Customizer Preview'] -%}
+                      {%- assign customizer_preview_cdn = item.properties['Design Image'] -%}
+                      {%- assign customizer_preview = customizer_preview_cdn | default: item.properties['_Customizer Preview'] | default: item.properties['Customizer Preview'] -%}
                       {%- assign customizer_preview_token = item.properties['_Customizer Preview Token'] | default: item.properties['Customizer Preview Token'] -%}
                       {%- if item.product.has_only_default_variant == false and item.item_components.size == 0 -%}
                         {%- for option in item.options_with_values -%}
@@ -214,11 +215,35 @@
                         {%- endfor -%}
                       {%- endif -%}
 
+                      {%- liquid
+                        assign line_item_diameter = item.properties['Diameter'] | default: item.properties['product_variant_diameter'] | default: item.properties['product_diameter']
+                      -%}
+                      {%- if line_item_diameter != blank -%}
+                        <div class="cart-items__diameter">
+                          {% render 'custom-diameter-meta', diameter_value: line_item_diameter, class: 'custom-diameter-meta cart-items__diameter-meta' %}
+                        </div>
+                      {%- endif -%}
+
                       {%- for property in item.properties -%}
                         {%- assign property_first_char = property.first | slice: 0 -%}
-                        {%- if property.last != blank and property_first_char != '_' -%}
+                        {%- liquid
+                          assign show_cart_property = false
+                          assign property_label = property.first
+                          assign property_name_lower = property.first | downcase
+
+                          if property.last != blank and property_first_char != '_'
+                            unless property_name_lower == 'imprint size' or property_name_lower == 'imprint' or property_name_lower == 'imprint type' or property_name_lower == 'cover imprint' or property_name_lower == 'diameter' or property_name_lower == 'product diameter' or property_name_lower == 'product variant diameter'
+                              if property.first == 'Design Image' and item.properties['Design title'] != blank and customizer_preview != blank
+                                assign show_cart_property = false
+                              else
+                                assign show_cart_property = true
+                              endif
+                            endunless
+                          endif
+                        -%}
+                        {%- if show_cart_property -%}
                           <div class="cart-items__properties">
-                            <dt>{{ property.first }}:</dt>
+                            <dt>{{ property_label }}:</dt>
                             <dd>
                               {%- if property.first == 'Design title' and customizer_preview != blank -%}
                                 <button
@@ -231,6 +256,24 @@
                                   data-design-preview-title="{{ property.last | escape }}"
                                 >
                                   {{ property.last }}
+                                </button>
+                              {%- elsif property.first == 'Design Image' and property.last contains '/uploads/' -%}
+                                <button
+                                  type="button"
+                                  class="button button-unstyled cart-items__design-image-link"
+                                  data-design-preview-open
+                                  data-design-preview-src="{{ property.last | escape }}"
+                                  data-design-preview-token=""
+                                  data-design-preview-product-id="{{ item.product_id }}"
+                                  data-design-preview-title="{{ item.properties['Design title'] | default: 'Custom Design' | escape }}"
+                                >
+                                  <img
+                                    src="{{ property.last }}"
+                                    alt="Custom design preview"
+                                    class="cart-items__design-image-thumbnail"
+                                    loading="lazy"
+                                    width="80"
+                                    height="80">
                                 </button>
                               {%- elsif property.last contains '/uploads/' -%}
                                 <a href="{{ property.last }}">{{ property.last | split: '/' | last }}</a>
@@ -841,6 +884,20 @@
     margin-inline: auto;
     object-fit: contain;
     border-radius: var(--style-border-radius-inputs);
+  }
+
+  .cart-items__design-image-link {
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .cart-items__design-image-thumbnail {
+    display: block;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: var(--style-border-radius-inputs);
+    border: 1px solid var(--color-border);
   }
 
   @media screen and (prefers-reduced-motion: no-preference) {

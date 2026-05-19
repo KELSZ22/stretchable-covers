@@ -167,6 +167,7 @@
                 {
                   "id": {{ product.id | json }},
                   "title": {{ product.title | strip | json }},
+                  "productDiameter": {{ product.metafields.custom.product_diameter.value | default: product.metafields.custom.product_diameter | json }},
                   "optionNames": [
                     {%- for option in product.options_with_values -%}
                       {{ option.name | json }}
@@ -182,7 +183,8 @@
                         "available": {{ variant.available | json }},
                         "option1": {{ variant.option1 | json }},
                         "option2": {{ variant.option2 | json }},
-                        "option3": {{ variant.option3 | json }}
+                        "option3": {{ variant.option3 | json }},
+                        "variantDiameter": {{ variant.metafields.custom.product_variant_diameter.value | default: variant.metafields.custom.product_variant_diameter | json }}
                       }{%- unless forloop.last -%},{%- endunless -%}
                     {%- endfor -%}
                   ]
@@ -194,8 +196,10 @@
           <form
             method="post"
             action="{{ routes.cart_add_url }}"
+            enctype="multipart/form-data"
             id="CustomizerProductForm-{{ section.id }}"
-            class="custom-cover-customizer__form">
+            class="custom-cover-customizer__form"
+            data-stretchable-cart-bypass="true">
             <input
               type="hidden"
               name="id"
@@ -204,6 +208,10 @@
               type="hidden"
               name="quantity"
               value="1">
+            <input
+              type="hidden"
+              name="return_to"
+              value="/cart">
             <input
               type="hidden"
               name="properties[_Customizer JSON]"
@@ -221,13 +229,24 @@
               name="properties[_Customizer Preview Token]"
               data-preview-token>
             <input
+              type="file"
+              name="properties[Design Image]"
+              data-design-file-upload
+              accept="image/*"
+              hidden>
+            <input
               type="hidden"
-              name="properties[Imprint size]"
+              name="properties[_Imprint size]"
               data-imprint-size-property>
             <input
               type="hidden"
-              name="properties[Imprint]"
+              name="properties[_Imprint]"
               data-imprint-text-property>
+            <input
+              type="hidden"
+              name="properties[Diameter]"
+              value=""
+              data-diameter-property>
 
             <div
               class="custom-cover-customizer__mode-tabs"

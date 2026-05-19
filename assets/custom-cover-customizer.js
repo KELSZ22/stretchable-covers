@@ -965,6 +965,42 @@ class CustomCoverCustomizer extends HTMLElement {
     return true;
   }
 
+  resolveLineItemDiameter() {
+    const pid = String(this.dataset.productId || "").trim();
+    if (!pid) return "";
+
+    const catalog =
+      typeof this._getProductCatalog === "function"
+        ? this._getProductCatalog()
+        : [];
+    const product = catalog.find((p) => String(p?.id ?? "") === pid);
+    if (!product) return "";
+
+    const variantSel = this.querySelector("[data-variant-selector]");
+    const variantId = String(
+      variantSel?.value || this.form?.querySelector('[name="id"]')?.value || "",
+    ).trim();
+
+    let rawDiameter = product.productDiameter;
+    if (variantId && Array.isArray(product.variants)) {
+      const variant = product.variants.find(
+        (v) => String(v?.id ?? "") === variantId,
+      );
+      if (variant?.variantDiameter != null && variant.variantDiameter !== "") {
+        rawDiameter = variant.variantDiameter;
+      }
+    }
+
+    if (
+      window.CustomDiameterFormat &&
+      typeof window.CustomDiameterFormat.formatDiameterDisplay === "function"
+    ) {
+      return window.CustomDiameterFormat.formatDiameterDisplay(rawDiameter);
+    }
+
+    return String(rawDiameter || "").trim();
+  }
+
   /**
    * Resolves Shopify line-item `id` before Ajax cart interception (see theme header cart script).
    * Swatch/URL color can hydrate `dataset.productColor` without setting the variant select.
@@ -3049,12 +3085,14 @@ class CustomCoverCustomizer extends HTMLElement {
                 .map((n) => String(n == null ? "" : n).trim())
                 .filter(Boolean)
             : [],
+          productDiameter: product?.productDiameter ?? "",
           variants: Array.isArray(product?.variants)
             ? product.variants.map((variant) => ({
                 id: variant?.id,
                 title: String(variant?.title || "").trim(),
                 price: Number(variant?.price || 0),
                 available: Boolean(variant?.available),
+                variantDiameter: variant?.variantDiameter ?? "",
                 option1:
                   variant?.option1 != null
                     ? String(variant.option1).trim()
@@ -7113,6 +7151,10 @@ class CustomCoverCustomizer extends HTMLElement {
     if (imprintTextProperty) {
       imprintTextProperty.value = imprintLineItemText || "";
     }
+    const diameterProperty = this.form?.querySelector("[data-diameter-property]");
+    if (diameterProperty) {
+      diameterProperty.value = this.resolveLineItemDiameter() || "";
+    }
     if (statusTarget) {
       statusTarget.value = payload.safeAreaPass ? "PASS" : "FAIL";
     }
@@ -7143,6 +7185,31 @@ class CustomCoverCustomizer extends HTMLElement {
       return;
     }
     this.updateHiddenProperties();
+    this.attachCanvasFileSync();
+  }
+
+  attachCanvasFileSync() {
+    if (!this.canvas) {
+      return;
+    }
+    const fileInput = this.form.querySelector("[data-design-file-upload]");
+    if (!fileInput) {
+      return;
+    }
+    const dataUrl = this.canvas.toDataURL("image/png");
+    const byteString = atob(dataUrl.split(",")[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i += 1) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([ab], { type: "image/png" });
+    const designTitle = this.querySelector("[data-design-title-input]");
+    const fileName = `${this.sanitizeFilename(designTitle?.value || "design")}.png`;
+    const file = new File([blob], fileName, { type: "image/png" });
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    fileInput.files = dataTransfer.files;
   }
 }
 
