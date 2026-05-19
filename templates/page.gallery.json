@@ -111,27 +111,30 @@
           "type": "collection_group",
           "settings": {
             "tab_label": "Music & Performance",
-            "image_left": "shopify://shop_images/Rectangle_451.jpg",
-            "image_top_right": "shopify://shop_images/Rectangle_452.jpg",
-            "image_bottom_right": "shopify://shop_images/Rectangle_453.jpg"
+            "image_1": "shopify://shop_images/Frame_1000007705.png",
+            "image_2": "shopify://shop_images/Rectangle_447.jpg",
+            "image_3": "shopify://shop_images/Rectangle_451.jpg",
+            "image_4": "shopify://shop_images/Rectangle_450.jpg"
           }
         },
         "collection_group_BJLWpL": {
           "type": "collection_group",
           "settings": {
             "tab_label": "Trucks & Cars",
-            "image_left": "shopify://shop_images/360_FINAL.png",
-            "image_top_right": "shopify://shop_images/2019_AP_Buying_Program_SELL_SHEET_1.jpg",
-            "image_bottom_right": "shopify://shop_images/DUKEtruckdashboard-800x800.jpg"
+            "image_1": "shopify://shop_images/360_FINAL.png",
+            "image_2": "shopify://shop_images/2019_AP_Buying_Program_SELL_SHEET_1.jpg",
+            "image_3": "shopify://shop_images/siteplacement1B-800x800.jpg",
+            "image_4": "shopify://shop_images/DUKEtruckdashboard-800x800.jpg"
           }
         },
         "collection_group_jGNmrx": {
           "type": "collection_group",
           "settings": {
             "tab_label": "Marine & Boating",
-            "image_left": "shopify://shop_images/5_to_drive.jpg",
-            "image_top_right": "shopify://shop_images/US_Naval_Sea_Cadet_Corps_Cover.jpg",
-            "image_bottom_right": "shopify://shop_images/USA_Flag_Full_Color_Cover.jpg"
+            "image_1": "shopify://shop_images/US_Naval_Sea_Cadet_Corps_Cover.jpg",
+            "image_2": "shopify://shop_images/RYDERtruckdashboard-800x800.jpg",
+            "image_3": "shopify://shop_images/waterproofcoverimage3-800x800.jpg",
+            "image_4": "shopify://shop_images/5_to_drive.jpg"
           }
         }
       },
@@ -141,7 +144,7 @@
         "collection_group_jGNmrx"
       ],
       "custom_css": [
-        "h2{color:red;}"
+        "h2 {color: red;}"
       ],
       "name": "Gallery Showcase",
       "settings": {

@@ -34,32 +34,81 @@
             role="tabpanel"
             aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
           >
+
+            {% comment %}
+            OLD GRID LAYOUT
             <div class="collection-gallery-showcase__grid">
-              <div class="collection-gallery-showcase__image-wrap collection-gallery-showcase__image-wrap--large" data-mobile-slide="0">
-                {% if block.settings.image_left != blank %}
-                  {{ block.settings.image_left | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'collection-gallery-showcase__image', alt: block.settings.tab_label }}
+              <div class="collection-gallery-showcase__image-wrap collection-gallery-showcase__image-wrap--large">
+              </div>
+
+              <div class="collection-gallery-showcase__right-col">
+              </div>
+            </div>
+            {% endcomment %}
+
+            <!-- NEW 2x2 GRID -->
+            <div class="collection-gallery-showcase__grid">
+
+              <div class="collection-gallery-showcase__image-wrap" data-mobile-slide="0">
+                {% if block.settings.image_1 != blank %}
+                  {{
+                    block.settings.image_1
+                    | image_url: width: 1200
+                    | image_tag:
+                      loading: 'lazy',
+                      class: 'collection-gallery-showcase__image',
+                      alt: block.settings.tab_label
+                  }}
                 {% else %}
                   <div class="collection-gallery-showcase__placeholder"></div>
                 {% endif %}
               </div>
 
-              <div class="collection-gallery-showcase__right-col">
-                <div class="collection-gallery-showcase__image-wrap" data-mobile-slide="1">
-                  {% if block.settings.image_top_right != blank %}
-                    {{ block.settings.image_top_right | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'collection-gallery-showcase__image', alt: block.settings.tab_label }}
-                  {% else %}
-                    <div class="collection-gallery-showcase__placeholder"></div>
-                  {% endif %}
-                </div>
-
-                <div class="collection-gallery-showcase__image-wrap" data-mobile-slide="2">
-                  {% if block.settings.image_bottom_right != blank %}
-                    {{ block.settings.image_bottom_right | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'collection-gallery-showcase__image', alt: block.settings.tab_label }}
-                  {% else %}
-                    <div class="collection-gallery-showcase__placeholder"></div>
-                  {% endif %}
-                </div>
+              <div class="collection-gallery-showcase__image-wrap" data-mobile-slide="1">
+                {% if block.settings.image_2 != blank %}
+                  {{
+                    block.settings.image_2
+                    | image_url: width: 1200
+                    | image_tag:
+                      loading: 'lazy',
+                      class: 'collection-gallery-showcase__image',
+                      alt: block.settings.tab_label
+                  }}
+                {% else %}
+                  <div class="collection-gallery-showcase__placeholder"></div>
+                {% endif %}
               </div>
+
+              <div class="collection-gallery-showcase__image-wrap" data-mobile-slide="2">
+                {% if block.settings.image_3 != blank %}
+                  {{
+                    block.settings.image_3
+                    | image_url: width: 1200
+                    | image_tag:
+                      loading: 'lazy',
+                      class: 'collection-gallery-showcase__image',
+                      alt: block.settings.tab_label
+                  }}
+                {% else %}
+                  <div class="collection-gallery-showcase__placeholder"></div>
+                {% endif %}
+              </div>
+
+              <div class="collection-gallery-showcase__image-wrap" data-mobile-slide="3">
+                {% if block.settings.image_4 != blank %}
+                  {{
+                    block.settings.image_4
+                    | image_url: width: 1200
+                    | image_tag:
+                      loading: 'lazy',
+                      class: 'collection-gallery-showcase__image',
+                      alt: block.settings.tab_label
+                  }}
+                {% else %}
+                  <div class="collection-gallery-showcase__placeholder"></div>
+                {% endif %}
+              </div>
+
             </div>
           </div>
         {% endfor %}
@@ -96,7 +145,7 @@
     }
 
     #collection-gallery-{{ section.id }} .collection-gallery-showcase__inner {
-      max-width: 1180px;
+      max-width: 800px;
       margin: 0 auto;
       text-align: center;
     }
@@ -142,8 +191,6 @@
     #collection-gallery-{{ section.id }} .collection-gallery-showcase__tab.is-active {
       background: #0f2e53;
       color: #ffffff;
-      font-family: 'Lato';
-      font-size: 16px;
     }
 
     #collection-gallery-{{ section.id }} .collection-gallery-showcase__carousel {
@@ -158,28 +205,31 @@
       display: block;
     }
 
-    #collection-gallery-{{ section.id }} .collection-gallery-showcase__grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 18px;
-      align-items: stretch;
-    }
+    {% comment %}
+    OLD GRID CSS
 
-    #collection-gallery-{{ section.id }} .collection-gallery-showcase__right-col {
+    .collection-gallery-showcase__right-col {
       display: grid;
       grid-template-rows: 1fr 1fr;
-      gap: 18px;
+    }
+
+    .collection-gallery-showcase__image-wrap--large {
+      min-height: 438px;
+    }
+    {% endcomment %}
+
+    /* NEW 2x2 GRID */
+    #collection-gallery-{{ section.id }} .collection-gallery-showcase__grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
     }
 
     #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap {
       border-radius: 18px;
       overflow: hidden;
-      min-height: 0;
       position: relative;
-    }
-
-    #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap--large {
-      min-height: 438px;
+      aspect-ratio: 1 / 1;
     }
 
     #collection-gallery-{{ section.id }} .collection-gallery-showcase__image,
@@ -265,24 +315,26 @@
         display: none;
       }
 
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__right-col {
+      {% comment %}
+      OLD MOBILE CSS
+
+      .collection-gallery-showcase__right-col {
         display: contents;
       }
 
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap[data-mobile-slide],
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap--large {
+      .collection-gallery-showcase__image-wrap--large {
+      }
+      {% endcomment %}
+
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap[data-mobile-slide] {
         display: block;
         flex: 0 0 84%;
         max-width: 84%;
-        min-height: 300px;
         height: 300px;
+        min-height: 300px;
+        aspect-ratio: unset;
         scroll-snap-align: start;
         scroll-snap-stop: always;
-      }
-
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image,
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__placeholder {
-        height: 100%;
       }
 
       #collection-gallery-{{ section.id }} .collection-gallery-showcase__tabs {
@@ -304,14 +356,14 @@
 
     @media screen and (max-width: 768px) {
       #collection-gallery-{{ section.id }} .collection-gallery-showcase__tabs {
-    display: none;
-}
+        display: none;
+      }
+
       #collection-gallery-{{ section.id }} .collection-gallery-showcase__nav {
         display: none;
       }
 
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap[data-mobile-slide],
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap--large {
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap[data-mobile-slide] {
         flex-basis: 84%;
         max-width: 84%;
         height: 300px;
@@ -324,8 +376,7 @@
     }
 
     @media screen and (max-width: 500px) {
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap[data-mobile-slide],
-      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap--large {
+      #collection-gallery-{{ section.id }} .collection-gallery-showcase__image-wrap[data-mobile-slide] {
         flex-basis: 86%;
         max-width: 86%;
       }
@@ -464,18 +515,23 @@
         },
         {
           "type": "image_picker",
-          "id": "image_left",
-          "label": "Left image"
+          "id": "image_1",
+          "label": "Image 1"
         },
         {
           "type": "image_picker",
-          "id": "image_top_right",
-          "label": "Top right image"
+          "id": "image_2",
+          "label": "Image 2"
         },
         {
           "type": "image_picker",
-          "id": "image_bottom_right",
-          "label": "Bottom right image"
+          "id": "image_3",
+          "label": "Image 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4",
+          "label": "Image 4"
         }
       ]
     }
