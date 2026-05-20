@@ -230,36 +230,41 @@
         "slide_DWMgjW": {
           "type": "slide",
           "settings": {
-            "collection": "safety-programs",
-            "custom_title": ""
+            "image": "shopify://shop_images/Frame_1000008092.png",
+            "text": "Safety Programs",
+            "url": "shopify://collections/safety-programs"
           }
         },
         "slide_EicXxU": {
           "type": "slide",
           "settings": {
-            "collection": "instruments-equipments",
-            "custom_title": ""
+            "image": "shopify://shop_images/Rectangle_438.png",
+            "text": "Instruments Equipments",
+            "url": "shopify://collections/band-instrument-bell-covers"
           }
         },
         "slide_x4fqbH": {
           "type": "slide",
           "settings": {
-            "collection": "trucks-cars",
-            "custom_title": ""
+            "image": "shopify://shop_images/Frame_1000008093.png",
+            "text": "Trucks & Cars",
+            "url": "shopify://collections/steering-wheel-covers"
           }
         },
         "slide_q9pAm4": {
           "type": "slide",
           "settings": {
-            "collection": "marine-boating",
-            "custom_title": ""
+            "image": "shopify://shop_images/Frame_1000008094.png",
+            "text": "Marine & Boating",
+            "url": "shopify://collections/boat-steering-wheel-covers"
           }
         },
         "slide_CrADzE": {
           "type": "slide",
           "settings": {
-            "collection": "seating-furniture",
-            "custom_title": ""
+            "image": "shopify://shop_images/Frame_1000008095.png",
+            "text": "Seating & Furniture",
+            "url": "shopify://collections/seating-furniture"
           }
         }
       },

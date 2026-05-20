@@ -1298,6 +1298,34 @@
     height: 18px;
   }
 
+
+  .custom-cart-actions {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+    min-height: 88px;
+    flex: 0 0 auto;
+  }
+
+  .custom-cart-edit {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: #DA0004;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .custom-cart-edit:hover {
+    text-decoration: underline;
+  }
+
   .custom-cart-qty {
     display: inline-flex;
     align-items: center;
@@ -1728,6 +1756,14 @@
   .custom-cart-item-meta,
   .custom-cart-item-price {
     font-size: 13px;
+  }
+
+  .custom-cart-actions {
+    min-height: 76px;
+  }
+
+  .custom-cart-edit {
+    font-size: 14px;
   }
 
   .custom-cart-qty {
@@ -3783,6 +3819,7 @@
     var image = getItemImage(item);
     var quantity = Number(item.quantity || 0);
     var unitPrice = item.final_price != null ? item.final_price : item.price;
+    var productUrl = item.url || '';
   
     return `
       <div class="custom-cart-item" data-cart-line="${index + 1}">
@@ -3798,15 +3835,29 @@
               <div class="custom-cart-item-price">${money(unitPrice)}</div>
             </div>
   
-            <button type="button" class="custom-cart-remove" data-line="${index + 1}" data-remove="true" aria-label="Remove item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 6h18"></path>
-                <path d="M8 6V4h8v2"></path>
-                <path d="M19 6l-1 14H6L5 6"></path>
-                <path d="M10 11v6"></path>
-                <path d="M14 11v6"></path>
-              </svg>
-            </button>
+            <div class="custom-cart-actions">
+              <button type="button" class="custom-cart-remove" data-line="${index + 1}" data-remove="true" aria-label="Remove item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 6h18"></path>
+                  <path d="M8 6V4h8v2"></path>
+                  <path d="M19 6l-1 14H6L5 6"></path>
+                  <path d="M10 11v6"></path>
+                  <path d="M14 11v6"></path>
+                </svg>
+              </button>
+
+              ${productUrl ? `
+                <a
+                  href="${escapeHtml(productUrl)}"
+                  class="custom-cart-edit"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Edit ${escapeHtml(item.product_title)}"
+                >
+                  Edit
+                </a>
+              ` : ''}
+            </div>
           </div>
   
           <div class="custom-cart-item-bottom">

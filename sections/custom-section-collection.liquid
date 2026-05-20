@@ -1,5 +1,5 @@
 {% comment %}
-  Section: All Collections Slider
+  Section: Image Text Link Slider
 {% endcomment %}
 
 <div id="shopify-section-{{ section.id }}" class="acs-section">
@@ -9,6 +9,7 @@
         {% if section.settings.heading != blank %}
           <h2 class="acs-heading">{{ section.settings.heading }}</h2>
         {% endif %}
+
         {% if section.settings.subheading != blank %}
           <div class="acs-subheading">{{ section.settings.subheading }}</div>
         {% endif %}
@@ -36,43 +37,46 @@
       >
         <div class="acs-slider__track" data-slider-track>
           {% for block in section.blocks %}
-            {% assign selected_collection = block.settings.collection %}
-            {% if selected_collection != blank %}
-              {% assign card_image = blank %}
-              {% if block.settings.custom_image != blank %}
-                {% assign card_image = block.settings.custom_image %}
-              {% elsif selected_collection.featured_image != blank %}
-                {% assign card_image = selected_collection.featured_image %}
-              {% elsif selected_collection.image != blank %}
-                {% assign card_image = selected_collection.image %}
-              {% elsif selected_collection.products.first.featured_image != blank %}
-                {% assign card_image = selected_collection.products.first.featured_image %}
-              {% endif %}
+            {% assign card_image = block.settings.image %}
+            {% assign card_title = block.settings.text %}
+            {% assign card_url = block.settings.url %}
+            {% assign card_alt = card_title %}
 
-              {% assign card_title = block.settings.custom_title | default: selected_collection.title %}
-              {% assign card_alt = card_title %}
-              {% if card_image != blank and card_image.alt != blank %}
-                {% assign card_alt = card_image.alt %}
-              {% endif %}
+            {% if card_image != blank and card_image.alt != blank %}
+              {% assign card_alt = card_image.alt %}
+            {% endif %}
 
-              <a href="{{ selected_collection.url }}" class="acs-card" {{ block.shopify_attributes }}>
-                <div class="acs-card__media">
-                  {% if card_image != blank %}
-                    <img
-                      src="{{ card_image | image_url: width: 900 }}"
-                      alt="{{ card_alt | escape }}"
-                      loading="lazy"
-                      width="{{ card_image.width }}"
-                      height="{{ card_image.height }}"
-                      class="acs-card__image"
-                    >
-                  {% else %}
-                    {{ 'collection-1' | placeholder_svg_tag: 'acs-card__placeholder' }}
-                  {% endif %}
-                  <div class="acs-card__overlay"></div>
+            {% capture card_content %}
+              <div class="acs-card__media">
+                {% if card_image != blank %}
+                  <img
+                    src="{{ card_image | image_url: width: 900 }}"
+                    alt="{{ card_alt | escape }}"
+                    loading="lazy"
+                    width="{{ card_image.width }}"
+                    height="{{ card_image.height }}"
+                    class="acs-card__image"
+                  >
+                {% else %}
+                  {{ 'image' | placeholder_svg_tag: 'acs-card__placeholder' }}
+                {% endif %}
+
+                <div class="acs-card__overlay"></div>
+
+                {% if card_title != blank %}
                   <div class="acs-card__title">{{ card_title }}</div>
-                </div>
+                {% endif %}
+              </div>
+            {% endcapture %}
+
+            {% if card_url != blank %}
+              <a href="{{ card_url }}" class="acs-card" {{ block.shopify_attributes }}>
+                {{ card_content }}
               </a>
+            {% else %}
+              <div class="acs-card" {{ block.shopify_attributes }}>
+                {{ card_content }}
+              </div>
             {% endif %}
           {% endfor %}
         </div>
@@ -121,10 +125,9 @@
     font-size: 16px;
     line-height: 18px;
     color: {{ section.settings.link_color }};
-    text-decoration: none;
+    text-decoration: underline;
     font-weight: 600;
     white-space: nowrap;
-    text-decoration: underline;
   }
 
   #shopify-section-{{ section.id }} .acs-view-all:hover {
@@ -254,7 +257,7 @@
 
   @media screen and (max-width: 767px) {
     #shopify-section-{{ section.id }}.acs-section {
-      padding: 0px 16px;
+      padding: {{ section.settings.padding_top_mobile }}px 16px {{ section.settings.padding_bottom_mobile }}px;
       overflow: visible;
     }
 
@@ -516,7 +519,7 @@
 
 {% schema %}
 {
-  "name": "All Collections Slider",
+  "name": "Image Text Link Slider",
   "settings": [
     {
       "type": "text",
@@ -615,29 +618,30 @@
   "blocks": [
     {
       "type": "slide",
-      "name": "Collection slide",
+      "name": "Image slide",
       "settings": [
         {
-          "type": "collection",
-          "id": "collection",
-          "label": "Collection"
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
         },
         {
           "type": "text",
-          "id": "custom_title",
-          "label": "Custom title"
+          "id": "text",
+          "label": "Text",
+          "default": "Slide title"
         },
         {
-          "type": "image_picker",
-          "id": "custom_image",
-          "label": "Custom image"
+          "type": "url",
+          "id": "url",
+          "label": "URL"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "All Collections Slider",
+      "name": "Image Text Link Slider",
       "blocks": [
         {
           "type": "slide"
