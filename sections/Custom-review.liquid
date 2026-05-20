@@ -1,4 +1,4 @@
-<section id="shopify-section-{{ section.id }}" class="vc-testimonials" data-section-id="{{ section.id }}" data-cards-per-view="{{ section.settings.cards_per_view }}">
+<section id="shopify-section-{{ section.id }}" class="vc-testimonials" data-section-id="{{ section.id }}" data-cards-per-view="3">
   <div class="vc-testimonials__inner page-width">
     <div class="vc-testimonials__header">
       <div class="vc-testimonials__topline">
@@ -25,13 +25,15 @@
               {% if block.settings.image != blank %}
                 
               {% endif %}
+
               <div class="vc-testimonials__quote-mark" aria-hidden="true">
                 <div class="vc-testimonials__quote-mark" aria-hidden="true">
-  <svg class="vc-testimonials__quote-icon" width="36" height="33" viewBox="0 0 36 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M2.93333 0C1.31267 0 0 1.31267 0 2.93333V14.6667C0 16.2873 1.31267 17.6 2.93333 17.6H8.86016C8.89672 20.2198 8.64045 25.8333 6.10443 29.9979H6.10729C5.92013 30.2865 5.8403 30.6317 5.88175 30.9731C5.9232 31.3146 6.0833 31.6306 6.33407 31.866C6.58484 32.1014 6.91035 32.2413 7.25374 32.2611C7.59713 32.2809 7.93656 32.1795 8.21276 31.9745C8.21276 31.9745 14.6667 27.0518 14.6667 17.6V2.93333C14.6667 1.31267 13.354 0 11.7333 0H2.93333ZM23.4667 0C21.846 0 20.5333 1.31267 20.5333 2.93333V14.6667C20.5333 16.2873 21.846 17.6 23.4667 17.6H29.3935C29.4301 20.2198 29.1738 25.8333 26.6378 29.9979H26.6406C26.4535 30.2865 26.3736 30.6317 26.4151 30.9731C26.4565 31.3146 26.6166 31.6306 26.8674 31.866C27.1182 32.1014 27.4437 32.2413 27.7871 32.2611C28.1305 32.2809 28.4699 32.1795 28.7461 31.9745C28.7461 31.9745 35.2 27.0518 35.2 17.6V2.93333C35.2 1.31267 33.8873 0 32.2667 0H23.4667Z" fill="#EB891B"/>
-  </svg>
-</div>
+                  <svg class="vc-testimonials__quote-icon" width="36" height="33" viewBox="0 0 36 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.93333 0C1.31267 0 0 1.31267 0 2.93333V14.6667C0 16.2873 1.31267 17.6 2.93333 17.6H8.86016C8.89672 20.2198 8.64045 25.8333 6.10443 29.9979H6.10729C5.92013 30.2865 5.8403 30.6317 5.88175 30.9731C5.9232 31.3146 6.0833 31.6306 6.33407 31.866C6.58484 32.1014 6.91035 32.2413 7.25374 32.2611C7.59713 32.2809 7.93656 32.1795 8.21276 31.9745C8.21276 31.9745 14.6667 27.0518 14.6667 17.6V2.93333C14.6667 1.31267 13.354 0 11.7333 0H2.93333ZM23.4667 0C21.846 0 20.5333 1.31267 20.5333 2.93333V14.6667C20.5333 16.2873 21.846 17.6 23.4667 17.6H29.3935C29.4301 20.2198 29.1738 25.8333 26.6378 29.9979H26.6406C26.4535 30.2865 26.3736 30.6317 26.4151 30.9731C26.4565 31.3146 26.6166 31.6306 26.8674 31.866C27.1182 32.1014 27.4437 32.2413 27.7871 32.2611C28.1305 32.2809 28.4699 32.1795 28.7461 31.9745C28.7461 31.9745 35.2 27.0518 35.2 17.6V2.93333C35.2 1.31267 33.8873 0 32.2667 0H23.4667Z" fill="#EB891B"/>
+                  </svg>
+                </div>
               </div>
+
               <div class="vc-testimonials__text">{{ block.settings.quote }}</div>
               <div class="vc-testimonials__meta">
                 <p class="vc-testimonials__name">{{ block.settings.name }}</p>
@@ -67,19 +69,9 @@
   </div>
 
   <style>
-
-    #shopify-section-{{ section.id }} .vc-testimonials__card {
-  display: flex;
-  flex-direction: column;
-}
-
-#shopify-section-{{ section.id }} .vc-testimonials__quote-mark {
-  display: flex;
-  justify-content: flex-end;
-  margin: 10px 16px 8px;
-}
-
     #shopify-section-{{ section.id }} .vc-testimonials {
+      --vc-card-gap: {{ section.settings.card_gap }}px;
+      --vc-peek-width: 110px;
       background: {{ section.settings.section_bg }};
       padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
     }
@@ -145,10 +137,11 @@
     }
 
     #shopify-section-{{ section.id }} .vc-testimonials__viewport {
+      width: 100%;
       overflow-x: auto;
       overflow-y: visible;
-       padding-top: 30px;
-  padding-bottom: 30px;
+      padding-top: 30px;
+      padding-bottom: 30px;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
@@ -160,15 +153,16 @@
 
     #shopify-section-{{ section.id }} .vc-testimonials__track {
       display: flex;
-      gap: {{ section.settings.card_gap }}px;
-      width: max-content;
+      gap: var(--vc-card-gap);
+      width: 100%;
+      min-width: 100%;
     }
 
     #shopify-section-{{ section.id }} .vc-testimonials__card {
-      flex: 0 0 calc((100vw - 40px - ({{ section.settings.cards_per_view }} - 1) * {{ section.settings.card_gap }}px) / {{ section.settings.cards_per_view }});
-      width: calc((100vw - 40px - ({{ section.settings.cards_per_view }} - 1) * {{ section.settings.card_gap }}px) / {{ section.settings.cards_per_view }});
-      max-width: calc(({{ section.settings.max_width }}px - 40px - ({{ section.settings.cards_per_view }} - 1) * {{ section.settings.card_gap }}px) / {{ section.settings.cards_per_view }});
-      min-width: calc((100% - ({{ section.settings.cards_per_view }} - 1) * {{ section.settings.card_gap }}px) / {{ section.settings.cards_per_view }});
+      flex: 0 0 calc((100% - var(--vc-peek-width) - (2 * var(--vc-card-gap))) / 3);
+      width: calc((100% - var(--vc-peek-width) - (2 * var(--vc-card-gap))) / 3);
+      min-width: calc((100% - var(--vc-peek-width) - (2 * var(--vc-card-gap))) / 3);
+      max-width: calc((100% - var(--vc-peek-width) - (2 * var(--vc-card-gap))) / 3);
       background: #ffffff;
       border-radius: 6px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
@@ -178,23 +172,13 @@
       display: flex;
       flex-direction: column;
       padding-top: 20px;
-  padding-bottom: 20px;
-    }
-
-    #shopify-section-{{ section.id }} .vc-testimonials__image-wrap {
-      width: 100%;
-      padding: 20px;
-      height: auto;
+      padding-bottom: 20px;
       box-sizing: border-box;
     }
 
+    #shopify-section-{{ section.id }} .vc-testimonials__image-wrap,
     #shopify-section-{{ section.id }} .vc-testimonials__image {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 4px;
-      object-fit: cover;
-      max-width: 100%;
+      display: none;
     }
 
     #shopify-section-{{ section.id }} .vc-testimonials__quote-mark {
@@ -202,6 +186,7 @@
       margin: 2px 16px 8px;
       display: inline-flex;
       align-items: center;
+      justify-content: flex-end;
     }
 
     #shopify-section-{{ section.id }} .vc-testimonials__text {
@@ -224,7 +209,7 @@
       font-size: 16px;
       color: #1B1B1B;
       line-height: 1.35;
-      font-family: Lato, sans-serif
+      font-family: Lato, sans-serif;
       font-weight: 500;
     }
 
@@ -234,7 +219,7 @@
       color: #303030;
       font-style: italic;
       line-height: 1.4;
-      font-family: Lato, sans-serif
+      font-family: Lato, sans-serif;
       font-weight: 500;
     }
 
@@ -290,10 +275,8 @@
     }
 
     @media screen and (max-width: 749px) {
-      #shopify-section-{{ section.id }} .vc-testimonials__topline {
-        flex-direction: column;
-    }
       #shopify-section-{{ section.id }} .vc-testimonials {
+        --vc-peek-width: 44px;
         padding: {{ section.settings.mobile_padding_top }}px 0 {{ section.settings.mobile_padding_bottom }}px;
       }
 
@@ -306,6 +289,7 @@
       }
 
       #shopify-section-{{ section.id }} .vc-testimonials__topline {
+        flex-direction: column;
         gap: 8px;
         margin-bottom: 8px;
       }
@@ -331,31 +315,17 @@
         margin-right: auto;
       }
 
-      #shopify-section-{{ section.id }} .vc-testimonials__viewport {
-        padding-right: 44px;
-        box-sizing: border-box;
-      }
-
       #shopify-section-{{ section.id }} .vc-testimonials__track {
         gap: 12px;
-        width: auto;
+        width: 100%;
+        min-width: 100%;
       }
 
       #shopify-section-{{ section.id }} .vc-testimonials__card {
-        flex: 0 0 calc(100% - 44px);
-        width: calc(100% - 44px);
-        min-width: calc(100% - 44px);
-        max-width: calc(100% - 44px);
-      }
-
-      #shopify-section-{{ section.id }} .vc-testimonials__image-wrap {
-        padding: 14px 14px 8px;
-      }
-
-      #shopify-section-{{ section.id }} .vc-testimonials__image {
-        width: 100%;
-        height: auto;
-        max-width: 100%;
+        flex: 0 0 calc(100% - var(--vc-peek-width));
+        width: calc(100% - var(--vc-peek-width));
+        min-width: calc(100% - var(--vc-peek-width));
+        max-width: calc(100% - var(--vc-peek-width));
       }
 
       #shopify-section-{{ section.id }} .vc-testimonials__quote-mark {
@@ -395,76 +365,107 @@
       var prevBtn = section.querySelector('[data-prev]');
       var nextBtn = section.querySelector('[data-next]');
       var trackerIndicator = section.querySelector('[data-tracker-indicator]');
-      var cardsPerViewDesktop = parseInt(section.getAttribute('data-cards-per-view'), 10) || 4;
-      var pageCount = 1;
-      var currentPage = 0;
+      var currentIndex = 0;
+      var maxIndex = 0;
+
+      if (!viewport) return;
 
       function isMobile() {
         return window.matchMedia('(max-width: 749px)').matches;
       }
 
-      function maxScroll() {
-        return Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+      function getCards() {
+        return Array.prototype.slice.call(section.querySelectorAll('.vc-testimonials__card'));
       }
 
-      function getPageCount() {
-        var cards = section.querySelectorAll('.vc-testimonials__card').length;
-        var perView = isMobile() ? 1 : cardsPerViewDesktop;
-        return Math.max(1, Math.ceil(cards / perView));
+      function getCardsPerView() {
+        return isMobile() ? 1 : 3;
       }
 
-      function clampPage(value) {
+      function getCardGap(cards) {
+        if (!cards || cards.length < 2) return 0;
+        return cards[1].offsetLeft - (cards[0].offsetLeft + cards[0].offsetWidth);
+      }
+
+      function getStep() {
+        var cards = getCards();
+        if (!cards.length) return 0;
+
+        return cards[0].offsetWidth + getCardGap(cards);
+      }
+
+      function updateMaxIndex() {
+        var cards = getCards();
+        maxIndex = Math.max(0, cards.length - getCardsPerView());
+      }
+
+      function clampIndex(value) {
         if (value < 0) return 0;
-        if (value > pageCount - 1) return pageCount - 1;
+        if (value > maxIndex) return maxIndex;
         return value;
       }
 
-      function scrollToPage(page) {
-        page = clampPage(page);
-        var max = maxScroll();
-        var left = pageCount > 1 ? (max * (page / (pageCount - 1))) : 0;
-        viewport.scrollTo({ left: left, behavior: 'smooth' });
-      }
+      function scrollToIndex(index) {
+        updateMaxIndex();
 
-      function updateTracker() {
-        if (!trackerIndicator) return;
-        var widthPercent = 100 / pageCount;
-        trackerIndicator.style.width = widthPercent + '%';
-        trackerIndicator.style.transform = 'translateX(' + (currentPage * 100) + '%)';
+        currentIndex = clampIndex(index);
+
+        var step = getStep();
+        var left = currentIndex * step;
+
+        viewport.scrollTo({
+          left: left,
+          behavior: 'smooth'
+        });
       }
 
       function updateButtons() {
         if (!prevBtn || !nextBtn) return;
-        prevBtn.disabled = currentPage <= 0;
-        nextBtn.disabled = currentPage >= pageCount - 1;
+
+        prevBtn.disabled = currentIndex <= 0;
+        nextBtn.disabled = currentIndex >= maxIndex;
+      }
+
+      function updateTracker() {
+        if (!trackerIndicator) return;
+
+        var totalPositions = maxIndex + 1;
+        var widthPercent = totalPositions > 0 ? 100 / totalPositions : 100;
+
+        trackerIndicator.style.width = widthPercent + '%';
+        trackerIndicator.style.transform = 'translateX(' + (currentIndex * 100) + '%)';
       }
 
       function updateFromScroll() {
-        var max = maxScroll();
-        if (max === 0 || pageCount === 1) {
-          currentPage = 0;
+        updateMaxIndex();
+
+        var step = getStep();
+
+        if (step <= 0) {
+          currentIndex = 0;
         } else {
-          currentPage = clampPage(Math.round((viewport.scrollLeft / max) * (pageCount - 1)));
+          currentIndex = clampIndex(Math.round(viewport.scrollLeft / step));
         }
+
         updateButtons();
         updateTracker();
       }
 
       function setup() {
-        pageCount = getPageCount();
-        currentPage = clampPage(currentPage);
+        updateMaxIndex();
+        currentIndex = clampIndex(currentIndex);
         updateFromScroll();
       }
 
       if (prevBtn) {
         prevBtn.addEventListener('click', function() {
-          scrollToPage(currentPage - 1);
+          scrollToIndex(currentIndex - 1);
         });
       }
 
       if (nextBtn) {
         nextBtn.addEventListener('click', function() {
-          scrollToPage(currentPage + 1);
+          scrollToIndex(currentIndex + 1);
         });
       }
 
@@ -510,7 +511,7 @@
       "min": 2,
       "max": 5,
       "step": 1,
-      "default": 4
+      "default": 3
     },
     {
       "type": "range",

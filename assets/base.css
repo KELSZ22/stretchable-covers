@@ -5063,3 +5063,14 @@ button.jdgm-write-review-modal__nav-btn.jdgm-write-review-modal__nav-btn-next {
 div#judgeme_product_reviews {
     padding: 20px;
 }
+
+main[data-template="page.how-we-print"] {
+      padding: 50px 0px;
+}
+main[data-template="page.how-we-print"] .spacing-style.layout-panel-flex.layout-panel-flex--column.section-content-wrapper.mobile-column {
+    padding-top: 0;
+    padding-bottom: 24.5px;
+}
+main[data-template="page.how-we-print"] rte-formatter.spacing-style.text-block.text-block--AS09DRE1ta2hTd1ZDT__text_H4KdqN.paragraph.rte {
+    padding: 0;
+}

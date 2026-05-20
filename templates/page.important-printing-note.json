@@ -131,6 +131,9 @@
         "heading",
         "page-content"
       ],
+      "custom_css": [
+        ".text-block--AcHppdGhhV3pKMmhTV__text_GjXmek ol,.text-block--AcHppdGhhV3pKMmhTV__text_GjXmek li {line-height: 2.0 !important;}"
+      ],
       "settings": {
         "content_direction": "column",
         "gap": 32,

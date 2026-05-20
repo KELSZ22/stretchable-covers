@@ -42,7 +42,10 @@
           "blocks": {}
         }
       },
-      "block_order": ["image_8rTMPp", "page-content"],
+      "block_order": [
+        "image_8rTMPp",
+        "page-content"
+      ],
       "name": "About Us",
       "settings": {
         "content_direction": "column",
@@ -168,10 +171,16 @@
               "blocks": {}
             }
           },
-          "block_order": ["text_TtPB3n", "text_3VXCcf"]
+          "block_order": [
+            "text_TtPB3n",
+            "text_3VXCcf"
+          ]
         }
       },
-      "block_order": ["image_FfQcyE", "group_7c38mN"],
+      "block_order": [
+        "image_FfQcyE",
+        "group_7c38mN"
+      ],
       "name": "About Us Content",
       "settings": {
         "content_direction": "row",
@@ -370,7 +379,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_eAq7he", "text_38xRXB", "text_RECrt3"]
+          "block_order": [
+            "icon_eAq7he",
+            "text_38xRXB",
+            "text_RECrt3"
+          ]
         },
         "group_dyiBk6": {
           "type": "group",
@@ -477,7 +490,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_VVrC7T", "text_TJjbtt", "text_Y7RtAB"]
+          "block_order": [
+            "icon_VVrC7T",
+            "text_TJjbtt",
+            "text_Y7RtAB"
+          ]
         },
         "group_zD7yrt": {
           "type": "group",
@@ -584,7 +601,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_LATNkz", "text_XcNQxE", "text_tyXJ6z"]
+          "block_order": [
+            "icon_LATNkz",
+            "text_XcNQxE",
+            "text_tyXJ6z"
+          ]
         },
         "group_h3X9Y9": {
           "type": "group",
@@ -691,7 +712,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_8jP4pG", "text_qMkdiN", "text_DfeHKA"]
+          "block_order": [
+            "icon_8jP4pG",
+            "text_qMkdiN",
+            "text_DfeHKA"
+          ]
         },
         "group_EK3gxW": {
           "type": "group",
@@ -798,7 +823,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["icon_hCNCPq", "text_j3YTcC", "text_VtHk3h"]
+          "block_order": [
+            "icon_hCNCPq",
+            "text_j3YTcC",
+            "text_VtHk3h"
+          ]
         }
       },
       "block_order": [
@@ -912,7 +941,7 @@
                 "text": "<p>We are the manufacturers of the <strong>patent pending </strong>custom imprinted stretchable covers which will keep your steering wheel cooler, protect your bar stools, decorate your marching band tuba or sousaphone bells, promote safety messages, advertise your products, cover your bread baskets, keep the dust off your fans during the winter months, allow you to create your very own custom dartboard face AND protect all of these items for years to come. Our Stretchable Covers have a wide appeal, and are quickly becoming a well-known brand.</p>",
                 "width": "100%",
                 "max_width": "none",
-                "alignment": "left",
+                "alignment": "center",
                 "type_preset": "custom",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
@@ -932,7 +961,10 @@
               "blocks": {}
             }
           },
-          "block_order": ["text_yc38fj", "text_zPMBQ9"]
+          "block_order": [
+            "text_yc38fj",
+            "text_zPMBQ9"
+          ]
         },
         "image_4CwmLR": {
           "type": "image",
@@ -957,7 +989,10 @@
           "blocks": {}
         }
       },
-      "block_order": ["group_PbhCgH", "image_4CwmLR"],
+      "block_order": [
+        "group_PbhCgH",
+        "image_4CwmLR"
+      ],
       "name": "t:names.image_with_text",
       "settings": {
         "content_direction": "row",
@@ -1117,7 +1152,11 @@
           "blocks": {}
         }
       },
-      "block_order": ["icon_AwbDVy", "icon_6RBde8", "icon_zYgUxK"],
+      "block_order": [
+        "icon_AwbDVy",
+        "icon_6RBde8",
+        "icon_zYgUxK"
+      ],
       "disabled": true,
       "name": "t:names.marquee_section",
       "settings": {

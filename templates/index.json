@@ -162,8 +162,8 @@
       ],
       "name": "Custom Cover Slider",
       "settings": {
-        "autoplay": false,
-        "autoplay_speed": 3
+        "autoplay": true,
+        "autoplay_speed": 5
       }
     },
     "ups_icon_bar_7UnGza": {
@@ -283,7 +283,7 @@
         "heading": "Shop By Collections",
         "subheading": "Find the cover built for your application or start a fully custom design.",
         "view_all_text": "View All",
-        "view_all_link": "",
+        "view_all_link": "shopify://collections/all",
         "enable_autoplay": false,
         "autoplay_speed": 4,
         "section_bg": "#ffffff",
@@ -1140,7 +1140,11 @@
               "blocks": {}
             }
           },
-          "block_order": ["text_H3hFTy", "text_tYAymB", "button_phRE8P"]
+          "block_order": [
+            "text_H3hFTy",
+            "text_tYAymB",
+            "button_phRE8P"
+          ]
         },
         "slide_zBiADT": {
           "type": "_slide",
@@ -1232,10 +1236,17 @@
               "blocks": {}
             }
           },
-          "block_order": ["text_TWiVke", "text_kVMk4w", "button_gWXUra"]
+          "block_order": [
+            "text_TWiVke",
+            "text_kVMk4w",
+            "button_gWXUra"
+          ]
         }
       },
-      "block_order": ["slide_xxWXgf", "slide_zBiADT"],
+      "block_order": [
+        "slide_xxWXgf",
+        "slide_zBiADT"
+      ],
       "disabled": true,
       "name": "t:names.slideshow_full_frame",
       "settings": {
@@ -1301,7 +1312,10 @@
           "blocks": {}
         }
       },
-      "block_order": ["text_YLPk4p", "button_H9gpTf"],
+      "block_order": [
+        "text_YLPk4p",
+        "button_H9gpTf"
+      ],
       "disabled": true,
       "name": "t:names.hero",
       "settings": {
