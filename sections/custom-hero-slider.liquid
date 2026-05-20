@@ -1,7 +1,8 @@
 {% comment %}
   Section: Custom Cover Hero Slider
   Updated:
-  - Slides are their own block type
+  - Slides are their own block type (background images only after the first slide)
+  - Hero copy, features, and CTA come from the first slide block
   - Testimonials are their own block type
   - All slides share the same testimonial slider
   - Mobile testimonial dots/stepper are visually outside the testimonial card
@@ -69,6 +70,8 @@
                   <div class="cc-slide__testimonial-text">{{ block.settings.testimonial_text }}</div>
                 {% endif %}
 
+              <div>
+
                 {% if block.settings.testimonial_author != blank %}
                   <div class="cc-slide__testimonial-author">{{ block.settings.testimonial_author }}</div>
                 {% endif %}
@@ -76,6 +79,8 @@
                 {% if block.settings.testimonial_role != blank %}
                   <div class="cc-slide__testimonial-role">{{ block.settings.testimonial_role }}</div>
                 {% endif %}
+                
+              </div>
 
                 {% if block.settings.testimonial_verified != blank %}
                   <div class="cc-slide__testimonial-verified">
@@ -109,17 +114,22 @@
   </div>
 {% endcapture %}
 
-{% capture hero_slides_markup %}{% endcapture %}
-{% capture bottom_testimonials_markup %}{% endcapture %}
+{% assign content_slide = nil %}
+{% for block in section.blocks %}
+  {% if block.type == 'slide' and content_slide == nil %}
+    {% assign content_slide = block %}
+  {% endif %}
+{% endfor %}
 
+{% capture hero_bg_slides_markup %}{% endcapture %}
 {% assign slide_index = 0 %}
 {% for block in section.blocks %}
   {% if block.type == 'slide' %}
     {% assign slide_index = slide_index | plus: 1 %}
 
-    {% capture current_hero_slide %}
+    {% capture current_bg_slide %}
       <div
-        class="cc-slide cc-slide-{{ slide_index }}"
+        class="cc-slide__bg cc-slide-bg-{{ slide_index }}{% if slide_index == 1 %} is-active{% endif %}"
         {{ block.shopify_attributes }}
         style="
           {% if block.settings.bg_image != blank %}
@@ -132,94 +142,125 @@
             --cc-bg-767: url('{{ block.settings.bg_image_767 | image_url: width: 1200 }}');
           {% endif %}
         "
-      >
-        <div class="cc-slide__overlay">
-          <div class="cc-slide__inner page-width">
-            <div class="cc-slide__content">
-              {% if block.settings.rating_text != blank %}
-                <div class="cc-slide__rating-wrap">
-                  <div class="cc-slide__stars">★★★★★</div>
-                  <div class="cc-slide__rating-text">{{ block.settings.rating_text }}</div>
-                </div>
-              {% endif %}
-
-              {% if block.settings.heading != blank %}
-                <h1 class="cc-slide__heading">{{ block.settings.heading }}</h1>
-              {% endif %}
-
-              {% if block.settings.subheading != blank %}
-                <div class="cc-slide__subheading">{{ block.settings.subheading }}</div>
-              {% endif %}
-
-              {% if block.settings.button_label != blank %}
-                <div class="cc-slide__button-wrap">
-                  <a
-                    {% if block.settings.button_link != blank %}
-                      href="{{ block.settings.button_link }}"
-                    {% else %}
-                      role="link" aria-disabled="true"
-                    {% endif %}
-                    class="cc-slide__button"
-                  >
-                    {{ block.settings.button_label }}
-                  </a>
-                </div>
-              {% endif %}
-
-              <div class="cc-slide__features">
-                {% if block.settings.feature_1 != blank %}
-                  <div class="cc-slide__feature">
-                    {{ feature_icon_1 }}
-                    <span>{{ block.settings.feature_1 }}</span>
-                  </div>
-                {% endif %}
-
-                {% if block.settings.feature_2 != blank %}
-                  <div class="cc-slide__feature">
-                    {{ feature_icon_2 }}
-                    <span>{{ block.settings.feature_2 }}</span>
-                  </div>
-                {% endif %}
-
-                {% if block.settings.feature_3 != blank %}
-                  <div class="cc-slide__feature">
-                    {{ feature_icon_3 }}
-                    <span>{{ block.settings.feature_3 }}</span>
-                  </div>
-                {% endif %}
-              </div>
-
-              {% if testimonial_count > 0 %}
-                <div class="cc-slide__testimonial-wrap cc-slide__testimonial-wrap--desktop">
-                  {{ testimonial_slider_markup }}
-                </div>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
+      ></div>
     {% endcapture %}
 
-    {% capture current_bottom_testimonial %}
-      <div class="cc-slider__bottom-item">
-        {% if testimonial_count > 0 %}
-          <div class="cc-slide__testimonial-wrap cc-slide__testimonial-wrap--bottom">
-            {{ testimonial_slider_markup }}
-          </div>
-        {% endif %}
-      </div>
-    {% endcapture %}
-
-    {% capture hero_slides_markup %}{{ hero_slides_markup }}{{ current_hero_slide }}{% endcapture %}
-    {% capture bottom_testimonials_markup %}{{ bottom_testimonials_markup }}{{ current_bottom_testimonial }}{% endcapture %}
+    {% capture hero_bg_slides_markup %}{{ hero_bg_slides_markup }}{{ current_bg_slide }}{% endcapture %}
   {% endif %}
 {% endfor %}
 
 <div id="shopify-section-{{ section.id }}" class="cc-slider-section">
   <div class="cc-slider" data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.autoplay_speed }}">
     <div class="cc-slider__main">
-      <div class="cc-slider__track">
-        {{ hero_slides_markup }}
+      <div class="cc-slider__stage">
+        <div class="cc-slider__bg-track">
+          {{ hero_bg_slides_markup }}
+        </div>
+
+        {% if content_slide != nil %}
+          <div class="cc-slider__content" {{ content_slide.shopify_attributes }}>
+            <div class="cc-slide__overlay">
+              <div class="cc-slide__inner page-width">
+                <div class="cc-slide__content">
+                  {% if content_slide.settings.rating_text != blank %}
+                    <div class="cc-slide__rating-wrap">
+                      <div class="cc-slide__stars">★★★★★</div>
+                      <div class="cc-slide__rating-text">{{ content_slide.settings.rating_text }}</div>
+                    </div>
+                  {% endif %}
+
+                  {% if content_slide.settings.heading != blank %}
+                    <h1 class="cc-slide__heading">{{ content_slide.settings.heading }}</h1>
+                  {% endif %}
+
+                  {% if content_slide.settings.subheading != blank %}
+                    <div class="cc-slide__subheading">{{ content_slide.settings.subheading }}</div>
+                  {% endif %}
+
+                  {% if content_slide.settings.button_label != blank %}
+                    <div class="cc-slide__button-wrap">
+                      <a
+                        {% if content_slide.settings.button_link != blank %}
+                          href="{{ content_slide.settings.button_link }}"
+                        {% else %}
+                          role="link" aria-disabled="true"
+                        {% endif %}
+                        class="cc-slide__button"
+                      >
+                        {{ content_slide.settings.button_label }}
+                      </a>
+                    </div>
+                  {% endif %}
+
+                  <div class="cc-slide__features">
+                    {% if content_slide.settings.feature_1 != blank %}
+                      <div class="cc-slide__feature">
+                        <span class="cc-slide__feature-icon" aria-hidden="true">
+                          {% if content_slide.settings.feature_icon_1 != blank %}
+                            <img
+                              src="{{ content_slide.settings.feature_icon_1 | image_url: width: 64 }}"
+                              alt=""
+                              width="{{ content_slide.settings.feature_icon_1.width }}"
+                              height="{{ content_slide.settings.feature_icon_1.height }}"
+                              loading="lazy"
+                            >
+                          {% else %}
+                            {{ feature_icon_1 }}
+                          {% endif %}
+                        </span>
+                        <span>{{ content_slide.settings.feature_1 }}</span>
+                      </div>
+                    {% endif %}
+
+                    {% if content_slide.settings.feature_2 != blank %}
+                      <div class="cc-slide__feature">
+                        <span class="cc-slide__feature-icon" aria-hidden="true">
+                          {% if content_slide.settings.feature_icon_2 != blank %}
+                            <img
+                              src="{{ content_slide.settings.feature_icon_2 | image_url: width: 64 }}"
+                              alt=""
+                              width="{{ content_slide.settings.feature_icon_2.width }}"
+                              height="{{ content_slide.settings.feature_icon_2.height }}"
+                              loading="lazy"
+                            >
+                          {% else %}
+                            {{ feature_icon_2 }}
+                          {% endif %}
+                        </span>
+                        <span>{{ content_slide.settings.feature_2 }}</span>
+                      </div>
+                    {% endif %}
+
+                    {% if content_slide.settings.feature_3 != blank %}
+                      <div class="cc-slide__feature">
+                        <span class="cc-slide__feature-icon" aria-hidden="true">
+                          {% if content_slide.settings.feature_icon_3 != blank %}
+                            <img
+                              src="{{ content_slide.settings.feature_icon_3 | image_url: width: 64 }}"
+                              alt=""
+                              width="{{ content_slide.settings.feature_icon_3.width }}"
+                              height="{{ content_slide.settings.feature_icon_3.height }}"
+                              loading="lazy"
+                            >
+                          {% else %}
+                            {{ feature_icon_3 }}
+                          {% endif %}
+                        </span>
+                        <span>{{ content_slide.settings.feature_3 }}</span>
+                      </div>
+                    {% endif %}
+                  </div>
+
+                  {% if testimonial_count > 0 %}
+                    <div class="cc-slide__testimonial-wrap cc-slide__testimonial-wrap--desktop">
+                      {{ testimonial_slider_markup }}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
       </div>
 
       {% if slide_count > 1 %}
@@ -244,13 +285,19 @@
       {% endif %}
     </div>
 
-    <div class="cc-slider__bottom">
-      <div class="cc-slider__bottom-inner">
-        <div class="cc-slider__bottom-track">
-          {{ bottom_testimonials_markup }}
+    {% if testimonial_count > 0 %}
+      <div class="cc-slider__bottom">
+        <div class="cc-slider__bottom-inner">
+          <div class="cc-slider__bottom-track">
+            <div class="cc-slider__bottom-item is-active">
+              <div class="cc-slide__testimonial-wrap cc-slide__testimonial-wrap--bottom">
+                {{ testimonial_slider_markup }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    {% endif %}
   </div>
 </div>
 
@@ -268,25 +315,42 @@
     overflow: hidden;
   }
 
-  #shopify-section-{{ section.id }} .cc-slider__track,
-  #shopify-section-{{ section.id }} .cc-slider__bottom-track {
+  #shopify-section-{{ section.id }} .cc-slider__stage {
+    position: relative;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__bg-track {
+    position: absolute;
+    inset: 0;
     display: flex;
     transition: transform 0.5s ease;
     will-change: transform;
+    z-index: 0;
   }
 
-  #shopify-section-{{ section.id }} .cc-slide,
-  #shopify-section-{{ section.id }} .cc-slider__bottom-item {
+  #shopify-section-{{ section.id }} .cc-slide__bg {
     min-width: 100%;
     width: 100%;
     flex: 0 0 100%;
-  }
-
-  #shopify-section-{{ section.id }} .cc-slide {
+    height: 100%;
     background-image: var(--cc-bg-desktop, none);
     background-size: cover;
     background-position: center right;
     background-repeat: no-repeat;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__content {
+    position: relative;
+    z-index: 1;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__bottom-track {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slider__bottom-item {
+    width: 100%;
   }
 
   #shopify-section-{{ section.id }} .cc-slide__overlay {
@@ -380,8 +444,21 @@
     color: #ffffff;
   }
 
-  #shopify-section-{{ section.id }} .cc-slide__feature svg {
+  #shopify-section-{{ section.id }} .cc-slide__feature-icon {
     flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-slide__feature-icon img,
+  #shopify-section-{{ section.id }} .cc-slide__feature-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
   #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--desktop,
@@ -413,16 +490,8 @@
     box-sizing: border-box;
   }
 
-  #shopify-section-{{ section.id }} .cc-slider__bottom-track {
-    display: flex;
-    transition: transform 0.5s ease;
-    will-change: transform;
-  }
-
   #shopify-section-{{ section.id }} .cc-slider__bottom-item {
-    min-width: 100%;
     width: 100%;
-    flex: 0 0 100%;
     display: flex;
     justify-content: flex-start;
   }
@@ -655,7 +724,7 @@
       height: 1300px;
     }
 
-    #shopify-section-{{ section.id }} .cc-slide {
+    #shopify-section-{{ section.id }} .cc-slide__bg {
       background-position: center;
       background-image: var(--cc-bg-1024, var(--cc-bg-desktop, none));
     }
@@ -699,32 +768,18 @@
       line-height: 27px;
     }
 
-    #shopify-section-{{ section.id }} .cc-slide {
+    #shopify-section-{{ section.id }} .cc-slide__bg {
       background-position: center bottom;
       background-image: var(--cc-bg-767, var(--cc-bg-1024, var(--cc-bg-desktop, none)));
     }
 
-    #shopify-section-{{ section.id }} .cc-slide.cc-slide-1 .cc-slide__inner.page-width {
+    #shopify-section-{{ section.id }} .cc-slider__content .cc-slide__inner.page-width {
       height: 900px;
       justify-content: flex-start;
     }
 
-    #shopify-section-{{ section.id }} .cc-slide.cc-slide-1 .cc-slide__inner {
+    #shopify-section-{{ section.id }} .cc-slider__content .cc-slide__inner {
       height: 900px;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 24px;
-      padding: 60px 16px;
-    }
-
-    #shopify-section-{{ section.id }} .cc-slide:not(.cc-slide-1) .cc-slide__inner.page-width {
-      height: auto;
-      justify-content: flex-start;
-    }
-
-    #shopify-section-{{ section.id }} .cc-slide:not(.cc-slide-1) .cc-slide__inner {
-      height: auto;
-      min-height: 0;
       flex-direction: column;
       justify-content: flex-start;
       gap: 24px;
@@ -830,21 +885,10 @@
       overflow: hidden;
     }
 
-    #shopify-section-{{ section.id }} .cc-slider__bottom-track {
-      display: block;
-      transform: none !important;
-      transition: none;
-    }
-
     #shopify-section-{{ section.id }} .cc-slider__bottom-item {
-      display: none;
-      width: 100%;
-      min-width: 100%;
-    }
-
-    #shopify-section-{{ section.id }} .cc-slider__bottom-item.is-active {
       display: flex;
       justify-content: center;
+      width: 100%;
     }
 
     #shopify-section-{{ section.id }} .cc-slide__testimonial-wrap--bottom {
@@ -874,13 +918,13 @@
     if (!section) return;
 
     var slider = section.querySelector('.cc-slider');
-    var track = section.querySelector('.cc-slider__track');
-    var heroSlides = section.querySelectorAll('.cc-slide');
+    var bgTrack = section.querySelector('.cc-slider__bg-track');
+    var bgSlides = section.querySelectorAll('.cc-slide__bg');
+    var heroContent = section.querySelector('.cc-slider__content');
     var heroDots = section.querySelectorAll('.cc-slider__inside');
-    var bottomTrack = section.querySelector('.cc-slider__bottom-track');
-    var bottomItems = section.querySelectorAll('.cc-slider__bottom-item');
+    var bottomItem = section.querySelector('.cc-slider__bottom-item');
 
-    if (!slider || !track || !heroSlides.length) return;
+    if (!slider || !bgTrack || !bgSlides.length) return;
 
     var isAutoplayEnabled = String(slider.getAttribute('data-autoplay')) === 'true';
     var heroSpeed = (parseInt(slider.getAttribute('data-speed'), 10) || 5) * 1000;
@@ -907,36 +951,18 @@
       });
     }
 
-    function updateHeroSlides() {
-      heroSlides.forEach(function(slide, i) {
+    function updateBgSlides() {
+      bgSlides.forEach(function(slide, i) {
         slide.classList.toggle('is-active', i === currentHeroIndex);
       });
     }
 
-    function updateBottomTrack() {
-      if (!bottomItems.length) return;
-
-      var isMobileBottom = window.innerWidth <= 767;
-
-      if (bottomTrack) {
-        if (isMobileBottom) {
-          bottomTrack.style.transform = 'translateX(0)';
-        } else {
-          bottomTrack.style.transform = 'translateX(-' + (currentHeroIndex * 100) + '%)';
-        }
-      }
-
-      bottomItems.forEach(function(item, i) {
-        item.classList.toggle('is-active', i === currentHeroIndex);
-      });
-    }
-
-    function getActiveHeroSlide() {
-      return heroSlides[currentHeroIndex];
+    function getActiveHeroScope() {
+      return heroContent || null;
     }
 
     function getActiveBottomItem() {
-      return bottomItems[currentHeroIndex] || null;
+      return bottomItem || null;
     }
 
     function getTestimonialInstanceData(testimonialSlider) {
@@ -961,7 +987,7 @@
 
     function getActiveTestimonialData() {
       var instances = [];
-      var activeHero = getActiveHeroSlide();
+      var activeHero = getActiveHeroScope();
       var activeBottom = getActiveBottomItem();
 
       [activeHero, activeBottom].forEach(function(scope) {
@@ -1025,36 +1051,38 @@
       });
     }
 
-    function scheduleNextHeroSlide(delay) {
-      clearTimeout(heroTimeout);
-      heroTimeout = setTimeout(function() {
-        goToHeroSlide(currentHeroIndex + 1);
-      }, delay);
+    function setBackgroundSlide(index) {
+      if (index < 0) index = bgSlides.length - 1;
+      if (index >= bgSlides.length) index = 0;
+
+      currentHeroIndex = index;
+      bgTrack.style.transform = 'translateX(-' + (currentHeroIndex * 100) + '%)';
+      updateHeroDots();
+      updateBgSlides();
     }
 
-    function playTestimonialsThenAdvance(data) {
+    function startBackgroundAutoplay() {
+      clearTimeout(heroTimeout);
+
+      if (!isAutoplayEnabled || bgSlides.length <= 1) return;
+
+      heroTimeout = setTimeout(function() {
+        setBackgroundSlide(currentHeroIndex + 1);
+        startBackgroundAutoplay();
+      }, heroSpeed);
+    }
+
+    function startTestimonialAutoplay(data) {
       clearTimeout(testimonialTimeout);
 
-      if (!isAutoplayEnabled) return;
+      if (!isAutoplayEnabled || !data || data.total <= 1) return;
 
-      if (!data) {
-        scheduleNextHeroSlide(heroSpeed);
-        return;
+      function advanceTestimonial() {
+        setTestimonialSlide(data, data.index + 1);
+        testimonialTimeout = setTimeout(advanceTestimonial, data.speed);
       }
 
-      if (data.total <= 1) {
-        scheduleNextHeroSlide(heroSpeed);
-        return;
-      }
-
-      testimonialTimeout = setTimeout(function advanceTestimonial() {
-        if (data.index < data.total - 1) {
-          setTestimonialSlide(data, data.index + 1);
-          testimonialTimeout = setTimeout(advanceTestimonial, data.speed);
-        } else {
-          scheduleNextHeroSlide(data.speed);
-        }
-      }, data.speed);
+      testimonialTimeout = setTimeout(advanceTestimonial, data.speed);
     }
 
     function bindTestimonialDots(data) {
@@ -1067,47 +1095,38 @@
           dot.onclick = function() {
             clearTimers();
             setTestimonialSlide(data, index);
-
-            if (isAutoplayEnabled) {
-              playTestimonialsThenAdvance(data);
-            }
+            startTestimonialAutoplay(data);
+            startBackgroundAutoplay();
           };
         });
       });
     }
 
-    function runHeroCycle() {
+    function initAutoplay() {
       clearTimers();
       resetAllTestimonials();
-      updateBottomTrack();
 
       var testimonialData = getActiveTestimonialData();
 
       if (testimonialData) {
         setTestimonialSlide(testimonialData, 0);
         bindTestimonialDots(testimonialData);
+        startTestimonialAutoplay(testimonialData);
       }
 
-      playTestimonialsThenAdvance(testimonialData);
-    }
-
-    function goToHeroSlide(index) {
-      if (index < 0) index = heroSlides.length - 1;
-      if (index >= heroSlides.length) index = 0;
-
-      currentHeroIndex = index;
-      track.style.transform = 'translateX(-' + (currentHeroIndex * 100) + '%)';
-      updateHeroDots();
-      updateHeroSlides();
-      updateBottomTrack();
-      runHeroCycle();
+      startBackgroundAutoplay();
     }
 
     if (heroDots.length) {
       heroDots.forEach(function(dot) {
         dot.addEventListener('click', function() {
           var index = parseInt(this.getAttribute('data-slide'), 10);
-          goToHeroSlide(index);
+          clearTimers();
+          setBackgroundSlide(index);
+
+          var testimonialData = getActiveTestimonialData();
+          startTestimonialAutoplay(testimonialData);
+          startBackgroundAutoplay();
         });
       });
     }
@@ -1118,19 +1137,21 @@
 
     slider.addEventListener('mouseleave', function() {
       if (isAutoplayEnabled) {
-        runHeroCycle();
+        initAutoplay();
       }
     });
 
     window.addEventListener('resize', function() {
-      updateHeroSlides();
-      updateBottomTrack();
-      runHeroCycle();
+      updateBgSlides();
+      if (isAutoplayEnabled) {
+        initAutoplay();
+      }
     });
 
-    updateHeroSlides();
-    updateBottomTrack();
-    goToHeroSlide(0);
+    setBackgroundSlide(0);
+    if (isAutoplayEnabled) {
+      initAutoplay();
+    }
   })();
 </script>
 
@@ -1160,6 +1181,10 @@
       "type": "slide",
       "name": "Slide",
       "settings": [
+        {
+          "type": "paragraph",
+          "content": "The first slide controls heading, features, and button. Additional slides only change the background image when the hero dots are clicked."
+        },
         {
           "type": "image_picker",
           "id": "bg_image",
@@ -1211,16 +1236,31 @@
           "default": "Rush Order Available"
         },
         {
+          "type": "image_picker",
+          "id": "feature_icon_1",
+          "label": "Feature 1 icon"
+        },
+        {
           "type": "text",
           "id": "feature_2",
           "label": "Feature 2",
           "default": "Customizable"
         },
         {
+          "type": "image_picker",
+          "id": "feature_icon_2",
+          "label": "Feature 2 icon"
+        },
+        {
           "type": "text",
           "id": "feature_3",
           "label": "Feature 3",
           "default": "Multi-Purpose Use"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_icon_3",
+          "label": "Feature 3 icon"
         }
       ]
     },

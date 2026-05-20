@@ -67,10 +67,13 @@
             "heading": "Custom-Printed Stretchable Covers That Make Your Brand Impossible to Ignore",
             "subheading": "For fleets, marching bands, dealerships, medical facilities & more",
             "button_label": "Get My Custom Cover",
-            "button_link": "",
+            "button_link": "shopify://collections/all-items",
             "feature_1": "Rush Order Available",
+            "feature_icon_1": "shopify://shop_images/Last_24_Hours.svg",
             "feature_2": "Customizable",
-            "feature_3": "Multi-Purpose Use"
+            "feature_icon_2": "shopify://shop_images/Paint_Palette.svg",
+            "feature_3": "Multi-Purpose Use",
+            "feature_icon_3": "shopify://shop_images/Metamorphose.svg"
           }
         },
         "slide_NwJdJk": {
@@ -1137,11 +1140,7 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "text_H3hFTy",
-            "text_tYAymB",
-            "button_phRE8P"
-          ]
+          "block_order": ["text_H3hFTy", "text_tYAymB", "button_phRE8P"]
         },
         "slide_zBiADT": {
           "type": "_slide",
@@ -1233,17 +1232,10 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "text_TWiVke",
-            "text_kVMk4w",
-            "button_gWXUra"
-          ]
+          "block_order": ["text_TWiVke", "text_kVMk4w", "button_gWXUra"]
         }
       },
-      "block_order": [
-        "slide_xxWXgf",
-        "slide_zBiADT"
-      ],
+      "block_order": ["slide_xxWXgf", "slide_zBiADT"],
       "disabled": true,
       "name": "t:names.slideshow_full_frame",
       "settings": {
@@ -1309,10 +1301,7 @@
           "blocks": {}
         }
       },
-      "block_order": [
-        "text_YLPk4p",
-        "button_H9gpTf"
-      ],
+      "block_order": ["text_YLPk4p", "button_H9gpTf"],
       "disabled": true,
       "name": "t:names.hero",
       "settings": {

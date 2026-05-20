@@ -7,6 +7,20 @@
 {% render 'section', section: section, children: children %}
 
 {% style %}
+  @media screen and (min-width: 990px) {
+    :is([class*='__text_3VXCcf'], .text-block--text_3VXCcf),
+    :is([class*='__text_zPMBQ9'], .text-block--text_zPMBQ9) {
+      text-align: justify !important;
+      --text-align: justify !important;
+      margin-inline: unset !important;
+    }
+
+    :is([class*='__text_3VXCcf'], .text-block--text_3VXCcf) :is(p, li, a, span, rte-formatter),
+    :is([class*='__text_zPMBQ9'], .text-block--text_zPMBQ9) :is(p, li, a, span, rte-formatter) {
+      text-align: justify !important;
+    }
+  }
+
   @media screen and (max-width: 989px) {
     :is([class*='__text_TtPB3n'], .text-block--text_TtPB3n),
     :is([class*='__text_yc38fj'], .text-block--text_yc38fj) {
