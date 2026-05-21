@@ -163,22 +163,6 @@
           data-imprint-variant-type-option="{{ section.settings.variant_imprint_type_option | escape }}"
           data-imprint-variant-color-option="{{ section.settings.variant_imprint_color_option | escape }}">
 
-          {%- capture customizer_imprint_type_order_json -%}
-            [
-            {%- assign customizer_imprint_order_lines = section.settings.imprint_types | newline_to_br | split: '<br />' -%}
-            {%- assign customizer_imprint_order_first = true -%}
-            {%- for line in customizer_imprint_order_lines -%}
-              {%- assign trimmed_imprint_order_line = line | strip -%}
-              {%- if trimmed_imprint_order_line != blank -%}
-                {%- unless customizer_imprint_order_first -%},{%- endunless -%}
-                {{ trimmed_imprint_order_line | json }}
-                {%- assign customizer_imprint_order_first = false -%}
-              {%- endif -%}
-            {%- endfor -%}
-            ]
-          {%- endcapture -%}
-          <script type="application/json" data-imprint-type-order-json>{{ customizer_imprint_type_order_json | strip }}</script>
-
           <script type="application/json" data-product-catalog>
             [
               {%- for product in all_catalog_products limit: all_catalog_products_limit -%}
@@ -2242,9 +2226,9 @@
       }, {
         "type": "textarea",
         "id": "imprint_types",
-        "label": "Imprint types (one per line)",
-        "default": "Full Cover Imprint\nStandard Imprint\nNo Imprint (Blank)",
-        "info": "Controls Imprint dropdown order in the customizer (including when rebuilt from variants). One value per line; partial matches work (e.g. Standard Imprint sorts Standard Center Imprint)."
+        "label": "Imprint types (fallback, one per line)",
+        "default": "Standard Center Imprint\nFull Cover Imprint\nNo Imprint (Blank)",
+        "info": "Shown when variants do not include a matching imprint type option."
       }, {
         "type": "text",
         "id": "imprint_other_option_label",

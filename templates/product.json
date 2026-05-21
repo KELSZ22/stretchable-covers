@@ -301,7 +301,21 @@
                 "heading": "Compare this product with other available options",
                 "button_label": "Compare this Product",
                 "modal_heading": "Compare products",
+                "product_badge": "XL",
+                "modal_star_count": 5,
+                "modal_rating_text": "5.0",
+                "dimension_label": "Diameter",
+                "dimension_value": "18’ - 20’",
+                "search_title": "Search and select a product to compare",
                 "search_placeholder": "Search a product",
+                "compare_collection": "",
+                "current_product_value": "B XL 21\" - 23\"",
+                "table_price_value": "$22.99",
+                "colors_value": "Safety Orange / White / Safety Yellow",
+                "imprint_value": "Standard / Full Coverage / No Imprint",
+                "imprint_sizes_value": "24 Different Imprint Sizes",
+                "materials_value": "100% High Quality Polyester Micro Fiber",
+                "country_origin_value": "Made in the USA",
                 "quote": "All the customizable bell covers come out amazing! Thank you! Thanks for getting it done so quickly!",
                 "author": "Michael H. - ESP Networks Production Manager",
                 "star_count": 5,
@@ -698,7 +712,7 @@
           "settings": {
             "custom_icon": "shopify://shop_images/Vector_4.png",
             "heading": "Made with Premium Microfiber",
-            "text": "Soft, durable, and stretchable material."
+            "text": "Soft, durable, and highest quality."
           }
         }
       },
@@ -725,23 +739,23 @@
         "block_zWNzWH": {
           "type": "block",
           "settings": {
-            "image": "shopify://shop_images/Frame_1000008196.png",
-            "heading": "9 out of 10",
+            "image": "shopify://shop_images/print.svg",
+            "heading": "America's #1 Source",
             "subheading": "Trusted by businesses who rely on durable, perfectly fitted stretchable covers that last."
           }
         },
         "block_pKTJi8": {
           "type": "block",
           "settings": {
-            "image": "shopify://shop_images/Frame_1000008196_1.png",
-            "heading": "Number of industries served",
+            "image": "shopify://shop_images/industries.svg",
+            "heading": "Different industries served",
             "subheading": "Supporting businesses across hospitality, events, offices, and more."
           }
         },
         "block_3KMMXV": {
           "type": "block",
           "settings": {
-            "image": "shopify://shop_images/Frame_1000008196_2.png",
+            "image": "shopify://shop_images/16_2.svg",
             "heading": "Years in the industry",
             "subheading": "Decades of experience delivering reliable protection you can count on."
           }

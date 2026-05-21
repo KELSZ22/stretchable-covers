@@ -639,53 +639,6 @@ class CustomCoverCustomizer extends HTMLElement {
     });
   }
 
-  /** @returns {string[]} Imprint type order from section setting (one label per line). */
-  imprintTypeDisplayOrder() {
-    if (this._imprintTypeOrderLines) {
-      return this._imprintTypeOrderLines;
-    }
-    const section = this.closest(".custom-cover-customizer");
-    let lines = [];
-    const jsonEl = section?.querySelector("[data-imprint-type-order-json]");
-    if (jsonEl) {
-      try {
-        const parsed = JSON.parse(jsonEl.textContent || "[]");
-        if (Array.isArray(parsed)) {
-          lines = parsed.map((s) => String(s).trim()).filter(Boolean);
-        }
-      } catch (_err) {
-        lines = [];
-      }
-    }
-    this._imprintTypeOrderLines = lines;
-    return lines;
-  }
-
-  imprintTypeRank(value) {
-    const order = this.imprintTypeDisplayOrder();
-    const s = String(value ?? "").trim();
-    if (!s || !order.length) {
-      return order.length;
-    }
-    for (let i = 0; i < order.length; i++) {
-      if (s === order[i] || this.literalOptionStringsMatch(s, order[i])) {
-        return i;
-      }
-    }
-    return order.length;
-  }
-
-  imprintTypeSortByDisplayOrder(a, b) {
-    const ra = this.imprintTypeRank(a);
-    const rb = this.imprintTypeRank(b);
-    if (ra !== rb) {
-      return ra - rb;
-    }
-    return String(a).localeCompare(String(b), undefined, {
-      sensitivity: "base",
-    });
-  }
-
   _uniqueSortedStrings(values, sortFn) {
     const seen = new Set();
     const out = [];
@@ -753,7 +706,9 @@ class CustomCoverCustomizer extends HTMLElement {
           (v) => this.variantOptionTriple(v)[ix.typeIdx],
         );
         const uniq = this._uniqueSortedStrings(rawVals, (a, b) =>
-          this.imprintTypeSortByDisplayOrder(a, b),
+          String(a).localeCompare(String(b), undefined, {
+            sensitivity: "base",
+          }),
         );
         if (uniq.length) {
           const ph =

@@ -913,7 +913,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<p>We Are 100% Made IN The USA</p>",
+                "text": "<p>We Are 100% Made In The USA</p>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
