@@ -540,6 +540,243 @@
   </dialog-component>
 {% endif %}
 
+
+{% if request.page_type == 'collection' and collection != blank %}
+  <script>
+    (function() {
+      var sectionId = {{ section.id | json }};
+      var collectionTitle = {{ collection.title | json }};
+      var collectionHandle = {{ collection.handle | json }};
+
+      if (!collectionTitle || !collectionHandle) return;
+
+      var url = new URL(window.location.href);
+      var params = url.searchParams;
+      var skipKey = 'facets-auto-check-skip-' + collectionHandle;
+
+      var collectionFilterMap = {
+        'steering-wheel-covers': ['Steering Wheel Covers'],
+        'boat-marine-steering-wheel-covers': ['Boat / Marine Steering Wheel Covers'],
+        'boat-steering-wheel-covers': ['Boat / Marine Steering Wheel Covers'],
+        'marine-steering-wheel-covers': ['Boat / Marine Steering Wheel Covers'],
+        'band-instrument-bell-covers': ['Band Instrument Bell Covers'],
+        'fleet-safety-message-covers': ['Fleet Safety Message Covers'],
+        'shop-safety-message-covers': ['Shop Safety Message Covers'],
+        'exam-stool-covers': ['Exam Stool Covers'],
+        'bar-stool-shop-stool-retail-stool-covers': ['Bar Stool / Shop Stool / Retail Stool Covers'],
+        'equipment-covers': ['Equipment Covers'],
+        'dealership-promotional-message-covers': ['Dealership Promotional Message Covers'],
+        'designated-driver-message-covers': ['Designated Driver Message Covers'],
+        'police-first-responder-covers': ['Police / First Responder Covers'],
+        'police-and-first-responder-covers': ['Police / First Responder Covers']
+      };
+
+      function normalize(value) {
+        return String(value || '')
+          .toLowerCase()
+          .replace(/&amp;/g, 'and')
+          .replace(/&/g, 'and')
+          .replace(/\+/g, ' ')
+          .replace(/\//g, ' ')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      function uniq(values) {
+        var seen = {};
+        var output = [];
+
+        values.forEach(function(value) {
+          var normalized = normalize(value);
+
+          if (!normalized || seen[normalized]) return;
+
+          seen[normalized] = true;
+          output.push(normalized);
+        });
+
+        return output;
+      }
+
+      function getTargetValues() {
+        var mappedLabels = collectionFilterMap[collectionHandle] || [];
+
+        return uniq(mappedLabels.concat([
+          collectionTitle,
+          collectionHandle,
+          collectionTitle.replace(/\s+covers?$/i, ' Covers')
+        ]));
+      }
+
+      function hasActiveFilterParams() {
+        var hasFilter = false;
+
+        params.forEach(function(value, key) {
+          if (key.indexOf('filter.') === 0) {
+            hasFilter = true;
+          }
+        });
+
+        return hasFilter;
+      }
+
+      function clearSkipWhenComingFromAnotherPage() {
+        try {
+          if (!document.referrer) return;
+
+          var referrerUrl = new URL(document.referrer);
+          var currentPath = window.location.pathname;
+
+          if (referrerUrl.pathname !== currentPath) {
+            sessionStorage.removeItem(skipKey);
+          }
+        } catch (error) {}
+      }
+
+      function shouldSkipAutoCheck() {
+        try {
+          return sessionStorage.getItem(skipKey) === 'true';
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function rememberManualRemove() {
+        document.addEventListener(
+          'click',
+          function(event) {
+            var removeButton = event.target.closest(
+              'facet-remove-component, .facets__clear-all, .facets__clear-all-link, .clear-filter, .filter-remove-buttons a, .filter-remove-buttons button'
+            );
+
+            if (!removeButton) return;
+
+            try {
+              sessionStorage.setItem(skipKey, 'true');
+            } catch (error) {}
+          },
+          true
+        );
+      }
+
+      function getInputLabel(input) {
+        var label = '';
+
+        if (input.id && window.CSS && CSS.escape) {
+          var labelElement = document.querySelector('label[for="' + CSS.escape(input.id) + '"]');
+
+          if (labelElement) {
+            label = labelElement.textContent;
+          }
+        }
+
+        if (!label) {
+          var closestLabel = input.closest('label');
+
+          if (closestLabel) {
+            label = closestLabel.textContent;
+          }
+        }
+
+        return label;
+      }
+
+      function getFilterGroupLabel(input) {
+        var panel = input.closest('.facets__item, .facets__panel, details');
+        var summary = panel ? panel.querySelector('.facets__summary, summary') : null;
+
+        return summary ? summary.textContent : '';
+      }
+
+      function isCategoriesInput(input) {
+        var groupLabel = normalize(getFilterGroupLabel(input));
+        var inputName = normalize(input.name);
+
+        if (!groupLabel && !inputName) return true;
+
+        return (
+          groupLabel.indexOf('categor') !== -1 ||
+          inputName.indexOf('category') !== -1 ||
+          inputName.indexOf('product-type') !== -1 ||
+          inputName.indexOf('taxonomy') !== -1
+        );
+      }
+
+      function findMatchingFilterInput() {
+        var targets = getTargetValues();
+        var forms = Array.prototype.slice.call(
+          document.querySelectorAll('form[id^="FacetFiltersForm--' + sectionId + '"]')
+        );
+
+        forms = forms.filter(function(form) {
+          return !form.id.includes('mobile-sorting');
+        });
+
+        forms.sort(function(a, b) {
+          var aIsDrawer = a.id.includes('overflow') ? 1 : 0;
+          var bIsDrawer = b.id.includes('overflow') ? 1 : 0;
+
+          return aIsDrawer - bIsDrawer;
+        });
+
+        for (var formIndex = 0; formIndex < forms.length; formIndex++) {
+          var inputs = Array.prototype.slice.call(
+            forms[formIndex].querySelectorAll('input[name^="filter."]')
+          );
+
+          for (var inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
+            var input = inputs[inputIndex];
+            var inputType = (input.getAttribute('type') || '').toLowerCase();
+
+            if (input.disabled) continue;
+            if (inputType === 'hidden' || inputType === 'number') continue;
+            if (!input.value) continue;
+            if (!isCategoriesInput(input)) continue;
+
+            var inputValue = normalize(input.value);
+            var inputLabel = normalize(getInputLabel(input));
+            var inputCandidates = uniq([inputValue, inputLabel]);
+
+            for (var targetIndex = 0; targetIndex < targets.length; targetIndex++) {
+              var target = targets[targetIndex];
+
+              if (inputCandidates.indexOf(target) !== -1) {
+                return input;
+              }
+            }
+          }
+        }
+
+        return null;
+      }
+
+      function autoCheckCurrentCollectionFilter() {
+        clearSkipWhenComingFromAnotherPage();
+
+        if (hasActiveFilterParams()) return;
+        if (shouldSkipAutoCheck()) return;
+
+        var matchingInput = findMatchingFilterInput();
+
+        if (!matchingInput) return;
+
+        params.delete('page');
+        params.append(matchingInput.name, matchingInput.value);
+
+        window.location.replace(url.toString());
+      }
+
+      rememberManualRemove();
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', autoCheckCurrentCollectionFilter);
+      } else {
+        autoCheckCurrentCollectionFilter();
+      }
+    })();
+  </script>
+{% endif %}
+
 {% stylesheet %}
   .facets-block-wrapper {
     @media screen and (min-width: 750px) {

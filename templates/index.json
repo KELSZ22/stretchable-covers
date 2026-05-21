@@ -206,7 +206,7 @@
           "settings": {
             "custom_icon": "shopify://shop_images/Vector_4.svg",
             "heading": "Made with Premium Microfiber",
-            "text": "Soft, durable, and stretchable material."
+            "text": "Stretchable to highest quality material"
           }
         }
       },
@@ -230,22 +230,6 @@
     "custom_section_collection_DW3gt8": {
       "type": "custom-section-collection",
       "blocks": {
-        "slide_DWMgjW": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/Frame_1000008092.png",
-            "text": "Safety Programs",
-            "url": "shopify://collections/safety-programs"
-          }
-        },
-        "slide_EicXxU": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/Rectangle_438.png",
-            "text": "Instruments Equipments",
-            "url": "shopify://collections/band-instrument-bell-covers"
-          }
-        },
         "slide_x4fqbH": {
           "type": "slide",
           "settings": {
@@ -262,6 +246,22 @@
             "url": "shopify://collections/boat-steering-wheel-covers"
           }
         },
+        "slide_EicXxU": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_438.png",
+            "text": "Instruments Equipments",
+            "url": "shopify://collections/band-instrument-bell-covers"
+          }
+        },
+        "slide_DWMgjW": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Frame_1000008092.png",
+            "text": "Safety Programs",
+            "url": "shopify://collections/safety-programs"
+          }
+        },
         "slide_CrADzE": {
           "type": "slide",
           "settings": {
@@ -272,10 +272,10 @@
         }
       },
       "block_order": [
-        "slide_DWMgjW",
-        "slide_EicXxU",
         "slide_x4fqbH",
         "slide_q9pAm4",
+        "slide_EicXxU",
+        "slide_DWMgjW",
         "slide_CrADzE"
       ],
       "name": "All Collections Slider",
@@ -362,7 +362,7 @@
         "product_slide_mQUd6G": {
           "type": "product_slide",
           "settings": {
-            "product": "cc-waterproof-stretchable-covers-l-standard-15-18",
+            "product": "aa-stretchable-covers-xxlfc-jumbo-24-28-full-coverage-printing-on-white-material",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -374,7 +374,7 @@
         "product_slide_TWMA3J": {
           "type": "product_slide",
           "settings": {
-            "product": "i-stretchable-covers-petite-3",
+            "product": "aaastretchable-covers-xxl-jumbo-24-28",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -386,7 +386,7 @@
         "product_slide_eN8M3N": {
           "type": "product_slide",
           "settings": {
-            "product": "h-stretchable-covers-mini-5-6",
+            "product": "c-stretchable-covers-l-standard-18-20",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -398,7 +398,7 @@
         "product_slide_xHtdPX": {
           "type": "product_slide",
           "settings": {
-            "product": "g-stretchable-covers-xxs-standard-7-8-5",
+            "product": "b-stretchable-covers-xl-21-23",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -410,7 +410,7 @@
         "product_slide_7RkDH6": {
           "type": "product_slide",
           "settings": {
-            "product": "f-stretchable-covers-xs-standard-9-11",
+            "product": "d-stretchable-covers-m-standard-14-17",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -422,7 +422,7 @@
         "product_slide_jkJHC7": {
           "type": "product_slide",
           "settings": {
-            "product": "e-stretchable-covers-s-standard-12-14",
+            "product": "f-stretchable-covers-xs-standard-9-11",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -434,7 +434,7 @@
         "product_slide_MKHFep": {
           "type": "product_slide",
           "settings": {
-            "product": "d-stretchable-covers-m-standard-14-17",
+            "product": "g-stretchable-covers-xxs-standard-7-8-5",
             "badge_text": "Most Ordered",
             "custom_title": "",
             "rating_stars": "★★★★★",
@@ -445,6 +445,7 @@
         },
         "product_slide_fceCaQ": {
           "type": "product_slide",
+          "disabled": true,
           "settings": {
             "product": "c-stretchable-covers-l-standard-18-20",
             "badge_text": "Most Ordered",
@@ -457,6 +458,7 @@
         },
         "product_slide_FAXdkX": {
           "type": "product_slide",
+          "disabled": true,
           "settings": {
             "product": "b-stretchable-covers-xl-21-23",
             "badge_text": "Most Ordered",
@@ -469,6 +471,7 @@
         },
         "product_slide_Y7HGzt": {
           "type": "product_slide",
+          "disabled": true,
           "settings": {
             "product": "aaastretchable-covers-xxl-jumbo-24-28",
             "badge_text": "Most Ordered",
@@ -481,6 +484,7 @@
         },
         "product_slide_MDLVEq": {
           "type": "product_slide",
+          "disabled": true,
           "settings": {
             "product": "aa-stretchable-covers-xxlfc-jumbo-24-28-full-coverage-printing-on-white-material",
             "badge_text": "Most Ordered",
@@ -493,6 +497,7 @@
         },
         "product_slide_JynADy": {
           "type": "product_slide",
+          "disabled": true,
           "settings": {
             "product": "a-stretchable-covers-xxxl-jumboplus-29-34",
             "badge_text": "Most Ordered",
