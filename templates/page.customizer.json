@@ -131,7 +131,7 @@
         "variant_imprint_size_option": "Imprint Size",
         "variant_imprint_type_option": "Imprint",
         "variant_imprint_color_option": "Color",
-        "imprint_types": "Standard Center Imprint\nFull Cover Imprint\nNo Imprint (Blank)",
+        "imprint_types": "Full Cover Imprint\nStandard Imprint\nNo Imprint (Blank)",
         "imprint_other_option_label": "Other",
         "imprint_text_label": "Imprint",
         "imprint_text_placeholder": "Select imprint",

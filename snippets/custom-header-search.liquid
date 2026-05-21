@@ -107,6 +107,68 @@
   </script>
 {% endif %}
 
+{%- liquid
+  assign search_fb_p1 = fallback_product_1
+  assign search_fb_p2 = fallback_product_2
+  assign search_fb_p3 = fallback_product_3
+  assign search_fb_p4 = fallback_product_4
+
+  if search_fb_p1 == blank
+    assign search_fb_p1 = all_products['aa-stretchable-covers-xxlfc-jumbo-24-28-full-coverage-printing-on-white-material']
+  endif
+  if search_fb_p2 == blank
+    assign search_fb_p2 = all_products['aaastretchable-covers-xxl-jumbo-24-28']
+  endif
+  if search_fb_p3 == blank
+    assign search_fb_p3 = all_products['c-stretchable-covers-l-standard-18-20']
+  endif
+  if search_fb_p4 == blank
+    assign search_fb_p4 = all_products['b-stretchable-covers-xl-21-23']
+  endif
+
+  if search_fb_p1 == blank or search_fb_p2 == blank or search_fb_p3 == blank or search_fb_p4 == blank
+    for catalog_product in collections.all.products
+      assign catalog_title = catalog_product.title | downcase | strip
+      if search_fb_p1 == blank and catalog_title == 'size xxl (full color printing)'
+        assign search_fb_p1 = catalog_product
+      elsif search_fb_p2 == blank and catalog_title == 'size xxl (standard size printing)'
+        assign search_fb_p2 = catalog_product
+      elsif search_fb_p3 == blank and catalog_title == 'size l (large)'
+        assign search_fb_p3 = catalog_product
+      elsif search_fb_p4 == blank and catalog_title == 'size xl (x-large)'
+        assign search_fb_p4 = catalog_product
+      endif
+    endfor
+  endif
+-%}
+
+{%- capture search_fallback_products_json -%}
+[
+{%- assign search_fallback_first = true -%}
+{%- if search_fb_p1 != blank -%}
+  {%- unless search_fallback_first -%},{%- endunless -%}
+  {"id":{{ search_fb_p1.id | json }},"title":{{ search_fb_p1.title | json }},"url":{{ search_fb_p1.url | json }},"image":{{ search_fb_p1.featured_image | image_url: width: 240 | json }}}
+  {%- assign search_fallback_first = false -%}
+{%- endif -%}
+{%- if search_fb_p2 != blank -%}
+  {%- unless search_fallback_first -%},{%- endunless -%}
+  {"id":{{ search_fb_p2.id | json }},"title":{{ search_fb_p2.title | json }},"url":{{ search_fb_p2.url | json }},"image":{{ search_fb_p2.featured_image | image_url: width: 240 | json }}}
+  {%- assign search_fallback_first = false -%}
+{%- endif -%}
+{%- if search_fb_p3 != blank -%}
+  {%- unless search_fallback_first -%},{%- endunless -%}
+  {"id":{{ search_fb_p3.id | json }},"title":{{ search_fb_p3.title | json }},"url":{{ search_fb_p3.url | json }},"image":{{ search_fb_p3.featured_image | image_url: width: 240 | json }}}
+  {%- assign search_fallback_first = false -%}
+{%- endif -%}
+{%- if search_fb_p4 != blank -%}
+  {%- unless search_fallback_first -%},{%- endunless -%}
+  {"id":{{ search_fb_p4.id | json }},"title":{{ search_fb_p4.title | json }},"url":{{ search_fb_p4.url | json }},"image":{{ search_fb_p4.featured_image | image_url: width: 240 | json }}}
+  {%- assign search_fallback_first = false -%}
+{%- endif -%}
+]
+{%- endcapture -%}
+<script type="application/json" data-search-fallback-products>{{ search_fallback_products_json | strip }}</script>
+
 <style>
   .custom-search-dropdown__col.custom-search-dropdown__col--right .custom-search-dropdown__featured {
     align-items: flex-start;
@@ -458,6 +520,8 @@
   (function() {
     var wrappers = document.querySelectorAll('[data-search-dropdown]');
     var RECENT_KEY = 'custom_recent_viewed_products';
+    var SEARCH_PRODUCT_LIMIT = 4;
+    var fallbackProductsCache = null;
 
     function escapeHtml(str) {
       return String(str)
@@ -483,7 +547,45 @@
     }
 
     function saveRecentProducts(items) {
-      localStorage.setItem(RECENT_KEY, JSON.stringify(items.slice(0, 4)));
+      localStorage.setItem(RECENT_KEY, JSON.stringify(items.slice(0, SEARCH_PRODUCT_LIMIT)));
+    }
+
+    function getFallbackProducts() {
+      if (fallbackProductsCache) {
+        return fallbackProductsCache;
+      }
+
+      var source = document.querySelector('[data-search-fallback-products]');
+      if (!source) {
+        fallbackProductsCache = [];
+        return fallbackProductsCache;
+      }
+
+      try {
+        var parsed = JSON.parse(source.textContent || '[]');
+        fallbackProductsCache = Array.isArray(parsed)
+          ? parsed.slice(0, SEARCH_PRODUCT_LIMIT)
+          : [];
+      } catch (e) {
+        fallbackProductsCache = [];
+      }
+
+      return fallbackProductsCache;
+    }
+
+    function renderSearchProductCards(products) {
+      return products.slice(0, SEARCH_PRODUCT_LIMIT).map(function(product) {
+        var imageHtml = product.image
+          ? '<img src="' + escapeHtml(product.image) + '" alt="' + escapeHtml(product.title) + '">'
+          : '';
+
+        return (
+          '<a href="' + escapeHtml(product.url) + '" class="custom-search-dropdown__product">' +
+            imageHtml +
+            '<span>' + escapeHtml(product.title) + '</span>' +
+          '</a>'
+        );
+      }).join('');
     }
 
     function addCurrentProductToRecent() {
@@ -529,8 +631,16 @@
 
       function renderRecentProducts() {
         var items = getRecentProducts();
+        var usingFallback = false;
 
-        productsTitle.textContent = 'Recently Viewed Products';
+        if (!items.length) {
+          items = getFallbackProducts();
+          usingFallback = items.length > 0;
+        }
+
+        productsTitle.textContent = usingFallback
+          ? 'Featured Products'
+          : 'Recently Viewed Products';
 
         if (featuredTitle) {
           featuredTitle.textContent = 'Featured Product';
@@ -542,18 +652,7 @@
           return;
         }
 
-        resultsContainer.innerHTML = items.map(function(product) {
-          var imageHtml = product.image
-            ? '<img src="' + escapeHtml(product.image) + '" alt="' + escapeHtml(product.title) + '">'
-            : '';
-
-          return (
-            '<a href="' + escapeHtml(product.url) + '" class="custom-search-dropdown__product">' +
-              imageHtml +
-              '<span>' + escapeHtml(product.title) + '</span>' +
-            '</a>'
-          );
-        }).join('');
+        resultsContainer.innerHTML = renderSearchProductCards(items);
 
         if (featuredPanel) {
           featuredPanel.innerHTML = defaultFeaturedHtml;
@@ -573,7 +672,7 @@
           return;
         }
 
-        resultsContainer.innerHTML = products.slice(0, 4).map(function(product) {
+        resultsContainer.innerHTML = products.slice(0, SEARCH_PRODUCT_LIMIT).map(function(product) {
           var imageHtml = '';
           if (product.featured_image && product.featured_image.url) {
             imageHtml = '<img src="' + escapeHtml(product.featured_image.url) + '&width=240" alt="' + escapeHtml(product.title) + '">';
