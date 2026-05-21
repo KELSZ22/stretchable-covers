@@ -29,6 +29,12 @@
   if block.settings.quote_3 != blank
     assign testimonial_count = testimonial_count | plus: 1
   endif
+
+  if block.settings.compare_collection != blank
+    assign compare_catalog = block.settings.compare_collection
+  else
+    assign compare_catalog = collections.all
+  endif
 %}
 
 <div
@@ -306,28 +312,32 @@
               </div>
 
               <div class="product-compare-modal__search-wrap">
-                <label class="visually-hidden" for="CompareSearch-{{ block.id }}">
-                  Search product
+                <label class="visually-hidden" for="CompareSelect-{{ block.id }}">
+                  Select product to compare
                 </label>
 
-                <input
-                  id="CompareSearch-{{ block.id }}"
-                  class="product-compare-modal__search-input"
-                  type="search"
-                  placeholder="{{ block.settings.search_placeholder }}"
-                  autocomplete="off"
-                  data-compare-search-input
+                <select
+                  id="CompareSelect-{{ block.id }}"
+                  class="product-compare-modal__select"
+                  data-compare-product-select
                 >
+                  <option value="" disabled selected>
+                    {{ block.settings.search_placeholder }}
+                  </option>
 
-                <span class="product-compare-modal__search-icon" aria-hidden="true">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
-                    <circle cx="10" cy="10" r="6.5" stroke="currentColor" stroke-width="1.8"/>
-                    <path d="M15 15L19 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                  </svg>
-                </span>
-
-                <div class="product-compare-modal__search-results" data-compare-search-results></div>
+                  {% paginate compare_catalog.products by 250 %}
+                    {% for compare_product in compare_catalog.products %}
+                      {% if compare_product.handle != product.handle %}
+                        <option value="{{ compare_product.handle }}">
+                          {{ compare_product.title }}
+                        </option>
+                      {% endif %}
+                    {% endfor %}
+                  {% endpaginate %}
+                </select>
               </div>
+
+              <div class="product-compare-modal__selected-preview" data-compare-selected-preview hidden></div>
             </div>
           </div>
         </div>
@@ -882,126 +892,45 @@
     width: 100%;
   }
 
-  .product-compare-modal__search-input {
+  .product-compare-modal__select {
     width: 100%;
     min-height: 40px;
     border-radius: 999px;
     border: 1px solid #d5d5d5;
     background: #ffffff;
-    padding: 9px 42px 9px 18px;
+    padding: 9px 36px 9px 18px;
     font-size: 14px;
     line-height: 18px;
     color: #111111;
     outline: none;
     box-shadow: none;
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23111111' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px 8px;
   }
 
-  .product-compare-modal__search-input::placeholder {
-    color: #686868;
-    opacity: 1;
-  }
-
-  .product-compare-modal__search-input:focus {
+  .product-compare-modal__select:focus {
     border-color: #0F2E53;
     box-shadow: 0 0 0 3px rgba(15, 46, 83, 0.08);
   }
 
-  .product-compare-modal__search-icon {
-    position: absolute;
-    top: 50%;
-    right: 16px;
-    transform: translateY(-50%);
+  .product-compare-modal__select option {
     color: #111111;
-    display: inline-flex;
-    pointer-events: none;
   }
 
-  .product-compare-modal__search-icon svg {
-    width: 18px;
-    height: 18px;
+  .product-compare-modal__select option[disabled] {
+    color: #686868;
   }
 
-  .product-compare-modal__search-results {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    z-index: 20;
-    background: #ffffff;
-    border: 1px solid #e6e6e6;
-    border-radius: 14px;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
-    overflow: hidden;
+  .product-compare-modal__selected-preview {
+    margin-top: 16px;
+  }
+
+  .product-compare-modal__selected-preview[hidden] {
     display: none;
-  }
-
-  .product-compare-modal__search-results.is-visible {
-    display: block;
-  }
-
-  .product-compare-modal__search-state {
-    padding: 14px 16px;
-    font-size: 13px;
-    line-height: 18px;
-    color: #666666;
-  }
-
-  .product-compare-modal__result {
-    width: 100%;
-    border: 0;
-    background: #ffffff;
-    padding: 12px 16px;
-    display: grid;
-    grid-template-columns: 50px minmax(0, 1fr);
-    gap: 12px;
-    text-align: left;
-    cursor: pointer;
-    transition: 0.2s ease;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .product-compare-modal__result:last-child {
-    border-bottom: 0;
-  }
-
-  .product-compare-modal__result:hover {
-    background: #f8fbff;
-  }
-
-  .product-compare-modal__result-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #f4f4f4;
-  }
-
-  .product-compare-modal__result-image img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-  }
-
-  .product-compare-modal__result-image-placeholder {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #f4f4f4;
-  }
-
-  .product-compare-modal__result-title {
-    font-size: 13px;
-    line-height: 18px;
-    font-weight: 600;
-    color: #111111;
-    margin-bottom: 4px;
-  }
-
-  .product-compare-modal__result-meta {
-    font-size: 11px;
-    line-height: 15px;
-    color: #666666;
   }
 
   .product-compare-modal__table-wrap {
@@ -1200,38 +1129,12 @@
       margin-bottom: 7px;
     }
 
-    .product-compare-modal__search-input {
+    .product-compare-modal__select {
       min-height: 31px;
       padding: 7px 30px 7px 12px;
       font-size: 12px;
       line-height: 14px;
-    }
-
-    .product-compare-modal__search-icon {
-      right: 10px;
-    }
-
-    .product-compare-modal__search-icon svg {
-      width: 15px;
-      height: 15px;
-    }
-
-    .product-compare-modal__search-results {
-      left: -6px;
-      right: -6px;
-      z-index: 40;
-    }
-
-    .product-compare-modal__result {
-      grid-template-columns: 38px minmax(0, 1fr);
-      gap: 9px;
-      padding: 9px 10px;
-    }
-
-    .product-compare-modal__result-image,
-    .product-compare-modal__result-image-placeholder {
-      width: 38px;
-      height: 38px;
+      background-position: right 10px center;
     }
 
     .product-compare-modal__table-wrap {
@@ -1405,9 +1308,9 @@
         const openButton = box.querySelector('[data-compare-modal-open]');
         const closeButtons = box.querySelectorAll('[data-compare-modal-close]');
         const dialog = modal ? modal.querySelector('.product-compare-modal__dialog') : null;
-        const searchInput = modal ? modal.querySelector('[data-compare-search-input]') : null;
-        const resultsWrap = modal ? modal.querySelector('[data-compare-search-results]') : null;
         const rightSlot = modal ? modal.querySelector('[data-compare-right-slot]') : null;
+        const rightSlotInitialHtml = rightSlot ? rightSlot.innerHTML : '';
+        let selectedPreview = rightSlot ? rightSlot.querySelector('[data-compare-selected-preview]') : null;
         const currentProductScript = box.querySelector('[data-current-product-json]');
         const defaultsScript = box.querySelector('[data-compare-defaults-json]');
         const currentProduct = currentProductScript ? JSON.parse(currentProductScript.textContent) : null;
@@ -1415,10 +1318,9 @@
         const compareFields = modal ? modal.querySelectorAll('[data-compare-field]') : [];
 
         let lastFocusedElement = null;
-        let searchTimer = null;
-        let activeRequest = 0;
+        let productSelect = rightSlot ? rightSlot.querySelector('[data-compare-product-select]') : null;
 
-        if (!modal || !openButton || !dialog || !searchInput || !resultsWrap || !rightSlot || !currentProduct) {
+        if (!modal || !openButton || !dialog || !productSelect || !rightSlot || !currentProduct) {
           return;
         }
 
@@ -1491,14 +1393,25 @@
           };
         }
 
-        function setResultState(message) {
-          resultsWrap.innerHTML = '<div class="product-compare-modal__search-state">' + escapeHtml(message) + '</div>';
-          resultsWrap.classList.add('is-visible');
+        function resetComparisonTable() {
+          compareFields.forEach((field) => {
+            field.textContent = '-';
+          });
         }
 
-        function clearResults() {
-          resultsWrap.innerHTML = '';
-          resultsWrap.classList.remove('is-visible');
+        function resetRightSlot() {
+          rightSlot.innerHTML = rightSlotInitialHtml;
+          productSelect = rightSlot.querySelector('[data-compare-product-select]');
+          selectedPreview = rightSlot.querySelector('[data-compare-selected-preview]');
+        }
+
+        function clearSelectedPreview() {
+          if (!selectedPreview) {
+            return;
+          }
+
+          selectedPreview.innerHTML = '';
+          selectedPreview.hidden = true;
         }
 
         function renderStars() {
@@ -1512,11 +1425,15 @@
         }
 
         function renderSelectedHero(product) {
+          if (!selectedPreview) {
+            return;
+          }
+
           const imageMarkup = product.image
             ? '<img src="' + escapeHtml(product.image) + '" alt="' + escapeHtml(product.image_alt || product.title) + '" loading="lazy" width="180" height="180">'
             : '<div class="product-compare-modal__image-placeholder">No image</div>';
 
-          rightSlot.innerHTML =
+          selectedPreview.innerHTML =
             '<div class="product-compare-modal__selected-hero">' +
               '<div class="product-compare-modal__current-media">' +
                 imageMarkup +
@@ -1536,6 +1453,8 @@
                 '<div class="product-compare-modal__current-price">' + escapeHtml(formatMoney(product.price)) + '</div>' +
               '</div>' +
             '</div>';
+
+          selectedPreview.hidden = false;
         }
 
         function updateComparison(product) {
@@ -1557,111 +1476,47 @@
           });
         }
 
-        function renderSearchResults(products) {
-          const filtered = products.filter((item) => item.handle !== currentProduct.handle);
+        async function loadCompareProduct(handle) {
+          const response = await fetch((window.Shopify && window.Shopify.routes && window.Shopify.routes.root ? window.Shopify.routes.root : '/') + 'products/' + encodeURIComponent(handle) + '.js', {
+            headers: {
+              Accept: 'application/json'
+            }
+          });
 
-          if (!filtered.length) {
-            setResultState('No matching products found.');
+          if (!response.ok) {
+            throw new Error('Unable to load product.');
+          }
+
+          const ajaxProduct = await response.json();
+          const normalized = normalizeAjaxProduct(ajaxProduct);
+
+          renderSelectedHero(normalized);
+          updateComparison(normalized);
+        }
+
+        async function onProductSelect(event) {
+          const select = event && event.target
+            ? event.target.closest('[data-compare-product-select]')
+            : productSelect;
+          const handle = select ? select.value : '';
+
+          if (!handle) {
             return;
           }
 
-          resultsWrap.innerHTML = filtered.map((item) => {
-            const imageUrl = item.featured_image && item.featured_image.url
-              ? item.featured_image.url
-              : (item.image || '');
-
-            const imageMarkup = imageUrl
-              ? '<div class="product-compare-modal__result-image"><img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml((item.featured_image && item.featured_image.alt) || item.title || '') + '" loading="lazy"></div>'
-              : '<div class="product-compare-modal__result-image-placeholder"></div>';
-
-            return (
-              '<button type="button" class="product-compare-modal__result" data-compare-result data-handle="' + escapeHtml(item.handle) + '">' +
-                imageMarkup +
-                '<div>' +
-                  '<div class="product-compare-modal__result-title">' + escapeHtml(item.title || '') + '</div>' +
-                  '<div class="product-compare-modal__result-meta">' + escapeHtml(item.vendor || item.type || '') + '</div>' +
-                '</div>' +
-              '</button>'
-            );
-          }).join('');
-
-          resultsWrap.classList.add('is-visible');
-
-          resultsWrap.querySelectorAll('[data-compare-result]').forEach((button) => {
-            button.addEventListener('click', async () => {
-              const handle = button.dataset.handle;
-
-              if (!handle) {
-                return;
-              }
-
-              clearResults();
-
-              try {
-                const response = await fetch((window.Shopify && window.Shopify.routes && window.Shopify.routes.root ? window.Shopify.routes.root : '/') + 'products/' + encodeURIComponent(handle) + '.js', {
-                  headers: {
-                    Accept: 'application/json'
-                  }
-                });
-
-                if (!response.ok) {
-                  throw new Error('Unable to load product.');
-                }
-
-                const ajaxProduct = await response.json();
-                const normalized = normalizeAjaxProduct(ajaxProduct);
-
-                renderSelectedHero(normalized);
-                updateComparison(normalized);
-              } catch (error) {
-                setResultState('Could not load that product. Try another one.');
-              }
-            });
-          });
-        }
-
-        async function runSearch(query) {
-          const searchId = Date.now();
-          activeRequest = searchId;
-          setResultState('Searching…');
-
           try {
-            const requestUrl =
-              (window.Shopify && window.Shopify.routes && window.Shopify.routes.root ? window.Shopify.routes.root : '/') +
-              'search/suggest.json?q=' + encodeURIComponent(query) +
-              '&resources[type]=product' +
-              '&resources[limit]=6' +
-              '&resources[limit_scope]=each' +
-              '&resources[options][unavailable_products]=last' +
-              '&resources[options][fields]=title,product_type,variants.title,vendor,variants.sku';
+            await loadCompareProduct(handle);
 
-            const response = await fetch(requestUrl, {
-              headers: {
-                Accept: 'application/json'
-              }
-            });
-
-            if (!response.ok) {
-              throw new Error('Search request failed.');
+            if (select) {
+              select.value = handle;
             }
-
-            const data = await response.json();
-
-            if (activeRequest !== searchId) {
-              return;
-            }
-
-            const products = data && data.resources && data.resources.results && Array.isArray(data.resources.results.products)
-              ? data.resources.results.products
-              : [];
-
-            renderSearchResults(products);
           } catch (error) {
-            if (activeRequest !== searchId) {
-              return;
+            if (select) {
+              select.value = '';
             }
 
-            setResultState('Something went wrong while searching.');
+            clearSelectedPreview();
+            resetComparisonTable();
           }
         }
 
@@ -1700,7 +1555,9 @@
         modal.addEventListener('close', function () {
           document.body.classList.remove('compare-modal-open');
           openButton.setAttribute('aria-expanded', 'false');
-          clearResults();
+          resetRightSlot();
+          clearSelectedPreview();
+          resetComparisonTable();
 
           if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
             lastFocusedElement.focus();
@@ -1713,20 +1570,7 @@
           button.addEventListener('click', closeModal);
         });
 
-        searchInput.addEventListener('input', () => {
-          const query = searchInput.value.trim();
-
-          window.clearTimeout(searchTimer);
-
-          if (query.length < 2) {
-            clearResults();
-            return;
-          }
-
-          searchTimer = window.setTimeout(() => {
-            runSearch(query);
-          }, 250);
-        });
+        rightSlot.addEventListener('change', onProductSelect);
 
         box.dataset.compareModalInit = 'true';
       });
@@ -1808,14 +1652,20 @@
     {
       "type": "text",
       "id": "search_title",
-      "label": "Search title",
-      "default": "Search and select a product to compare"
+      "label": "Select title",
+      "default": "Select a product to compare"
     },
     {
       "type": "text",
       "id": "search_placeholder",
-      "label": "Search placeholder",
-      "default": "Search a Product"
+      "label": "Select placeholder",
+      "default": "Choose a product"
+    },
+    {
+      "type": "collection",
+      "id": "compare_collection",
+      "label": "Products to compare",
+      "info": "Optional. Leave empty to list all store products (up to 250). The current product is excluded."
     },
     {
       "type": "header",
