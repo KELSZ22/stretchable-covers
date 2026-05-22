@@ -40,18 +40,9 @@ class ProductPrice extends Component {
     // Update price container
     const newPrice = newProductPrice.querySelector('[ref="priceContainer"]');
     const currentPrice = this.querySelector('[ref="priceContainer"]');
-    if (newPrice && currentPrice) currentPrice.replaceWith(newPrice);
-
-    // Update volume pricing note
-    const currentNote = this.querySelector('.volume-pricing-note');
-    const newNote = newProductPrice.querySelector('.volume-pricing-note');
-
-    if (!newNote) {
-      currentNote?.remove();
-    } else if (!currentNote) {
-      this.querySelector('[ref="priceContainer"]')?.insertAdjacentElement('afterend', /** @type {Element} */ (newNote.cloneNode(true)));
-    } else {
-      currentNote.replaceWith(newNote);
+    if (newPrice && currentPrice) {
+      currentPrice.replaceWith(newPrice);
+      closestSection?.dispatchEvent(new CustomEvent('volume-price:sync', { bubbles: true }));
     }
   };
 }

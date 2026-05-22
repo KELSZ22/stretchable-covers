@@ -66,8 +66,8 @@
       '.custom-cart-item + .custom-cart-item{border-top:1px solid #eee;}',
       '.custom-cart-item-price-each{font-size:12px;color:#666;font-weight:400;white-space:nowrap;}',
       '.custom-cart-item-price-compare{margin-left:6px;font-size:12px;color:#777;text-decoration:line-through;white-space:nowrap;}',
-      '.custom-cart-item-discounts{list-style:none;margin:6px 0 0;padding:0;font-size:12px;color:#2d5b2e;}',
-      '.custom-cart-item-discounts li{display:flex;justify-content:space-between;gap:8px;}',
+      '.custom-cart-item-discounts{list-style:none;margin:6px 0 0;padding:0;font-size:12px;color:#c62828;font-weight:600;}',
+      '.custom-cart-item-discounts li{margin:0;}',
       '.custom-cart-summary-discount{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:#2d5b2e;font-weight:600;}',
       '.custom-cart-design-link{display:inline-block;cursor:pointer;background:none;border:none;padding:0;font:inherit;color:inherit;}',
       '.custom-cart-design-thumb{display:block;width:80px;height:80px;object-fit:contain;border-radius:6px;border:1px solid #e5e5e5;margin-top:4px;}',
@@ -345,10 +345,9 @@
     if (!allocations.length) return '';
 
     return '<ul class="custom-cart-item-discounts">' + allocations.map(function (allocation) {
-      var title = allocation && allocation.discount_application ? allocation.discount_application.title : '';
       var amount = Number(allocation && allocation.amount ? allocation.amount : 0);
-      if (!title && !amount) return '';
-      return '<li><span>' + escapeHtml(title || 'Discount') + '</span><span>-' + money(amount) + '</span></li>';
+      if (!amount) return '';
+      return '<li>Save - ' + money(amount) + '</li>';
     }).join('') + '</ul>';
   }
 
@@ -425,20 +424,37 @@
       var image = getItemImage(item);
       var quantity = Number(item.quantity || 0);
       var unitPriceCents = Number(item.final_price != null ? item.final_price : item.price) || 0;
+      var compareUnitCents =
+        Number(item.original_price != null ? item.original_price : item.price) || unitPriceCents;
       var lineTotalCents =
         Number(item.final_line_price != null ? item.final_line_price : unitPriceCents * quantity) || 0;
-      var originalLineCents = Number(item.original_line_price != null ? item.original_line_price : lineTotalCents) || 0;
-      var originalUnitCents = quantity > 0 ? Math.round(originalLineCents / quantity) : unitPriceCents;
+      var originalLineCents =
+        Number(item.original_line_price != null ? item.original_line_price : lineTotalCents) || 0;
+      var hasUnitDiscount = compareUnitCents > unitPriceCents;
+      var linePriceDisplay;
+
+      if (quantity > 1) {
+        linePriceDisplay =
+          money(lineTotalCents) +
+          ' <span class="custom-cart-item-price-each">(' +
+          money(unitPriceCents) +
+          ' each)</span>';
+        if (hasUnitDiscount) {
+          linePriceDisplay +=
+            '<span class="custom-cart-item-price-compare">' + money(compareUnitCents) + ' each</span>';
+        }
+      } else {
+        linePriceDisplay = money(lineTotalCents);
+        if (hasUnitDiscount) {
+          linePriceDisplay +=
+            '<span class="custom-cart-item-price-compare">' + money(compareUnitCents) + '</span>';
+        } else if (originalLineCents > lineTotalCents) {
+          linePriceDisplay +=
+            '<span class="custom-cart-item-price-compare">' + money(originalLineCents) + '</span>';
+        }
+      }
       var variantText = getVariantText(item);
       var key = escapeHtml(item.key || '');
-      var hasLineDiscount = originalLineCents > lineTotalCents;
-      var linePriceDisplay =
-        quantity > 1
-          ? money(lineTotalCents) + ' <span class="custom-cart-item-price-each">(' + money(unitPriceCents) + ' each)</span>' + (hasLineDiscount ? '<span class="custom-cart-item-price-compare">' + money(originalUnitCents) + ' each</span>' : '')
-          : money(lineTotalCents);
-      if (hasLineDiscount && quantity === 1) {
-        linePriceDisplay += '<span class="custom-cart-item-price-compare">' + money(originalLineCents) + '</span>';
-      }
 
       return '' +
         '<div class="custom-cart-item" data-cart-key="' + key + '">' +

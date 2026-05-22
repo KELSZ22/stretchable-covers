@@ -251,6 +251,7 @@
 {% endif %}
 
 {% if template == 'product' or template.name == 'product' or request.page_type == 'product' %}
+  <script src="{{ 'custom-product-volume-price.js' | asset_url }}" defer></script>
   <script
     src="{{ 'fly-to-cart.js' | asset_url }}"
     type="module"

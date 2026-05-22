@@ -3,16 +3,30 @@
 {% assign base_unit_price = current_variant.price | default: quantity_product.price %}
 {% assign popup_id = block.id | default: section.id %}
 {% assign volume_pricing_table = quantity_product.metafields.custom.volume_pricing_table.value %}
+{% assign volume_tiers = '50:price_50,100:price_100,250:price_250,500:price_500,1000:price_1000,2500:price_2500,5000:price_5000,10000:price_10000' | split: ',' %}
+{% assign volume_price_script_enabled = true %}
+{% assign volume_popup_enabled = false %}
+{% if quantity_product.quantity_price_breaks_configured? %}
+  {% assign volume_popup_enabled = true %}
+{% elsif volume_pricing_table != blank %}
+  {% assign volume_popup_enabled = true %}
+{% endif %}
+{% assign use_shopify_volume_breaks = false %}
+{% if quantity_product.quantity_price_breaks_configured? and current_variant.quantity_price_breaks.size > 0 %}
+  {% assign use_shopify_volume_breaks = true %}
+{% endif %}
 
 <div
   class="quantity-selector-container"
   data-quantity-volume-root="{{ popup_id }}"
+  data-product-id="{{ quantity_product.id }}"
+  data-initial-price-cents="{{ current_variant.price }}"
   data-money-format="{{ shop.money_format | escape }}"
   data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
 >
-  {% render 'quantity-selector', product: quantity_product %}
+  {% render 'quantity-selector', product: quantity_product, hide_price_per_item: volume_popup_enabled %}
 
-  {% if volume_pricing_table != blank %}
+  {% if volume_popup_enabled %}
     <button
       type="button"
       popovertarget="quantity-volume-popup-{{ popup_id }}"
@@ -56,48 +70,42 @@
           </tr>
         </thead>
 
-        <tbody>
-          {% assign volume_tiers = '50:price_50,100:price_100,250:price_250,500:price_500,1000:price_1000,2500:price_2500,5000:price_5000,10000:price_10000' | split: ',' %}
-
-          {% for volume_tier in volume_tiers %}
-            {% assign tier_parts = volume_tier | split: ':' %}
-            {% assign volume_quantity = tier_parts[0] %}
-            {% assign tier_field_key = tier_parts[1] %}
-            {% assign tier_field = volume_pricing_table[tier_field_key] %}
-
-            {% if tier_field != blank and tier_field.value != blank %}
-              {% assign tier_price_cents = tier_field.value.amount | default: tier_field.value | plus: 0 %}
-              {% assign save_cents = base_unit_price | minus: tier_price_cents %}
-
+        <tbody data-quantity-volume-popup-tbody>
+          {% if use_shopify_volume_breaks %}
+            {% for price_break in current_variant.quantity_price_breaks %}
+              {% assign save_cents = current_variant.price | minus: price_break.price %}
               {% if save_cents < 0 %}
                 {% assign save_cents = 0 %}
               {% endif %}
 
-              <tr>
-                <td>{{ volume_quantity }}+</td>
-
-                <td>
-                  <span
-                    data-tier-price
-                    data-tier-price-cents="{{ tier_price_cents }}"
-                  >
-                    {{ tier_price_cents | money }}
-                  </span>
-                </td>
-
-                <td>
-                  Save
-                  <span
-                    data-tier-save
-                    data-tier-price-cents="{{ tier_price_cents }}"
-                  >
-                    {{ save_cents | money }}
-                  </span>
-                  each
-                </td>
+              <tr data-tier-row data-tier-min="{{ price_break.minimum_quantity }}">
+                <td>{{ price_break.minimum_quantity }}+</td>
+                <td>{{ price_break.price | money }}</td>
+                <td>Save {{ save_cents | money }} each</td>
               </tr>
-            {% endif %}
-          {% endfor %}
+            {% endfor %}
+          {% else %}
+            {% for volume_tier in volume_tiers %}
+              {% assign tier_parts = volume_tier | split: ':' %}
+              {% assign volume_quantity = tier_parts[0] %}
+              {% assign tier_field_key = tier_parts[1] %}
+              {% assign tier_field = volume_pricing_table[tier_field_key] %}
+
+              {% if tier_field != blank and tier_field.value != blank %}
+                {% assign tier_price_cents = tier_field.value.amount | default: tier_field.value | plus: 0 %}
+                {% assign save_cents = base_unit_price | minus: tier_price_cents %}
+                {% if save_cents < 0 %}
+                  {% assign save_cents = 0 %}
+                {% endif %}
+
+                <tr data-tier-row data-tier-min="{{ volume_quantity }}">
+                  <td>{{ volume_quantity }}+</td>
+                  <td>{{ tier_price_cents | money }}</td>
+                  <td>Save {{ save_cents | money }} each</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
         </tbody>
       </table>
 
@@ -107,8 +115,45 @@
     </div>
 
     <script type="application/json" data-quantity-volume-variants>
-      {{ quantity_product.variants | json }}
+      [
+        {%- for variant in quantity_product.variants -%}
+          {%- unless forloop.first -%},{%- endunless -%}
+          {
+            "id": {{ variant.id }},
+            "price": {{ variant.price }},
+            "quantity_price_breaks": [
+              {%- for price_break in variant.quantity_price_breaks -%}
+                {%- unless forloop.first -%},{%- endunless -%}
+                {
+                  "minimum_quantity": {{ price_break.minimum_quantity }},
+                  "price": {{ price_break.price }}
+                }
+              {%- endfor -%}
+            ]
+          }
+        {%- endfor -%}
+      ]
     </script>
+
+    {% unless use_shopify_volume_breaks %}
+      <script type="application/json" data-quantity-volume-metafield-tiers>
+        [
+          {%- assign tier_json_count = 0 -%}
+          {%- for volume_tier in volume_tiers -%}
+            {%- assign tier_parts = volume_tier | split: ':' -%}
+            {%- assign volume_quantity = tier_parts[0] -%}
+            {%- assign tier_field_key = tier_parts[1] -%}
+            {%- assign tier_field = volume_pricing_table[tier_field_key] -%}
+            {%- if tier_field != blank and tier_field.value != blank -%}
+              {%- assign tier_price_cents = tier_field.value.amount | default: tier_field.value | plus: 0 -%}
+              {%- if tier_json_count > 0 -%},{%- endif -%}
+              {"minimum_quantity":{{ volume_quantity }},"price":{{ tier_price_cents }}}
+              {%- assign tier_json_count = tier_json_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        ]
+      </script>
+    {% endunless %}
   {% endif %}
 
   <style>
@@ -130,6 +175,51 @@
 
     .quantity-selector-toolkit p {
       margin: 0;
+    }
+
+    product-price [data-volume-price-updatable] .custom-cart-item-price-compare {
+      margin-left: 6px;
+      font-size: 12px;
+      color: #777;
+      text-decoration: line-through;
+      white-space: nowrap;
+    }
+
+    .volume-price-preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .volume-price-preview__spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgb(0 0 0 / 0.12);
+      border-top-color: rgb(0 0 0 / 0.55);
+      border-radius: 50%;
+      animation: volume-price-preview-spin 0.65s linear infinite;
+      flex-shrink: 0;
+    }
+
+    .volume-price-preview.is-volume-price-loading .volume-price-preview__spinner {
+      display: block;
+    }
+
+    .volume-price-preview.is-volume-price-loading .volume-price-preview__values {
+      opacity: 0.45;
+    }
+
+    @keyframes volume-price-preview-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .quantity-volume-popup tbody tr[data-tier-row].is-active-tier td {
+      color: #0f2e53;
+      font-weight: 700;
     }
 
     .quantity-volume-popup {
@@ -225,101 +315,20 @@
     }
   </style>
 
-  {% if volume_pricing_table != blank %}
+  {% if volume_price_script_enabled %}
+    <script src="{{ 'custom-product-volume-price.js' | asset_url }}" defer></script>
     <script>
-      (() => {
-        const root = document.querySelector('[data-quantity-volume-root="{{ popup_id }}"]');
-
-        if (!root || root.dataset.quantityVolumeReady === 'true') return;
-
-        root.dataset.quantityVolumeReady = 'true';
-
-        const variantJson = root.querySelector('[data-quantity-volume-variants]');
-        const saveEls = root.querySelectorAll('[data-tier-save]');
-        const moneyFormat = root.dataset.moneyFormat || '${{ amount }}';
-        const currency = root.dataset.currency || 'USD';
-
-        let variants = [];
-
-        try {
-          variants = JSON.parse(variantJson.textContent || '[]');
-        } catch (error) {
-          variants = [];
+      (function () {
+        function bootVolumePrice() {
+          if (window.CustomProductVolumePrice && typeof window.CustomProductVolumePrice.initAll === 'function') {
+            window.CustomProductVolumePrice.initAll();
+          }
         }
-
-        const formatMoney = (cents) => {
-          cents = Math.max(0, Number(cents) || 0);
-
-          if (window.Shopify && typeof window.Shopify.formatMoney === 'function') {
-            return window.Shopify.formatMoney(cents, moneyFormat);
-          }
-
-          return new Intl.NumberFormat(undefined, {
-            style: 'currency',
-            currency: currency
-          }).format(cents / 100);
-        };
-
-        const updateVolumeSavings = (basePriceCents) => {
-          basePriceCents = Number(basePriceCents) || 0;
-
-          saveEls.forEach((saveEl) => {
-            const tierPriceCents = Number(saveEl.dataset.tierPriceCents) || 0;
-            const saveCents = Math.max(0, basePriceCents - tierPriceCents);
-
-            saveEl.textContent = formatMoney(saveCents);
-          });
-        };
-
-        const findCurrentVariantId = () => {
-          const productForm =
-            root.closest('form[action*="/cart/add"]') ||
-            document.querySelector('form[action*="/cart/add"]');
-
-          if (!productForm) return null;
-
-          const variantInput = productForm.querySelector('[name="id"]');
-
-          return variantInput ? variantInput.value : null;
-        };
-
-        const updateFromSelectedVariant = () => {
-          const currentVariantId = findCurrentVariantId();
-
-          if (!currentVariantId || !variants.length) return;
-
-          const currentVariant = variants.find((variant) => {
-            return String(variant.id) === String(currentVariantId);
-          });
-
-          if (!currentVariant || typeof currentVariant.price === 'undefined') return;
-
-          updateVolumeSavings(currentVariant.price);
-        };
-
-        document.addEventListener('change', (event) => {
-          if (!event.target.matches('input, select')) return;
-
-          setTimeout(updateFromSelectedVariant, 80);
-        });
-
-        document.addEventListener('variant:change', (event) => {
-          if (event.detail && event.detail.variant && event.detail.variant.price) {
-            updateVolumeSavings(event.detail.variant.price);
-          } else {
-            setTimeout(updateFromSelectedVariant, 80);
-          }
-        });
-
-        document.addEventListener('product:variant-change', (event) => {
-          if (event.detail && event.detail.variant && event.detail.variant.price) {
-            updateVolumeSavings(event.detail.variant.price);
-          } else {
-            setTimeout(updateFromSelectedVariant, 80);
-          }
-        });
-
-        window.addEventListener('load', updateFromSelectedVariant);
+        document.addEventListener('DOMContentLoaded', bootVolumePrice);
+        document.addEventListener('shopify:section:load', bootVolumePrice);
+        if (document.readyState !== 'loading') {
+          setTimeout(bootVolumePrice, 0);
+        }
       })();
     </script>
   {% endif %}

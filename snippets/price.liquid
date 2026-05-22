@@ -39,13 +39,6 @@
     assign price_min = product_resource.price_min
     assign price_max = product_resource.price_max
     assign has_volume_pricing = product_resource.quantity_price_breaks_configured? | default: false
-  else
-    # Product page: only use selected variant's pricing
-    if selected_variant.quantity_price_breaks.size > 0
-      assign has_volume_pricing = true
-      assign price_min = selected_variant.quantity_price_breaks.last.price
-      assign price_max = selected_variant.price
-    endif
   endif
 
   # Determine if currency code should be shown
@@ -70,9 +63,23 @@
     assign price_min = price_min | money
     assign price_max = price_max | money
   endif
+
+  assign volume_price_preview = false
+  if template.name == 'product' and product_resource != blank
+    assign volume_price_preview = true
+  endif
+
 -%}
 
-<div ref="priceContainer">
+<div
+  ref="priceContainer"
+  {% if volume_price_preview %}
+    class="volume-price-preview"
+    data-volume-price-updatable
+    data-base-price-cents="{{ selected_variant.price }}"
+  {% endif %}
+>
+  {% if volume_price_preview %}<div class="volume-price-preview__values">{% endif %}
   {% if has_volume_pricing %}
     {% comment %} Volume pricing display {% endcomment %}
     {% if show_compare_price %}
@@ -120,7 +127,10 @@
     -%}
     {% render 'unit-price', price: unit_price, measurement: selected_variant.unit_price_measurement %}
   {%- endif -%}
+  {% if volume_price_preview %}</div>{% endif %}
+  {% if volume_price_preview %}
+    <span class="volume-price-preview__spinner" role="status" hidden>
+      <span class="visually-hidden">Updating price</span>
+    </span>
+  {% endif %}
 </div>
-{%- if has_volume_pricing -%}
-  <small class="volume-pricing-note">{{ 'content.volume_pricing_available' | t }}</small>
-{%- endif -%}

@@ -9,6 +9,7 @@
   @param {string} [class] - custom class for the quantity selector, optional
   @param {boolean} [can_update_quantity] - whether the quantity can be updated, defaults to true
   @param {number} [min] - override the minimum quantity (e.g., 0 for quick order list)
+  @param {boolean} [hide_price_per_item] - hide the per-quantity price line (product page uses main price instead)
 {%- enddoc -%}
 
 {% liquid
@@ -112,7 +113,7 @@
       endif
     -%}
 
-    {%- if has_volume_pricing -%}
+    {%- if has_volume_pricing and hide_price_per_item != true -%}
       {%- liquid
         assign use_currency = settings.currency_code_enabled_product_pages
       -%}
