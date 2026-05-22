@@ -1,0 +1,30 @@
+{%- doc -%}
+  Outputs "true" or "false" — whether add to cart should be blocked until an imprint size is chosen.
+
+  @param {object} product - Product with Imprint / Imprint Size options.
+{%- enddoc -%}
+
+{%- liquid
+  assign custom_imprint_add_to_cart_blocked = false
+  assign custom_imprint_has_size_option = false
+  assign custom_imprint_type_value = ''
+
+  for product_option in product.options_with_values
+    assign option_name_lc = product_option.name | downcase | strip
+
+    if option_name_lc == 'imprint size'
+      assign custom_imprint_has_size_option = true
+    elsif option_name_lc == 'imprint'
+      assign custom_imprint_type_value = product_option.selected_value | downcase | strip
+    endif
+  endfor
+
+  if custom_imprint_has_size_option and custom_imprint_type_value != blank
+    unless custom_imprint_type_value contains 'no imprint'
+      if custom_imprint_type_value contains 'full cover' or custom_imprint_type_value contains 'standard cover'
+        assign custom_imprint_add_to_cart_blocked = true
+      endif
+    endunless
+  endif
+-%}
+{%- if custom_imprint_add_to_cart_blocked -%}true{%- else -%}false{%- endif -%}

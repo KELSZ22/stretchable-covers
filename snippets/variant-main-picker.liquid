@@ -42,6 +42,44 @@
     {% endif %}
   >
     <form class="variant-picker__form{% if product_resource.options_with_values.size == 1 %} variant-picker__form--single-option{% endif %}">
+      {%- liquid
+        assign imprint_option_index = -1
+        assign imprint_size_option_index = -1
+
+        for product_option in product_resource.options_with_values
+          assign option_name_lc = product_option.name | downcase | strip
+
+          if option_name_lc == 'imprint'
+            assign imprint_option_index = forloop.index0
+          elsif option_name_lc == 'imprint size'
+            assign imprint_size_option_index = forloop.index0
+          endif
+        endfor
+
+        assign has_imprint_group = false
+        assign imprint_group_first_index = -1
+        assign imprint_group_last_index = -1
+
+        if imprint_option_index >= 0 or imprint_size_option_index >= 0
+          assign has_imprint_group = true
+          assign imprint_group_first_index = imprint_option_index
+          assign imprint_group_last_index = imprint_size_option_index
+
+          if imprint_option_index < 0
+            assign imprint_group_first_index = imprint_size_option_index
+            assign imprint_group_last_index = imprint_size_option_index
+          elsif imprint_size_option_index < 0
+            assign imprint_group_last_index = imprint_option_index
+          elsif imprint_option_index < imprint_size_option_index
+            assign imprint_group_first_index = imprint_option_index
+            assign imprint_group_last_index = imprint_size_option_index
+          else
+            assign imprint_group_first_index = imprint_size_option_index
+            assign imprint_group_last_index = imprint_option_index
+          endif
+        endif
+      -%}
+
       {%- for product_option in product_resource.options_with_values -%}
         {%- liquid
           assign swatch_count = product_option.values | map: 'swatch' | compact | size
@@ -52,12 +90,33 @@
 
           assign product_option_name_downcase = product_option.name | downcase | strip
           assign is_color_option = false
+          assign is_imprint_option = false
+          assign is_imprint_size_option = false
+          assign open_imprint_group = false
+          assign close_imprint_group = false
 
           if product_option_name_downcase == 'color'
             assign is_color_option = true
           endif
 
-          if swatch_count > 0 and block_settings.show_swatches
+          if product_option_name_downcase == 'imprint'
+            assign is_imprint_option = true
+            assign variant_style = 'buttons'
+          elsif product_option_name_downcase == 'imprint size'
+            assign is_imprint_size_option = true
+          endif
+
+          if has_imprint_group
+            if forloop.index0 == imprint_group_first_index
+              assign open_imprint_group = true
+            endif
+
+            if forloop.index0 == imprint_group_last_index
+              assign close_imprint_group = true
+            endif
+          endif
+
+          if swatch_count > 0 and block_settings.show_swatches and is_imprint_option == false
             if block_settings.variant_style == 'dropdown'
               assign variant_style = 'swatch_dropdown'
             else
@@ -65,15 +124,20 @@
             endif
           endif
 
-          if variant_style == 'buttons' and settings.variant_button_width == 'equal-width-buttons'
-            assign fieldset_id = section.id | append: '-' | append: product_resource.id | append: '-' | append: product_option.name | handleize
-            assign option_id_attribute = 'data-option-id="' | append: fieldset_id | append: '"'
-          endif
+          unless is_imprint_option
+            if variant_style == 'buttons' and settings.variant_button_width == 'equal-width-buttons'
+              assign fieldset_id = section.id | append: '-' | append: product_resource.id | append: '-' | append: product_option.name | handleize
+              assign option_id_attribute = 'data-option-id="' | append: fieldset_id | append: '"'
+            endif
+          endunless
 
           assign show_sizing_guide = false
           assign guide_display_type = blank
 
-          if forloop.index == 1 and product_resource.options_with_values.size > 1
+          if product_option_name_downcase == 'imprint'
+            assign show_sizing_guide = true
+            assign guide_display_type = 'icon'
+          elsif forloop.index == 1 and product_resource.options_with_values.size > 1
             assign show_sizing_guide = true
             assign guide_display_type = 'icon'
           elsif forloop.index == 2 and product_option_name_downcase != 'imprint size'
@@ -81,6 +145,10 @@
             assign guide_display_type = 'text'
           endif
         -%}
+
+        {%- if open_imprint_group -%}
+          <div class="variant-imprint-group">
+        {%- endif -%}
 
         {%- if is_color_option and product_resource.options_with_values.size > 1 -%}
           {%- assign fieldset_index = forloop.index0 -%}
@@ -195,21 +263,52 @@
             </div>
           </div>
 
-        {%- elsif variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
+        {%- elsif is_imprint_option or variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
           {%- assign fieldset_index = forloop.index0 -%}
 
           <fieldset
-            class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
+            class="variant-option variant-option--buttons{% if is_imprint_option %} variant-option--imprint-tabs{% elsif variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
             ref="fieldsets[]"
             {{ option_id_attribute }}
           >
-            <legend>
-              {{ product_option.name | escape -}}
-              {%- if variant_style == 'swatch' -%}
-                <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
-              {%- endif %}
-            </legend>
+            {%- if is_imprint_option -%}
+              <legend class="variant-imprint-tabs__legend">
+                <span class="variant-imprint-tabs__legend-label">{{ product_option.name | escape }}</span>
+
+                {%- if show_sizing_guide -%}
+                  <button
+                    type="button"
+                    class="variant-option__size-guide variant-option__size-guide--{{ guide_display_type }}"
+                    data-size-guide-open
+                    aria-haspopup="dialog"
+                    aria-controls="{{ size_guide_modal_id }}"
+                    aria-label="Important printing note"
+                  >
+                    {% if guide_display_type == 'icon' %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+                        <path d="M9.08333 17.4167C13.6857 17.4167 17.4167 13.6857 17.4167 9.08333C17.4167 4.48096 13.6857 0.75 9.08333 0.75C4.48096 0.75 0.75 4.48096 0.75 9.08333C0.75 13.6857 4.48096 17.4167 9.08333 17.4167Z" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    {% endif %}
+                  </button>
+                {%- endif -%}
+              </legend>
+
+              <div
+                class="variant-imprint-tabs__list"
+                role="radiogroup"
+                aria-label="{{ product_option.name | escape }}"
+              >
+            {%- else -%}
+              <legend>
+                {{ product_option.name | escape -}}
+                {%- if variant_style == 'swatch' -%}
+                  <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
+                {%- endif %}
+              </legend>
+            {%- endif -%}
 
             {%- for product_option_value in product_option.values -%}
               {% if product_option_value.size > longest_value and option_id_attribute %}
@@ -217,7 +316,7 @@
               {% endif %}
 
               <label
-                class="variant-option__button-label{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}"
+                class="{% if is_imprint_option %}variant-imprint-tab{% else %}variant-option__button-label{% endif %}{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}"
               >
                 <input
                   type="radio"
@@ -260,12 +359,14 @@
                     mode: 'unscaled'
                   %}
                 {% else %}
-                  {% if product_option_value.available == true %}
-                    <span
-                      class="variant-option__button-label__pill"
-                      data-key="variant-option-pill"
-                    ></span>
-                  {% endif %}
+                  {% unless is_imprint_option %}
+                    {% if product_option_value.available == true %}
+                      <span
+                        class="variant-option__button-label__pill"
+                        data-key="variant-option-pill"
+                      ></span>
+                    {% endif %}
+                  {% endunless %}
 
                   <span
                     class="variant-option__button-label__text"
@@ -278,6 +379,10 @@
                 {% render 'strikethrough-variant', product_option: product_option_value %}
               </label>
             {%- endfor -%}
+
+            {%- if is_imprint_option -%}
+              </div>
+            {%- endif -%}
 
             {% if option_id_attribute %}
               {% style %}
@@ -297,32 +402,34 @@
             endif
           %}
 
-          <div class="variant-option variant-option--dropdowns">
+          <div class="variant-option variant-option--dropdowns{% if is_imprint_size_option %} variant-option--imprint-size{% endif %}">
             <div class="varian-option-container">
               <label for="Option-{{ block.id }}-{{ forloop.index0 }}">
                 {{ product_option.name | escape }}
               </label>
 
-              {% if show_sizing_guide %}
-                <button
-                  type="button"
-                  class="variant-option__size-guide variant-option__size-guide--{{ guide_display_type }}"
-                  data-size-guide-open
-                  aria-haspopup="dialog"
-                  aria-controls="{{ size_guide_modal_id }}"
-                  aria-label="Sizing guide"
-                >
-                  {% if guide_display_type == 'icon' %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
-                      <path d="M9.08333 17.4167C13.6857 17.4167 17.4167 13.6857 17.4167 9.08333C17.4167 4.48096 13.6857 0.75 9.08333 0.75C4.48096 0.75 0.75 4.48096 0.75 9.08333C0.75 13.6857 4.48096 17.4167 9.08333 17.4167Z" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  {% elsif guide_display_type == 'text' %}
-                    Sizing guide
-                  {% endif %}
-                </button>
-              {% endif %}
+              {% unless is_imprint_size_option %}
+                {% if show_sizing_guide %}
+                  <button
+                    type="button"
+                    class="variant-option__size-guide variant-option__size-guide--{{ guide_display_type }}"
+                    data-size-guide-open
+                    aria-haspopup="dialog"
+                    aria-controls="{{ size_guide_modal_id }}"
+                    aria-label="Sizing guide"
+                  >
+                    {% if guide_display_type == 'icon' %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+                        <path d="M9.08333 17.4167C13.6857 17.4167 17.4167 13.6857 17.4167 9.08333C17.4167 4.48096 13.6857 0.75 9.08333 0.75C4.48096 0.75 0.75 4.48096 0.75 9.08333C0.75 13.6857 4.48096 17.4167 9.08333 17.4167Z" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    {% elsif guide_display_type == 'text' %}
+                      Sizing guide
+                    {% endif %}
+                  </button>
+                {% endif %}
+              {% endunless %}
             </div>
 
             <div
@@ -336,8 +443,22 @@
               <select
                 id="Option-{{ block.id }}-{{ forloop.index0 }}"
                 name="options[{{ product_option.name | escape }}]"
-                class="variant-option__select"
+                class="variant-option__select{% if is_imprint_size_option %} variant-option__select--imprint-size{% endif %}"
+                {% if is_imprint_size_option %}
+                  data-imprint-size-select
+                {% endif %}
               >
+                {%- if is_imprint_size_option -%}
+                  <option
+                    value=""
+                    disabled
+                    selected
+                    data-imprint-size-placeholder
+                  >
+                    Select imprint size
+                  </option>
+                  <option value="-----" disabled data-imprint-size-dash>-----</option>
+                {%- endif -%}
                 {%- for product_option_value in product_option.values -%}
                   <option
                     value="{{ product_option_value | escape }}"
@@ -345,7 +466,7 @@
                     data-option-value-id="{{ product_option_value.id }}"
                     data-variant-id="{{ product_option_value.variant.id }}"
                     data-connected-product-url="{{ product_option_value.product_url }}"
-                    {% if product_option_value.selected %}
+                    {% if product_option_value.selected and is_imprint_size_option == false %}
                       selected="selected"
                     {% endif %}
                   >
@@ -367,6 +488,10 @@
                 {%- render 'icon', icon: 'caret' -%}
               </svg>
             </div>
+          </div>
+        {%- endif -%}
+
+        {%- if close_imprint_group -%}
           </div>
         {%- endif -%}
       {%- endfor -%}
@@ -702,6 +827,29 @@
         return String(value || '').trim();
       }
 
+      function getImprintSizeOptionIndex(picker) {
+        var pickerForm = picker ? picker.querySelector('.variant-picker__form') : null;
+        var sizeIndex = -1;
+
+        if (!pickerForm) return sizeIndex;
+
+        Array.prototype.slice.call(pickerForm.children).forEach(function(optionEl, index) {
+          if (optionEl.querySelector('[data-imprint-size-select]')) {
+            sizeIndex = index;
+          }
+        });
+
+        return sizeIndex;
+      }
+
+      function isImprintSizeDashSelected(select) {
+        if (!select) return false;
+
+        var option = select.options[select.selectedIndex];
+
+        return Boolean(option && option.hasAttribute('data-imprint-size-dash'));
+      }
+
       function getPickerOptionValues(picker) {
         var pickerForm = picker ? picker.querySelector('.variant-picker__form') : null;
         var values = [];
@@ -711,6 +859,7 @@
         Array.prototype.slice.call(pickerForm.children).forEach(function(optionEl, index) {
           var select;
           var checked;
+          var selectedOption;
 
           if (!optionEl.classList || !optionEl.classList.contains('variant-option')) return;
 
@@ -718,7 +867,13 @@
           checked = optionEl.querySelector('input[type="radio"]:checked');
 
           if (select) {
-            values[index] = select.value;
+            selectedOption = select.options[select.selectedIndex];
+
+            if (selectedOption && selectedOption.hasAttribute('data-imprint-size-dash')) {
+              values[index] = undefined;
+            } else {
+              values[index] = select.value;
+            }
           } else if (checked) {
             values[index] = checked.value;
           }
@@ -730,6 +885,8 @@
       function findMatchingVariant(picker) {
         var variants = getPickerVariants(picker);
         var selectedOptions = getPickerOptionValues(picker);
+        var sizeIndex = getImprintSizeOptionIndex(picker);
+        var ignoreImprintSize = !imprintTypeRequiresSize(getSelectedImprintType(picker)) && sizeIndex >= 0;
 
         if (!variants.length || !selectedOptions.length) return null;
 
@@ -737,6 +894,10 @@
           if (!variant || !Array.isArray(variant.options)) return false;
 
           return selectedOptions.every(function(value, index) {
+            if (ignoreImprintSize && index === sizeIndex) return true;
+
+            if (value === undefined || value === null || value === '') return true;
+
             return normalizeOption(variant.options[index]) === normalizeOption(value);
           });
         }) || null;
@@ -766,26 +927,325 @@
         return String(variant.id);
       }
 
+      function imprintTypeRequiresSize(imprintType) {
+        var value = String(imprintType || '').toLowerCase().trim();
+
+        if (!value || value.indexOf('no imprint') !== -1) return false;
+
+        return value.indexOf('full cover') !== -1 || value.indexOf('standard cover') !== -1;
+      }
+
+      function getImprintSizeSelect(picker) {
+        return picker ? picker.querySelector('[data-imprint-size-select]') : null;
+      }
+
+      function getSelectedImprintType(picker) {
+        var input = picker ? picker.querySelector('.variant-imprint-tab input[type="radio"]:checked') : null;
+
+        return input ? input.value : '';
+      }
+
+      function ensureImprintSizePlaceholder(select) {
+        if (!select) return null;
+
+        var placeholder = select.querySelector('[data-imprint-size-placeholder]');
+
+        if (!placeholder) {
+          placeholder = document.createElement('option');
+          placeholder.value = '';
+          placeholder.disabled = true;
+          placeholder.setAttribute('data-imprint-size-placeholder', '');
+          placeholder.textContent = 'Select imprint size';
+          select.insertBefore(placeholder, select.firstChild);
+        }
+
+        return placeholder;
+      }
+
+      function ensureImprintSizeDashOption(select) {
+        if (!select) return null;
+
+        var dashOption = select.querySelector('[data-imprint-size-dash]');
+
+        if (!dashOption) {
+          dashOption = document.createElement('option');
+          dashOption.value = '-----';
+          dashOption.disabled = true;
+          dashOption.setAttribute('data-imprint-size-dash', '');
+          dashOption.textContent = '-----';
+          select.appendChild(dashOption);
+        }
+
+        return dashOption;
+      }
+
+      function isImprintSizePlaceholderSelected(select) {
+        if (!select) return true;
+
+        var option = select.options[select.selectedIndex];
+
+        if (!option) return true;
+
+        if (option.hasAttribute('data-imprint-size-dash')) return false;
+
+        return option.hasAttribute('data-imprint-size-placeholder') || !String(option.value || '').trim();
+      }
+
+      function resetImprintSizeToPlaceholder(picker) {
+        var select = getImprintSizeSelect(picker);
+        var placeholder;
+
+        if (!select) return;
+
+        placeholder = ensureImprintSizePlaceholder(select);
+        select.value = '';
+
+        if (placeholder) {
+          placeholder.selected = true;
+        }
+      }
+
+      var IMPRINT_SIZE_ALERT_MESSAGE = 'Please select an imprint size first.';
+
+      function isImprintAddToCartBlocked(picker) {
+        if (!getImprintSizeSelect(picker)) return false;
+
+        if (!imprintTypeRequiresSize(getSelectedImprintType(picker))) return false;
+
+        return isImprintSizePlaceholderSelected(getImprintSizeSelect(picker));
+      }
+
+      function updateImprintSizeInlineAlert(picker, show) {
+        var select = getImprintSizeSelect(picker);
+        var optionRow;
+        var alertEl;
+
+        if (!select) return;
+
+        optionRow = select.closest('.variant-option--imprint-size');
+        if (!optionRow) return;
+
+        alertEl = optionRow.querySelector('[data-imprint-size-alert]');
+
+        if (!alertEl) {
+          alertEl = document.createElement('p');
+          alertEl.className = 'variant-imprint-size__alert';
+          alertEl.setAttribute('data-imprint-size-alert', '');
+          alertEl.setAttribute('role', 'alert');
+          optionRow.appendChild(alertEl);
+        }
+
+        alertEl.textContent = IMPRINT_SIZE_ALERT_MESSAGE;
+        alertEl.hidden = !show;
+
+        select
+          .closest('.variant-option__select-wrapper')
+          ?.classList.toggle('variant-imprint-size__select-wrapper--error', show);
+      }
+
+      function notifyImprintSizeRequired(picker) {
+        window.alert(IMPRINT_SIZE_ALERT_MESSAGE);
+
+        var sizeSelect = getImprintSizeSelect(picker);
+        if (sizeSelect) sizeSelect.focus();
+
+        updateImprintSizeInlineAlert(picker, true);
+      }
+
+      function getAddToCartButtonsForPicker(picker) {
+        var form = findProductFormFromElement(picker);
+        var scope = form
+          ? form.closest('section, .shopify-section, [data-section-id], product-info, .product')
+          : null;
+        var buttons = [];
+        var seen = [];
+
+        function addButton(button) {
+          if (!button || seen.indexOf(button) !== -1) return;
+          seen.push(button);
+          buttons.push(button);
+        }
+
+        if (form) {
+          form
+            .querySelectorAll(
+              'button[name="add"], [data-add-to-cart], .product-form__submit, add-to-cart-component button[type="submit"]'
+            )
+            .forEach(addButton);
+        }
+
+        if (scope) {
+          scope
+            .querySelectorAll('sticky-add-to-cart button, .sticky-add-to-cart__button')
+            .forEach(addButton);
+        }
+
+        return buttons;
+      }
+
+      function updateImprintSizeFieldState(picker) {
+        var select = getImprintSizeSelect(picker);
+        var optionRow;
+        var requiresSize = imprintTypeRequiresSize(getSelectedImprintType(picker));
+
+        if (!select) return;
+
+        optionRow = select.closest('.variant-option--imprint-size');
+
+        select.disabled = !requiresSize;
+
+        if (requiresSize) {
+          select.removeAttribute('aria-disabled');
+        } else {
+          select.setAttribute('aria-disabled', 'true');
+        }
+
+        if (optionRow) {
+          optionRow.classList.toggle('variant-option--imprint-size--disabled', !requiresSize);
+        }
+
+        if (!requiresSize) {
+          updateImprintSizeInlineAlert(picker, false);
+          select
+            .closest('.variant-option__select-wrapper')
+            ?.classList.remove('variant-imprint-size__select-wrapper--error');
+          syncImprintSizeForNonRequiredType(picker);
+        }
+      }
+
+      function syncImprintSizeForNonRequiredType(picker) {
+        var select = getImprintSizeSelect(picker);
+        var dashOption;
+
+        if (!select || imprintTypeRequiresSize(getSelectedImprintType(picker))) return;
+
+        dashOption = ensureImprintSizeDashOption(select);
+        dashOption.selected = true;
+        select.value = '-----';
+      }
+
+      function updateImprintAddToCartState(picker) {
+        updateImprintSizeFieldState(picker);
+
+        var blocked = isImprintAddToCartBlocked(picker);
+
+        updateImprintSizeInlineAlert(picker, blocked);
+
+        getAddToCartButtonsForPicker(picker).forEach(function(button) {
+          if (blocked) {
+            button.disabled = true;
+            button.setAttribute('aria-disabled', 'true');
+            button.dataset.imprintSizeRequired = 'true';
+            return;
+          }
+
+          if (button.dataset.imprintSizeRequired === 'true') {
+            button.disabled = false;
+            button.removeAttribute('aria-disabled');
+            delete button.dataset.imprintSizeRequired;
+          }
+        });
+      }
+
+      function restoreSavedImprintSize(picker) {
+        var select = getImprintSizeSelect(picker);
+        var savedSize = picker ? picker.dataset.lastImprintSize : '';
+        var option;
+        var index;
+
+        if (!select || !savedSize) return false;
+
+        for (index = 0; index < select.options.length; index += 1) {
+          option = select.options[index];
+
+          if (
+            option.hasAttribute('data-imprint-size-placeholder') ||
+            option.hasAttribute('data-imprint-size-dash')
+          ) {
+            continue;
+          }
+
+          if (option.value === savedSize) {
+            select.selectedIndex = index;
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      function syncImprintPickerState(picker, options) {
+        options = options || {};
+
+        if (!picker || !getImprintSizeSelect(picker)) return;
+
+        ensureImprintSizePlaceholder(getImprintSizeSelect(picker));
+
+        updateImprintSizeFieldState(picker);
+
+        if (imprintTypeRequiresSize(getSelectedImprintType(picker))) {
+          if (options.resetSizeToPlaceholder) {
+            delete picker.dataset.lastImprintSize;
+            resetImprintSizeToPlaceholder(picker);
+          } else {
+            restoreSavedImprintSize(picker);
+          }
+        } else {
+          syncImprintSizeForNonRequiredType(picker);
+        }
+
+        if (!isImprintAddToCartBlocked(picker)) {
+          updateSelectedVariantIdForCart(picker);
+        }
+
+        updateImprintAddToCartState(picker);
+      }
+
+      function refreshImprintAddToCartButtons() {
+        document.querySelectorAll('variant-picker').forEach(function(picker) {
+          if (!getImprintSizeSelect(picker)) return;
+          updateImprintAddToCartState(picker);
+        });
+      }
+
       function prepareVariantPicker(picker) {
-        if (!picker || picker.dataset.customCartVariantFixReady === 'true') return;
+        if (!picker) return;
 
-        picker.dataset.customCartVariantFixReady = 'true';
+        if (picker.dataset.customCartVariantFixReady !== 'true') {
+          picker.dataset.customCartVariantFixReady = 'true';
 
-        picker.updateSelectedVariantIdForCart = function() {
-          return updateSelectedVariantIdForCart(picker);
-        };
+          picker.updateSelectedVariantIdForCart = function() {
+            return updateSelectedVariantIdForCart(picker);
+          };
 
-        updateSelectedVariantIdForCart(picker);
+          syncImprintPickerState(picker, { resetSizeToPlaceholder: true });
+          return;
+        }
+
+        updateImprintAddToCartState(picker);
       }
 
       function prepareAllVariantPickers() {
         document.querySelectorAll('variant-picker').forEach(prepareVariantPicker);
+        refreshImprintAddToCartButtons();
+      }
+
+      function schedulePrepareAllVariantPickers() {
+        prepareAllVariantPickers();
       }
 
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', prepareAllVariantPickers);
+        document.addEventListener('readystatechange', function onReadyStateChange() {
+          if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            document.removeEventListener('readystatechange', onReadyStateChange);
+            schedulePrepareAllVariantPickers();
+          }
+        });
+        document.addEventListener('DOMContentLoaded', schedulePrepareAllVariantPickers);
+        window.addEventListener('load', refreshImprintAddToCartButtons);
       } else {
-        prepareAllVariantPickers();
+        schedulePrepareAllVariantPickers();
+        refreshImprintAddToCartButtons();
       }
 
       document.addEventListener('shopify:section:load', function() {
@@ -803,15 +1263,54 @@
       document.addEventListener('change', function(event) {
         var diameterInput = event.target.closest('[data-number-only-input][data-line-item-property-input]');
         var picker = event.target.closest('variant-picker');
+        var imprintTypeInput = event.target.closest('.variant-imprint-tab input[type="radio"]');
+        var imprintSizeSelect = event.target.closest('[data-imprint-size-select]');
 
         if (diameterInput) {
           syncDiameterInput(diameterInput);
         }
 
-        if (picker) {
-          updateSelectedVariantIdForCart(picker);
+        if (!picker) return;
+
+        if (imprintTypeInput) {
+          var requiresSize = imprintTypeRequiresSize(imprintTypeInput.value);
+
+          if (requiresSize) {
+            delete picker.dataset.lastImprintSize;
+          }
+
+          updateImprintAddToCartState(picker);
+
+          syncImprintPickerState(picker, {
+            resetSizeToPlaceholder: requiresSize,
+          });
+          return;
         }
+
+        if (imprintSizeSelect) {
+          if (imprintSizeSelect.value) {
+            picker.dataset.lastImprintSize = imprintSizeSelect.value;
+          } else {
+            delete picker.dataset.lastImprintSize;
+          }
+
+          syncImprintPickerState(picker);
+          return;
+        }
+
+        updateSelectedVariantIdForCart(picker);
+        updateImprintAddToCartState(picker);
       }, true);
+
+      document.addEventListener('variant:update', function() {
+        document.querySelectorAll('variant-picker').forEach(function(picker) {
+          if (!getImprintSizeSelect(picker)) return;
+
+          syncImprintPickerState(picker);
+        });
+
+        refreshImprintAddToCartButtons();
+      });
 
       ['pointerdown', 'mousedown', 'touchstart', 'click'].forEach(function(eventName) {
         document.addEventListener(eventName, function(event) {
@@ -829,6 +1328,17 @@
           picker = scope.querySelector('variant-picker');
 
           if (picker) {
+            if (isImprintAddToCartBlocked(picker)) {
+              event.preventDefault();
+              event.stopPropagation();
+
+              if (eventName === 'click') {
+                notifyImprintSizeRequired(picker);
+              }
+
+              return;
+            }
+
             updateSelectedVariantIdForCart(picker);
           }
 
@@ -846,6 +1356,13 @@
         scope = form.closest('section, .shopify-section, [data-section-id], product-info, .product') || document;
         picker = scope.querySelector('variant-picker');
 
+        if (picker && isImprintAddToCartBlocked(picker)) {
+          event.preventDefault();
+          event.stopPropagation();
+          notifyImprintSizeRequired(picker);
+          return;
+        }
+
         if (picker) {
           updateSelectedVariantIdForCart(picker);
         }
@@ -854,8 +1371,18 @@
       }, true);
 
       if (window.MutationObserver) {
+        var imprintCartButtonObserverTimer;
+
         new MutationObserver(function() {
-          prepareAllVariantPickers();
+          window.clearTimeout(imprintCartButtonObserverTimer);
+          imprintCartButtonObserverTimer = window.setTimeout(function() {
+            document.querySelectorAll('variant-picker').forEach(function(picker) {
+              if (picker.dataset.customCartVariantFixReady !== 'true') {
+                prepareVariantPicker(picker);
+              }
+            });
+            refreshImprintAddToCartButtons();
+          }, 0);
         }).observe(document.documentElement, {
           childList: true,
           subtree: true
@@ -1215,7 +1742,229 @@
   }
 
   .variant-picker__form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     width: 100%;
+    max-width: 100%;
+  }
+
+  /* Imprint + Imprint Size: 75% column (half + half more) */
+  .variant-imprint-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: calc(75% - 8px);
+    max-width: calc(75% - 8px);
+    min-width: 0;
+    align-self: flex-start;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+  }
+
+  .variant-imprint-group > .variant-option {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .variant-imprint-group > .variant-option + .variant-option {
+    margin-block-start: 0;
+  }
+
+  .variant-imprint-group .variant-option--dropdowns {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .variant-picker .variant-option--buttons.variant-option--imprint-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
+  }
+
+  .variant-picker .variant-option--imprint-tabs legend.variant-imprint-tabs__legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    float: none;
+  }
+
+  .variant-picker .variant-imprint-tabs__legend-label {
+    color: #1f1f1f;
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  /* Tab strip: 8px inset, 8px rounded tabs */
+  .variant-picker .variant-imprint-tabs__list {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-block-start: 5px;
+    margin-inline: 0;
+    margin-block-end: 0;
+    padding: 4px;
+    gap: 4px;
+    list-style: none;
+    border: 1px solid #d9dbdf;
+    border-radius: 8px;
+    overflow: visible;
+    background: #fff;
+    box-sizing: border-box;
+  }
+
+  .variant-picker .variant-imprint-tab {
+    --variant-picker-stroke-color: transparent;
+
+    position: relative;
+    display: flex;
+    flex: 1 1 0%;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    max-width: none;
+    min-height: auto;
+    margin: 0;
+    padding: 6px 3px;
+    border: 0;
+    border-radius: 8px;
+    background: #fff;
+    color: #5f5f5f;
+    font-family: Lato, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.25;
+    white-space: normal;
+    text-align: center;
+    cursor: pointer;
+    overflow: visible;
+    gap: 0;
+  }
+
+  .variant-picker .variant-imprint-tab::before,
+  .variant-picker .variant-imprint-tab::after {
+    content: none;
+    display: none;
+  }
+
+  .variant-picker .variant-imprint-tab input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+  }
+
+  .variant-picker .variant-imprint-tab .variant-option__button-label__text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .variant-picker .variant-imprint-tab:has(:checked) {
+    background: #0f2e53;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .variant-picker .variant-imprint-tab:hover:has(:not(:checked)) {
+    background: #f5f6f8;
+    color: #1f1f1f;
+  }
+
+  .variant-picker .variant-imprint-tab:has(:checked):hover {
+    background: #0f2e53;
+    color: #fff;
+  }
+
+  .variant-picker .variant-imprint-tab:has([data-option-available='false']) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .variant-picker .variant-imprint-tab svg {
+    display: none;
+  }
+
+  @media screen and (max-width: 767px) {
+    .variant-imprint-group {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .variant-picker .variant-imprint-tabs__list {
+      flex-wrap: nowrap;
+    }
+
+    .variant-picker .variant-imprint-tab {
+      flex: 1 1 0%;
+      min-width: 0;
+      padding: 5px 3px;
+      font-size: 10px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+  }
+
+  .variant-option--imprint-size .varian-option-container > label {
+    flex: 1 1 auto;
+    max-width: none;
+    padding-right: 0;
+    color: #1f1f1f;
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  .variant-imprint-size__alert {
+    margin: 6px 0 0;
+    color: #b42318;
+    font-family: Lato, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  .variant-imprint-size__alert[hidden] {
+    display: none;
+  }
+
+  .variant-option--imprint-size .variant-imprint-size__select-wrapper--error {
+    border-color: #b42318;
+  }
+
+  .variant-option--imprint-size--disabled {
+    opacity: 0.55;
+  }
+
+  .variant-option--imprint-size--disabled .variant-option__select-wrapper {
+    pointer-events: none;
+    background: #f5f6f8;
+  }
+
+  .variant-option--imprint-size--disabled .variant-option__select {
+    cursor: not-allowed;
   }
 
   .variant-picker__form--single-option {

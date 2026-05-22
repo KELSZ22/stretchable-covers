@@ -29,6 +29,16 @@
     assign current_variant = product.selected_or_first_available_variant
     # Get the initial quantity based on quantity rules
     assign initial_quantity = current_variant.quantity_rule.min | default: 1
+
+    capture custom_imprint_add_to_cart_blocked_capture
+      render 'custom-imprint-add-to-cart-blocked', product: product
+    endcapture
+    assign custom_imprint_add_to_cart_blocked = custom_imprint_add_to_cart_blocked_capture | strip
+    assign sticky_add_to_cart_disabled = true
+
+    if current_variant.available and custom_imprint_add_to_cart_blocked != 'true'
+      assign sticky_add_to_cart_disabled = false
+    endif
   %}
 
   <sticky-add-to-cart
@@ -121,9 +131,9 @@
         class="sticky-add-to-cart__button add-to-cart-button button"
         ref="addToCartButton"
         on:click="/handleAddToCartClick"
-        {% unless current_variant.available %}
+        {% if sticky_add_to_cart_disabled %}
           disabled
-        {% endunless %}
+        {% endif %}
       >
         <span
           class="add-to-cart-text"

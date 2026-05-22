@@ -1351,6 +1351,7 @@
   max-width: 22rem;
 }
 
+.custom-cover-customizer .custom-cover-customizer__dropzone-note,
 .custom-cover-customizer .custom-cover-customizer__dropzone-formats,
 .custom-cover-customizer .custom-cover-customizer__dropzone-max {
   max-width: 22rem;

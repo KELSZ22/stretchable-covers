@@ -564,6 +564,14 @@
                               | escape
                             -}}
                           </span>
+                          {%- assign image_upload_other_formats_note = section.settings.image_upload_other_formats_note
+                            | default: 'Note: If you have other file formats like Corel, PDF, or Adobe Illustrator files, please email them directly to support@stretchablecovers.net (temporary email for now).'
+                          -%}
+                          {%- if image_upload_other_formats_note != blank -%}
+                            <span class="custom-cover-customizer__dropzone-note">
+                              {{- image_upload_other_formats_note | escape -}}
+                            </span>
+                          {%- endif -%}
                           <span class="custom-cover-customizer__dropzone-formats">
                             {{-
                               section.settings.image_upload_formats_hint
@@ -2145,6 +2153,11 @@
         "label": "Image upload accepted formats hint",
         "default": "Accepts JPG, PNG, SVG, and WebP",
         "info": "The uploader accepts image types your browser supports (file picker uses image/*)."
+      }, {
+        "type": "textarea",
+        "id": "image_upload_other_formats_note",
+        "label": "Image upload other formats note",
+        "default": "Note: If you have other file formats like Corel, PDF, or Adobe Illustrator files, please email them directly to support@stretchablecovers.net (temporary email for now)."
       }, {
         "type": "text",
         "id": "clipart_heading",
