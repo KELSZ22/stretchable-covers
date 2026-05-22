@@ -869,7 +869,6 @@
   .product-compare-modal__search-card {
     width: 100%;
     min-height: 150px;
-    border: 1px dashed #cdd3da;
     border-radius: 12px;
     padding: 26px 22px 22px;
     display: flex;
@@ -1455,6 +1454,17 @@
             '</div>';
 
           selectedPreview.hidden = false;
+
+          const searchTitle = rightSlot.querySelector('.product-compare-modal__search-title');
+          const searchWrap = rightSlot.querySelector('.product-compare-modal__search-wrap');
+
+          if (searchTitle) {
+            searchTitle.remove();
+          }
+
+          if (searchWrap) {
+            searchWrap.remove();
+          }
         }
 
         function updateComparison(product) {
