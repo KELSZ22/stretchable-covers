@@ -3,14 +3,11 @@
 
   @param {object} product_resource - The product object.
   @param {object} [block] - The block object
+  @param {object} section - The section object.
+  @param {object} product - The current product object (used to determine selected variant state).
 {%- enddoc -%}
 
 {% assign block_settings = block.settings %}
-
-{% assign has_size_option = false %}
-{% if product_resource.options_with_values.size > 0 %}
-  {% assign has_size_option = true %}
-{% endif %}
 
 {% unless product_resource.has_only_default_variant %}
   {% liquid
@@ -20,11 +17,7 @@
     else
       assign strikethrough_color_mix = '#fff'
     endif
-
-    assign size_guide_modal_id = 'SizingGuideModal-' | append: section.id | append: '-' | append: block.id | append: '-' | append: product_resource.id
-    assign size_guide_title_id = 'SizingGuideTitle-' | append: section.id | append: '-' | append: block.id | append: '-' | append: product_resource.id
   %}
-
   <variant-picker
     class="variant-picker spacing-style variant-picker--{{ block_settings.alignment }}"
     style="--color-strikethrough-mix: {{ strikethrough_color_mix }}; {% render 'spacing-style', settings: block_settings %}"
@@ -41,82 +34,13 @@
       data-shopify-visual-preview
     {% endif %}
   >
-    <form class="variant-picker__form{% if product_resource.options_with_values.size == 1 %} variant-picker__form--single-option{% endif %}">
-      {%- liquid
-        assign imprint_option_index = -1
-        assign imprint_size_option_index = -1
-
-        for product_option in product_resource.options_with_values
-          assign option_name_lc = product_option.name | downcase | strip
-
-          if option_name_lc == 'imprint'
-            assign imprint_option_index = forloop.index0
-          elsif option_name_lc == 'imprint size'
-            assign imprint_size_option_index = forloop.index0
-          endif
-        endfor
-
-        assign has_imprint_group = false
-        assign imprint_group_first_index = -1
-        assign imprint_group_last_index = -1
-
-        if imprint_option_index >= 0 or imprint_size_option_index >= 0
-          assign has_imprint_group = true
-          assign imprint_group_first_index = imprint_option_index
-          assign imprint_group_last_index = imprint_size_option_index
-
-          if imprint_option_index < 0
-            assign imprint_group_first_index = imprint_size_option_index
-            assign imprint_group_last_index = imprint_size_option_index
-          elsif imprint_size_option_index < 0
-            assign imprint_group_last_index = imprint_option_index
-          elsif imprint_option_index < imprint_size_option_index
-            assign imprint_group_first_index = imprint_option_index
-            assign imprint_group_last_index = imprint_size_option_index
-          else
-            assign imprint_group_first_index = imprint_size_option_index
-            assign imprint_group_last_index = imprint_option_index
-          endif
-        endif
-      -%}
-
+    <form class="variant-picker__form">
       {%- for product_option in product_resource.options_with_values -%}
         {%- liquid
           assign swatch_count = product_option.values | map: 'swatch' | compact | size
           assign variant_style = block_settings.variant_style
-          assign option_id_attribute = blank
-          assign fieldset_id = blank
-          assign longest_value = 0
 
-          assign product_option_name_downcase = product_option.name | downcase | strip
-          assign is_color_option = false
-          assign is_imprint_option = false
-          assign is_imprint_size_option = false
-          assign open_imprint_group = false
-          assign close_imprint_group = false
-
-          if product_option_name_downcase == 'color'
-            assign is_color_option = true
-          endif
-
-          if product_option_name_downcase == 'imprint'
-            assign is_imprint_option = true
-            assign variant_style = 'buttons'
-          elsif product_option_name_downcase == 'imprint size'
-            assign is_imprint_size_option = true
-          endif
-
-          if has_imprint_group
-            if forloop.index0 == imprint_group_first_index
-              assign open_imprint_group = true
-            endif
-
-            if forloop.index0 == imprint_group_last_index
-              assign close_imprint_group = true
-            endif
-          endif
-
-          if swatch_count > 0 and block_settings.show_swatches and is_imprint_option == false
+          if swatch_count > 0 and block_settings.show_swatches
             if block_settings.variant_style == 'dropdown'
               assign variant_style = 'swatch_dropdown'
             else
@@ -124,205 +48,52 @@
             endif
           endif
 
-          unless is_imprint_option
-            if variant_style == 'buttons' and settings.variant_button_width == 'equal-width-buttons'
-              assign fieldset_id = section.id | append: '-' | append: product_resource.id | append: '-' | append: product_option.name | handleize
-              assign option_id_attribute = 'data-option-id="' | append: fieldset_id | append: '"'
-            endif
-          endunless
-
-          assign show_sizing_guide = false
-          assign guide_display_type = blank
-
-          if product_option_name_downcase == 'imprint'
-            assign show_sizing_guide = true
-            assign guide_display_type = 'icon'
-          elsif forloop.index == 1 and product_resource.options_with_values.size > 1
-            assign show_sizing_guide = true
-            assign guide_display_type = 'icon'
-          elsif forloop.index == 2 and product_option_name_downcase != 'imprint size'
-            assign show_sizing_guide = true
-            assign guide_display_type = 'text'
+          if variant_style == 'buttons' and settings.variant_button_width == 'equal-width-buttons'
+            assign fieldset_id = section.id | append: '-' | append: product_resource.id | append: '-' | append: product_option.name | handleize
+            assign option_id_attribute = 'data-option-id="' | append: fieldset_id | append: '"'
+            assign longest_value = 0
           endif
         -%}
 
-        {%- if open_imprint_group -%}
-          <div class="variant-imprint-group">
-        {%- endif -%}
-
-        {%- if is_color_option and product_resource.options_with_values.size > 1 -%}
-          {%- assign fieldset_index = forloop.index0 -%}
-
-          <fieldset
-            class="variant-option variant-option--color-swatches"
-            data-fieldset-index="{{ fieldset_index }}"
-            ref="fieldsets[]"
+        {%- if product_option.values.size == 1 and variant_style != 'swatch' -%}
+          <div
+            class="variant-option"
+            data-testid="variant-option-single"
           >
-            <legend class="variant-color-swatch__legend">
-              <span>{{ product_option.name | escape }}:</span>
-              <strong data-color-swatch-selected>{{ product_option.selected_value }}</strong>
-            </legend>
-
-            <div class="variant-color-swatch__list">
-              {%- for product_option_value in product_option.values -%}
-                {%- liquid
-                  assign swatch_name = product_option_value | downcase | strip
-                  assign swatch_color = '#cccccc'
-
-                  case swatch_name
-                    when 'safety orange'
-                      assign swatch_color = '#ff8500'
-                    when 'safety yellow'
-                      assign swatch_color = '#f4e600'
-                    when 'white'
-                      assign swatch_color = '#ffffff'
-                    when 'black'
-                      assign swatch_color = '#000000'
-                    when 'red'
-                      assign swatch_color = '#ff0000'
-                    when 'blue'
-                      assign swatch_color = '#0057ff'
-                    when 'green'
-                      assign swatch_color = '#008000'
-                    when 'gray'
-                      assign swatch_color = '#808080'
-                    when 'grey'
-                      assign swatch_color = '#808080'
-                  endcase
-                -%}
-
-                <label
-                  class="variant-color-swatch{% if product_option_value.available == false %} variant-color-swatch--unavailable{% endif %}"
-                  title="{{ product_option_value | escape }}"
-                  aria-label="{{ product_option_value | escape }}"
-                >
-                  <input
-                    class="variant-color-swatch__input"
-                    type="radio"
-                    name="{{ product_option.name | escape }}-{{ block.id }}-{{ product_resource.id }}"
-                    value="{{ product_option_value | escape }}"
-                    aria-label="{{ product_option_value.name }}"
-                    {% if product_option_value.available == false %}
-                      aria-disabled="true"
-                    {% endif %}
-                    data-previous-checked="false"
-                    data-fieldset-index="{{ fieldset_index }}"
-                    data-input-index="{{ forloop.index0 }}"
-                    data-input-id="{{ product_option.position }}-{{ forloop.index0 }}"
-                    data-option-value-id="{{ product_option_value.id }}"
-                    data-option-available="{{ product_option_value.available }}"
-                    data-connected-product-url="{{ product_option_value.product_url }}"
-                    {% if product_option_value.variant.id %}
-                      data-variant-id="{{ product_option_value.variant.id }}"
-                    {% endif %}
-                    {% if product_option_value.selected %}
-                      data-current-checked="true"
-                      checked
-                    {% else %}
-                      data-current-checked="false"
-                    {% endif %}
-                  >
-
-                  <span
-                    class="variant-color-swatch__circle"
-                    style="--variant-color-swatch-bg: {{ swatch_color }};"
-                  ></span>
-
-                  <span class="variant-color-swatch__text">
-                    {{- product_option_value | escape -}}
-                  </span>
-
-                  {% render 'strikethrough-variant', product_option: product_option_value %}
-                </label>
-              {%- endfor -%}
-            </div>
-          </fieldset>
-
-        {%- elsif product_resource.options_with_values.size == 1 -%}
-          <div class="variant-option variant-option--text-mode">
-            <div class="varian-option-container varian-option-container--single">
-              <label for="OptionText-{{ block.id }}-{{ forloop.index0 }}">
-                {{ product_option.name | escape }}
-              </label>
-            </div>
-
-            <div class="variant-option__text-input-wrapper">
-              <input
-                id="OptionText-{{ block.id }}-{{ forloop.index0 }}"
-                type="text"
-                class="variant-option__text-input"
-                name="properties[Diameter]"
-                value=""
-                placeholder="{{ product_option.selected_value | escape }}"
-                autocomplete="off"
-                inputmode="decimal"
-                pattern="[0-9.]*"
-                data-number-only-input
-                data-line-item-property-input
-              >
-            </div>
+            {{- product_option.name | escape -}}
+            <span
+              class="variant-option__swatch-value"
+              data-testid="variant-option-single-value"
+            >
+              {{- product_option.selected_value -}}
+            </span>
           </div>
-
-        {%- elsif is_imprint_option or variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
+        {%- elsif variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
           {%- assign fieldset_index = forloop.index0 -%}
-
           <fieldset
-            class="variant-option variant-option--buttons{% if is_imprint_option %} variant-option--imprint-tabs{% elsif variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
+            class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
             ref="fieldsets[]"
             {{ option_id_attribute }}
           >
-            {%- if is_imprint_option -%}
-              <legend class="variant-imprint-tabs__legend">
-                <span class="variant-imprint-tabs__legend-label">{{ product_option.name | escape }}</span>
-
-                {%- if show_sizing_guide -%}
-                  <button
-                    type="button"
-                    class="variant-option__size-guide variant-option__size-guide--{{ guide_display_type }}"
-                    data-size-guide-open
-                    aria-haspopup="dialog"
-                    aria-controls="{{ size_guide_modal_id }}"
-                    aria-label="Important printing note"
-                  >
-                    {% if guide_display_type == 'icon' %}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
-                        <path d="M9.08333 17.4167C13.6857 17.4167 17.4167 13.6857 17.4167 9.08333C17.4167 4.48096 13.6857 0.75 9.08333 0.75C4.48096 0.75 0.75 4.48096 0.75 9.08333C0.75 13.6857 4.48096 17.4167 9.08333 17.4167Z" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    {% endif %}
-                  </button>
-                {%- endif -%}
-              </legend>
-
-              <div
-                class="variant-imprint-tabs__list"
-                role="radiogroup"
-                aria-label="{{ product_option.name | escape }}"
-              >
-            {%- else -%}
-              <legend>
-                {{ product_option.name | escape -}}
-                {%- if variant_style == 'swatch' -%}
-                  <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
-                {%- endif %}
-              </legend>
-            {%- endif -%}
-
+            <legend>
+              {{ product_option.name | escape -}}
+              {%- if variant_style == 'swatch' -%}
+                <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
+              {%- endif %}
+            </legend>
             {%- for product_option_value in product_option.values -%}
               {% if product_option_value.size > longest_value and option_id_attribute %}
                 {% assign longest_value = product_option_value.size %}
               {% endif %}
-
               <label
-                class="{% if is_imprint_option %}variant-imprint-tab{% else %}variant-option__button-label{% endif %}{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}"
+                class="variant-option__button-label{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}"
               >
                 <input
                   type="radio"
                   name="{{ product_option.name | escape }}-{{ block.id }}-{{ product_resource.id }}"
                   value="{{ product_option_value | escape }}"
-                  aria-label="{{ product_option_value.name }}"
+                  aria-label="{{ product_option_value.name | escape }}{% if product_option_value.available == false %} - {{ 'products.product.sold_out' | t }}{% endif %}"
                   {% if product_option_value.available == false %}
                     aria-disabled="true"
                   {% endif %}
@@ -343,11 +114,12 @@
                     data-current-checked="false"
                   {% endif %}
                 >
-
                 {% if variant_style == 'swatch' %}
                   {% liquid
                     assign featured_media = product_option_value.variant.featured_media
 
+                    # If the variant has no featured media, and we have a combined listing product, then fall back to
+                    # using the featured media of the child product that is linked to this option value.
                     if featured_media == blank and product_option_value.product_url
                       assign featured_media = product_option_value.variant.product.featured_media
                     endif
@@ -359,15 +131,12 @@
                     mode: 'unscaled'
                   %}
                 {% else %}
-                  {% unless is_imprint_option %}
-                    {% if product_option_value.available == true %}
-                      <span
-                        class="variant-option__button-label__pill"
-                        data-key="variant-option-pill"
-                      ></span>
-                    {% endif %}
-                  {% endunless %}
-
+                  {% if product_option_value.available == true %}
+                    <span
+                      class="variant-option__button-label__pill"
+                      data-key="variant-option-pill"
+                    ></span>
+                  {% endif %}
                   <span
                     class="variant-option__button-label__text"
                     data-key="variant-option-text"
@@ -375,15 +144,9 @@
                     {{- product_option_value | escape -}}
                   </span>
                 {% endif %}
-
                 {% render 'strikethrough-variant', product_option: product_option_value %}
               </label>
             {%- endfor -%}
-
-            {%- if is_imprint_option -%}
-              </div>
-            {%- endif -%}
-
             {% if option_id_attribute %}
               {% style %}
                 [data-option-id="{{ fieldset_id }}"] {
@@ -392,50 +155,27 @@
               {% endstyle %}
             {% endif %}
           </fieldset>
-
         {%- elsif block_settings.variant_style == 'dropdowns' -%}
+          {%
+            # There is an opportunity to build a custom select component that will allow us to style the select element further (animation for dropdown, swatches shown in the dropdown options, etc)
+            # It's too bad as it mean rebuilding baked in behaviours but I think we've already done that for the locale selectors
+            # in dawn. So it might mean more time spent in setting it up but worth it for future updates/styling.
+          %}
           {% liquid
             assign property_being_updated = false
             if settings.variant_swatch_width != settings.variant_swatch_height
               assign property_being_updated = true
+              # (original width / original height) x new height (20px at the moment) = new width
               assign new_width = settings.variant_swatch_width | times: 1.0 | divided_by: settings.variant_swatch_height | times: 20
             endif
           %}
 
-          <div class="variant-option variant-option--dropdowns{% if is_imprint_size_option %} variant-option--imprint-size{% endif %}">
-            <div class="varian-option-container">
-              <label for="Option-{{ block.id }}-{{ forloop.index0 }}">
-                {{ product_option.name | escape }}
-              </label>
-
-              {% unless is_imprint_size_option %}
-                {% if show_sizing_guide %}
-                  <button
-                    type="button"
-                    class="variant-option__size-guide variant-option__size-guide--{{ guide_display_type }}"
-                    data-size-guide-open
-                    aria-haspopup="dialog"
-                    aria-controls="{{ size_guide_modal_id }}"
-                    aria-label="Sizing guide"
-                  >
-                    {% if guide_display_type == 'icon' %}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
-                        <path d="M9.08333 17.4167C13.6857 17.4167 17.4167 13.6857 17.4167 9.08333C17.4167 4.48096 13.6857 0.75 9.08333 0.75C4.48096 0.75 0.75 4.48096 0.75 9.08333C0.75 13.6857 4.48096 17.4167 9.08333 17.4167Z" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M6.75024 7.4204C6.94616 6.86345 7.33287 6.39382 7.84187 6.09467C8.35087 5.79553 8.94932 5.68618 9.53122 5.78599C10.1131 5.8858 10.6409 6.18833 11.0211 6.64C11.4014 7.09167 11.6095 7.66333 11.6086 8.25373C11.6086 9.9204 9.10858 10.7537 9.10858 10.7537" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M9.08333 13.75H9.09166" stroke="#5F5F5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    {% elsif guide_display_type == 'text' %}
-                      Sizing guide
-                    {% endif %}
-                  </button>
-                {% endif %}
-              {% endunless %}
-            </div>
-
+          <div class="variant-option variant-option--dropdowns">
+            <label for="Option-{{ block.id }}-{{ forloop.index0 }}">{{ product_option.name | escape }}</label>
             <div
               class="variant-option__select-wrapper"
               style="
-                {%- if property_being_updated -%}
+                {%- if property_being_updated  -%}
                   --variant-picker-swatch-width: clamp(10px,{{ new_width }}px, 50px);
                 {%- endif -%}
               "
@@ -443,22 +183,8 @@
               <select
                 id="Option-{{ block.id }}-{{ forloop.index0 }}"
                 name="options[{{ product_option.name | escape }}]"
-                class="variant-option__select{% if is_imprint_size_option %} variant-option__select--imprint-size{% endif %}"
-                {% if is_imprint_size_option %}
-                  data-imprint-size-select
-                {% endif %}
+                class="variant-option__select"
               >
-                {%- if is_imprint_size_option -%}
-                  <option
-                    value=""
-                    disabled
-                    selected
-                    data-imprint-size-placeholder
-                  >
-                    Select imprint size
-                  </option>
-                  <option value="-----" disabled data-imprint-size-dash>-----</option>
-                {%- endif -%}
                 {%- for product_option_value in product_option.values -%}
                   <option
                     value="{{ product_option_value | escape }}"
@@ -466,7 +192,7 @@
                     data-option-value-id="{{ product_option_value.id }}"
                     data-variant-id="{{ product_option_value.variant.id }}"
                     data-connected-product-url="{{ product_option_value.product_url }}"
-                    {% if product_option_value.selected and is_imprint_size_option == false %}
+                    {% if product_option_value.selected %}
                       selected="selected"
                     {% endif %}
                   >
@@ -478,7 +204,6 @@
                   </option>
                 {%- endfor -%}
               </select>
-
               <svg
                 aria-hidden="true"
                 focusable="false"
@@ -490,1491 +215,23 @@
             </div>
           </div>
         {%- endif -%}
-
-        {%- if close_imprint_group -%}
-          </div>
-        {%- endif -%}
       {%- endfor -%}
 
       <script type="application/json">
         {{ product_resource.selected_or_first_available_variant | json }}
       </script>
-
-      <script type="application/json" data-custom-variants-json>
-        {{ product_resource.variants | json }}
-      </script>
     </form>
-
-    {% if has_size_option %}
-      <div
-        id="{{ size_guide_modal_id }}"
-        class="variant-size-guide-modal"
-        aria-hidden="true"
-      >
-        <div class="variant-size-guide-modal__overlay" data-size-guide-close></div>
-
-        <div
-          class="variant-size-guide-modal__dialog"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="{{ size_guide_title_id }}"
-        >
-          <button
-            type="button"
-            class="variant-size-guide-modal__close"
-            aria-label="Close sizing guide"
-            data-size-guide-close
-          >
-            &times;
-          </button>
-
-          <div class="variant-size-guide-modal__content variant-size-guide-modal__content--printing-note">
-            <h3 id="{{ size_guide_title_id }}" class="variant-size-guide-modal__title">
-              Important Printing Note!
-            </h3>
-
-            <div class="variant-size-guide-modal__body variant-size-guide-modal__body--printing-note">
-              <p class="variant-size-guide-modal__intro">
-                <strong>(Kindly Read all the notes before proceeding.)</strong>
-              </p>
-
-              <ol class="variant-size-guide-modal__list">
-                <li>
-                  Sublimation imprinting does not allow for white imprints on colors.
-                </li>
-
-                <li>
-                  IF your design requires white, please order WHITE COVERS ONLY.
-                </li>
-
-                <li>
-                  Please keep in mind that colors printed on material other than white, may mix to change the final printed color. Since we cannot print white we cannot produce a white underlay to keep colors from mixing together.
-                </li>
-              </ol>
-
-              <p class="variant-size-guide-modal__example">
-                <em>(Example: blue on safety yellow may appear more green.)</em>
-              </p>
-
-              <ol class="variant-size-guide-modal__list" start="4">
-                <li>
-                  Maximum imprint size is 19" in diameter for all cover sizes. (We are sourcing new equipment for larger imprints in the near future.)
-                </li>
-
-                <li>
-                  Safety Orange Covers work best with dark imprint colors like black or navy blue.
-                </li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </div>
-    {% endif %}
   </variant-picker>
-
-  <script>
-    if (!window.variantColorSwatchesInit) {
-      window.variantColorSwatchesInit = true;
-
-      function updateColorSwatchText(fieldset) {
-        if (!fieldset) return;
-
-        var selectedText = fieldset.querySelector('[data-color-swatch-selected]');
-        var checkedInput = fieldset.querySelector('.variant-color-swatch__input:checked');
-
-        if (selectedText && checkedInput) {
-          selectedText.textContent = checkedInput.value;
-        }
-      }
-
-      function updateAllColorSwatchTexts() {
-        document.querySelectorAll('.variant-option--color-swatches').forEach(function(fieldset) {
-          updateColorSwatchText(fieldset);
-        });
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', updateAllColorSwatchTexts);
-      } else {
-        updateAllColorSwatchTexts();
-      }
-
-      document.addEventListener('shopify:section:load', function () {
-        updateAllColorSwatchTexts();
-      });
-
-      document.addEventListener('change', function(event) {
-        var input = event.target.closest('.variant-color-swatch__input');
-
-        if (!input) return;
-
-        var fieldset = input.closest('.variant-option--color-swatches');
-        updateColorSwatchText(fieldset);
-      });
-    }
-  </script>
-
-  <script>
-    if (!window.variantSizeGuideModalInit) {
-      window.variantSizeGuideModalInit = true;
-
-      function moveModalToBody(modal) {
-        if (!modal || modal.dataset.movedToBody === 'true') return;
-        document.body.appendChild(modal);
-        modal.dataset.movedToBody = 'true';
-      }
-
-      function openSizeGuideModal(modal, triggerButton) {
-        if (!modal) return;
-
-        moveModalToBody(modal);
-
-        modal.classList.add('is-active');
-        modal.setAttribute('aria-hidden', 'false');
-        modal._triggerButton = triggerButton || null;
-        document.body.classList.add('variant-size-guide-modal-open');
-
-        var closeButton = modal.querySelector('.variant-size-guide-modal__close');
-        if (closeButton) {
-          closeButton.focus();
-        }
-      }
-
-      function closeSizeGuideModal(modal) {
-        if (!modal) return;
-
-        modal.classList.remove('is-active');
-        modal.setAttribute('aria-hidden', 'true');
-
-        if (!document.querySelector('.variant-size-guide-modal.is-active')) {
-          document.body.classList.remove('variant-size-guide-modal-open');
-        }
-
-        if (modal._triggerButton) {
-          modal._triggerButton.focus();
-        }
-      }
-
-      function prepareAllSizeGuideModals() {
-        document.querySelectorAll('.variant-size-guide-modal').forEach(function(modal) {
-          moveModalToBody(modal);
-        });
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', prepareAllSizeGuideModals);
-      } else {
-        prepareAllSizeGuideModals();
-      }
-
-      document.addEventListener('shopify:section:load', function () {
-        prepareAllSizeGuideModals();
-      });
-
-      document.addEventListener('click', function (event) {
-        var openButton = event.target.closest('[data-size-guide-open]');
-        if (openButton) {
-          event.preventDefault();
-
-          var modalId = openButton.getAttribute('aria-controls');
-          var modal = modalId ? document.getElementById(modalId) : null;
-
-          openSizeGuideModal(modal, openButton);
-          return;
-        }
-
-        var closeButton = event.target.closest('[data-size-guide-close]');
-        if (closeButton) {
-          event.preventDefault();
-
-          var modal = closeButton.closest('.variant-size-guide-modal');
-          closeSizeGuideModal(modal);
-        }
-      });
-
-      document.addEventListener('keydown', function (event) {
-        if (event.key !== 'Escape') return;
-
-        var activeModal = document.querySelector('.variant-size-guide-modal.is-active');
-        if (activeModal) {
-          closeSizeGuideModal(activeModal);
-        }
-      });
-    }
-  </script>
-
-  <script>
-    if (!window.customVariantPickerCartFixInit) {
-      window.customVariantPickerCartFixInit = true;
-
-      function cleanDiameterValue(value) {
-        value = String(value || '')
-          .replace(/[^0-9.]/g, '')
-          .replace(/(\..*)\./g, '$1')
-          .trim();
-
-        return value;
-      }
-
-      function escapeCssValue(value) {
-        if (window.CSS && typeof window.CSS.escape === 'function') {
-          return window.CSS.escape(String(value || ''));
-        }
-
-        return String(value || '').replace(/\\/g, '\\\\').replace(/\"/g, '\\\"');
-      }
-
-      function findProductFormFromElement(element) {
-        var picker = element && element.closest ? element.closest('variant-picker') : null;
-        var sectionId = picker ? picker.getAttribute('data-section-id') : null;
-        var section;
-        var form;
-
-        if (sectionId) {
-          section = document.getElementById('shopify-section-' + sectionId);
-
-          if (section) {
-            form = section.querySelector('form[action*="/cart/add"]');
-            if (form) return form;
-          }
-        }
-
-        section = element && element.closest
-          ? element.closest('section, .shopify-section, [data-section-id], product-info, .product')
-          : null;
-
-        if (section) {
-          form = section.querySelector('form[action*="/cart/add"]');
-          if (form) return form;
-        }
-
-        return document.querySelector('form[action*="/cart/add"]');
-      }
-
-      function getLinkedDiameterInput(form, input) {
-        var key = input && input.id ? input.id : 'custom-diameter';
-        var hiddenInput = form.querySelector('input[data-custom-diameter-line-item="' + escapeCssValue(key) + '"]');
-
-        if (!hiddenInput) {
-          hiddenInput = document.createElement('input');
-          hiddenInput.type = 'hidden';
-          hiddenInput.setAttribute('data-custom-diameter-line-item', key);
-          form.appendChild(hiddenInput);
-        }
-
-        hiddenInput.name = 'properties[Diameter]';
-
-        return hiddenInput;
-      }
-
-      function syncDiameterInput(input) {
-        var form;
-        var value;
-        var hiddenInput;
-
-        if (!input) return '';
-
-        form = findProductFormFromElement(input);
-        value = cleanDiameterValue(input.value);
-
-        input.value = value;
-
-        if (!form) return value;
-
-        hiddenInput = getLinkedDiameterInput(form, input);
-
-        if (value && value !== '0') {
-          var formattedValue = value;
-
-          if (window.CustomDiameterFormat && typeof window.CustomDiameterFormat.formatDiameterDisplay === 'function') {
-            formattedValue = window.CustomDiameterFormat.formatDiameterDisplay(value);
-          } else {
-            formattedValue = value + "'";
-          }
-
-          hiddenInput.value = formattedValue;
-          input.dataset.lastValidDiameter = value;
-          return formattedValue;
-        }
-
-        hiddenInput.remove();
-        delete input.dataset.lastValidDiameter;
-
-        return '';
-      }
-
-      function syncDiameterInputsInScope(scope) {
-        scope = scope || document;
-
-        scope.querySelectorAll('[data-line-item-property-input]').forEach(function(input) {
-          syncDiameterInput(input);
-        });
-      }
-
-      function getPickerVariants(picker) {
-        var json = picker ? picker.querySelector('[data-custom-variants-json]') : null;
-
-        if (!json) return [];
-
-        try {
-          return JSON.parse(json.textContent || '[]');
-        } catch (error) {
-          return [];
-        }
-      }
-
-      function normalizeOption(value) {
-        return String(value || '').trim();
-      }
-
-      function getImprintSizeOptionIndex(picker) {
-        var pickerForm = picker ? picker.querySelector('.variant-picker__form') : null;
-        var sizeIndex = -1;
-
-        if (!pickerForm) return sizeIndex;
-
-        Array.prototype.slice.call(pickerForm.children).forEach(function(optionEl, index) {
-          if (optionEl.querySelector('[data-imprint-size-select]')) {
-            sizeIndex = index;
-          }
-        });
-
-        return sizeIndex;
-      }
-
-      function isImprintSizeDashSelected(select) {
-        if (!select) return false;
-
-        var option = select.options[select.selectedIndex];
-
-        return Boolean(option && option.hasAttribute('data-imprint-size-dash'));
-      }
-
-      function getPickerOptionValues(picker) {
-        var pickerForm = picker ? picker.querySelector('.variant-picker__form') : null;
-        var values = [];
-
-        if (!pickerForm) return values;
-
-        Array.prototype.slice.call(pickerForm.children).forEach(function(optionEl, index) {
-          var select;
-          var checked;
-          var selectedOption;
-
-          if (!optionEl.classList || !optionEl.classList.contains('variant-option')) return;
-
-          select = optionEl.querySelector('select');
-          checked = optionEl.querySelector('input[type="radio"]:checked');
-
-          if (select) {
-            selectedOption = select.options[select.selectedIndex];
-
-            if (selectedOption && selectedOption.hasAttribute('data-imprint-size-dash')) {
-              values[index] = undefined;
-            } else {
-              values[index] = select.value;
-            }
-          } else if (checked) {
-            values[index] = checked.value;
-          }
-        });
-
-        return values;
-      }
-
-      function findMatchingVariant(picker) {
-        var variants = getPickerVariants(picker);
-        var selectedOptions = getPickerOptionValues(picker);
-        var sizeIndex = getImprintSizeOptionIndex(picker);
-        var ignoreImprintSize = !imprintTypeRequiresSize(getSelectedImprintType(picker)) && sizeIndex >= 0;
-
-        if (!variants.length || !selectedOptions.length) return null;
-
-        return variants.find(function(variant) {
-          if (!variant || !Array.isArray(variant.options)) return false;
-
-          return selectedOptions.every(function(value, index) {
-            if (ignoreImprintSize && index === sizeIndex) return true;
-
-            if (value === undefined || value === null || value === '') return true;
-
-            return normalizeOption(variant.options[index]) === normalizeOption(value);
-          });
-        }) || null;
-      }
-
-      function updateSelectedVariantIdForCart(picker) {
-        var variant = findMatchingVariant(picker);
-        var form = findProductFormFromElement(picker);
-        var idInput;
-
-        if (!variant || !variant.id || !form) return '';
-
-        idInput = form.querySelector('[name="id"]');
-
-        if (!idInput) {
-          idInput = document.createElement('input');
-          idInput.type = 'hidden';
-          idInput.name = 'id';
-          form.appendChild(idInput);
-        }
-
-        idInput.value = variant.id;
-        picker.dataset.currentVariantId = variant.id;
-
-        idInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-        return String(variant.id);
-      }
-
-      function imprintTypeRequiresSize(imprintType) {
-        var value = String(imprintType || '').toLowerCase().trim();
-
-        if (!value || value.indexOf('no imprint') !== -1) return false;
-
-        return value.indexOf('full cover') !== -1 || value.indexOf('standard cover') !== -1;
-      }
-
-      function getImprintSizeSelect(picker) {
-        return picker ? picker.querySelector('[data-imprint-size-select]') : null;
-      }
-
-      function getSelectedImprintType(picker) {
-        var input = picker ? picker.querySelector('.variant-imprint-tab input[type="radio"]:checked') : null;
-
-        return input ? input.value : '';
-      }
-
-      function ensureImprintSizePlaceholder(select) {
-        if (!select) return null;
-
-        var placeholder = select.querySelector('[data-imprint-size-placeholder]');
-
-        if (!placeholder) {
-          placeholder = document.createElement('option');
-          placeholder.value = '';
-          placeholder.disabled = true;
-          placeholder.setAttribute('data-imprint-size-placeholder', '');
-          placeholder.textContent = 'Select imprint size';
-          select.insertBefore(placeholder, select.firstChild);
-        }
-
-        return placeholder;
-      }
-
-      function ensureImprintSizeDashOption(select) {
-        if (!select) return null;
-
-        var dashOption = select.querySelector('[data-imprint-size-dash]');
-
-        if (!dashOption) {
-          dashOption = document.createElement('option');
-          dashOption.value = '-----';
-          dashOption.disabled = true;
-          dashOption.setAttribute('data-imprint-size-dash', '');
-          dashOption.textContent = '-----';
-          select.appendChild(dashOption);
-        }
-
-        return dashOption;
-      }
-
-      function isImprintSizePlaceholderSelected(select) {
-        if (!select) return true;
-
-        var option = select.options[select.selectedIndex];
-
-        if (!option) return true;
-
-        if (option.hasAttribute('data-imprint-size-dash')) return false;
-
-        return option.hasAttribute('data-imprint-size-placeholder') || !String(option.value || '').trim();
-      }
-
-      function resetImprintSizeToPlaceholder(picker) {
-        var select = getImprintSizeSelect(picker);
-        var placeholder;
-
-        if (!select) return;
-
-        placeholder = ensureImprintSizePlaceholder(select);
-        select.value = '';
-
-        if (placeholder) {
-          placeholder.selected = true;
-        }
-      }
-
-      var IMPRINT_SIZE_ALERT_MESSAGE = 'Please select an imprint size first.';
-
-      function isImprintAddToCartBlocked(picker) {
-        if (!getImprintSizeSelect(picker)) return false;
-
-        if (!imprintTypeRequiresSize(getSelectedImprintType(picker))) return false;
-
-        return isImprintSizePlaceholderSelected(getImprintSizeSelect(picker));
-      }
-
-      function updateImprintSizeInlineAlert(picker, show) {
-        var select = getImprintSizeSelect(picker);
-        var optionRow;
-        var alertEl;
-
-        if (!select) return;
-
-        optionRow = select.closest('.variant-option--imprint-size');
-        if (!optionRow) return;
-
-        alertEl = optionRow.querySelector('[data-imprint-size-alert]');
-
-        if (!alertEl) {
-          alertEl = document.createElement('p');
-          alertEl.className = 'variant-imprint-size__alert';
-          alertEl.setAttribute('data-imprint-size-alert', '');
-          alertEl.setAttribute('role', 'alert');
-          optionRow.appendChild(alertEl);
-        }
-
-        alertEl.textContent = IMPRINT_SIZE_ALERT_MESSAGE;
-        alertEl.hidden = !show;
-
-        select
-          .closest('.variant-option__select-wrapper')
-          ?.classList.toggle('variant-imprint-size__select-wrapper--error', show);
-      }
-
-      function notifyImprintSizeRequired(picker) {
-        window.alert(IMPRINT_SIZE_ALERT_MESSAGE);
-
-        var sizeSelect = getImprintSizeSelect(picker);
-        if (sizeSelect) sizeSelect.focus();
-
-        updateImprintSizeInlineAlert(picker, true);
-      }
-
-      function getAddToCartButtonsForPicker(picker) {
-        var form = findProductFormFromElement(picker);
-        var scope = form
-          ? form.closest('section, .shopify-section, [data-section-id], product-info, .product')
-          : null;
-        var buttons = [];
-        var seen = [];
-
-        function addButton(button) {
-          if (!button || seen.indexOf(button) !== -1) return;
-          seen.push(button);
-          buttons.push(button);
-        }
-
-        if (form) {
-          form
-            .querySelectorAll(
-              'button[name="add"], [data-add-to-cart], .product-form__submit, add-to-cart-component button[type="submit"]'
-            )
-            .forEach(addButton);
-        }
-
-        if (scope) {
-          scope
-            .querySelectorAll('sticky-add-to-cart button, .sticky-add-to-cart__button')
-            .forEach(addButton);
-        }
-
-        return buttons;
-      }
-
-      function updateImprintSizeFieldState(picker) {
-        var select = getImprintSizeSelect(picker);
-        var optionRow;
-        var requiresSize = imprintTypeRequiresSize(getSelectedImprintType(picker));
-
-        if (!select) return;
-
-        optionRow = select.closest('.variant-option--imprint-size');
-
-        select.disabled = !requiresSize;
-
-        if (requiresSize) {
-          select.removeAttribute('aria-disabled');
-        } else {
-          select.setAttribute('aria-disabled', 'true');
-        }
-
-        if (optionRow) {
-          optionRow.classList.toggle('variant-option--imprint-size--disabled', !requiresSize);
-        }
-
-        if (!requiresSize) {
-          updateImprintSizeInlineAlert(picker, false);
-          select
-            .closest('.variant-option__select-wrapper')
-            ?.classList.remove('variant-imprint-size__select-wrapper--error');
-          syncImprintSizeForNonRequiredType(picker);
-        }
-      }
-
-      function syncImprintSizeForNonRequiredType(picker) {
-        var select = getImprintSizeSelect(picker);
-        var dashOption;
-
-        if (!select || imprintTypeRequiresSize(getSelectedImprintType(picker))) return;
-
-        dashOption = ensureImprintSizeDashOption(select);
-        dashOption.selected = true;
-        select.value = '-----';
-      }
-
-      function updateImprintAddToCartState(picker) {
-        updateImprintSizeFieldState(picker);
-
-        var blocked = isImprintAddToCartBlocked(picker);
-
-        updateImprintSizeInlineAlert(picker, blocked);
-
-        getAddToCartButtonsForPicker(picker).forEach(function(button) {
-          if (blocked) {
-            button.disabled = true;
-            button.setAttribute('aria-disabled', 'true');
-            button.dataset.imprintSizeRequired = 'true';
-            return;
-          }
-
-          if (button.dataset.imprintSizeRequired === 'true') {
-            button.disabled = false;
-            button.removeAttribute('aria-disabled');
-            delete button.dataset.imprintSizeRequired;
-          }
-        });
-      }
-
-      function restoreSavedImprintSize(picker) {
-        var select = getImprintSizeSelect(picker);
-        var savedSize = picker ? picker.dataset.lastImprintSize : '';
-        var option;
-        var index;
-
-        if (!select || !savedSize) return false;
-
-        for (index = 0; index < select.options.length; index += 1) {
-          option = select.options[index];
-
-          if (
-            option.hasAttribute('data-imprint-size-placeholder') ||
-            option.hasAttribute('data-imprint-size-dash')
-          ) {
-            continue;
-          }
-
-          if (option.value === savedSize) {
-            select.selectedIndex = index;
-            return true;
-          }
-        }
-
-        return false;
-      }
-
-      function syncImprintPickerState(picker, options) {
-        options = options || {};
-
-        if (!picker || !getImprintSizeSelect(picker)) return;
-
-        ensureImprintSizePlaceholder(getImprintSizeSelect(picker));
-
-        updateImprintSizeFieldState(picker);
-
-        if (imprintTypeRequiresSize(getSelectedImprintType(picker))) {
-          if (options.resetSizeToPlaceholder) {
-            delete picker.dataset.lastImprintSize;
-            resetImprintSizeToPlaceholder(picker);
-          } else {
-            restoreSavedImprintSize(picker);
-          }
-        } else {
-          syncImprintSizeForNonRequiredType(picker);
-        }
-
-        if (!isImprintAddToCartBlocked(picker)) {
-          updateSelectedVariantIdForCart(picker);
-        }
-
-        updateImprintAddToCartState(picker);
-      }
-
-      function refreshImprintAddToCartButtons() {
-        document.querySelectorAll('variant-picker').forEach(function(picker) {
-          if (!getImprintSizeSelect(picker)) return;
-          updateImprintAddToCartState(picker);
-        });
-      }
-
-      function prepareVariantPicker(picker) {
-        if (!picker) return;
-
-        if (picker.dataset.customCartVariantFixReady !== 'true') {
-          picker.dataset.customCartVariantFixReady = 'true';
-
-          picker.updateSelectedVariantIdForCart = function() {
-            return updateSelectedVariantIdForCart(picker);
-          };
-
-          syncImprintPickerState(picker, { resetSizeToPlaceholder: true });
-          return;
-        }
-
-        updateImprintAddToCartState(picker);
-      }
-
-      function prepareAllVariantPickers() {
-        document.querySelectorAll('variant-picker').forEach(prepareVariantPicker);
-        refreshImprintAddToCartButtons();
-      }
-
-      function schedulePrepareAllVariantPickers() {
-        prepareAllVariantPickers();
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('readystatechange', function onReadyStateChange() {
-          if (document.readyState === 'interactive' || document.readyState === 'complete') {
-            document.removeEventListener('readystatechange', onReadyStateChange);
-            schedulePrepareAllVariantPickers();
-          }
-        });
-        document.addEventListener('DOMContentLoaded', schedulePrepareAllVariantPickers);
-        window.addEventListener('load', refreshImprintAddToCartButtons);
-      } else {
-        schedulePrepareAllVariantPickers();
-        refreshImprintAddToCartButtons();
-      }
-
-      document.addEventListener('shopify:section:load', function() {
-        prepareAllVariantPickers();
-        syncDiameterInputsInScope(document);
-      });
-
-      document.addEventListener('input', function(event) {
-        var input = event.target.closest('[data-number-only-input][data-line-item-property-input]');
-        if (!input) return;
-
-        syncDiameterInput(input);
-      }, true);
-
-      document.addEventListener('change', function(event) {
-        var diameterInput = event.target.closest('[data-number-only-input][data-line-item-property-input]');
-        var picker = event.target.closest('variant-picker');
-        var imprintTypeInput = event.target.closest('.variant-imprint-tab input[type="radio"]');
-        var imprintSizeSelect = event.target.closest('[data-imprint-size-select]');
-
-        if (diameterInput) {
-          syncDiameterInput(diameterInput);
-        }
-
-        if (!picker) return;
-
-        if (imprintTypeInput) {
-          var requiresSize = imprintTypeRequiresSize(imprintTypeInput.value);
-
-          if (requiresSize) {
-            delete picker.dataset.lastImprintSize;
-          }
-
-          updateImprintAddToCartState(picker);
-
-          syncImprintPickerState(picker, {
-            resetSizeToPlaceholder: requiresSize,
-          });
-          return;
-        }
-
-        if (imprintSizeSelect) {
-          if (imprintSizeSelect.value) {
-            picker.dataset.lastImprintSize = imprintSizeSelect.value;
-          } else {
-            delete picker.dataset.lastImprintSize;
-          }
-
-          syncImprintPickerState(picker);
-          return;
-        }
-
-        updateSelectedVariantIdForCart(picker);
-        updateImprintAddToCartState(picker);
-      }, true);
-
-      document.addEventListener('variant:update', function() {
-        document.querySelectorAll('variant-picker').forEach(function(picker) {
-          if (!getImprintSizeSelect(picker)) return;
-
-          syncImprintPickerState(picker);
-        });
-
-        refreshImprintAddToCartButtons();
-      });
-
-      ['pointerdown', 'mousedown', 'touchstart', 'click'].forEach(function(eventName) {
-        document.addEventListener(eventName, function(event) {
-          var button = event.target.closest('button[type="submit"], [name="add"], [data-add-to-cart], .product-form__submit');
-          var form;
-          var scope;
-          var picker;
-
-          if (!button) return;
-
-          form = button.form || button.closest('form');
-          if (!form || String(form.getAttribute('action') || '').indexOf('/cart/add') === -1) return;
-
-          scope = form.closest('section, .shopify-section, [data-section-id], product-info, .product') || document;
-          picker = scope.querySelector('variant-picker');
-
-          if (picker) {
-            if (isImprintAddToCartBlocked(picker)) {
-              event.preventDefault();
-              event.stopPropagation();
-
-              if (eventName === 'click') {
-                notifyImprintSizeRequired(picker);
-              }
-
-              return;
-            }
-
-            updateSelectedVariantIdForCart(picker);
-          }
-
-          syncDiameterInputsInScope(scope);
-        }, true);
-      });
-
-      document.addEventListener('submit', function(event) {
-        var form = event.target;
-        var scope;
-        var picker;
-
-        if (!form || !form.matches('form[action*="/cart/add"]')) return;
-
-        scope = form.closest('section, .shopify-section, [data-section-id], product-info, .product') || document;
-        picker = scope.querySelector('variant-picker');
-
-        if (picker && isImprintAddToCartBlocked(picker)) {
-          event.preventDefault();
-          event.stopPropagation();
-          notifyImprintSizeRequired(picker);
-          return;
-        }
-
-        if (picker) {
-          updateSelectedVariantIdForCart(picker);
-        }
-
-        syncDiameterInputsInScope(scope);
-      }, true);
-
-      if (window.MutationObserver) {
-        var imprintCartButtonObserverTimer;
-
-        new MutationObserver(function() {
-          window.clearTimeout(imprintCartButtonObserverTimer);
-          imprintCartButtonObserverTimer = window.setTimeout(function() {
-            document.querySelectorAll('variant-picker').forEach(function(picker) {
-              if (picker.dataset.customCartVariantFixReady !== 'true') {
-                prepareVariantPicker(picker);
-              }
-            });
-            refreshImprintAddToCartButtons();
-          }, 0);
-        }).observe(document.documentElement, {
-          childList: true,
-          subtree: true
-        });
-      }
-    }
-  </script>
 {% endunless %}
 
 {% stylesheet %}
-  .varian-option-container {
-    display: flex;
-    align-items: flex-start;
-    width: 100%;
-  }
-
-  .varian-option-container > label {
-    flex: 0 0 70%;
-    max-width: 70%;
-    min-width: 0;
-    padding-right: 12px;
-  }
-
-  .varian-option-container > .variant-option__size-guide {
-    flex: 0 0 30%;
-    max-width: 30%;
-    min-width: 0;
-    justify-content: flex-end;
-    text-align: right;
-  }
-
-  .variant-option--text-mode {
-    display: flex !important;
-    align-items: center !important;
-    gap: 16px !important;
-    width: 100% !important;
-    max-width: none !important;
-  }
-
-  .variant-option--text-mode .varian-option-container--single {
-    display: block !important;
-    flex: 0 0 calc(50% - 8px) !important;
-    width: calc(50% - 8px) !important;
-    max-width: calc(50% - 8px) !important;
-    min-width: 0 !important;
-  }
-
-  .variant-option--text-mode .varian-option-container--single > label {
-    display: block !important;
-    flex: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding-right: 0 !important;
-    margin: 0 !important;
-  }
-
-  .variant-option--text-mode .variant-option__text-input-wrapper {
-    display: block !important;
-    position: relative !important;
-    flex: 0 0 calc(50% - 8px) !important;
-    width: calc(50% - 8px) !important;
-    max-width: calc(50% - 8px) !important;
-    min-width: 0 !important;
-    margin-top: 0 !important;
-  }
-
-  .variant-option__text-input {
-    display: block !important;
-    width: 100% !important;
-    max-width: none !important;
-    min-height: 48px;
-    padding-block: var(--padding-md);
-    padding-inline: var(--padding-lg);
-    border: var(--style-border-width-inputs) solid var(--color-border);
-    border-radius: var(--style-border-radius-inputs);
-    appearance: none;
-    background: transparent;
-    margin: 0;
-    font: inherit;
-    color: inherit;
-    box-sizing: border-box;
-  }
-
-  .variant-option__text-input:hover {
-    border-color: var(--color-variant-hover-border);
-  }
-
-  .variant-option__text-input:focus-visible {
-    outline: var(--focus-outline-width) solid currentcolor;
-    outline-offset: var(--focus-outline-offset);
-  }
-
-  .variant-option__size-guide {
-    display: inline-flex;
-    align-items: center;
-    background: none;
-    border: 0;
-    padding: 0;
-    margin: 0;
-    font: inherit;
-    color: #7a7a7a;
-    cursor: pointer;
-    line-height: 1;
-  }
-
-  .variant-option__size-guide--icon {
-    text-decoration: none;
-  }
-
-  .variant-option__size-guide--icon svg {
-    display: block;
-    width: 19px;
-    height: 19px;
-  }
-
-  .variant-option__size-guide--text {
-    text-decoration: underline;
-  }
-
-  .variant-option__size-guide:hover {
-    opacity: 0.75;
-  }
-
-  .variant-option--color-swatches {
-    border: 0;
-    padding: 0;
-    margin: 0;
-  }
-
-  .variant-color-swatch__legend {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin: 0 0 8px;
-    padding: 0;
-    color: #1f1f1f;
-    font-family: Lato, sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1.3;
-  }
-
-  .variant-color-swatch__legend strong {
-    color: #1f1f1f;
-    font: inherit;
-    font-weight: 800;
-  }
-
-  .variant-color-swatch__list {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .variant-color-swatch {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    cursor: pointer;
-    border-radius: 50%;
-  }
-
-  .variant-color-swatch__input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-    width: 1px;
-    height: 1px;
-  }
-
-  .variant-color-swatch__circle {
-    display: block;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: var(--variant-color-swatch-bg);
-    border: 1.5px solid #D9DBDF;
-    transition:
-      border-color 0.18s ease,
-      box-shadow 0.18s ease,
-      transform 0.18s ease;
-  }
-
-  .variant-color-swatch__input:checked + .variant-color-swatch__circle {
-    border-color: #1f1f1f;
-    box-shadow: 0 0 0 2px #1f1f1f;
-  }
-
-  .variant-color-swatch:hover .variant-color-swatch__circle {
-    transform: scale(1.04);
-  }
-
-  .variant-color-swatch__input:focus-visible + .variant-color-swatch__circle {
-    outline: 2px solid #6c3cff;
-    outline-offset: 3px;
-  }
-
-  .variant-color-swatch--unavailable {
-    opacity: 0.45;
-  }
-
-  .variant-color-swatch__text {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  .variant-size-guide-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 2147483647;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .variant-size-guide-modal.is-active {
-    display: flex;
-  }
-
-  .variant-size-guide-modal__overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-  }
-
-  .variant-size-guide-modal__dialog {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    max-width: 790px;
-    max-height: calc(100vh - 40px);
-    overflow: auto;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-  }
-
-  .variant-size-guide-modal__close {
-    position: absolute;
-    top: 18px;
-    right: 22px;
-    width: 24px;
-    height: 24px;
-    border: 0;
-    background: transparent;
-    color: #1f1f1f;
-    font-size: 30px;
-    line-height: 1;
-    cursor: pointer;
-    z-index: 3;
-  }
-
-  .variant-size-guide-modal__content {
-    padding: 38px 46px 34px;
-  }
-
-  .variant-size-guide-modal__content--printing-note {
-    padding: 38px 46px 34px;
-  }
-
-  .variant-size-guide-modal__title {
-    margin: 0 0 42px;
-    color: #1f1f1f;
-    text-align: center;
-    font-family: Raleway, sans-serif;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 800;
-    line-height: 27px;
-  }
-
-  .variant-size-guide-modal__body {
-    color: #1f1f1f;
-    font-family: Lato, sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-  }
-
-  .variant-size-guide-modal__body--printing-note {
-    color: #1f1f1f;
-    font-family: Lato, sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-  }
-
-  .variant-size-guide-modal__intro {
-    margin: 0 0 16px;
-    color: #1f1f1f;
-    font-family: Lato, sans-serif;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 24px;
-  }
-
-  .variant-size-guide-modal__intro strong {
-    font: inherit;
-    color: inherit;
-  }
-
-  .variant-size-guide-modal__list {
-    margin: 0;
-    padding-left: 20px;
-    color: #1f1f1f;
-    font-family: Lato, sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-  }
-
-  .variant-size-guide-modal__list li {
-    margin: 0 0 8px;
-    padding-left: 0;
-  }
-
-  .variant-size-guide-modal__example {
-    margin: 0 0 8px;
-    color: #1f1f1f;
-    font-family: Lato, sans-serif;
-    font-size: 14px;
-    font-style: italic;
-    font-weight: 700;
-    line-height: 18px;
-  }
-
-  .variant-size-guide-modal__body p:last-child,
-  .variant-size-guide-modal__body li:last-child,
-  .variant-size-guide-modal__body--printing-note p:last-child,
-  .variant-size-guide-modal__body--printing-note li:last-child {
-    margin-bottom: 0;
-  }
-
-  body.variant-size-guide-modal-open {
-    overflow: hidden;
-  }
-
+  /* Variant picker container styles - unique to main variant picker */
   .variant-picker {
     width: 100%;
   }
 
   .variant-picker__form {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
     width: 100%;
-    max-width: 100%;
-  }
-
-  /* Imprint + Imprint Size: 75% column (half + half more) */
-  .variant-imprint-group {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: calc(75% - 8px);
-    max-width: calc(75% - 8px);
-    min-width: 0;
-    align-self: flex-start;
-    flex: 0 0 auto;
-    box-sizing: border-box;
-  }
-
-  .variant-imprint-group > .variant-option {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-  }
-
-  .variant-imprint-group > .variant-option + .variant-option {
-    margin-block-start: 0;
-  }
-
-  .variant-imprint-group .variant-option--dropdowns {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .variant-picker .variant-option--buttons.variant-option--imprint-tabs {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    border: none;
-    box-sizing: border-box;
-  }
-
-  .variant-picker .variant-option--imprint-tabs legend.variant-imprint-tabs__legend {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 5px;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    float: none;
-  }
-
-  .variant-picker .variant-imprint-tabs__legend-label {
-    color: #1f1f1f;
-    font-family: Lato, sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1.3;
-  }
-
-  /* Tab strip: 8px inset, 8px rounded tabs */
-  .variant-picker .variant-imprint-tabs__list {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    margin-block-start: 5px;
-    margin-inline: 0;
-    margin-block-end: 0;
-    padding: 4px;
-    gap: 4px;
-    list-style: none;
-    border: 1px solid #d9dbdf;
-    border-radius: 8px;
-    overflow: visible;
-    background: #fff;
-    box-sizing: border-box;
-  }
-
-  .variant-picker .variant-imprint-tab {
-    --variant-picker-stroke-color: transparent;
-
-    position: relative;
-    display: flex;
-    flex: 1 1 0%;
-    flex-grow: 1;
-    align-items: center;
-    justify-content: center;
-    min-width: 0;
-    max-width: none;
-    min-height: auto;
-    margin: 0;
-    padding: 6px 3px;
-    border: 0;
-    border-radius: 8px;
-    background: #fff;
-    color: #5f5f5f;
-    font-family: Lato, sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.25;
-    white-space: normal;
-    text-align: center;
-    cursor: pointer;
-    overflow: visible;
-    gap: 0;
-  }
-
-  .variant-picker .variant-imprint-tab::before,
-  .variant-picker .variant-imprint-tab::after {
-    content: none;
-    display: none;
-  }
-
-  .variant-picker .variant-imprint-tab input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-    width: 1px;
-    height: 1px;
-  }
-
-  .variant-picker .variant-imprint-tab .variant-option__button-label__text {
-    position: relative;
-    z-index: 1;
-  }
-
-  .variant-picker .variant-imprint-tab:has(:checked) {
-    background: #0f2e53;
-    color: #fff;
-    font-weight: 600;
-  }
-
-  .variant-picker .variant-imprint-tab:hover:has(:not(:checked)) {
-    background: #f5f6f8;
-    color: #1f1f1f;
-  }
-
-  .variant-picker .variant-imprint-tab:has(:checked):hover {
-    background: #0f2e53;
-    color: #fff;
-  }
-
-  .variant-picker .variant-imprint-tab:has([data-option-available='false']) {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .variant-picker .variant-imprint-tab svg {
-    display: none;
-  }
-
-  @media screen and (max-width: 767px) {
-    .variant-imprint-group {
-      width: 100%;
-      max-width: 100%;
-    }
-
-    .variant-picker .variant-imprint-tabs__list {
-      flex-wrap: nowrap;
-    }
-
-    .variant-picker .variant-imprint-tab {
-      flex: 1 1 0%;
-      min-width: 0;
-      padding: 5px 3px;
-      font-size: 10px;
-      line-height: 1.2;
-      white-space: nowrap;
-    }
-  }
-
-  .variant-option--imprint-size .varian-option-container > label {
-    flex: 1 1 auto;
-    max-width: none;
-    padding-right: 0;
-    color: #1f1f1f;
-    font-family: Lato, sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1.3;
-  }
-
-  .variant-imprint-size__alert {
-    margin: 6px 0 0;
-    color: #b42318;
-    font-family: Lato, sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.3;
-  }
-
-  .variant-imprint-size__alert[hidden] {
-    display: none;
-  }
-
-  .variant-option--imprint-size .variant-imprint-size__select-wrapper--error {
-    border-color: #b42318;
-  }
-
-  .variant-option--imprint-size--disabled {
-    opacity: 0.55;
-  }
-
-  .variant-option--imprint-size--disabled .variant-option__select-wrapper {
-    pointer-events: none;
-    background: #f5f6f8;
-  }
-
-  .variant-option--imprint-size--disabled .variant-option__select {
-    cursor: not-allowed;
-  }
-
-  .variant-picker__form--single-option {
-    display: block !important;
-    width: 100% !important;
-  }
-
-  .variant-picker__form--single-option > .variant-option {
-    width: 100% !important;
-    max-width: none !important;
   }
 
   .variant-picker[data-shopify-visual-preview] {
@@ -1982,6 +239,7 @@
     padding-inline-start: max(4px, var(--padding-inline-start));
   }
 
+  /* Dropdown variant option styles */
   .variant-option__select-wrapper {
     display: flex;
     position: relative;
@@ -2037,6 +295,7 @@
     transform: translateY(-50%);
   }
 
+  /* Variant picker alignment modifiers */
   .variant-picker--center,
   .variant-picker--center .variant-option {
     text-align: center;
@@ -2049,87 +308,5 @@
   .variant-picker--right .variant-option {
     text-align: right;
     justify-content: right;
-  }
-
-  @media screen and (max-width: 767px) {
-    .variant-option--text-mode {
-      gap: 10px !important;
-    }
-
-    .variant-option--text-mode .varian-option-container--single {
-      flex: 0 0 calc(50% - 5px) !important;
-      width: calc(50% - 5px) !important;
-      max-width: calc(50% - 5px) !important;
-    }
-
-    .variant-option--text-mode .variant-option__text-input-wrapper {
-      flex: 0 0 calc(50% - 5px) !important;
-      width: calc(50% - 5px) !important;
-      max-width: calc(50% - 5px) !important;
-    }
-
-    .variant-color-swatch__legend {
-      font-size: 16px;
-    }
-
-    .variant-color-swatch {
-      width: 36px;
-      height: 36px;
-    }
-
-    .variant-color-swatch__circle {
-      width: 32px;
-      height: 32px;
-    }
-
-    .variant-size-guide-modal {
-      padding: 14px;
-    }
-
-    .variant-size-guide-modal__dialog {
-      max-width: 365px;
-      max-height: calc(100vh - 28px);
-      border-radius: 8px;
-    }
-
-    .variant-size-guide-modal__close {
-      top: 12px;
-      right: 14px;
-      width: 24px;
-      height: 24px;
-      font-size: 28px;
-    }
-
-    .variant-size-guide-modal__content,
-    .variant-size-guide-modal__content--printing-note {
-      padding: 38px 28px 32px;
-    }
-
-    .variant-size-guide-modal__title {
-      margin-bottom: 42px;
-      font-size: 20px;
-      line-height: 27px;
-    }
-
-    .variant-size-guide-modal__intro {
-      font-size: 16px;
-      line-height: 24px;
-    }
-
-    .variant-size-guide-modal__body,
-    .variant-size-guide-modal__body--printing-note,
-    .variant-size-guide-modal__list,
-    .variant-size-guide-modal__example {
-      font-size: 14px;
-      line-height: 18px;
-    }
-
-    .variant-size-guide-modal__list {
-      padding-left: 20px;
-    }
-
-    .variant-size-guide-modal__list li {
-      margin-bottom: 8px;
-    }
   }
 {% endstylesheet %}

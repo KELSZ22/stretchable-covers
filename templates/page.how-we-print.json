@@ -87,7 +87,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<p>We print using the latest dye sublimation equipment and technology. Sublimation allows us to recreate your graphics is millions of sharp colors with no limits imposed by screens or color separations. </p>",
+            "text": "<p>We print using the latest Dye Sublimation equipment and technology. Dye Sublimation allows us to recreate your graphics in millions of sharp colors with no limits imposed by screens or color separations (used in screen printing). </p>",
             "width": "fit-content",
             "max_width": "none",
             "alignment": "left",
@@ -113,7 +113,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<p><strong>The only rule to remember here is: </strong> The better the graphics file supplied, the better the print on the finished product.</p>",
+            "text": "<p><strong>KEEP THIS IN MIND: </strong> The better the graphics file supplied, the better the print on the finished product.</p>",
             "width": "fit-content",
             "max_width": "none",
             "alignment": "left",

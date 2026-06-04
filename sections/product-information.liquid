@@ -29,16 +29,6 @@
     assign current_variant = product.selected_or_first_available_variant
     # Get the initial quantity based on quantity rules
     assign initial_quantity = current_variant.quantity_rule.min | default: 1
-
-    capture custom_imprint_add_to_cart_blocked_capture
-      render 'custom-imprint-add-to-cart-blocked', product: product
-    endcapture
-    assign custom_imprint_add_to_cart_blocked = custom_imprint_add_to_cart_blocked_capture | strip
-    assign sticky_add_to_cart_disabled = true
-
-    if current_variant.available and custom_imprint_add_to_cart_blocked != 'true'
-      assign sticky_add_to_cart_disabled = false
-    endif
   %}
 
   <sticky-add-to-cart
@@ -97,12 +87,12 @@
         data-singleton="{{ product.has_only_default_variant }}"
         data-single-option="{{ has_single_option }}"
       >
-        <h3
+        <p
           class="sticky-add-to-cart__title"
           data-testid="sticky-product-title"
         >
           {{ product.title | escape }}
-        </h3>
+        </p>
         <div
           class="sticky-add-to-cart__variant"
           data-testid="sticky-variant-title"
@@ -131,9 +121,9 @@
         class="sticky-add-to-cart__button add-to-cart-button button"
         ref="addToCartButton"
         on:click="/handleAddToCartClick"
-        {% if sticky_add_to_cart_disabled %}
+        {% unless current_variant.available %}
           disabled
-        {% endif %}
+        {% endunless %}
       >
         <span
           class="add-to-cart-text"
@@ -272,6 +262,7 @@
   .sticky-add-to-cart__title {
     font-size: var(--font-paragraph-medium--size);
     font-weight: var(--font-weight-semibold);
+    line-height: var(--font-paragraph--line-height);
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -376,15 +367,6 @@
   "blocks": [
     {
       "type": "@app"
-    },
-    {
-      "type": "@theme"
-    },
-    {
-      "type": "product-info-badge"
-    },
-    {
-      "type": "fast-delivery-logo"
     }
   ],
   "disabled_on": {

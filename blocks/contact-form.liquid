@@ -6,7 +6,6 @@
 
 <div
   class="
-    contact-form-container
     contact-form
     spacing-style size-style
     {% if block.settings.inherit_color_scheme == false %}color-{{ block.settings.color_scheme }}{% endif %}
@@ -51,7 +50,7 @@
 
     <div class="contact-form__form-row">
       <label
-        class="contact-form__input-label"
+        class="visually-hidden"
         for="ContactForm-name"
       >
         {{- 'blocks.contact_form.name' | t -}}
@@ -63,16 +62,15 @@
         autocomplete="name"
         name="contact[name]"
         value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
-        placeholder="John Carter"
+        placeholder="{{ 'blocks.contact_form.name' | t }}"
       >
 
       <label
-        class="contact-form__input-label"
+        class="visually-hidden"
         for="ContactForm-email"
       >
         {{- 'blocks.contact_form.email' | t -}}
-        {% comment %} <span aria-hidden="true">*</span> {% endcomment %}
-        </label
+        <span aria-hidden="true">*</span></label
       >
       <input
         type="email"
@@ -88,56 +86,62 @@
           aria-invalid="true"
           aria-describedby="ContactForm-email-error"
         {% endif %}
-        placeholder="example@email.com"
+        placeholder="{{ 'blocks.contact_form.email' | t }}"
       >
     </div>
 
-<div class="contact-form__button-container">
+    <label
+      class="visually-hidden"
+      for="ContactForm-phone"
+    >
+      {{- 'blocks.contact_form.phone' | t -}}
+    </label>
+    <input
+      type="tel"
+      id="ContactForm-phone"
+      class="contact-form__input"
+      autocomplete="tel"
+      name="contact[phone]"
+      pattern="[0-9\-]*"
+      value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+      placeholder="{{ 'blocks.contact_form.phone' | t }}"
+    >
 
-     <div class="contact-form__form-row">
-        <label
-          class="contact-form__input-label"
-          for="ContactForm-body"
-        >
-          {{- 'blocks.contact_form.comment' | t -}}
-        </label>
-        <textarea
-          rows="10"
-          id="ContactForm-body"
-          class="contact-form__input contact-form__input--textarea"
-          name="contact[body]"
-          placeholder="Write here..."
-        >
-          {{- form.body -}}
-        </textarea>
-     </div>
-  
-      {{ submit_button }}
-</div>
+    <label
+      class="visually-hidden"
+      for="ContactForm-body"
+    >
+      {{- 'blocks.contact_form.comment' | t -}}
+    </label>
+    <textarea
+      rows="10"
+      id="ContactForm-body"
+      class="contact-form__input contact-form__input--textarea"
+      name="contact[body]"
+      placeholder="{{ 'blocks.contact_form.comment' | t }}"
+    >
+      {{- form.body -}}
+    </textarea>
+
+    {{ submit_button }}
   {%- endform -%}
 </div>
 
 {% stylesheet %}
-
-.contact-form-container {
-  background-color: #FFF;
-  box-shadow: 0 4px 38.5px 0 rgba(0, 0, 0, 0.11);
-  border-radius: 18px;
-}
   .contact-form__form {
     display: flex;
     flex-direction: column;
-    gap: 5px;   
+    gap: var(--gap-md);
   }
 
   .contact-form__form-row {
-    flex-direction: column;
-    gap: 5px;
     display: flex;
     flex-direction: column;
+    gap: var(--gap-md);
 
     @media screen and (min-width: 750px) {
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
     }
   }
 
@@ -152,9 +156,6 @@
     border: var(--style-border-width-inputs) solid var(--color-input-border);
     -webkit-font-smoothing: antialiased;
   }
-  .contact-form__input::placeholder {
-    color: #C5C5C5;
-  }
 
   .contact-form__input--textarea {
     resize: vertical;
@@ -166,20 +167,6 @@
     display: flex;
     align-items: center;
     gap: var(--gap-xs);
-  }
-
-  .contact-form__input-label {
-    font-size: var(--font-paragraph--size);
-    font-family: "lato", sans-serif;
-    color: "#5F5F5F";
-    margin-bottom: 0;
-    pointer-events: none;
-  }
-
-  .contact-form__button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 37px;
   }
 {% endstylesheet %}
 
@@ -267,7 +254,7 @@
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 25
+      "default": 0
     },
     {
       "type": "range",
@@ -277,7 +264,7 @@
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 25
+      "default": 0
     },
     {
       "type": "range",
@@ -287,7 +274,7 @@
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 25
+      "default": 0
     },
     {
       "type": "range",
@@ -297,7 +284,7 @@
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 25
+      "default": 0
     }
   ],
   "presets": [

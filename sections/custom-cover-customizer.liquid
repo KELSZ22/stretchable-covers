@@ -4,6 +4,7 @@
 -%}
 
 {{ 'custom-cover-customizer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'custom-cover-font-picker-init.js' | asset_url }}"></script>
 {%- liquid
   assign font_library_mode = section.settings.font_library | default: 'both'
 -%}
@@ -26,6 +27,40 @@
     rel="preconnect"
     href="https://fonts.gstatic.com"
     crossorigin>
+  {%- if google_fonts_pipe != blank -%}
+    {%- assign google_font_css_families = '' -%}
+    {%- assign google_font_batch_count = 0 -%}
+    {%- assign google_font_batch_index = 0 -%}
+    {%- assign gfamilies_preload = google_fonts_pipe | split: '|' -%}
+    {%- for gentry in gfamilies_preload -%}
+      {%- assign gfont_preload = gentry | strip -%}
+      {%- if gfont_preload != blank -%}
+        {%- assign gfont_slug = gfont_preload | replace: ' ', '+' -%}
+        {%- capture family_part -%}family={{ gfont_slug }}:wght@400{%- endcapture -%}
+        {%- if google_font_css_families != '' -%}
+          {%- assign google_font_css_families = google_font_css_families | append: '&' -%}
+        {%- endif -%}
+        {%- assign google_font_css_families = google_font_css_families | append: family_part -%}
+        {%- assign google_font_batch_count = google_font_batch_count | plus: 1 -%}
+        {%- if google_font_batch_count == 12 -%}
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?{{ google_font_css_families }}&display=swap"
+            class="custom-cover-customizer-google-fonts">
+          {%- assign google_font_css_families = '' -%}
+          {%- assign google_font_batch_count = 0 -%}
+          {%- assign google_font_batch_index = google_font_batch_index | plus: 1 -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if google_font_css_families != '' -%}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?{{ google_font_css_families }}&display=swap"
+        class="custom-cover-customizer-google-fonts"
+        {% if google_font_batch_index == 0 %}id="custom-cover-customizer-google-fonts"{% endif %}>
+    {%- endif -%}
+  {%- endif -%}
 {%- endif -%}
 <script
   src="{{ 'custom-cover-customizer.js' | asset_url }}"
@@ -567,11 +602,7 @@
                           {%- assign image_upload_other_formats_note = section.settings.image_upload_other_formats_note
                             | default: 'Note: If you have other file formats like Corel, PDF, or Adobe Illustrator files, please email them directly to support@stretchablecovers.net (temporary email for now).'
                           -%}
-                          {%- if image_upload_other_formats_note != blank -%}
-                            <span class="custom-cover-customizer__dropzone-note">
-                              {{- image_upload_other_formats_note | escape -}}
-                            </span>
-                          {%- endif -%}
+                          
                           <span class="custom-cover-customizer__dropzone-formats">
                             {{-
                               section.settings.image_upload_formats_hint
@@ -584,6 +615,11 @@
                             {{ section.settings.max_upload_mb | default: 10 }} MB
                           </span>
                         </button>
+                        {%- if image_upload_other_formats_note != blank -%}
+                            <span class="custom-cover-customizer__dropzone-note">
+                              {{- image_upload_other_formats_note | escape -}}
+                            </span>
+                          {%- endif -%}
                       </div>
                     </div>
 
@@ -1141,31 +1177,15 @@
                       </div>
                       <div class="custom-cover-customizer__inline-grid custom-cover-customizer__text-font-row">
                         <div class="custom-cover-customizer__group">
-                          <label class="custom-cover-customizer__label" for="CustomizerFont-{{ section.id }}">
+                          <label class="custom-cover-customizer__label" for="CustomizerFontTrigger-{{ section.id }}">
                             {{- section.settings.font_family_label | escape -}}
                           </label>
-                          <select
-                            id="CustomizerFont-{{ section.id }}"
-                            class="custom-cover-customizer__input custom-cover-customizer__input--select-like"
-                            data-font-input>
-                            {% if font_library_mode == 'google' or font_library_mode == 'both' %}
-                              {% assign gfamilies = google_fonts_pipe | split: '|' %}
-                              {% for gentry in gfamilies %}
-                                {% assign gfont = gentry | strip %}
-                                {% if gfont != blank %}
-                                  <option value="{{ gfont | escape }}">{{ gfont | escape }}</option>
-                                {% endif %}
-                              {% endfor %}
-                            {% endif %}
-                            {% if font_library_mode == 'custom' or font_library_mode == 'both' %}
-                              {% for font in custom_cover_font_lines %}
-                                {% assign trimmed_font = font | strip %}
-                                {% if trimmed_font != blank %}
-                                  <option value="{{ trimmed_font | escape }}">{{ trimmed_font | escape }}</option>
-                                {% endif %}
-                              {% endfor %}
-                            {% endif %}
-                          </select>
+                          {% render 'custom-cover-font-picker',
+                            section_id: section.id,
+                            font_library_mode: font_library_mode,
+                            google_fonts_pipe: google_fonts_pipe,
+                            custom_cover_font_lines: custom_cover_font_lines,
+                            font_fallback: section.settings.font_fallback %}
                         </div>
                         <div class="custom-cover-customizer__group">
                           <label class="custom-cover-customizer__label" for="CustomizerFontSize-{{ section.id }}">

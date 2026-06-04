@@ -64,7 +64,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Is there a minimum order?",
-            "answer": "<p>No. There are no minimum order requirements — order a single cover or several hundred. You can mix and match sizes, designs, and quantities however you'd like, with no setup fees. <br/><br/><strong>And the more you order, the more you save</strong> — quantity discounts<br/>kick in automatically as your order size grows, so larger orders (schools, marching bands,<br/>corporate giveaways, dealer co-ops, safetyprograms) get progressively better per-unit pricing.<br/></p>",
+            "answer": "<p><strong>No.</strong> There are no minimum order requirements — Order a single cover or several hundred. You can mix and match sizes, designs, and quantities however you'd like, with no setup fees. <br/><br/><strong>And the more you order, the more you save</strong> — Quantity discounts kick in automatically as your order size grows, so per-unit pricing gets progressively better for larger orders (schools, marching bands, corporate giveaways, dealer co-ops, safety programs) as the size of the order increases.<br/><br/><br/></p>",
             "category": "category_1"
           }
         },
@@ -88,7 +88,7 @@
           "type": "faq_item",
           "settings": {
             "question": "What kind of art files do you accept?",
-            "answer": "<p>We accept CorelDraw - .CDR, Adobe Illustrator - .AI, Adobe .EPS (Encapsulated PostScript) files, .PDF, .GIF, .JPG. </p><p>All type fonts should be converted to artwork or curves. All GIF and JPG files - least desired - should be high in resolution, at least 300 DPI</p>",
+            "answer": "<p>We accept CorelDraw - .CDR, Adobe Illustrator - .AI, Adobe .EPS (Encapsulated PostScript) files, .PDF, .GIF, .JPG, .PNG.</p><p>All type fonts should be converted to artwork or curves. All PNG, GIF and JPG files should be high in resolution - at least 300 DPI</p>",
             "category": "category_1"
           }
         },
@@ -263,7 +263,7 @@
         "padding_top": 40,
         "padding_bottom": 20
       }
-    },
+    }
   },
   "order": [
     "main",

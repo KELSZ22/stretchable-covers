@@ -36,7 +36,7 @@ export class VariantSelectedEvent extends Event {
   /**
    * Creates a new VariantSelectedEvent
    * @param {Object} resource - The new variant object
-   * @param {string} resource.id - The id of the variant
+   * @param {string} resource.id - The option value id
    */
   constructor(resource) {
     super(ThemeEvents.variantSelected, { bubbles: true });

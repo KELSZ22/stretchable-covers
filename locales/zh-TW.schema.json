@@ -534,7 +534,7 @@
       "heading": "標題",
       "description": "說明",
       "key": "屬性名稱",
-      "key_info": "此欄位不可留空，且您必須為每個區塊使用不重複的值。會顯示於購物車、結帳頁面及訂單詳情。",
+      "key_info": "不得留白，且不得在各區塊間重複。會顯示在購物車、結帳頁面與訂單詳情中。",
       "placeholder_text": "預留文字",
       "default_heading": "自訂您的產品",
       "default_placeholder": "輸入您的特別指示",
@@ -556,7 +556,7 @@
     "blog": "網誌",
     "post_count": "文章數",
     "animation": "動畫",
-    "top_level_size": "頂層大小",
+    "top_level_size": "最上層大小",
     "empty_cart_button_link": "購物車為空時的按鈕連結",
     "auto_load_products": "捲動時自動載入產品",
     "products_per_page": "每頁產品數",
@@ -586,7 +586,8 @@
     "x_position": "水平位置",
     "y_position": "垂直位置",
     "enable_sticky_add_to_cart": "固定加入購物車列",
-    "sticky_add_to_cart": "固定加入購物車"
+    "sticky_add_to_cart": "固定加入購物車",
+    "actions_display_style": "選單樣式"
   },
   "options": {
     "apple": "Apple",
@@ -666,7 +667,7 @@
     "snowflake": "雪花",
     "solid": "實色",
     "space_between": "兩端對齊",
-    "square": "正方形",
+    "square": "Square",
     "star": "星形",
     "start": "起始",
     "stopwatch": "秒錶",
@@ -860,7 +861,8 @@
     "subtle_zoom": "縮放",
     "with_hints": "附提示",
     "below_media": "多媒體檔案下方",
-    "full_frame": "滿版"
+    "full_frame": "滿版",
+    "icons": "圖示"
   },
   "content": {
     "advanced": "進階",
@@ -868,7 +870,7 @@
     "background_video": "背景影片",
     "block_size": "區塊大小",
     "borders": "邊框",
-    "describe_the_video_for": "請為使用螢幕閱讀器的顧客描述影片。[瞭解詳情](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
+    "describe_the_video_for": "為使用螢幕助讀程式的顧客說明該影片。[瞭解詳情](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "section_size": "區段尺寸",
     "slideshow_width": "投影片寬度",
     "typography": "字型排版",
@@ -976,7 +978,8 @@
     "popover_position": "彈出式提示位置",
     "resource_reference_product_sku": "顯示父商品的存貨單位 (SKU)",
     "content_layout": "內容版面配置",
-    "mobile_media_1": "行動裝置用多媒體檔案 1"
+    "mobile_media_1": "行動裝置用多媒體檔案 1",
+    "utilities": "公用程式"
   },
   "html_defaults": {
     "share_information_about_your": "<p>向顧客分享您的品牌故事。可用來敘述產品、發布公告，或歡迎顧客造訪您的商店。</p>",
@@ -988,14 +991,13 @@
     "discover_bestsellers": "<p>探索深受顧客喜愛的熱銷商品，兼具實用與美感。</p>",
     "everythings_starts_with_why": "<p>我們做每一件事，先問「為什麼」。</p>",
     "explore_latest_products": "<p>逛逛我們的最新產品。</p>",
-    "faq": "<h3>常見問題</h3>",
+    "faq": "<h2>常見問題</h2>",
     "first_to_know": "<p>搶先掌握新品系列與優惠活動。</p>",
     "free_returns": "<p>30 天內免費退貨</p>",
     "free_shipping_over": "<p>滿 $50 享免運費</p>",
     "goal_for_every_customer": "<p>我們的目標是讓每位顧客對購買完全滿意。若未達成，請告知我們，我們會盡力協助您解決問題。</p>",
     "home_to_shirts": "<p>首頁 → 襯衫</p>",
     "intentional_design": "<h2>精心設計</h2>",
-    "introducing_h2": "<h2><em>全新上市</em></h2>",
     "latest_products": "<p>全新季節商品登場。喜歡就先下手，以免錯過！</p>",
     "made_local_and_global": "<p>我們的產品在本地與海外製造。我們嚴選製造合作夥伴，確保品質優良、價格合理。</p>",
     "made_with_care_h2": "<h2>精心製作</h2>",
@@ -1003,14 +1005,14 @@
     "made_with_care": "<p>精心製作，深受顧客喜愛。</p>",
     "make_things_better_extended": "<p>我們打造更耐用、好用的產品。以俐落設計與誠實素材，解決真實需求。</p>",
     "make_things_better": "<p>我們打造好用又耐用的產品。</p>",
-    "may_also_like": "<h4>您可能也會喜歡</h4>",
+    "may_also_like": "<h2>您可能也會喜歡</h2>",
     "new_arrivals_h1": "<h1>新品上市</h1>",
     "new_arrivals_h2": "<h2>新品上市</h2>",
     "new_arrivals_h3": "<h3>新品上市</h3>",
     "product_launch": "<p>帶您一探最新產品上市的幕後。</p>",
     "product_story": "<p>每件產品背後都有我們對品質與創新的熱情，讓日常更便利，也帶來喜悅。</p>",
     "real_people": "<p>真實團隊造就好產品</p>",
-    "related_product": "<h3>相關產品</h3>",
+    "related_product": "<h2>相關產品</h2>",
     "return_policy": "<h2>退貨政策是什麼？</h2>",
     "reviews": "<p>★★★★★ 368 則評價</p>",
     "shipping_based_on_location": "<p>運費會依您的地點與訂單商品計算。購買前，您一定會先看到運費。</p>",
@@ -1032,8 +1034,9 @@
     "pieces_better_with_time": "<p>經得起時間與穿戴，愈用愈迷人 </p>",
     "quality_you_can_feel": "<h2>觸手可感的品質</h2>",
     "uncompromising_standards": "<p>堅持最高標準 </p>",
-    "featured_collection_h2": "<h2>精選商品系列</h2>",
-    "shop_collection": "<p>探索我們精心策劃的商品系列，精選兼具風格與品質的人氣款。</p>"
+    "featured_collection_h3": "<h3>精選商品系列</h3>",
+    "shop_collection": "<p>探索我們精心策劃的商品系列，精選兼具風格與品質的人氣款。</p>",
+    "introducing_p": "<p><em>全新推出</em></p>"
   },
   "text_defaults": {
     "button_label": "立即選購",
@@ -1067,7 +1070,7 @@
     "when_will_order_arrive": "我的訂單何時會送達？",
     "where_are_products_made": "你們的產品在哪裡製造？",
     "trending_now": "時下流行",
-    "shop_the_look": "購買整套",
+    "shop_the_look": "<h2>購買整套</h2>",
     "bestsellers": "熱銷商品",
     "featured_collection": "精選商品系列",
     "new_arrivals": "新品上市"
@@ -1093,8 +1096,9 @@
     "applies_on_image_only": "僅適用於圖片",
     "hover_effects": "適用於產品卡片與商品系列卡片",
     "hide_logo_on_home_page_help": "啟用固定頁首時，標誌仍會顯示",
-    "media_type_info": "功能會依您的選單連結自動填入",
-    "logo_height": "僅影響頁首標誌"
+    "media_type_info": "功能會根據您的選單連結自動帶入",
+    "logo_height": "僅影響頁首標誌",
+    "actions_display_style": "在行動裝置上一律使用圖示"
   },
   "categories": {
     "basic": "基本",

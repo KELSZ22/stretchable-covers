@@ -713,7 +713,12 @@ export function setHeaderMenuStyle() {
   }
 }
 
-// Header calculation functions for maintaining CSS variables
+/**
+ * Header group includes the header (with the menu, etc) and other sections like announcements, dividers, etc.
+ * @param {HTMLElement | null} header - The header element
+ * @param {HTMLElement | null} headerGroup - The header group element, defaults to the #header-group element
+ * @returns {number} The height of the header group
+ */
 export function calculateHeaderGroupHeight(
   header = document.querySelector('#header-component'),
   headerGroup = document.querySelector('#header-group')
@@ -767,14 +772,14 @@ function updateHeaderHeights() {
   // Calculate initial heights
   const headerHeight = header.offsetHeight;
   const headerGroupHeight = calculateHeaderGroupHeight(header);
-  const headerMenuRow = /** @type {HTMLElement} | null */ (header.querySelector('.header__row:has(.header-menu)'));
+  const headerTopRow = /** @type {HTMLElement} | null */ (header.querySelector('.header__row--top'));
 
   document.body.style.setProperty('--header-height', `${headerHeight}px`);
   document.body.style.setProperty('--header-group-height', `${headerGroupHeight}px`);
 
-  if (headerMenuRow) {
+  if (headerTopRow) {
     window.requestAnimationFrame(function () {
-      header.style.setProperty('--menu-row-height', `${headerMenuRow.offsetHeight}px`);
+      header.style.setProperty('--top-row-height', `${headerTopRow.offsetHeight}px`);
     });
   }
 }

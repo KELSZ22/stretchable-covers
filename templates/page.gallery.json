@@ -63,13 +63,19 @@
         "image_6TJK7V": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Rectangle_449.jpg"
+            "image": "shopify://shop_images/Gemini_Generated_Image_wmqf13wmqf13wmqf.png"
           }
         },
         "image_pJMbhh": {
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/Rectangle_447.jpg"
+          }
+        },
+        "image_dRzQ6G": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/360_FINAL.png"
           }
         },
         "image_Hktby4": {
@@ -81,13 +87,14 @@
         "image_3VLcHd": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Rectangle_450.jpg"
+            "image": "shopify://shop_images/EX_LAX_1.jpg"
           }
         }
       },
       "block_order": [
         "image_6TJK7V",
         "image_pJMbhh",
+        "image_dRzQ6G",
         "image_Hktby4",
         "image_3VLcHd"
       ],

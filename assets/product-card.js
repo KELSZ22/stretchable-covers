@@ -6,17 +6,103 @@ import { ThemeEvents, VariantSelectedEvent, VariantUpdateEvent, SlideshowSelectE
 import { morph } from '@theme/morph';
 
 /**
- * A custom element that displays a product card.
+ * @typedef {object} ProductCardLinkRefs
+ * @property {HTMLElement} [cardGallery] - The card gallery element.
+ * @property {HTMLImageElement[]} [imagesToTransition] - The images to transition.
+ */
+
+/**
+ * A custom element for product links with images for transitions to PDP.
+ * This is a base class that is extended by ProductCard.
+ * Used directly by resource-card.liquid for non-product-card scenarios.
  *
- * @typedef {object} Refs
+ * @template {ProductCardLinkRefs} [T=ProductCardLinkRefs]
+ * @extends {Component<T>}
+ */
+export class ProductCardLink extends Component {
+  get productTransitionEnabled() {
+    return this.getAttribute('data-product-transition') === 'true';
+  }
+
+  get featuredMediaUrl() {
+    return this.getAttribute('data-featured-media-url');
+  }
+
+  /**
+   * Handles the click event for view transitions.
+   * @param {Event} event
+   */
+  handleViewTransition(event) {
+    // If the event has been prevented, don't do anything, another component is handling the click
+    if (event.defaultPrevented) return;
+
+    // If the event was on an interactive element, don't do anything, this is not a navigation
+    if (event.target instanceof Element) {
+      const interactiveElement = event.target.closest('button, input, label, select, [tabindex="1"]');
+      if (interactiveElement) return;
+    }
+
+    if (!this.productTransitionEnabled) return;
+
+    const { cardGallery } = this.refs;
+    if (!cardGallery || !cardGallery.hasAttribute('data-view-transition-to-main-product')) return;
+
+    // Check on the current active image, whether it's a product card image or a resource card image
+    const { imagesToTransition } = this.refs;
+    const activeImage =
+      imagesToTransition?.find(
+        (/** @type {HTMLImageElement} */ image) =>
+          image.closest('slideshow-slide')?.getAttribute('aria-hidden') === 'false'
+      ) || imagesToTransition?.[imagesToTransition.length - 1];
+
+    if (activeImage instanceof HTMLImageElement) this.#setImageSrcset(activeImage);
+
+    cardGallery.setAttribute('data-view-transition-type', 'product-image-transition');
+    cardGallery.setAttribute('data-view-transition-triggered', 'true');
+  }
+
+  /**
+   * Sets the srcset for the image
+   * @param {HTMLImageElement} image
+   */
+  #setImageSrcset(image) {
+    if (!this.featuredMediaUrl) return;
+
+    const currentImageUrl = new URL(image.currentSrc);
+
+    // Deliberately not using origin, as it includes the protocol, which is usually skipped for featured media
+    const currentImageRawUrl = currentImageUrl.host + currentImageUrl.pathname;
+
+    if (!this.featuredMediaUrl.includes(currentImageRawUrl)) {
+      const imageFade = image.animate([{ opacity: 0.8 }, { opacity: 1 }], {
+        duration: 125,
+        easing: 'ease-in-out',
+      });
+
+      imageFade.onfinish = () => {
+        image.srcset = this.featuredMediaUrl ?? '';
+      };
+    }
+  }
+}
+
+if (!customElements.get('product-card-link')) {
+  customElements.define('product-card-link', ProductCardLink);
+}
+
+/**
+ * A custom element that displays a product card.
+ * Extends ProductCardLink to inherit view transition functionality.
+ *
+ * @typedef {object} ProductCardRefs
  * @property {HTMLAnchorElement} productCardLink - The product card link element.
  * @property {import('slideshow').Slideshow} [slideshow] - The slideshow component.
  * @property {import('quick-add').QuickAddComponent} [quickAdd] - The quick add component.
  * @property {HTMLElement} [cardGallery] - The card gallery component.
- *
- * @extends {Component<Refs>}
+ * @property {HTMLImageElement[]} [imagesToTransition] - The images to transition.
+ * @extends {ProductCardLink<ProductCardRefs>}
  */
-export class ProductCard extends Component {
+export class ProductCard extends ProductCardLink {
   requiredRefs = ['productCardLink'];
 
   get productPageUrl() {
@@ -191,14 +277,14 @@ export class ProductCard extends Component {
    * @param {VariantUpdateEvent} event - The variant update event.
    */
   #updateProductUrl(event) {
-    const anchorElement = event.detail.data.html?.querySelector('product-card a');
-    const featuredMediaUrl = event.detail.data.html
-      ?.querySelector('product-card-link')
-      ?.getAttribute('data-featured-media-url');
+    const responseProductCard = event.detail.data.html?.querySelector('product-card');
+    const anchorElement = responseProductCard?.querySelector('a');
+    const featuredMediaUrl = responseProductCard?.getAttribute('data-featured-media-url');
 
-    // If the product card is inside a product link, update the product link's featured media URL
-    if (featuredMediaUrl && this.closest('product-card-link'))
-      this.closest('product-card-link')?.setAttribute('data-featured-media-url', featuredMediaUrl);
+    // Update the featured media URL for view transitions (inherited from ProductCardLink)
+    if (featuredMediaUrl) {
+      this.setAttribute('data-featured-media-url', featuredMediaUrl);
+    }
 
     if (anchorElement instanceof HTMLAnchorElement) {
       // If the href is empty, don't update the product URL eg: unavailable variant

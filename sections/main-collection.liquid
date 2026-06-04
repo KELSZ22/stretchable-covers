@@ -76,16 +76,6 @@
   </div>
 </results-list>
 
-{% stylesheet %}
-  .main-collection-grid {
-    grid-column: var(--grid-column--mobile);
-
-    @media screen and (min-width: 750px) {
-      grid-column: var(--grid-column--desktop);
-    }
-  }
-{% endstylesheet %}
-
 {% schema %}
 {
   "name": "t:names.collection_container",
@@ -165,28 +155,6 @@
       "step": 4,
       "default": 24,
       "visible_if": "{{ section.settings.enable_infinite_scroll == false }}"
-    },
-    {
-      "type": "header",
-      "content": "Collection toolbar"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_products_count",
-      "label": "Show products count",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_sorting",
-      "label": "Show sorting",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_column_options",
-      "label": "Show column options",
-      "default": true
     },
     {
       "type": "header",

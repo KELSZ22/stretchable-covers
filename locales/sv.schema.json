@@ -534,7 +534,7 @@
       "heading": "Rubrik",
       "description": "Beskrivning",
       "key": "Egenskapsnamn",
-      "key_info": "Får inte vara tomt och måste vara unikt för varje block. Visas i varukorgen, kassan och orderdetaljerna.",
+      "key_info": "Får inte vara tomt och måste vara unikt för varje block. Visas i varukorgen, kassan och orderuppgifterna.",
       "placeholder_text": "Platshållartext",
       "default_heading": "Anpassa din produkt",
       "default_placeholder": "Ange dina särskilda anvisningar",
@@ -556,7 +556,7 @@
     "blog": "Blogg",
     "post_count": "Antal inlägg",
     "animation": "Animering",
-    "top_level_size": "Storlek på översta nivån",
+    "top_level_size": "Storlek för högsta nivån",
     "empty_cart_button_link": "Knapplänk för tom varukorg",
     "auto_load_products": "Läs in produkter automatiskt vid rullning",
     "products_per_page": "Produkter per sida",
@@ -586,7 +586,8 @@
     "x_position": "Horisontell position",
     "y_position": "Vertikal position",
     "enable_sticky_add_to_cart": "Fast fält för ”Lägg till i varukorgen”",
-    "sticky_add_to_cart": "Fast ”Lägg till i varukorgen”"
+    "sticky_add_to_cart": "Fast ”Lägg till i varukorgen”",
+    "actions_display_style": "Menystil"
   },
   "options": {
     "apple": "Apple",
@@ -860,7 +861,8 @@
     "subtle_zoom": "Zoom",
     "with_hints": "Med tips",
     "below_media": "Under media",
-    "full_frame": "Helskärm"
+    "full_frame": "Helskärm",
+    "icons": "Ikoner"
   },
   "content": {
     "advanced": "Avancerat",
@@ -868,7 +870,7 @@
     "background_video": "Bakgrundsvideo",
     "block_size": "Blockstorlek",
     "borders": "Kantlinjer",
-    "describe_the_video_for": "Beskriv videon för kunder som använder skärmläsare. [Läs mer](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
+    "describe_the_video_for": "Beskriv videon för kunder som använder skärmläsare. [Mer information](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "section_size": "Sektionsstorlek",
     "slideshow_width": "Bildbredd",
     "typography": "Typografi",
@@ -976,7 +978,8 @@
     "popover_position": "Popover-position",
     "resource_reference_product_sku": "Visar lagerhållningsenhet från överordnad produkt",
     "content_layout": "Innehållslayout",
-    "mobile_media_1": "Mobilmedia 1"
+    "mobile_media_1": "Mobilmedia 1",
+    "utilities": "Verktyg"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Dela information om ditt varumärke med dina kunder. Beskriv en produkt, gör tillkännagivanden eller välkomna kunder till din butik.</p>",
@@ -988,14 +991,14 @@
     "discover_bestsellers": "<p>Upptäck bästsäljarna som har fångat våra kunders hjärtan med sin perfekta blandning av funktion och stil.</p>",
     "everythings_starts_with_why": "<p>Allt vi gör börjar med varför</p>",
     "explore_latest_products": "<p>Utforska våra senaste produkter.</p>",
-    "faq": "<h3>Vanliga frågor</h3>",
+    "faq": "<h2>Vanliga frågor</h2>",
     "first_to_know": "<p>Bli först med att få veta om nya produktserier och specialerbjudanden. </p>",
     "free_returns": "<p>Gratis 30-dagars returer</p>",
     "free_shipping_over": "<p>Fri frakt över 50 USD</p>",
     "goal_for_every_customer": "<p>Vårt mål är att varje kund ska vara helt nöjd med sitt köp. Om så inte är fallet, meddela oss så gör vi vårt bästa för att lösa det tillsammans med dig.</p>",
     "home_to_shirts": "<p>Startsida → Skjortor</p>",
     "intentional_design": "<h2>Avsiktlig design</h2>",
-    "introducing_h2": "<h2><em>Vi presenterar</em></h2>",
+    "introducing_p": "<p><em>Vi presenterar</em></p>",
     "latest_products": "<p>Vi presenterar våra senaste produkter, särskilt framtagna för säsongen. Shoppa dina favoriter innan de tar slut!</p>",
     "made_local_and_global": "<p>Våra produkter tillverkas både lokalt och globalt. Vi väljer noggrant ut våra tillverkningspartners för att säkerställa att våra produkter är av hög kvalitet och prisvärda.</p>",
     "made_with_care_h2": "<h2>Tillverkad med omsorg</h2>",
@@ -1003,14 +1006,14 @@
     "made_with_care": "<p>Tillverkad med omsorg och villkorslöst älskad av våra kunder.</p>",
     "make_things_better_extended": "<p>Vi tillverkar saker som fungerar bättre och håller längre. Våra produkter löser verkliga problem med ren design och ärliga material.</p>",
     "make_things_better": "<p>Vi tillverkar saker som fungerar bättre och håller längre.</p>",
-    "may_also_like": "<h4>Du kanske också gillar</h4>",
+    "may_also_like": "<h2>Du kanske också gillar</h2>",
     "new_arrivals_h1": "<h1>Nyheter</h1>",
     "new_arrivals_h2": "<h2>Nyheter</h2>",
     "new_arrivals_h3": "<h3>Nyheter</h3>",
     "product_launch": "<p>Ta en titt bakom kulisserna på vår senaste produktlansering.</p>",
     "product_story": "<p>I hjärtat av varje produkt finns en unik berättelse, driven av vår passion för kvalitet och innovation. Varje artikel förgyller din vardag och skapar glädje.</p>",
     "real_people": "<p>Verkliga människor som tillverkar fantastiska produkter</p>",
-    "related_product": "<h3>Relaterade produkter</h3>",
+    "related_product": "<h2>Relaterade produkter</h2>",
     "return_policy": "<h2>Vad är returpolicyn?</h2>",
     "reviews": "<p>★★★★★ 368 recensioner</p>",
     "shipping_based_on_location": "<p>Frakten beräknas baserat på din plats och artiklarna i din order. Du kommer alltid att veta fraktpriset innan du köper.</p>",
@@ -1032,8 +1035,8 @@
     "pieces_better_with_time": "<p>Produkter som bara blir bättre med tiden och av användning </p>",
     "quality_you_can_feel": "<h2>Kvalitet du kan känna</h2>",
     "uncompromising_standards": "<p>Kompromisslösa standarder </p>",
-    "featured_collection_h2": "<h2>Utvald produktserie</h2>",
-    "shop_collection": "<p>Upptäck vår utvalda produktserie med handplockade favoriter som förenar stil och kvalitet.</p>"
+    "shop_collection": "<p>Upptäck vår utvalda produktserie med handplockade favoriter som förenar stil och kvalitet.</p>",
+    "featured_collection_h3": "<h3>Utvald kollektion</h3>"
   },
   "text_defaults": {
     "button_label": "Handla nu",
@@ -1067,7 +1070,7 @@
     "when_will_order_arrive": "När får jag min order?",
     "where_are_products_made": "Var tillverkas era produkter?",
     "trending_now": "Populärt just nu",
-    "shop_the_look": "Shoppa stilen",
+    "shop_the_look": "<h2>Shoppa stilen</h2>",
     "bestsellers": "Bästsäljare",
     "featured_collection": "Utvald produktserie",
     "new_arrivals": "Nyheter"
@@ -1093,8 +1096,9 @@
     "applies_on_image_only": "Gäller endast bilder",
     "hover_effects": "Gäller produkt- och produktseriekort",
     "hide_logo_on_home_page_help": "Logotypen förblir synlig när klistrigt sidhuvud är aktivt",
-    "media_type_info": "Funktioner fylls i från dina menylänkar",
-    "logo_height": "Påverkar endast logotypen i sidhuvudet"
+    "media_type_info": "Funktionerna hämtas från menylänkarna",
+    "logo_height": "Påverkar endast sidhuvudslogotypen",
+    "actions_display_style": "Ikoner används alltid på mobilen"
   },
   "categories": {
     "basic": "Grundläggande",

@@ -534,7 +534,7 @@
       "heading": "Überschrift",
       "description": "Beschreibung",
       "key": "Eigenschaftsname",
-      "key_info": "Darf nicht leer sein und muss für jeden Block eindeutig sein. Wird im Warenkorb, im Checkout und in den Bestelldetails angezeigt.",
+      "key_info": "Darf nicht leer sein und muss für jeden Block einzigartig sein. Wird im Warenkorb, im Checkout und in den Bestelldetails angezeigt.",
       "placeholder_text": "Platzhaltertext",
       "default_heading": "Passe dein Produkt an",
       "default_placeholder": "Gib deine speziellen Anweisungen ein",
@@ -586,7 +586,8 @@
     "x_position": "Horizontale Position",
     "y_position": "Vertikale Position",
     "enable_sticky_add_to_cart": "Fixierte Leiste „In den Warenkorb“",
-    "sticky_add_to_cart": "Fixierte Schaltfläche „In den Warenkorb“"
+    "sticky_add_to_cart": "Fixierte Schaltfläche „In den Warenkorb“",
+    "actions_display_style": "Menüstil"
   },
   "options": {
     "apple": "Apfel",
@@ -860,11 +861,12 @@
     "subtle_zoom": "Zoom",
     "with_hints": "Mit Hinweisen",
     "below_media": "Unter den Medien",
-    "full_frame": "Vollbild"
+    "full_frame": "Vollbild",
+    "icons": "Symbole"
   },
   "content": {
     "background_video": "Hintergrundvideo",
-    "describe_the_video_for": "Beschreibe das Video für Kunden, die Screenreader verwenden. [Mehr erfahren](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
+    "describe_the_video_for": "Beschreibe das Video für Kunden, die Bildschirmlesegeräte benutzen. [Mehr Informationen](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "width_is_automatically_optimized": "Die Breite wird für Mobilgeräte automatisch optimiert.",
     "advanced": "Erweitert",
     "background_image": "Hintergrundbild",
@@ -966,7 +968,7 @@
     "heading": "Überschrift",
     "resource_reference_product_custom_property": "Füge anpassbare Eingabefelder hinzu, um benutzerdefinierte Informationen zu erfassen, die dieser Bestellposition hinzugefügt und später in den Bestelldetails angezeigt werden.",
     "block_link": "Block-Link",
-    "submenu_feature": "Untermenü-Funktion",
+    "submenu_feature": "Untermenüfunktion",
     "cart_features": "Warenkorbfunktionen",
     "email_signup": "E-Mail-Anmeldung",
     "mobile_media": "Mobile Medien",
@@ -976,7 +978,8 @@
     "popover_position": "Popover-Position",
     "resource_reference_product_sku": "Zeigt die SKU vom Hauptprodukt an",
     "content_layout": "Inhaltslayout",
-    "mobile_media_1": "Mobile Medien 1"
+    "mobile_media_1": "Mobile Medien 1",
+    "utilities": "Dienstprogramme"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Teile Informationen über deine Marke mit deinen Kunden. Beschreibe ein Produkt, mache Ankündigungen oder heiße Kunden in deinem Shop willkommen.</p>",
@@ -988,14 +991,13 @@
     "discover_bestsellers": "<p>Entdecke die Bestseller, die die Herzen unserer Kunden mit ihrer perfekten Mischung aus Funktionalität und Stil erobert haben.</p>",
     "everythings_starts_with_why": "<p>Alles, was wir tun, beginnt mit dem Warum</p>",
     "explore_latest_products": "<p>Entdecke unsere neuesten Produkte.</p>",
-    "faq": "<h3>Häufig gestellte Fragen</h3>",
+    "faq": "<h2>Häufig gestellte Fragen</h2>",
     "first_to_know": "<p>Erfahre als Erster von neuen Kollektionen und Sonderangeboten. </p>",
     "free_returns": "<p>Kostenlose 30-Tage-Rückgabe</p>",
     "free_shipping_over": "<p>Kostenloser Versand ab 50 $</p>",
     "goal_for_every_customer": "<p>Unser Ziel ist es, dass jeder Kunde mit seinem Kauf rundum zufrieden ist. Wenn dies nicht der Fall ist, lass es uns wissen und wir werden unser Bestes tun, um gemeinsam mit dir eine Lösung zu finden.</p>",
     "home_to_shirts": "<p>Startseite → Hemden</p>",
     "intentional_design": "<h2>Bewusstes Design</h2>",
-    "introducing_h2": "<h2><em>Wir stellen vor</em></h2>",
     "latest_products": "<p>Wir stellen unsere neuesten Produkte vor, die speziell für diese Saison hergestellt wurden. Kaufe deine Favoriten, bevor sie vergriffen sind!</p>",
     "made_local_and_global": "<p>Unsere Produkte werden sowohl lokal als auch global hergestellt. Wir wählen unsere Herstellungspartner sorgfältig aus, um sicherzustellen, dass unsere Produkte von hoher Qualität und zu einem fairen Preis sind.</p>",
     "made_with_care_h2": "<h2>Mit Sorgfalt hergestellt</h2>",
@@ -1003,14 +1005,14 @@
     "made_with_care": "<p>Mit Sorgfalt hergestellt und von unseren Kunden bedingungslos geliebt.</p>",
     "make_things_better_extended": "<p>Wir stellen Dinge her, die besser funktionieren und länger halten. Unsere Produkte lösen echte Probleme mit klarem Design und ehrlichen Materialien.</p>",
     "make_things_better": "<p>Wir stellen Dinge her, die besser funktionieren und länger halten.</p>",
-    "may_also_like": "<h4>Das könnte dir auch gefallen</h4>",
+    "may_also_like": "<h2>Das könnte dir auch gefallen</h2>",
     "new_arrivals_h1": "<h1>Neu eingetroffen</h1>",
     "new_arrivals_h2": "<h2>Neu eingetroffen</h2>",
     "new_arrivals_h3": "<h3>Neu eingetroffen</h3>",
     "product_launch": "<p>Wirf einen Blick hinter die Kulissen unserer neuesten Produkteinführung.</p>",
     "product_story": "<p>Im Herzen jedes Produkts liegt eine einzigartige Geschichte, angetrieben von unserer Leidenschaft für Qualität und Innovation. Jeder Artikel bereichert deinen Alltag und weckt Freude.</p>",
     "real_people": "<p>Echte Menschen, die großartige Produkte herstellen</p>",
-    "related_product": "<h3>Ähnliche Produkte</h3>",
+    "related_product": "<h2>Ähnliche Produkte</h2>",
     "return_policy": "<h2>Wie lauten die Rückgaberichtlinien?</h2>",
     "reviews": "<p>★★★★★ 368 Bewertungen</p>",
     "shipping_based_on_location": "<p>Der Versand wird basierend auf deinem Standort und den Artikeln in deiner Bestellung berechnet. Du erfährst den Versandpreis immer, bevor du den Kauf abschließt.</p>",
@@ -1032,8 +1034,9 @@
     "pieces_better_with_time": "<p>Stücke, die mit der Zeit nur noch schöner werden </p>",
     "quality_you_can_feel": "<h2>Qualität, die du spüren kannst</h2>",
     "uncompromising_standards": "<p>Kompromisslose Standards </p>",
-    "featured_collection_h2": "<h2>Vorgestellte Kollektion</h2>",
-    "shop_collection": "<p>Entdecke unsere kuratierte Kollektion mit handverlesenen Favoriten, die Stil und Qualität vereinen.</p>"
+    "shop_collection": "<p>Entdecke unsere kuratierte Kollektion mit handverlesenen Favoriten, die Stil und Qualität vereinen.</p>",
+    "introducing_p": "<p><em>Vorgestellt</em></p>",
+    "featured_collection_h3": "<h3>Vorgestellte Kategorie</h3>"
   },
   "text_defaults": {
     "collapsible_row": "Einklappbare Zeile",
@@ -1067,7 +1070,7 @@
     "when_will_order_arrive": "Wann erhalte ich meine Bestellung?",
     "where_are_products_made": "Wo werden deine Produkte hergestellt?",
     "trending_now": "Aktuelle Trends",
-    "shop_the_look": "Look kaufen",
+    "shop_the_look": "<h2>Look kaufen</h2>",
     "bestsellers": "Bestseller",
     "featured_collection": "Vorgestellte Kollektion",
     "new_arrivals": "Neuheiten"
@@ -1093,8 +1096,9 @@
     "hover_effects": "Gilt für Produkt- und Kollektionskarten",
     "pills_usage": "Wird für angewendete Filter, Rabattcodes und Suchvorschläge verwendet",
     "hide_logo_on_home_page_help": "Das Logo bleibt sichtbar, wenn der fixierte Header aktiv ist",
-    "media_type_info": "Funktionen werden aus deinen Menü-Links übernommen",
-    "logo_height": "Betrifft nur das Header-Logo"
+    "media_type_info": "Die Funktionen werden aus deinen Menü-Links übernommen",
+    "logo_height": "Betrifft nur das Header-Logo",
+    "actions_display_style": "Auf Mobilgeräten werden immer Symbole verwendet"
   },
   "categories": {
     "product_list": "Vorgestellte Kollektion",

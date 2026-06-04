@@ -1,12 +1,7 @@
-{% assign block_settings = block.settings %}
-{% capture accordion_block_content %}{% content_for 'blocks' %}{% endcapture %}
 
-<accordion-custom
-  {% if block_settings.open_by_default %}
-    open-by-default-on-desktop
-    open-by-default-on-mobile
-  {% endif %}
->
+{% assign block_settings = block.settings %}
+
+{% capture accordion_row_children %}
   <details
     class="details"
     data-testid="accordion-details"
@@ -23,155 +18,30 @@
         class_name: 'details__icon'
       %}
       {{ block_settings.heading }}
-
-      <span class="details__toggle-icon" aria-hidden="true">
-        <span class="details__toggle-icon-svg details__toggle-icon-svg--closed">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
-    <path d="M6 1V11" stroke="#000" stroke-width="1.5" stroke-linecap="round"></path>
-    <path d="M1 6H11" stroke="#000" stroke-width="1.5" stroke-linecap="round"></path>
-  </svg>
-        </span>
-
-        <span class="details__toggle-icon-svg details__toggle-icon-svg--open">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="2" viewBox="0 0 16 2" fill="none">
-    <path d="M1 1H15" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-  </svg>
-        </span>
+      <span class="svg-wrapper icon-caret icon-animated">
+        {{- 'icon-caret.svg' | inline_asset_content -}}
+      </span>
+      <span class="svg-wrapper icon-plus">
+        {{- 'icon-plus.svg' | inline_asset_content -}}
       </span>
     </summary>
 
     <div class="details-content">
-      {% if block_settings.heading == 'Specification' %}
-        <table class="specification-table">
-          <tbody>
-            <tr>
-              <th>Country of Origin</th>
-              <td>{{ closest.product.metafields.custom.country_of_origin.value | default: '-' }}</td>
-            </tr>
-            <tr>
-              <th>Fabric</th>
-              <td>{{ closest.product.metafields.custom.fabric.value | default: '-' }}</td>
-            </tr>
-          </tbody>
-        </table>
-      {% elsif block_settings.heading == 'Materials' %}
-        {% assign materials_metafield = closest.product.metafields.custom.materials_used %}
-        {% if materials_metafield == blank %}
-          {% assign materials_metafield = closest.product.metafields.custom.materials %}
-        {% endif %}
-
-        {% if materials_metafield != blank %}
-          {% if materials_metafield.type == 'rich_text_field' %}
-            {{ materials_metafield | metafield_tag }}
-          {% else %}
-            {{ materials_metafield.value | escape }}
-          {% endif %}
-        {% else %}
-          {{ accordion_block_content }}
-        {% endif %}
-      {% else %}
-        {{ accordion_block_content }}
-      {% endif %}
+      {% content_for 'blocks' %}
     </div>
   </details>
-</accordion-custom>
+{% endcapture %}
+{% render 'accordion-custom-component',
+  children: accordion_row_children,
+  open_by_default_on_desktop: block_settings.open_by_default,
+  open_by_default_on_mobile: block_settings.open_by_default
+%}
 
 {% stylesheet %}
-.accordion rte-formatter p {
-    max-width: 100%;
-    width: 100% !important;
-    max-inline-size: unset;
-}
-
   .details__icon {
     height: auto;
     margin-inline-end: var(--margin-xs);
   }
-
-  .details__toggle-icon {
-    position: relative;
-    width: 24px;
-    min-width: 24px;
-    max-width: 24px;
-    height: 24px;
-    min-height: 24px;
-    max-height: 24px;
-    flex: 0 0 24px;
-    margin-inline-start: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #ffffff;
-    border-radius: 50%;
-    line-height: 0;
-    padding: 0;
-    transition:
-      background 0.25s ease,
-      border-color 0.25s ease;
-  }
-
-  .details__toggle-icon-svg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translate(-50%, -50%);
-    transition: opacity 0.25s ease, transform 0.25s ease;
-  }
-
-  .details__toggle-icon-svg svg {
-    display: block;
-  }
-
-  .details__toggle-icon-svg--open {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.9);
-  }
-
-  .details__toggle-icon-svg--closed {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  .details[open] .details__toggle-icon {
-    background: transparent;
-    border-color: #5F5F5F;
-  }
-
-  .details[open] .details__toggle-icon-svg--closed {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.9);
-  }
-
-  .details[open] .details__toggle-icon-svg--open {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  .specification-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #D5DEE8;
-  }
-
-  .specification-table th,
-  .specification-table td {
-    padding: 8px;
-    border-bottom: 1px solid #D5DEE8;
-  }
-
-  .specification-table th {
-    border-right: 1px solid #D5DEE8;
-  }
-
-  .specification-table th {
-    text-align: left;
-    font-weight: 600;
-    background: #F9FDFF;
-  }
-
 {% endstylesheet %}
 
 {% schema %}

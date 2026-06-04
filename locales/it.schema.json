@@ -534,7 +534,7 @@
       "heading": "Intestazione",
       "description": "Descrizione",
       "key": "Nome proprietà",
-      "key_info": "Non può essere vuoto e deve essere unico per ogni blocco. Viene visualizzato nel carrello, al check-out e nei dettagli dell'ordine.",
+      "key_info": "Non può essere vuoto e deve essere univoco per ogni blocco. Viene visualizzato nel carrello, al check-out e nei dettagli dell’ordine.",
       "placeholder_text": "Testo segnaposto",
       "default_heading": "Personalizza il tuo prodotto",
       "default_placeholder": "Inserisci le tue istruzioni speciali",
@@ -556,8 +556,8 @@
     "blog": "Blog",
     "post_count": "Conteggio post",
     "animation": "Animazione",
-    "top_level_size": "Dimensione livello superiore",
-    "empty_cart_button_link": "Link pulsante carrello vuoto",
+    "top_level_size": "Dimensione primo livello",
+    "empty_cart_button_link": "Link pulsante per carrello vuoto",
     "auto_load_products": "Carica automaticamente i prodotti durante lo scorrimento",
     "products_per_page": "Prodotti per pagina",
     "custom_mobile_media": "Mostra contenuti multimediali diversi su mobile",
@@ -586,7 +586,8 @@
     "x_position": "Posizione orizzontale",
     "y_position": "Posizione verticale",
     "enable_sticky_add_to_cart": "Barra fissa per l'aggiunta al carrello",
-    "sticky_add_to_cart": "Aggiunta al carrello fissa"
+    "sticky_add_to_cart": "Aggiunta al carrello fissa",
+    "actions_display_style": "Stile menu"
   },
   "options": {
     "apple": "Mela",
@@ -637,7 +638,7 @@
     "m": "M",
     "map_pin": "Puntina da mappa",
     "medium": "Medio",
-    "none": "Nessuno",
+    "none": "Nessuna",
     "numbers": "Numeri",
     "nut_free": "Senza frutta a guscio",
     "outline": "Contorno",
@@ -860,7 +861,8 @@
     "subtle_zoom": "Zoom",
     "with_hints": "Con suggerimenti",
     "below_media": "Sotto i contenuti multimediali",
-    "full_frame": "A schermo intero"
+    "full_frame": "A schermo intero",
+    "icons": "Icone"
   },
   "content": {
     "advanced": "Avanzate",
@@ -868,7 +870,7 @@
     "background_video": "Video di sfondo",
     "block_size": "Dimensioni del blocco",
     "borders": "Bordi",
-    "describe_the_video_for": "Descrivi il video per i clienti che utilizzano utilità per la lettura dello schermo. [Maggiori informazioni](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
+    "describe_the_video_for": "Descrivi il video per i clienti che utilizzano i lettori di schermo. [Maggiori informazioni](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "section_size": "Dimensioni della sezione",
     "slideshow_width": "Larghezza slide",
     "typography": "Tipografia",
@@ -976,7 +978,8 @@
     "popover_position": "Posizione popover",
     "resource_reference_product_sku": "Mostra lo SKU del prodotto principale",
     "content_layout": "Layout del contenuto",
-    "mobile_media_1": "Contenuto multimediale per mobile 1"
+    "mobile_media_1": "Contenuto multimediale per mobile 1",
+    "utilities": "Utilità"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Condividi informazioni sul tuo brand con i clienti. Descrivi un prodotto, fai annunci o dai il benvenuto ai clienti nel tuo negozio.</p>",
@@ -988,14 +991,13 @@
     "discover_bestsellers": "<p>Scopri i bestseller che hanno conquistato i nostri clienti con il loro mix perfetto di funzionalità e stile.</p>",
     "everythings_starts_with_why": "<p>Tutto ciò che facciamo parte da un perché</p>",
     "explore_latest_products": "<p>Esplora i nostri ultimi prodotti.</p>",
-    "faq": "<h3>Domande frequenti</h3>",
+    "faq": "<h2>Domande frequenti</h2>",
     "first_to_know": "<p>Sii il primo a scoprire le nuove collezioni e le offerte speciali. </p>",
     "free_returns": "<p>Resi gratuiti entro 30 giorni</p>",
     "free_shipping_over": "<p>Spedizione gratuita per ordini superiori a 50 $</p>",
     "goal_for_every_customer": "<p>Il nostro obiettivo è la totale soddisfazione di ogni cliente. In caso contrario, contattaci e faremo del nostro meglio per trovare una soluzione insieme a te.</p>",
     "home_to_shirts": "<p>Home → Camicie</p>",
     "intentional_design": "<h2>Design intenzionale</h2>",
-    "introducing_h2": "<h2><em>Ti presentiamo</em></h2>",
     "latest_products": "<p>Ti presentiamo i nostri ultimi prodotti, realizzati appositamente per la stagione. Acquista i tuoi preferiti prima che finiscano!</p>",
     "made_local_and_global": "<p>I nostri prodotti sono realizzati sia a livello locale che globale. Selezioniamo attentamente i nostri partner di produzione per garantire prodotti di alta qualità a un prezzo equo.</p>",
     "made_with_care_h2": "<h2>Realizzati con cura</h2>",
@@ -1003,14 +1005,14 @@
     "made_with_care": "<p>Realizzati con cura e amati incondizionatamente dai nostri clienti.</p>",
     "make_things_better_extended": "<p>Realizziamo articoli che funzionano meglio e durano più a lungo. I nostri prodotti risolvono problemi reali con un design pulito e materiali autentici.</p>",
     "make_things_better": "<p>Realizziamo articoli che funzionano meglio e durano più a lungo.</p>",
-    "may_also_like": "<h4>Potrebbe interessarti anche</h4>",
+    "may_also_like": "<h2>Potrebbe piacerti anche</h2>",
     "new_arrivals_h1": "<h1>Nuovi arrivi</h1>",
     "new_arrivals_h2": "<h2>Nuovi arrivi</h2>",
     "new_arrivals_h3": "<h3>Nuovi arrivi</h3>",
     "product_launch": "<p>Dai un'occhiata al dietro le quinte del lancio del nostro ultimo prodotto.</p>",
     "product_story": "<p>Al centro di ogni prodotto c'è una storia unica, guidata dalla nostra passione per la qualità e l'innovazione. Ogni articolo migliora la tua vita quotidiana e suscita gioia.</p>",
     "real_people": "<p>Persone vere che realizzano prodotti fantastici</p>",
-    "related_product": "<h3>Prodotti correlati</h3>",
+    "related_product": "<h2>Prodotti correlati</h2>",
     "return_policy": "<h2>Qual è l'informativa sui resi?</h2>",
     "reviews": "<p>★★★★★ 368 recensioni</p>",
     "shipping_based_on_location": "<p>La spedizione viene calcolata in base alla tua posizione e agli articoli presenti nel tuo ordine. Conoscerai sempre il prezzo della spedizione prima di completare l'acquisto.</p>",
@@ -1032,8 +1034,9 @@
     "pieces_better_with_time": "<p>Capi che migliorano con il tempo e l'uso </p>",
     "quality_you_can_feel": "<h2>La qualità che puoi toccare con mano</h2>",
     "uncompromising_standards": "<p>Standard senza compromessi </p>",
-    "featured_collection_h2": "<h2>Collezione in evidenza</h2>",
-    "shop_collection": "<p>Scopri la nostra collezione curata con i nostri articoli preferiti, scelti per unire stile e qualità.</p>"
+    "shop_collection": "<p>Scopri la nostra collezione curata con i nostri articoli preferiti, scelti per unire stile e qualità.</p>",
+    "introducing_p": "<p><em>Ti presentiamo</em></p>",
+    "featured_collection_h3": "<h3>Collezione in primo piano</h3>"
   },
   "text_defaults": {
     "button_label": "Acquista ora",
@@ -1067,7 +1070,7 @@
     "when_will_order_arrive": "Quando riceverò il mio ordine?",
     "where_are_products_made": "Dove vengono fabbricati i tuoi prodotti?",
     "trending_now": "Di tendenza",
-    "shop_the_look": "Acquista il look",
+    "shop_the_look": "<h2>Acquista il look</h2>",
     "bestsellers": "Bestseller",
     "featured_collection": "Collezione in evidenza",
     "new_arrivals": "Nuovi arrivi"
@@ -1094,7 +1097,8 @@
     "hover_effects": "Si applica alle schede di prodotto e di collezione",
     "hide_logo_on_home_page_help": "Il logo rimarrà visibile quando l'header permanente è attivo",
     "media_type_info": "Le funzionalità vengono popolate dai link del menu",
-    "logo_height": "Influisce solo sul logo dell'header"
+    "logo_height": "Riguarda solo il logo dell’header",
+    "actions_display_style": "Le icone vengono sempre usate sui dispositivi mobili"
   },
   "categories": {
     "product_list": "Collezione in evidenza",

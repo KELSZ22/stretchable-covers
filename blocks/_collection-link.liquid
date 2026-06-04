@@ -41,7 +41,7 @@
     assign placeholder_variant = index | modulo: 4 | plus: 1
     assign placeholder_name = 'collection-apparel-' | append: placeholder_variant
   -%}
-  {% content_for 'block', type: '_image', id: 'image', loading: loading, placeholder: placeholder_name %}
+  {% content_for 'block', type: '_image', id: 'image', loading: loading, placeholder: placeholder_name, decorative_image: true %}
 {% endcapture %}
 
 {% if image_only %}
@@ -49,6 +49,8 @@
     href="{{ closest.collection.url }}"
     class="collection-links__image"
     size="{{ section.settings.image_height }}"
+    tabindex="-1"
+    aria-hidden="true"
     {% if onboarding %}
       data-placeholder="true"
     {% endif %}
@@ -121,7 +123,7 @@
       display: inline-block;
     }
 
-    @media (max-width: 749px) {
+    @media screen and (max-width: 749px) {
       --min-font-size: var(--font-size--3xl);
       --max-font-size: var(--font-size--5xl);
 

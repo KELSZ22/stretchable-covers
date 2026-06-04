@@ -154,7 +154,7 @@ export class AddToCartComponent extends Component {
       // Remove this timeout from the array
       const index = this.#resetTimeouts.indexOf(timeoutId);
       if (index > -1) {
-        this.#resetTimeouts.splice(index, 1);
+        this.#resetTimeouts.splice(index, 1); 
       }
     }, 800);
 
@@ -169,7 +169,7 @@ if (!customElements.get('add-to-cart-component')) {
 /**
  * A custom element that manages a product form.
  *
- * @typedef {{items: Array<{quantity: number, variant_id: number}>, item_count?: number}} Cart
+ * @typedef {{items: Array<{quantity: number, variant_id: number}>}} Cart
  *
  * @typedef {object} ProductFormRefs
  * @property {HTMLInputElement} variantId - The form input for submitting the variant ID.
@@ -194,6 +194,12 @@ class ProductFormComponent extends Component {
 
   /** @type {number | undefined} */
   #timeout;
+
+  /** @type {boolean} */
+  #variantChangeInProgress = false;
+
+  /** @type {Array<{variantId: string, quantity: number}>} */
+  #addToCartQueue = [];
 
   connectedCallback() {
     super.connectedCallback();
@@ -238,99 +244,22 @@ class ProductFormComponent extends Component {
   }
 
   /**
-   * Fetches the cart
-   * @returns {Promise<Cart | null>}
-   */
-  async #fetchCart() {
-    try {
-      const response = await fetch('/cart.js', {
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Cart fetch failed with status ${response.status}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Failed to fetch cart:', error);
-      return null;
-    }
-  }
-
-  /**
-   * Fetches cart and updates quantity selector for current variant
-   * @returns {Promise<number>} The cart quantity for the current variant
+   * Fetches the current cart and updates the quantity display.
+   * @returns {Promise<Cart | null>} The cart object, or null if fetch fails.
    */
   async #fetchAndUpdateCartQuantity() {
     const variantIdInput = /** @type {HTMLInputElement | null} */ (this.querySelector('input[name="id"]'));
-    if (!variantIdInput?.value) return 0;
+    if (!variantIdInput?.value) return null;
 
-    const cart = await this.#fetchCart();
-    if (!cart) return 0;
+    try {
+      const response = await fetch('/cart.js');
+      const cart = await response.json();
 
-    return this.#updateCartQuantityFromData(cart);
-  }
-
-  /**
-   * Dispatch document-level cart update so the cart icon and other listeners react immediately.
-   * @param {Cart | null} cart
-   * @param {FormData} formData
-   * @param {boolean} didError
-   */
-  #dispatchCartUpdate(cart, formData, didError = false) {
-    document.dispatchEvent(
-      new CustomEvent(ThemeEvents.cartUpdate, {
-        detail: {
-          resource: cart,
-          sourceId: this.id,
-          data: {
-            source: 'product-form-component',
-            didError,
-            itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault) || 1,
-            productId: this.dataset.productId,
-          },
-        },
-      })
-    );
-  }
-
-  /**
-   * Force open any cart drawer/custom drawer we can find.
-   */
-  #openCartDrawer() {
-    const drawer = document.querySelector(
-      'custom-cart-drawer, cart-drawer-component, .custom-cart-drawer, [data-cart-drawer], [data-drawer="cart"]'
-    );
-
-    if (drawer) {
-      if (typeof drawer.open === 'function') {
-        drawer.open();
-        return;
-      }
-
-      if (typeof drawer.showDialog === 'function') {
-        drawer.showDialog();
-        return;
-      }
-
-      if (typeof drawer.show === 'function') {
-        drawer.show();
-        return;
-      }
-
-      drawer.setAttribute('open', 'true');
-      drawer.classList.add('is-open', 'open', 'active');
-    }
-
-    const trigger = document.querySelector(
-      '[data-open-cart], [data-cart-trigger], .header-actions__cart-icon, button[aria-controls*="cart"], [aria-label*="Cart"], [aria-label*="cart"]'
-    );
-
-    if (trigger instanceof HTMLElement) {
-      trigger.click();
+      this.#updateCartQuantityFromData(cart);
+      return cart;
+    } catch (error) {
+      console.error('Failed to fetch cart quantity:', error);
+      return null;
     }
   }
 
@@ -350,39 +279,63 @@ class ProductFormComponent extends Component {
     }
   };
 
-  /**
-   * Handles the submit event for the product form.
-   *
-   * @param {Event} event - The submit event.
-   */
+  /** @param {Event} event */
   handleSubmit(event) {
-    const { addToCartTextError } = this.refs;
-    // Stop default behaviour from the browser
     event.preventDefault();
+
+    if (this.#variantChangeInProgress) {
+      const intendedVariantId = this.#getIntendedVariantId();
+      const quantity = this.#getQuantity();
+
+      if (intendedVariantId) {
+        this.#addToCartQueue.push({ variantId: intendedVariantId, quantity });
+      }
+
+      this.refs.addToCartButtonContainer?.animateAddToCart?.();
+      return;
+    }
+
+    this.#processAddToCart(undefined, undefined, event);
+  }
+
+  /** @returns {string | undefined} */
+  #getIntendedVariantId() {
+    return new URL(window.location.href).searchParams.get('variant') || this.refs.variantId?.value || undefined;
+  }
+
+  /** @returns {number} */
+  #getQuantity() {
+    return Number(this.refs.quantitySelector?.getValue?.()) || Number(this.dataset.quantityDefault) || 1;
+  }
+
+  /**
+   * @param {string} [overrideVariantId]
+   * @param {number} [overrideQuantity]
+   * @param {Event} [event]
+   */
+  #processAddToCart(overrideVariantId, overrideQuantity, event) {
+    const { addToCartTextError } = this.refs;
 
     if (this.#timeout) clearTimeout(this.#timeout);
 
-    // Query for ALL add-to-cart components
     const allAddToCartContainers = /** @type {NodeListOf<AddToCartComponent>} */ (
       this.querySelectorAll('add-to-cart-component')
     );
 
-    // Check if ANY add to cart button is disabled and do an early return if it is
-    const anyButtonDisabled = Array.from(allAddToCartContainers).some(
-      (container) => container.refs.addToCartButton?.disabled
-    );
-    if (anyButtonDisabled) return;
+    if (!overrideVariantId) {
+      const anyButtonDisabled = Array.from(allAddToCartContainers).some(
+        (container) => container.refs.addToCartButton?.disabled
+      );
+      if (anyButtonDisabled) return;
+    }
 
-    // Send the add to cart information to the cart
     const form = this.querySelector('form');
-
     if (!form) throw new Error('Product form element missing');
 
-    if (this.refs.quantitySelector?.canAddToCart) {
+    if (!overrideVariantId && this.refs.quantitySelector?.canAddToCart) {
       const validation = this.refs.quantitySelector.canAddToCart();
 
       if (!validation.canAdd) {
-        // Disable ALL add-to-cart buttons
         for (const container of allAddToCartContainers) {
           container.disable();
         }
@@ -411,7 +364,6 @@ class ProductFormComponent extends Component {
         }
 
         setTimeout(() => {
-          // Re-enable ALL add-to-cart buttons
           for (const container of allAddToCartContainers) {
             container.enable();
           }
@@ -423,24 +375,21 @@ class ProductFormComponent extends Component {
 
     const formData = new FormData(form);
 
-    const sectionIds = new Set();
-
-    document.querySelectorAll('cart-items-component').forEach((item) => {
-      if (item instanceof HTMLElement && item.dataset.sectionId) {
-        sectionIds.add(item.dataset.sectionId);
-      }
-    });
-
-    document.querySelectorAll('cart-drawer-component, custom-cart-drawer').forEach((item) => {
-      if (item instanceof HTMLElement && item.dataset.sectionId) {
-        sectionIds.add(item.dataset.sectionId);
-      }
-    });
-
-    if (sectionIds.size > 0) {
-      formData.set('sections', Array.from(sectionIds).join(','));
-      formData.set('sections_url', window.location.pathname);
+    if (overrideVariantId) {
+      formData.set('id', overrideVariantId);
     }
+    if (overrideQuantity !== undefined) {
+      formData.set('quantity', overrideQuantity.toString());
+    }
+
+    const cartItemsComponents = document.querySelectorAll('cart-items-component');
+    let cartItemComponentsSectionIds = [];
+    cartItemsComponents.forEach((item) => {
+      if (item instanceof HTMLElement && item.dataset.sectionId) {
+        cartItemComponentsSectionIds.push(item.dataset.sectionId);
+      }
+      formData.append('sections', cartItemComponentsSectionIds.join(','));
+    });
 
     const fetchCfg = fetchConfig('javascript', { body: formData });
 
@@ -481,18 +430,13 @@ class ProductFormComponent extends Component {
             this.#clearLiveRegionText();
           }, ERROR_MESSAGE_DISPLAY_DURATION);
 
-          const cart = await this.#fetchCart();
-          if (cart) {
-            this.#updateCartQuantityFromData(cart);
-          }
-
-          this.#dispatchCartUpdate(cart, formData, true);
-
-          document.dispatchEvent(
+          // When we add more than the maximum amount of items to the cart, we need to dispatch a cart update event
+          // because our back-end still adds the max allowed amount to the cart.
+          this.dispatchEvent(
             new CartAddEvent({}, this.id, {
               didError: true,
               source: 'product-form-component',
-              itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault) || 1,
+              itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault),
               productId: this.dataset.productId,
             })
           );
@@ -522,34 +466,125 @@ class ProductFormComponent extends Component {
             }, SUCCESS_MESSAGE_DISPLAY_DURATION);
           }
 
-          const cart = await this.#fetchCart();
-          if (cart) {
-            this.#updateCartQuantityFromData(cart);
-          } else {
-            await this.#fetchAndUpdateCartQuantity();
-          }
+          // Fetch the updated cart to get the actual total quantity for this variant
+          const cart = await this.#fetchAndUpdateCartQuantity();
 
-          this.#dispatchCartUpdate(cart, formData, false);
-
-          document.dispatchEvent(
-            new CartAddEvent({}, id.toString(), {
+          this.dispatchEvent(
+            new CartAddEvent(cart ?? undefined, id.toString(), {
               source: 'product-form-component',
-              itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault) || 1,
+              itemCount: Number(formData.get('quantity')) || Number(this.dataset.quantityDefault),
               productId: this.dataset.productId,
-              sections: response.sections || {},
+              sections: response.sections,
             })
           );
-
-          setTimeout(() => {
-            this.#openCartDrawer();
-          }, 120);
         }
       })
       .catch((error) => {
         console.error(error);
       })
       .finally(() => {
-        cartPerformance.measureFromEvent('add:user-action', event);
+        if (event) {
+          cartPerformance.measureFromEvent('add:user-action', event);
+        }
+      });
+  }
+
+  /** @param {Array<{variantId: string, quantity: number}>} items */
+  #processBatchAddToCart(items) {
+    if (items.length === 0) return;
+
+    const { addToCartTextError } = this.refs;
+
+    if (this.#timeout) clearTimeout(this.#timeout);
+
+    const cartItemsComponents = document.querySelectorAll('cart-items-component');
+    const cartItemComponentsSectionIds = [];
+    for (const item of cartItemsComponents) {
+      if (item instanceof HTMLElement && item.dataset.sectionId) {
+        cartItemComponentsSectionIds.push(item.dataset.sectionId);
+      }
+    }
+
+    const payload = {
+      items: items.map((item) => ({
+        id: Number(item.variantId),
+        quantity: item.quantity,
+      })),
+      sections: cartItemComponentsSectionIds.join(','),
+    };
+
+    fetch(Theme.routes.cart_add_url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => response.json())
+      .then(async (response) => {
+        if (response.status) {
+          this.dispatchEvent(
+            new CartErrorEvent(this.id, response.message, response.description, response.errors)
+          );
+
+          if (addToCartTextError) {
+            addToCartTextError.classList.remove('hidden');
+            const textNode = addToCartTextError.childNodes[2];
+            if (textNode) {
+              textNode.textContent = response.message;
+            } else {
+              addToCartTextError.appendChild(document.createTextNode(response.message));
+            }
+            this.#setLiveRegionText(response.message);
+
+            this.#timeout = setTimeout(() => {
+              addToCartTextError.classList.add('hidden');
+              this.#clearLiveRegionText();
+            }, ERROR_MESSAGE_DISPLAY_DURATION);
+          }
+
+          this.dispatchEvent(
+            new CartAddEvent({}, this.id, {
+              didError: true,
+              source: 'product-form-component',
+              itemCount: items.reduce((sum, item) => sum + item.quantity, 0),
+              productId: this.dataset.productId,
+            })
+          );
+          return;
+        }
+
+        if (addToCartTextError) {
+          addToCartTextError.classList.add('hidden');
+          addToCartTextError.removeAttribute('aria-live');
+        }
+
+        const allAddToCartContainers = /** @type {NodeListOf<AddToCartComponent>} */ (
+          this.querySelectorAll('add-to-cart-component')
+        );
+        const anyAddToCartButton = allAddToCartContainers[0]?.refs.addToCartButton;
+        if (anyAddToCartButton) {
+          const addedTextElement = anyAddToCartButton.querySelector('.add-to-cart-text--added');
+          const addedText = addedTextElement?.textContent?.trim() || Theme.translations.added;
+          this.#setLiveRegionText(addedText);
+          setTimeout(() => this.#clearLiveRegionText(), SUCCESS_MESSAGE_DISPLAY_DURATION);
+        }
+
+        const cart = await this.#fetchAndUpdateCartQuantity();
+
+        const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+        this.dispatchEvent(
+          new CartAddEvent(cart ?? undefined, this.id, {
+            source: 'product-form-component',
+            itemCount: totalQuantity,
+            productId: this.dataset.productId,
+            sections: response.sections,
+          })
+        );
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }
 
@@ -610,9 +645,16 @@ class ProductFormComponent extends Component {
     }
 
     const { variantId } = this.refs;
-
-    // Update the variant ID
     variantId.value = event.detail.resource?.id ?? '';
+
+    this.#variantChangeInProgress = false;
+
+    if (this.#addToCartQueue.length > 0) {
+      const queuedItems = [...this.#addToCartQueue];
+      this.#addToCartQueue = [];
+      this.#processBatchAddToCart(queuedItems);
+    }
+
     const { addToCartButtonContainer: currentAddToCartButtonContainer, acceleratedCheckoutButtonContainer } = this.refs;
     const currentAddToCartButton = currentAddToCartButtonContainer?.refs.addToCartButton;
 
@@ -728,12 +770,9 @@ class ProductFormComponent extends Component {
     await this.#fetchAndUpdateCartQuantity();
   };
 
-  /**
-   * Disable the add to cart button while the UI is updating before #onVariantUpdate is called.
-   * Accelerated checkout button is also disabled via its own event listener not exposed to the theme.
-   */
-  #onVariantSelected = () => {
-    this.refs.addToCartButtonContainer?.disable();
+  /** @param {import('./events').VariantSelectedEvent} _event */
+  #onVariantSelected = (_event) => {
+    this.#variantChangeInProgress = true;
   };
 }
 

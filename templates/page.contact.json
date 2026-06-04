@@ -85,7 +85,7 @@
           "type": "custom-contact-details",
           "name": "Contact details",
           "settings": {
-            "heading": "Reach Us today!",
+            "heading": "Reach Us Today!",
             "subheading": "We're here to help you every step of the way.",
             "row_1_label": "Address",
             "row_1_text": "12508 Dover Road, Reisterstown, MD 21136 USA",
@@ -93,7 +93,7 @@
             "row_2_text": "(01) 410-561-0800",
             "link_telephone": true,
             "row_3_label": "Store Hours",
-            "row_3_text": "10AM-6PM USA Eastern Time",
+            "row_3_text": "10AM-5PM USA Eastern Time",
             "icon_background": "#0a1f44",
             "width": "fit-content",
             "custom_width": 29,

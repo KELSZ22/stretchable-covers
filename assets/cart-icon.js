@@ -17,14 +17,11 @@ class CartIcon extends Component {
 
   /** @type {number} */
   get currentCartCount() {
-    const rawValue = this.refs.cartBubbleCount.textContent?.trim() || '0';
-    const parsedValue = parseInt(rawValue, 10);
-    return Number.isNaN(parsedValue) ? 0 : parsedValue;
+    return parseInt(this.refs.cartBubbleCount.textContent ?? '0', 10);
   }
 
   set currentCartCount(value) {
-    const safeValue = Number.isFinite(value) ? Math.max(0, value) : 0;
-    this.refs.cartBubbleCount.textContent = safeValue < 100 ? String(safeValue) : '99+';
+    this.refs.cartBubbleCount.textContent = value < 100 ? String(value) : '';
   }
 
   connectedCallback() {
@@ -57,7 +54,7 @@ class CartIcon extends Component {
    * @param {CartUpdateEvent} event - The cart update event.
    */
   onCartUpdate = async (event) => {
-    const itemCount = Number(event.detail.data?.itemCount ?? 0);
+    const itemCount = event.detail.data?.itemCount ?? 0;
     const comingFromProductForm = event.detail.data?.source === 'product-form-component';
 
     this.renderCartBubble(itemCount, comingFromProductForm);
@@ -67,32 +64,34 @@ class CartIcon extends Component {
    * Renders the cart bubble.
    * @param {number} itemCount - The number of items in the cart.
    * @param {boolean} comingFromProductForm - Whether the cart update is coming from the product form.
-   * @param {boolean} animate - Whether to animate the bubble.
    */
   renderCartBubble = async (itemCount, comingFromProductForm, animate = true) => {
-    const currentCount = this.currentCartCount;
-    const nextCount = comingFromProductForm ? currentCount + itemCount : itemCount;
+    // If the cart update is coming from the product form, we add to the current cart count, otherwise we set the new cart count
 
-    this.currentCartCount = nextCount;
+    this.refs.cartBubbleCount.classList.toggle('hidden', itemCount === 0);
+    this.refs.cartBubble.classList.toggle('visually-hidden', itemCount === 0);
 
-    this.refs.cartBubbleCount.classList.toggle('hidden', nextCount === 0);
-    this.refs.cartBubble.classList.toggle('visually-hidden', nextCount === 0);
-    this.classList.toggle('header-actions__cart-icon--has-cart', nextCount > 0);
+    this.currentCartCount = comingFromProductForm ? this.currentCartCount + itemCount : itemCount;
+
+    this.classList.toggle('header-actions__cart-icon--has-cart', itemCount > 0);
 
     sessionStorage.setItem(
       'cart-count',
       JSON.stringify({
-        value: String(nextCount),
+        value: String(this.currentCartCount),
         timestamp: Date.now(),
       })
     );
 
-    if (!animate || nextCount === 0) return;
+    if (!animate || itemCount === 0) return;
 
+    // Ensure element is visible before starting animation
+    // Use requestAnimationFrame to ensure the browser sees the state change
     await new Promise((resolve) => requestAnimationFrame(resolve));
 
     this.refs.cartBubble.classList.add('cart-bubble--animating');
     await onAnimationEnd(this.refs.cartBubbleText);
+
     this.refs.cartBubble.classList.remove('cart-bubble--animating');
   };
 
@@ -100,22 +99,27 @@ class CartIcon extends Component {
    * Checks if the cart count is correct.
    */
   ensureCartBubbleIsCorrect = () => {
+    // Ensure refs are available
     if (!this.refs.cartBubbleCount) return;
 
     const sessionStorageCount = sessionStorage.getItem('cart-count');
+
+    // If no session storage data, nothing to check
     if (sessionStorageCount === null) return;
 
-    const visibleCount = this.refs.cartBubbleCount.textContent?.trim() || '0';
+    const visibleCount = this.refs.cartBubbleCount.textContent;
 
     try {
       const { value, timestamp } = JSON.parse(sessionStorageCount);
 
+      // Check if the stored count matches what's visible
       if (value === visibleCount) return;
 
+      // Only update if timestamp is recent (within 10 seconds)
       if (Date.now() - timestamp < 10000) {
         const count = parseInt(value, 10);
 
-        if (!Number.isNaN(count) && count >= 0) {
+        if (count >= 0) {
           this.renderCartBubble(count, false, false);
         }
       }

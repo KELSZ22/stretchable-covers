@@ -1,3 +1,9 @@
+{% doc %}
+  Renders all global scripts, module preloads, and importmaps for the theme.
+
+  @param {object} [product] - The product object, available on product pages.
+{% enddoc %}
+
 <script type="importmap">
   {
     "imports": {
@@ -251,7 +257,6 @@
 {% endif %}
 
 {% if template == 'product' or template.name == 'product' or request.page_type == 'product' %}
-  <script src="{{ 'custom-product-volume-price.js' | asset_url }}" defer></script>
   <script
     src="{{ 'fly-to-cart.js' | asset_url }}"
     type="module"
@@ -266,14 +271,6 @@
     import { RecentlyViewed } from '@theme/recently-viewed-products';
     RecentlyViewed.addProduct('{{ product.id }}');
   </script>
-{% endif %}
-
-{% if settings.transition_to_main_product %}
-  <script
-    src="{{ 'product-card-link.js' | asset_url }}"
-    type="module"
-    fetchpriority="low"
-  ></script>
 {% endif %}
 
 <script
@@ -291,6 +288,7 @@
       recipient_form_error: `{{ 'content.recipient_form_error' | t }}`,
       items_added_to_cart_one: `{{ 'content.items_added_to_cart.one' | t }}`,
       items_added_to_cart_other: `{{ 'content.items_added_to_cart.other' | t }}`,
+      cart_count: `{{ 'accessibility.cart_count' | t }}`,
     },
     routes: {
       cart_add_url: '{{ routes.cart_add_url | append: '.js' }}',

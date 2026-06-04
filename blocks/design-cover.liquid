@@ -3,7 +3,7 @@
   Standalone custom button only.
   Does not use Shopify accelerated checkout.
 
-  @param {string} can_add_to_cart - Whether the product can be added to the cart
+  @param {string} can_show_design_cover - Whether the Design Cover button should be visible
 {%- enddoc -%}
 
 {% liquid
@@ -20,7 +20,7 @@
     {% if request.visual_preview_mode %}
       data-shopify-visual-preview
     {% endif %}
-    {% unless can_add_to_cart %}
+    {% unless can_show_design_cover %}
       hidden
     {% endunless %}
   >

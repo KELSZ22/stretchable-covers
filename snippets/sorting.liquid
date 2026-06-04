@@ -33,7 +33,7 @@
       for="sort-select-{{ section_id }}"
       class="facets__label"
     >
-      Sort By:
+      {{- 'actions.sort' | t -}}
     </label>
     <div class="sorting-filter__select-wrapper">
       <select
@@ -68,12 +68,7 @@
     </div>
   </div>
 
-  <accordion-custom
-    {% if filter_style == 'horizontal' %}
-      data-disable-animation-on-desktop="true"
-      data-close-with-escape="true"
-    {% endif %}
-  >
+  {% capture accordion_children %}
     <details
       ref="details"
       id="Sorting-{{ section_id }}"
@@ -86,14 +81,14 @@
         class="facets__summary"
         role="button"
         aria-expanded="false"
-        aria-controls="sorting-options-{{ section_id }}"
+        aria-controls="sorting-options-{{ section_id }}-{{ suffix }}"
         ref="summary"
       >
         <span
           class="facets__label"
           id="sort-label-{{ section_id }}"
         >
-          Sort By:
+          {{- 'actions.sort' | t -}}
         </span>
         <span
           class="facets__status h6 desktop:hidden"
@@ -105,7 +100,7 @@
         </span>
       </summary>
       <floating-panel-component
-        id="sorting-options-{{ section_id }}"
+        id="sorting-options-{{ section_id }}-{{ suffix }}"
         class="sorting-filter__options color-{{ settings.popover_color_scheme }}"
         role="listbox"
         aria-labelledby="sort-label-{{ section_id }}"
@@ -147,7 +142,18 @@
         </div>
       </floating-panel-component>
     </details>
-  </accordion-custom>
+  {% endcapture %}
+  {%- liquid
+    assign is_horizontal = false
+    if filter_style == 'horizontal'
+      assign is_horizontal = true
+    endif
+  -%}
+  {% render 'accordion-custom-component',
+    children: accordion_children,
+    disable_animation_on_desktop: is_horizontal,
+    close_with_escape: is_horizontal
+  %}
 </sorting-filter-component>
 
 {% stylesheet %}
@@ -348,38 +354,4 @@
       display: none;
     }
   }
-  @media screen and (max-width: 749px) {
-  .facets-mobile-wrapper .sorting-filter {
-    width: 100%;
-  }
-
-  .facets-mobile-wrapper .sorting-filter .facets__panel {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-  }
-
-  .facets-mobile-wrapper .sorting-filter .facets__summary {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-    width: 100%;
-  }
-
-  .facets-mobile-wrapper .sorting-filter .facets__label {
-    display: inline-block;
-    margin: 0;
-    color: #0F2E53;
-    font-family: Lato;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 24px;
-  }
-
-  .facets-mobile-wrapper .sorting-filter .icon-caret {
-    color: #0F2E53;
-  }
-}
 {% endstylesheet %}

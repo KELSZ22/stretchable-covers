@@ -9,7 +9,7 @@
   @param {string} [class] - custom class for the quantity selector, optional
   @param {boolean} [can_update_quantity] - whether the quantity can be updated, defaults to true
   @param {number} [min] - override the minimum quantity (e.g., 0 for quick order list)
-  @param {boolean} [hide_price_per_item] - hide the per-quantity price line (product page uses main price instead)
+  @param {block} [block] - The block object, used for Shopify editor attributes.
 {%- enddoc -%}
 
 {% liquid
@@ -18,9 +18,7 @@
   else
     assign variant = product.selected_or_first_available_variant
   endif
-
   assign component_name = 'quantity-selector-component'
-
   if line_index != null
     assign component_name = 'cart-quantity-selector-component'
   endif
@@ -36,8 +34,6 @@
   class="quantity-selector-wrapper"
   ref="quantitySelectorWrapper"
 >
-  <span class="mobile-quantity">Quantity</span>
-
   <{{ component_name }}
     class="quantity-selector{% if class %} {{ class }}{% endif %}"
     data-variant-id="{{ variant.id }}"
@@ -58,12 +54,11 @@
         disabled
       {% endif %}
     >
-      <span class="visually-hidden">{{ 'accessibility.decrease_quantity' | t }}</span>
-      <span class="svg-wrapper icon-minus">
+      <span class="visually-hidden">{{ 'accessibility.decrease_quantity' | t }}</span
+      ><span class="svg-wrapper icon-plus">
         {{- 'icon-minus.svg' | inline_asset_content -}}
       </span>
     </button>
-
     <input
       type="number"
       name="{% if line_index %}updates[]{% else %}quantity{% endif %}"
@@ -74,6 +69,7 @@
       on:blur="/setQuantity"
       on:focus="/selectInputValue"
       ref="quantityInput"
+      aria-live="polite"
       aria-label="{{ 'accessibility.quantity' | t }}"
       {% if line_index %}
         data-cart-line="{{ line_index | plus: 1 }}"
@@ -86,7 +82,6 @@
         disabled
       {% endif %}
     >
-
     <button
       class="button quantity-plus button-unstyled"
       type="button"
@@ -97,8 +92,8 @@
         disabled
       {% endif %}
     >
-      <span class="visually-hidden">{{ 'accessibility.increase_quantity' | t }}</span>
-      <span class="svg-wrapper icon-plus">
+      <span class="visually-hidden">{{ 'accessibility.increase_quantity' | t }}</span
+      ><span class="svg-wrapper icon-plus">
         {{- 'icon-plus.svg' | inline_asset_content -}}
       </span>
     </button>
@@ -106,41 +101,32 @@
 
   {%- if line_index == null -%}
     {%- liquid
+      # Check if variant has volume pricing
       assign has_volume_pricing = false
-
       if product.quantity_price_breaks_configured? and variant.quantity_price_breaks.size > 0
         assign has_volume_pricing = true
       endif
     -%}
 
-    {%- if has_volume_pricing and hide_price_per_item != true -%}
+    {%- if has_volume_pricing -%}
+      {%- # Case: Volume pricing exists - show "at price / ea" -%}
       {%- liquid
+        # Determine if currency code should be shown on product pages
         assign use_currency = settings.currency_code_enabled_product_pages
       -%}
-
       {%- capture price_breaks_json -%}
-        [
-          {%- for price_break in variant.quantity_price_breaks -%}
-            {%- unless forloop.first -%},{%- endunless -%}
-            {%- if use_currency -%}
-              {"quantity":{{ price_break.minimum_quantity }},"price":{{ price_break.price | money_with_currency | json }}}
-            {%- else -%}
-              {"quantity":{{ price_break.minimum_quantity }},"price":{{ price_break.price | money | json }}}
-            {%- endif -%}
-          {%- endfor -%}
-        ]
+        [{%- for price_break in variant.quantity_price_breaks -%}{%- unless forloop.first -%},{%- endunless -%}{%- if use_currency -%}{"quantity":{{ price_break.minimum_quantity }},"price":{{ price_break.price | money_with_currency | json }}}{%- else -%}{"quantity":{{ price_break.minimum_quantity }},"price":{{ price_break.price | money | json }}}{%- endif -%}{%- endfor -%}]
       {%- endcapture -%}
 
       {%- liquid
+        # Calculate initial display price
         assign cart_qty = cart | item_count_for_variant: variant.id
         assign current_qty = cart_qty | plus: variant.quantity_rule.min
-
         if cart_qty > 0
           assign current_qty = cart_qty | plus: variant.quantity_rule.increment
         endif
 
         assign display_price = variant.price
-
         for price_break in variant.quantity_price_breaks
           if current_qty >= price_break.minimum_quantity
             assign display_price = price_break.price
@@ -182,158 +168,17 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 14px;
-  }
+    gap: calc(var(--gap-sm) / 2);
 
-  .quantity-selector-wrapper .mobile-quantity {
-    display: inline-flex;
-    align-items: center;
-    font-size: 16px;
-    line-height: 1;
-    color: #222;
-    margin: 0;
-  }
-
-  .quantity-selector-wrapper .quantity-selector {
-    display: flex !important;
-    align-items: stretch;
-    width: auto !important;
-    min-width: 120px !important;
-    max-width: none !important;
-    height: 40px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: 1px solid #d9d9d9;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: none;
-    box-sizing: border-box;
-  }
-
-  .quantity-selector-wrapper .quantity-selector .quantity-minus,
-  .quantity-selector-wrapper .quantity-selector .quantity-plus {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 40px !important;
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    color: #222;
-    cursor: pointer;
-    box-sizing: border-box;
-  }
-
-  .quantity-selector-wrapper .quantity-selector .quantity-minus {
-    border-right: 1px solid #d9d9d9;
-  }
-
-  .quantity-selector-wrapper .quantity-selector .quantity-plus {
-    border-left: 1px solid #d9d9d9;
-  }
-
-  .quantity-selector-wrapper .quantity-selector input {
-    display: block;
-    flex: 0 0 40px !important;
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: 0 !important;
-    border-radius: 0;
-    background: transparent;
-    color: #222;
-    font-size: 14px;
-    line-height: 40px;
-    text-align: center;
-    box-shadow: none !important;
-    outline: none;
-    appearance: textfield;
-    -moz-appearance: textfield;
-    box-sizing: border-box;
-  }
-
-  .quantity-selector-wrapper .quantity-selector input::-webkit-outer-spin-button,
-  .quantity-selector-wrapper .quantity-selector input::-webkit-inner-spin-button {
-    margin: 0;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-
-  .quantity-selector-wrapper .quantity-selector .svg-wrapper {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    width: 13px !important;
-    height: 13px !important;
-    color: #222;
-  }
-
-  .quantity-selector-wrapper .quantity-selector svg {
-    display: block;
-    width: 13px !important;
-    height: 13px !important;
-  }
-
-  .quantity-selector-wrapper .quantity-selector button:disabled,
-  .quantity-selector-wrapper .quantity-selector input:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
+    @media screen and (min-width: 750px) {
+      gap: var(--gap-sm);
+    }
   }
 
   .price-per-item {
     display: block;
-    width: 100%;
     color: var(--color-foreground);
     font-size: var(--font-size--sm);
     font-weight: normal;
-  }
-
-  @media screen and (max-width: 749px) {
-    .quantity-selector-wrapper {
-      gap: 10px;
-    }
-
-    .quantity-selector-wrapper .mobile-quantity {
-      font-size: 14px;
-    }
-
-    .quantity-selector-wrapper .quantity-selector {
-      min-width: 120px !important;
-      height: 40px !important;
-      border-radius: 10px;
-    }
-
-    .quantity-selector-wrapper .quantity-selector .quantity-minus,
-    .quantity-selector-wrapper .quantity-selector .quantity-plus,
-    .quantity-selector-wrapper .quantity-selector input {
-      flex: 0 0 40px !important;
-      width: 40px !important;
-      min-width: 40px !important;
-      max-width: 40px !important;
-      height: 100% !important;
-    }
-
-    .quantity-selector-wrapper .quantity-selector input {
-      font-size: 13px;
-      line-height: 40px;
-    }
-
-    .quantity-selector-wrapper .quantity-selector .svg-wrapper,
-    .quantity-selector-wrapper .quantity-selector svg {
-      width: 12px !important;
-      height: 12px !important;
-    }
   }
 {% endstylesheet %}

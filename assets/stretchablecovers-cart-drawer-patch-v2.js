@@ -369,6 +369,150 @@
     }
   }
 
+  function fetchCartJson() {
+    return fetch('/cart.js', { headers: { Accept: 'application/json' } }).then(function (res) {
+      return res.json();
+    });
+  }
+
+  function resolveCartAfterDiameterNormalize(cart) {
+    if (
+      !window.CustomDiameterFormat ||
+      typeof window.CustomDiameterFormat.normalizeCartDiameters !== 'function'
+    ) {
+      return Promise.resolve(cart);
+    }
+
+    return window.CustomDiameterFormat.normalizeCartDiameters()
+      .then(function (updated) {
+        if (!updated) return cart;
+        return fetchCartJson();
+      })
+      .catch(function () {
+        return cart;
+      });
+  }
+
+  function getLinePriceDisplay(item) {
+    var quantity = Number(item.quantity || 0);
+    var unitPriceCents = Number(item.final_price != null ? item.final_price : item.price) || 0;
+    var compareUnitCents =
+      Number(item.original_price != null ? item.original_price : item.price) || unitPriceCents;
+    var lineTotalCents =
+      Number(item.final_line_price != null ? item.final_line_price : unitPriceCents * quantity) || 0;
+    var originalLineCents =
+      Number(item.original_line_price != null ? item.original_line_price : lineTotalCents) || 0;
+    var hasUnitDiscount = compareUnitCents > unitPriceCents;
+    var linePriceDisplay;
+
+    if (quantity > 1) {
+      linePriceDisplay =
+        money(lineTotalCents) +
+        ' <span class="custom-cart-item-price-each">(' +
+        money(unitPriceCents) +
+        ' each)</span>';
+      if (hasUnitDiscount) {
+        linePriceDisplay +=
+          '<span class="custom-cart-item-price-compare">' + money(compareUnitCents) + ' each</span>';
+      }
+    } else {
+      linePriceDisplay = money(lineTotalCents);
+      if (hasUnitDiscount) {
+        linePriceDisplay +=
+          '<span class="custom-cart-item-price-compare">' + money(compareUnitCents) + '</span>';
+      } else if (originalLineCents > lineTotalCents) {
+        linePriceDisplay +=
+          '<span class="custom-cart-item-price-compare">' + money(originalLineCents) + '</span>';
+      }
+    }
+
+    return linePriceDisplay;
+  }
+
+  function updateCartSummary(cart) {
+    var els = getEls();
+    if (!cart) return;
+
+    updateHeaderBubble(cart.item_count || 0);
+
+    if (els.count) {
+      els.count.textContent = '(' + cart.item_count + ')';
+    }
+
+    if (els.itemLabel) {
+      els.itemLabel.textContent = cart.item_count + (cart.item_count === 1 ? ' Item' : ' Items');
+    }
+
+    if (els.subtotal) {
+      els.subtotal.textContent = money(Number(cart.total_price || 0));
+    }
+
+    var discountRow = els.footer && els.footer.querySelector('.custom-cart-summary-discount');
+    var itemsSubtotal = Number(
+      cart.items_subtotal_price != null ? cart.items_subtotal_price : cart.total_price || 0
+    );
+    var totalPrice = Number(cart.total_price || 0);
+    var discountTotal = Number(
+      cart.total_discount != null ? cart.total_discount : Math.max(0, itemsSubtotal - totalPrice)
+    );
+
+    if (discountTotal > 0) {
+      if (!discountRow && els.footer) {
+        var subtotalRow = els.footer.querySelector('.custom-cart-subtotal-row');
+        if (subtotalRow) {
+          subtotalRow.insertAdjacentHTML(
+            'afterend',
+            '<div class="custom-cart-summary-discount"><span>Discounts</span><span>-' +
+              money(discountTotal) +
+              '</span></div>'
+          );
+        }
+      } else if (discountRow) {
+        var discountValue = discountRow.querySelector('span:last-child');
+        if (discountValue) {
+          discountValue.textContent = '-' + money(discountTotal);
+        }
+      }
+    } else if (discountRow) {
+      discountRow.remove();
+    }
+  }
+
+  function updateCartLinePricing(cart) {
+    if (!cart || !Array.isArray(cart.items)) return;
+
+    cart.items.forEach(function (item) {
+      var key = String(item.key || '');
+      if (!key) return;
+
+      var row = document.querySelector('.custom-cart-item[data-cart-key="' + cssEscapeValue(key) + '"]');
+      if (!row) return;
+
+      var priceEl = row.querySelector('.custom-cart-item-price');
+      if (priceEl) {
+        priceEl.innerHTML = getLinePriceDisplay(item);
+      }
+
+      var qtyValue = row.querySelector('.custom-cart-qty-value');
+      if (qtyValue) {
+        qtyValue.textContent = String(Number(item.quantity || 0));
+      }
+
+      var qtyButtons = row.querySelectorAll('.custom-cart-qty button[data-qty]');
+      if (qtyButtons.length >= 2) {
+        qtyButtons[0].setAttribute('data-qty', String(Math.max(0, Number(item.quantity || 0) - 1)));
+        qtyButtons[1].setAttribute('data-qty', String(Number(item.quantity || 0) + 1));
+      }
+    });
+  }
+
+  function cssEscapeValue(value) {
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+      return window.CSS.escape(value);
+    }
+    return String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+  }
+
   function addBusinessDays(startDate, businessDays) {
     var date = new Date(startDate);
     var added = 0;
@@ -423,36 +567,7 @@
     els.body.innerHTML = cart.items.map(function (item) {
       var image = getItemImage(item);
       var quantity = Number(item.quantity || 0);
-      var unitPriceCents = Number(item.final_price != null ? item.final_price : item.price) || 0;
-      var compareUnitCents =
-        Number(item.original_price != null ? item.original_price : item.price) || unitPriceCents;
-      var lineTotalCents =
-        Number(item.final_line_price != null ? item.final_line_price : unitPriceCents * quantity) || 0;
-      var originalLineCents =
-        Number(item.original_line_price != null ? item.original_line_price : lineTotalCents) || 0;
-      var hasUnitDiscount = compareUnitCents > unitPriceCents;
-      var linePriceDisplay;
-
-      if (quantity > 1) {
-        linePriceDisplay =
-          money(lineTotalCents) +
-          ' <span class="custom-cart-item-price-each">(' +
-          money(unitPriceCents) +
-          ' each)</span>';
-        if (hasUnitDiscount) {
-          linePriceDisplay +=
-            '<span class="custom-cart-item-price-compare">' + money(compareUnitCents) + ' each</span>';
-        }
-      } else {
-        linePriceDisplay = money(lineTotalCents);
-        if (hasUnitDiscount) {
-          linePriceDisplay +=
-            '<span class="custom-cart-item-price-compare">' + money(compareUnitCents) + '</span>';
-        } else if (originalLineCents > lineTotalCents) {
-          linePriceDisplay +=
-            '<span class="custom-cart-item-price-compare">' + money(originalLineCents) + '</span>';
-        }
-      }
+      var linePriceDisplay = getLinePriceDisplay(item);
       var variantText = getVariantText(item);
       var key = escapeHtml(item.key || '');
 
@@ -505,30 +620,16 @@
   }
 
   function loadCart(callback) {
-    return fetch('/cart.js', { headers: { Accept: 'application/json' } })
-      .then(function (res) { return res.json(); })
-      .then(function (cart) {
-        if (
-          window.CustomDiameterFormat &&
-          typeof window.CustomDiameterFormat.normalizeCartDiameters === 'function'
-        ) {
-          return window.CustomDiameterFormat.normalizeCartDiameters()
-            .then(function (updated) {
-              if (!updated) return cart;
-              return fetch('/cart.js', { headers: { Accept: 'application/json' } }).then(function (r) {
-                return r.json();
-              });
-            })
-            .catch(function () {
-              return cart;
-            });
-        }
-        return cart;
-      })
+    return fetchCartJson()
       .then(function (cart) {
         renderCart(cart);
-        if (callback) callback(cart);
-        return cart;
+        return resolveCartAfterDiameterNormalize(cart).then(function (finalCart) {
+          if (finalCart !== cart) {
+            renderCart(finalCart);
+          }
+          if (callback) callback(finalCart);
+          return finalCart;
+        });
       })
       .catch(function (error) {
         console.error('[StretchableCartDrawer] Cart load error:', error);
@@ -537,7 +638,7 @@
       });
   }
 
-  function openDrawer(cart) {
+  function openDrawer(cartOrSkipLoad) {
     var els = getEls();
     if (!els.drawer || !els.overlay) return;
 
@@ -547,8 +648,16 @@
     els.drawer.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
 
-    if (cart) renderCart(cart);
-    else loadCart();
+    if (cartOrSkipLoad === true) {
+      return;
+    }
+
+    if (cartOrSkipLoad && cartOrSkipLoad.items) {
+      renderCart(cartOrSkipLoad);
+      return;
+    }
+
+    loadCart();
   }
 
   function closeDrawer() {
@@ -615,16 +724,11 @@
   function beginCartQuantityUpdate(key) {
     cartQuantityUpdatesInFlight += 1;
     setCartKeyLoading(key, true);
-    setCartDrawerUpdating(true);
   }
 
   function endCartQuantityUpdate(key) {
     cartQuantityUpdatesInFlight = Math.max(0, cartQuantityUpdatesInFlight - 1);
     setCartKeyLoading(key, false);
-
-    if (cartQuantityUpdatesInFlight === 0) {
-      setCartDrawerUpdating(false);
-    }
   }
 
   function updateCartByKey(key, quantity) {
@@ -654,6 +758,8 @@
         });
       })
       .then(function (cart) {
+        updateCartSummary(cart);
+        updateCartLinePricing(cart);
         renderCart(cart);
         document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
       })
@@ -714,7 +820,21 @@
   }
 
   function bind() {
+    if (window.__stretchableCartDrawerBound) {
+      return;
+    }
+    window.__stretchableCartDrawerBound = true;
+
     injectStyles();
+
+    window.__stretchableCartDrawerActive = true;
+    window.StretchableCartDrawer = {
+      load: loadCart,
+      render: renderCart,
+      open: openDrawer,
+      close: closeDrawer,
+      update: updateCartByKey
+    };
 
     document.addEventListener('click', function (event) {
       var trigger = event.target.closest && event.target.closest('#customCartTrigger');
@@ -781,12 +901,6 @@
       event.preventDefault();
       closeDesignModal();
     }, true);
-
-    document.addEventListener('cart:refresh', function (event) {
-      var cart = event.detail && event.detail.cart;
-      if (cart) renderCart(cart);
-      else loadCart();
-    });
 
     document.addEventListener('cart:open', function (event) {
       var cart = event.detail && event.detail.cart;

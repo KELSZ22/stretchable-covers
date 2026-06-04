@@ -68,7 +68,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<ol><li>Sublimation imprinting does not allow for white imprints on colors.<br/></li><li>IF your design requires white, please order <strong>WHITE COVERS ONLY.<br/></strong></li><li>Please keep in mind that colors printed on material other than white, may mix to change the final printed color. Since we cannot print white we cannot produce a white underlay to keep colors from mixing together.<br/><br/><em>(Example: blue on safety yellow may appear more green.)</em><br/></li><li>Maximum imprint size is <strong>19\"</strong> in diameter for all cover sizes. (We are sourcing new equipment for larger imprints in the near future.)<br/></li><li>Safety Orange Covers work best with dark imprint colors like black or navy blue.</li></ol>",
+            "text": "<ol><li>Sublimation imprinting does not allow for white imprints on non-white material. <br/></li><li>IF your design requires white, please order <strong>WHITE COVERS ONLY. </strong>For example: If you are ordering a waterproof (beige/silver material) cover and your logo includes a white color, you must order a white microfiber cover instead.<strong><br/></strong></li><li>Please keep in mind that colors printed on material other than white, may mix to change the final printed color. Since we cannot print white on non-white material, we cannot produce a white underlay to keep colors from mixing together.<br/><em>(Example: orange on beige may appear more brownish.)</em><br/></li><li>Dye Sublimation imprinting sometimes causes colors printed on white material to appear lighter than requested. We will always do our very best to match RGB colors as closely as possible.<br/></li><li>IMPRINT SIZES -- Please read the <strong>Important Printing Note </strong>section for each product size to determine the maximum imprint size for the cover you are ordering. <br/><br/></li></ol>",
             "width": "100%",
             "max_width": "none",
             "alignment": "left",
@@ -132,7 +132,7 @@
         "page-content"
       ],
       "custom_css": [
-        ".text-block--AcHppdGhhV3pKMmhTV__text_GjXmek ol,.text-block--AcHppdGhhV3pKMmhTV__text_GjXmek li {line-height: 2.0 !important;}"
+        ".text-block--AcHppdGhhV3pKMmhTV__text_GjXmek ol,.text-block--AcHppdGhhV3pKMmhTV__text_GjXmek li {line-height: 2 !important;}"
       ],
       "settings": {
         "content_direction": "column",

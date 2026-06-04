@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Horizon",
-    "theme_version": "3.3.0",
+    "theme_version": "3.5.1",
     "theme_author": "Shopify",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
@@ -88,7 +88,7 @@
             "type": "color",
             "id": "primary",
             "label": "t:settings.primary_color",
-            "default": "#1F1F1F",
+            "default": "#000F9F",
             "alpha": true
           },
           {

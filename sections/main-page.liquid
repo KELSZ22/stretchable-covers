@@ -19,20 +19,6 @@
   </div>
 </div>
 
-{% if template.name == 'page' and template.suffix == 'about-us' %}
-  {% style %}
-    #shopify-section-{{ section.id }} .section-background,
-    #shopify-section-{{ section.id }} .section {
-      background: linear-gradient(87deg, #0F2E53 -54.36%, #FFF 97.22%) !important;
-    }
-
-    [class*="__image_8rTMPp"] {
-      justify-content: center !important;
-      margin-inline: auto !important;
-    }
-  {% endstyle %}
-{% endif %}
-
 {% schema %}
 {
   "name": "t:names.page",
@@ -40,9 +26,6 @@
   "blocks": [
     {
       "type": "@theme"
-    },
-    {
-      "type": "breadcrumbs"
     },
     {
       "type": "@app"

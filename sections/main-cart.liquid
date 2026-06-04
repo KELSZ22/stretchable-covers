@@ -6,10 +6,7 @@
   </div>
 {% endcapture %}
 
-<cart-items-component
-  class="cart-items-component"
-  data-section-id="{{ section.id }}"
->
+{% capture cart_items_children %}
   <template id="empty-cart-template">
     <div class="section-background color-{{ section.settings.color_scheme }}"></div>
     <div
@@ -57,7 +54,8 @@
     </div>
   </div>
   {% # theme-check-enable UniqueStaticBlockId %}
-</cart-items-component>
+{% endcapture %}
+{% render 'cart-items-component', children: cart_items_children, section_id: section.id %}
 
 {% stylesheet %}
   .cart-page {
@@ -117,42 +115,18 @@
       position: relative;
     }
 
-    .section--page-width .cart-page:has(.cart__container--extend) {
+    .section--page-width .cart-page:has(.cart-summary--extend) {
       grid-column: 2 / 4;
       grid-template-columns: 1fr minmax(
           var(--sidebar-width),
           calc((100vw - var(--page-width)) / 2 + var(--sidebar-width))
         );
     }
-
-    .cart__container--extend {
-      height: 100%;
-    }
   }
 
   @media screen and (min-width: 1400px) {
     .cart-page {
       grid-template-columns: 1fr var(--sidebar-width);
-    }
-  }
-
-  html:active-view-transition-type(empty-cart-page) {
-    .cart-items-component {
-      view-transition-name: cart-page-content;
-    }
-  }
-
-  ::view-transition-old(cart-page-content) {
-    animation: cart-page-content-old var(--animation-speed-fast) var(--animation-easing) forwards;
-  }
-
-  @keyframes cart-page-content-old {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-      filter: blur(4px);
     }
   }
 {% endstylesheet %}

@@ -529,12 +529,12 @@
     "gift_card_form": "Formularz karty prezentowej",
     "seller_note_open_by_default": "Domyślnie otwieraj notatkę dla sprzedawcy",
     "add_to_cart_animation": "Dodaj do koszyka",
-    "custom_link": "Link niestandardowy",
+    "custom_link": "Własny link",
     "product_custom_property": {
       "heading": "Nagłówek",
       "description": "Opis",
       "key": "Nazwa właściwości",
-      "key_info": "Wartość nie może być pusta i musi być unikalna dla każdego bloku. Będzie widoczna w koszyku, kasie i szczegółach zamówienia.",
+      "key_info": "Nie może być pusty i musi być unikatowy dla każdego bloku. Wyświetla się w koszyku, kasie i szczegółach zamówienia.",
       "placeholder_text": "Tekst zastępczy",
       "default_heading": "Dostosuj swój produkt",
       "default_placeholder": "Wprowadź specjalne instrukcje",
@@ -556,8 +556,8 @@
     "blog": "Blog",
     "post_count": "Liczba postów",
     "animation": "Animacja",
-    "top_level_size": "Rozmiar najwyższego poziomu",
-    "empty_cart_button_link": "Link przycisku pustego koszyka",
+    "top_level_size": "Rozmiar pierwszego poziomu",
+    "empty_cart_button_link": "Link przycisku w pustym koszyku",
     "auto_load_products": "Automatycznie ładuj produkty podczas przewijania",
     "products_per_page": "Liczba produktów na stronie",
     "custom_mobile_media": "Pokaż inne multimedia na urządzeniach mobilnych",
@@ -586,7 +586,8 @@
     "x_position": "Pozycja pozioma",
     "y_position": "Pozycja pionowa",
     "enable_sticky_add_to_cart": "Przypięty pasek dodawania do koszyka",
-    "sticky_add_to_cart": "Przypięte dodawanie do koszyka"
+    "sticky_add_to_cart": "Przypięte dodawanie do koszyka",
+    "actions_display_style": "Styl menu"
   },
   "options": {
     "apple": "Apple",
@@ -860,11 +861,12 @@
     "subtle_zoom": "Powiększenie",
     "with_hints": "Z podpowiedziami",
     "below_media": "Pod multimediami",
-    "full_frame": "Pełna klatka"
+    "full_frame": "Pełna klatka",
+    "icons": "Ikony"
   },
   "content": {
     "background_video": "Wideo w tle",
-    "describe_the_video_for": "Opisz wideo dla klientów korzystających z czytników ekranu. [Dowiedz się więcej](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
+    "describe_the_video_for": "Opisz film dla klientów korzystających z czytników ekranu. [Dowiedz się więcej](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "width_is_automatically_optimized": "Szerokość jest automatycznie optymalizowana pod kątem urządzeń mobilnych.",
     "advanced": "Zaawansowane",
     "background_image": "Zdjęcie tła",
@@ -968,7 +970,7 @@
     "block_link": "Link do bloku",
     "submenu_feature": "Funkcja podmenu",
     "cart_features": "Funkcje koszyka",
-    "email_signup": "Rejestracja w celu otrzymywania e-maili",
+    "email_signup": "Subskrypcja e-mailowa",
     "mobile_media": "Multimedia na urządzenia mobilne",
     "mobile_media_2": "Multimedia 2 na urządzenia mobilne",
     "navigation": "Nawigacja",
@@ -976,7 +978,8 @@
     "popover_position": "Pozycja wyskakującego okienka",
     "resource_reference_product_sku": "Wyświetla SKU produktu nadrzędnego.",
     "content_layout": "Układ treści",
-    "mobile_media_1": "Mobilne multimedia 1"
+    "mobile_media_1": "Mobilne multimedia 1",
+    "utilities": "Narzędzia"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Podziel się informacjami o swojej marce z klientami. Opisz produkt, ogłaszaj nowości lub witaj klientów w swoim sklepie.</p>",
@@ -988,14 +991,14 @@
     "discover_bestsellers": "<p>Odkryj bestsellery, które podbiły serca naszych klientów dzięki doskonałemu połączeniu funkcjonalności i stylu.</p>",
     "everythings_starts_with_why": "<p>Wszystko, co robimy, zaczyna się od pytania „dlaczego”</p>",
     "explore_latest_products": "<p>Poznaj nasze najnowsze produkty.</p>",
-    "faq": "<h3>Często zadawane pytania</h3>",
+    "faq": "<h2>Często zadawane pytania</h2>",
     "first_to_know": "<p>Bądź na bieżąco z nowymi kolekcjami i ofertami specjalnymi. </p>",
     "free_returns": "<p>Bezpłatne zwroty w ciągu 30 dni</p>",
     "free_shipping_over": "<p>Bezpłatna wysyłka powyżej 50 USD</p>",
     "goal_for_every_customer": "<p>Naszym celem jest pełna satysfakcja każdego klienta z zakupu. Jeśli tak nie jest, daj nam znać, a my dołożymy wszelkich starań, aby to naprawić.</p>",
     "home_to_shirts": "<p>Strona główna → Koszule</p>",
     "intentional_design": "<h2>Przemyślany design</h2>",
-    "introducing_h2": "<h2><em>Przedstawiamy</em></h2>",
+    "introducing_p": "<p><em>Przedstawiamy</em></p>",
     "latest_products": "<p>Przedstawiamy nasze najnowsze produkty, stworzone specjalnie na ten sezon. Kup swoje ulubione, zanim znikną!</p>",
     "made_local_and_global": "<p>Nasze produkty są wytwarzane zarówno lokalnie, jak i globalnie. Starannie dobieramy naszych partnerów produkcyjnych, aby zapewnić wysoką jakość i uczciwą cenę naszych produktów.</p>",
     "made_with_care_h2": "<h2>Wykonane z dbałością</h2>",
@@ -1003,14 +1006,14 @@
     "made_with_care": "<p>Wykonane z dbałością i bezwarunkowo uwielbiane przez naszych klientów.</p>",
     "make_things_better_extended": "<p>Tworzymy rzeczy, które działają lepiej i służą dłużej. Nasze produkty rozwiązują realne problemy dzięki prostemu wzornictwu i uczciwym materiałom.</p>",
     "make_things_better": "<p>Tworzymy rzeczy, które działają lepiej i służą dłużej.</p>",
-    "may_also_like": "<h4>Może Cię również zainteresować</h4>",
+    "may_also_like": "<h2>Może Ci się również spodobać</h2>",
     "new_arrivals_h1": "<h1>Nowości</h1>",
     "new_arrivals_h2": "<h2>Nowości</h2>",
     "new_arrivals_h3": "<h3>Nowości</h3>",
     "product_launch": "<p>Zobacz kulisy premiery naszego najnowszego produktu.</p>",
     "product_story": "<p>U podstaw każdego produktu leży wyjątkowa historia, napędzana naszą pasją do jakości i innowacji. Każdy przedmiot wzbogaca Twoje codzienne życie i wywołuje radość.</p>",
     "real_people": "<p>Prawdziwi ludzie tworzący wspaniałe produkty</p>",
-    "related_product": "<h3>Produkty powiązane</h3>",
+    "related_product": "<h2>Produkty powiązane</h2>",
     "return_policy": "<h2>Jakie są zasady zwrotów?</h2>",
     "reviews": "<p>★★★★★ 368 recenzji</p>",
     "shipping_based_on_location": "<p>Wysyłka jest obliczana na podstawie Twojej lokalizacji i pozycji w zamówieniu. Zawsze poznasz cenę wysyłki przed dokonaniem zakupu.</p>",
@@ -1032,8 +1035,8 @@
     "pieces_better_with_time": "<p>Produkty, które zyskują z czasem i w trakcie użytkowania</p>",
     "quality_you_can_feel": "<h2>Jakość, którą poczujesz</h2>",
     "uncompromising_standards": "<p>Bezkompromisowe standardy</p>",
-    "featured_collection_h2": "<h2>Polecana kolekcja</h2>",
-    "shop_collection": "<p>Odkryj naszą kolekcję starannie wybranych produktów, które są połączeniem stylu i jakości.</p>"
+    "shop_collection": "<p>Odkryj naszą kolekcję starannie wybranych produktów, które są połączeniem stylu i jakości.</p>",
+    "featured_collection_h3": "<h3>Polecana kolekcja</h3>"
   },
   "text_defaults": {
     "collapsible_row": "Wiersz zwijany",
@@ -1067,7 +1070,7 @@
     "when_will_order_arrive": "Kiedy otrzymam moje zamówienie?",
     "where_are_products_made": "Gdzie są produkowane wasze produkty?",
     "trending_now": "Popularne teraz",
-    "shop_the_look": "Kompletny look",
+    "shop_the_look": "<h2>Kompletny look</h2>",
     "bestsellers": "Bestsellery",
     "featured_collection": "Polecana kolekcja",
     "new_arrivals": "Nowości"
@@ -1093,8 +1096,9 @@
     "hover_effects": "Dotyczy kart produktów i kolekcji",
     "pills_usage": "Używane w przypadku zastosowanych filtrów, kodów rabatowych i sugestii wyszukiwania",
     "hide_logo_on_home_page_help": "Logo pozostanie widoczne, gdy aktywny jest lepki nagłówek",
-    "media_type_info": "Funkcje są wypełniane na podstawie linków w menu",
-    "logo_height": "Dotyczy tylko logo w nagłówku"
+    "media_type_info": "Funkcje są pobierane z linków menu",
+    "logo_height": "Dotyczy tylko logo w nagłówku",
+    "actions_display_style": "Na urządzeniach mobilnych zawsze używane są ikony"
   },
   "categories": {
     "product_list": "Polecana kolekcja",

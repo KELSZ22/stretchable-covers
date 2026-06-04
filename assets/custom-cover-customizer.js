@@ -308,12 +308,19 @@ class CustomCoverCustomizer extends HTMLElement {
     const safeId =
       norm.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "f";
     const linkId = `gf-customizer-${safeId}`;
+    const bulkSheets = document.querySelectorAll(
+      "#custom-cover-customizer-google-fonts, .custom-cover-customizer-google-fonts",
+    );
 
-    const innerPromise = document.getElementById(linkId)
-      ? document.fonts.ready
-      : new Promise((resolve) => {
+    const innerPromise =
+      bulkSheets.length || document.getElementById(linkId)
+        ? document.fonts
+            .load(`400 1em "${name}"`)
+            .catch(() => {})
+            .then(() => document.fonts.ready)
+        : new Promise((resolve) => {
           const param = encodeURIComponent(name).replace(/%20/g, "+");
-          const href = `https://fonts.googleapis.com/css2?family=${param}:ital,wght@0,400;0,700;1,400;1,700&display=swap`;
+          const href = `https://fonts.googleapis.com/css2?family=${param}:wght@400&display=swap`;
           const link = document.createElement("link");
           link.id = linkId;
           link.rel = "stylesheet";
@@ -326,11 +333,16 @@ class CustomCoverCustomizer extends HTMLElement {
         });
 
     const tracked = innerPromise.then(() => {
-      if (redraw) {
-        this.render();
-        this.updateHiddenProperties();
-      }
-    });
+  if (redraw) {
+    // Re-apply to selected element in case render happened before font loaded
+    const el = this.getSelectedElement();
+    if (el?.type === "text" && this.textDefaults.fontFamily) {
+      el.fontFamily = this.textDefaults.fontFamily;
+    }
+    this.render();
+    this.updateHiddenProperties();
+  }
+});
     this._googleFontPromises.set(norm, tracked);
     return tracked;
   }
@@ -2581,12 +2593,19 @@ class CustomCoverCustomizer extends HTMLElement {
     textInput?.addEventListener("focus", () => this._startCaretBlinkLoop());
     textInput?.addEventListener("blur", () => this._stopCaretBlinkLoop());
 
+    this.initFontPicker(fontInput);
+
     fontInput?.addEventListener("change", () => {
-      void (async () => {
-        await this.ensureGoogleFontLoaded(fontInput.value);
-        this.updateSelectedTextStyle();
-      })();
-    });
+  const el = this.getSelectedElement();
+  if (el?.type === "text") {
+    el.fontFamily = fontInput.value;
+    this.textDefaults.fontFamily = fontInput.value;
+    this.render();
+  } else {
+    this.textDefaults.fontFamily = fontInput.value;
+  }
+  void this.ensureGoogleFontLoaded(fontInput.value, { redraw: true });
+});
     fontSizeInput?.addEventListener("change", () =>
       this.updateSelectedTextStyle(),
     );
@@ -4628,25 +4647,363 @@ class CustomCoverCustomizer extends HTMLElement {
   }
 
   updateSelectedTextStyle() {
-    const element = this.getActiveTextElementForStyleUpdate();
-    if (!element) {
-      return;
-    }
+  const element = this.getActiveTextElementForStyleUpdate();
 
-    const fontInput = this.querySelector("[data-font-input]");
-    const fontSizeInput = this.querySelector("[data-font-size-input]");
-    const textColorInput = this.querySelector("[data-text-color-input]");
+  const fontInput = this.querySelector("[data-font-input]");
+  const fontSizeInput = this.querySelector("[data-font-size-input]");
+  const textColorInput = this.querySelector("[data-text-color-input]");
 
-    element.fontFamily = fontInput?.value || element.fontFamily;
-    element.fontSize = Number(fontSizeInput?.value || element.fontSize);
-    element.color = textColorInput?.value || element.color;
-    this.readTextOutlineEffectFromFormInto(element);
-    this.readTextOutlineEffectFromFormInto(this.textDefaults);
-    this.updateColorChrome();
-    this.updateOutlineColorChrome();
+  if (fontInput?.value) {
+    this.textDefaults.fontFamily = fontInput.value;
+  }
+
+  if (!element) {
     this.render();
     this.updateHiddenProperties();
+    return;
   }
+
+  element.fontFamily = fontInput?.value || element.fontFamily;
+  element.fontSize = Number(fontSizeInput?.value || element.fontSize);
+  element.color = textColorInput?.value || element.color;
+  this.readTextOutlineEffectFromFormInto(element);
+  this.readTextOutlineEffectFromFormInto(this.textDefaults);
+  this.updateColorChrome();
+  this.updateOutlineColorChrome();
+  this.render();
+  this.updateHiddenProperties();
+}
+
+getFontPickerFamilies(wrapper, fontInput) {
+  const fromButtons = wrapper?.querySelectorAll("[data-font-picker-option]");
+  if (fromButtons?.length) {
+    return [...fromButtons].map((btn) => btn.dataset.value).filter(Boolean);
+  }
+  if (fontInput?.options) {
+    return [...fontInput.options].map((opt) => opt.value).filter(Boolean);
+  }
+  return [];
+}
+
+applyFontPickerFace(node, family, fallback) {
+  if (!node || !family) return;
+  const stack = `"${family.replace(/"/g, '\\"')}", ${fallback || "sans-serif"}`;
+  const target =
+    node.querySelector?.(
+      ".custom-cover-font-picker__option-text, [data-font-picker-label]",
+    ) || node;
+  target.dataset.fontValue = family;
+  target.dataset.ccFontFamily = family;
+  target.style.setProperty("--cc-font-family", stack);
+  target.style.setProperty("font-family", stack, "important");
+}
+
+initFontPicker(fontInput) {
+  if (!fontInput || fontInput.dataset.fontPickerInit === "true") {
+    return;
+  }
+  fontInput.dataset.fontPickerInit = "true";
+
+  if (fontInput.tagName === "SELECT") {
+    fontInput.classList.add("custom-cover-font-picker__native");
+    fontInput.hidden = true;
+    fontInput.disabled = true;
+    fontInput.setAttribute("aria-hidden", "true");
+    fontInput.tabIndex = -1;
+  }
+
+  const wrapper = fontInput.closest("[data-font-picker]");
+  const trigger = wrapper?.querySelector("[data-font-picker-trigger]");
+  const dropdown = wrapper?.querySelector("[data-font-picker-dropdown]");
+  const triggerLabel = wrapper?.querySelector("[data-font-picker-label]");
+
+  if (!wrapper || !trigger || !dropdown || !triggerLabel) {
+    return;
+  }
+
+  if (wrapper.dataset.fontPickerReady === "true") {
+    fontInput.dataset.fontPickerInit = "true";
+    return;
+  }
+
+  const fallback =
+    wrapper.dataset.fontFallback ||
+    this.dataset.fontFallback ||
+    "sans-serif";
+
+  const applyFontToNode = (node, family) => {
+    this.applyFontPickerFace(node, family, fallback);
+  };
+
+  const optionButtons = [
+    ...dropdown.querySelectorAll("[data-font-picker-option]"),
+  ];
+
+  const syncTriggerFromSelect = () => {
+    const families = this.getFontPickerFamilies(wrapper, fontInput);
+    const family = fontInput.value || families[0] || "";
+    triggerLabel.textContent = family;
+    applyFontToNode(triggerLabel, family);
+    optionButtons.forEach((btn) => {
+      const isSelected = btn.dataset.value === family;
+      btn.classList.toggle("is-selected", isSelected);
+      btn.setAttribute("aria-selected", isSelected ? "true" : "false");
+      if (isSelected) {
+        applyFontToNode(btn, family);
+      }
+    });
+  };
+
+  const selectOptions = this.getFontPickerFamilies(wrapper, fontInput);
+
+  optionButtons.forEach((item) => {
+    const family = item.dataset.value;
+    if (!family) return;
+
+    applyFontToNode(item, family);
+
+    void this.ensureGoogleFontLoaded(family, { redraw: false }).then(() => {
+      applyFontToNode(item, family);
+      if (fontInput.value === family) {
+        applyFontToNode(triggerLabel, family);
+      }
+    });
+
+    item.addEventListener("click", () => {
+      fontInput.value = family;
+      syncTriggerFromSelect();
+      dropdown.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      fontInput.dispatchEvent(new Event("change", { bubbles: true }));
+      void this.ensureGoogleFontLoaded(family, { redraw: true });
+    });
+  });
+
+  trigger.addEventListener("click", async () => {
+    const willOpen = dropdown.hidden;
+    if (willOpen) {
+      await Promise.all(
+        selectOptions.map((family) =>
+          this.ensureGoogleFontLoaded(family, { redraw: false }),
+        ),
+      );
+      optionButtons.forEach((btn) => {
+        applyFontToNode(btn, btn.dataset.value);
+      });
+    }
+    dropdown.hidden = !willOpen;
+    trigger.setAttribute("aria-expanded", willOpen ? "true" : "false");
+    if (willOpen) {
+      const active = dropdown.querySelector(
+        `[data-value="${CSS.escape(fontInput.value)}"]`,
+      );
+      active?.scrollIntoView({ block: "nearest" });
+    }
+  });
+
+  const onOutside = (e) => {
+    if (!wrapper.contains(e.target)) {
+      dropdown.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+    }
+  };
+  document.addEventListener("pointerdown", onOutside);
+
+  wrapper.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      dropdown.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.focus();
+    }
+  });
+
+  fontInput.addEventListener("change", syncTriggerFromSelect);
+  syncTriggerFromSelect();
+
+  void Promise.all(
+    selectOptions.map((family) =>
+      this.ensureGoogleFontLoaded(family, { redraw: false }),
+    ),
+  ).then(() => {
+    applyFontToNode(triggerLabel, fontInput.value || selectOptions[0] || "");
+    optionButtons.forEach((btn) => {
+      applyFontToNode(btn, btn.dataset.value);
+    });
+  });
+
+  if (fontInput.value) {
+    void this.ensureGoogleFontLoaded(fontInput.value, { redraw: false });
+  }
+}
+
+/** Fallback when markup was not rendered server-side (older cached HTML). */
+buildFontPickerUIFromSelect(fontInput) {
+  if (!fontInput || fontInput.dataset.fontPickerBuilt === "true") {
+    return;
+  }
+  fontInput.dataset.fontPickerBuilt = "true";
+  if (fontInput.tagName === "SELECT") {
+    fontInput.classList.add("custom-cover-font-picker__native");
+    fontInput.hidden = true;
+    fontInput.disabled = true;
+    fontInput.setAttribute("aria-hidden", "true");
+    fontInput.tabIndex = -1;
+  }
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "custom-cover-font-picker";
+  wrapper.setAttribute("data-font-picker", "");
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className =
+    "custom-cover-font-picker__trigger custom-cover-customizer__input--select-like";
+  trigger.setAttribute("data-font-picker-trigger", "");
+  trigger.setAttribute("aria-haspopup", "listbox");
+  trigger.setAttribute("aria-expanded", "false");
+
+  const triggerLabel = document.createElement("span");
+  triggerLabel.className = "custom-cover-font-picker__label";
+  triggerLabel.setAttribute("data-font-picker-label", "");
+
+  const triggerArrow = document.createElement("span");
+  triggerArrow.className = "custom-cover-font-picker__arrow";
+  triggerArrow.innerHTML =
+    '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+  trigger.append(triggerLabel, triggerArrow);
+
+  const dropdown = document.createElement("div");
+  dropdown.className = "custom-cover-font-picker__dropdown";
+  dropdown.setAttribute("data-font-picker-dropdown", "");
+  dropdown.hidden = true;
+  dropdown.setAttribute("role", "listbox");
+
+  const fallback = this.dataset.fontFallback || "sans-serif";
+  const applyFontToNode = (node, family) => {
+    this.applyFontPickerFace(node, family, fallback);
+  };
+
+  const syncTriggerFromSelect = () => {
+    const families = this.getFontPickerFamilies(wrapper, fontInput);
+    const family = fontInput.value || families[0] || "";
+    triggerLabel.textContent = family;
+    applyFontToNode(triggerLabel, family);
+    dropdown
+      .querySelectorAll("[data-font-picker-option]")
+      .forEach((btn) => {
+        const isSelected = btn.dataset.value === family;
+        btn.classList.toggle("is-selected", isSelected);
+        btn.setAttribute("aria-selected", isSelected ? "true" : "false");
+      });
+  };
+
+  const options =
+    fontInput.tagName === "SELECT"
+      ? [...fontInput.options].filter((o) => o.value)
+      : [];
+  options.forEach((opt) => {
+    const family = opt.value;
+
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "custom-cover-font-picker__option";
+    item.setAttribute("data-font-picker-option", "");
+    item.dataset.value = family;
+    item.setAttribute("role", "option");
+    const text = document.createElement("span");
+    text.className = "custom-cover-font-picker__option-text";
+    text.dataset.fontValue = family;
+    text.textContent = family;
+    item.append(text);
+    applyFontToNode(item, family);
+
+    void this.ensureGoogleFontLoaded(family, { redraw: false }).then(() => {
+      applyFontToNode(item, family);
+      if (fontInput.value === family) {
+        applyFontToNode(triggerLabel, family);
+      }
+    });
+
+    item.addEventListener("click", () => {
+      fontInput.value = family;
+      syncTriggerFromSelect();
+      dropdown.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      fontInput.dispatchEvent(new Event("change", { bubbles: true }));
+      void this.ensureGoogleFontLoaded(family, { redraw: true });
+    });
+
+    dropdown.appendChild(item);
+  });
+
+  trigger.addEventListener("click", async () => {
+    const willOpen = dropdown.hidden;
+    const families = options.map((o) => o.value);
+    if (willOpen) {
+      await Promise.all(
+        families.map((family) =>
+          this.ensureGoogleFontLoaded(family, { redraw: false }),
+        ),
+      );
+      dropdown
+        .querySelectorAll("[data-font-picker-option]")
+        .forEach((btn) => {
+          applyFontToNode(btn, btn.dataset.value);
+        });
+    }
+    dropdown.hidden = !willOpen;
+    trigger.setAttribute("aria-expanded", willOpen ? "true" : "false");
+    if (willOpen) {
+      const active = dropdown.querySelector(
+        `[data-value="${CSS.escape(fontInput.value)}"]`,
+      );
+      active?.scrollIntoView({ block: "nearest" });
+    }
+  });
+
+  const onOutside = (e) => {
+    if (!wrapper.contains(e.target)) {
+      dropdown.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+    }
+  };
+  document.addEventListener("pointerdown", onOutside);
+
+  wrapper.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      dropdown.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.focus();
+    }
+  });
+
+  fontInput.addEventListener("change", syncTriggerFromSelect);
+
+  wrapper.append(trigger, dropdown);
+  fontInput.insertAdjacentElement("afterend", wrapper);
+  fontInput.dataset.fontPickerInit = "true";
+  syncTriggerFromSelect();
+
+  const preloadFamilies = options.map((o) => o.value);
+  void Promise.all(
+    preloadFamilies.map((family) =>
+      this.ensureGoogleFontLoaded(family, { redraw: false }),
+    ),
+  ).then(() => {
+    applyFontToNode(triggerLabel, fontInput.value || preloadFamilies[0] || "");
+    dropdown
+      .querySelectorAll("[data-font-picker-option]")
+      .forEach((btn) => {
+        applyFontToNode(btn, btn.dataset.value);
+      });
+  });
+
+  if (fontInput.value) {
+    void this.ensureGoogleFontLoaded(fontInput.value, { redraw: false });
+  }
+}
+
 
   getActiveTextElementForStyleUpdate() {
     const selected = this.getSelectedElement();
@@ -4696,21 +5053,19 @@ class CustomCoverCustomizer extends HTMLElement {
     const textColorInput = this.querySelector("[data-text-color-input]");
 
     if (!element) {
-      if (textInput) {
-        textInput.value = "";
-      }
-      this.syncFormatToolbars();
-      this.syncAlignmentControls(this.textDefaults.textAlign);
-      this.updateColorChrome();
-      this.syncTextOutlineEffectControls(null);
-      const shapeOutlineEnabled = this.querySelector(
-        "[data-shape-outline-enabled]",
-      );
-      if (shapeOutlineEnabled) {
-        shapeOutlineEnabled.checked = true;
-      }
-      return;
-    }
+  if (textInput) textInput.value = "";
+  // ✅ Restore font input to whatever textDefaults currently holds
+  if (fontInput && this.textDefaults.fontFamily) {
+    fontInput.value = this.textDefaults.fontFamily;
+  }
+  this.syncFormatToolbars();
+  this.syncAlignmentControls(this.textDefaults.textAlign);
+  this.updateColorChrome();
+  this.syncTextOutlineEffectControls(null);
+  const shapeOutlineEnabled = this.querySelector("[data-shape-outline-enabled]");
+  if (shapeOutlineEnabled) shapeOutlineEnabled.checked = true;
+  return;
+}
 
     if (element.type === "text") {
       if (textInput) {
@@ -6410,7 +6765,7 @@ class CustomCoverCustomizer extends HTMLElement {
       id: crypto.randomUUID(),
       type: "text",
       text: this.normalizeNewlines(String(textInput?.value || "")),
-      fontFamily: fontInput?.value || "Arial",
+      fontFamily: fontInput?.value || this.textDefaults.fontFamily || "Arial",
       fontFallback: this.dataset.fontFallback || "sans-serif",
       fontSize: Number(fontSizeInput?.value || 24),
       color: textColorInput?.value || "#000000",

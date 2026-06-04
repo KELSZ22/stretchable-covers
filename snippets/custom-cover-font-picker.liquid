@@ -1,0 +1,128 @@
+{%- comment -%}
+  Custom font dropdown — each option label uses its own typeface.
+{%- endcomment -%}
+{%- liquid
+  assign font_fallback_stack = font_fallback | default: 'sans-serif' | strip
+  if font_fallback_stack == blank
+    assign font_fallback_stack = 'sans-serif'
+  endif
+  assign font_picker_first = true
+  assign font_picker_default = ''
+  assign font_google_import = ''
+  assign font_google_batch_count = 0
+-%}
+{%- if font_library_mode == 'google' or font_library_mode == 'both' -%}
+  {%- assign gfamilies = google_fonts_pipe | split: '|' -%}
+  {%- for gentry in gfamilies -%}
+    {%- assign gfont = gentry | strip -%}
+    {%- if gfont != blank and font_picker_first -%}
+      {%- assign font_picker_default = gfont -%}
+      {%- assign font_picker_first = false -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if font_picker_first -%}
+  {%- if font_library_mode == 'custom' or font_library_mode == 'both' -%}
+    {%- for font in custom_cover_font_lines -%}
+      {%- assign trimmed_font = font | strip -%}
+      {%- if trimmed_font != blank and font_picker_first -%}
+        {%- assign font_picker_default = trimmed_font -%}
+        {%- assign font_picker_first = false -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign font_picker_first = true -%}
+<div
+  class="custom-cover-font-picker"
+  data-font-picker
+  data-font-fallback="{{ font_fallback_stack | escape }}">
+  <input
+    type="hidden"
+    id="CustomizerFont-{{ section_id }}"
+    data-font-input
+    value="{{ font_picker_default | escape }}">
+  <button
+    type="button"
+    id="CustomizerFontTrigger-{{ section_id }}"
+    class="custom-cover-font-picker__trigger custom-cover-customizer__input--select-like"
+    data-font-picker-trigger
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-labelledby="CustomizerFontLabel-{{ section_id }}">
+    <span
+      id="CustomizerFontLabel-{{ section_id }}"
+      class="custom-cover-font-picker__label"
+      data-font-picker-label
+      data-font-value="{{ font_picker_default | escape }}"
+      style="font-family: '{{ font_picker_default | escape }}', {{ font_fallback_stack }};">{{ font_picker_default | escape }}</span>
+    <span class="custom-cover-font-picker__arrow" aria-hidden="true">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </span>
+  </button>
+  <div
+    class="custom-cover-font-picker__dropdown"
+    data-font-picker-dropdown
+    hidden
+    role="listbox"
+    aria-labelledby="CustomizerFontLabel-{{ section_id }}">
+    {%- if font_library_mode == 'google' or font_library_mode == 'both' -%}
+      {%- assign gfamilies = google_fonts_pipe | split: '|' -%}
+      {%- for gentry in gfamilies -%}
+        {%- assign gfont = gentry | strip -%}
+        {%- if gfont != blank -%}
+          <div
+            class="custom-cover-font-picker__option{% if font_picker_first %} is-selected{% endif %}"
+            data-font-picker-option
+            data-value="{{ gfont | escape }}"
+            role="option"
+            tabindex="0"
+            aria-selected="{% if font_picker_first %}true{% else %}false{% endif %}">
+            <span
+              class="custom-cover-font-picker__option-text"
+              data-font-value="{{ gfont | escape }}"
+              style="font-family: '{{ gfont | escape }}', {{ font_fallback_stack }};">{{ gfont | escape }}</span>
+          </div>
+          {%- if font_library_mode != 'custom' -%}
+            {%- assign gfont_slug = gfont | replace: ' ', '+' -%}
+            {%- capture import_part -%}family={{ gfont_slug }}:wght@400{%- endcapture -%}
+            {%- if font_google_import != '' -%}
+              {%- assign font_google_import = font_google_import | append: '&' -%}
+            {%- endif -%}
+            {%- assign font_google_import = font_google_import | append: import_part -%}
+            {%- assign font_google_batch_count = font_google_batch_count | plus: 1 -%}
+            {%- if font_google_batch_count == 10 -%}
+              <link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{ font_google_import }}&display=swap" class="custom-cover-customizer-google-fonts">
+              {%- assign font_google_import = '' -%}
+              {%- assign font_google_batch_count = 0 -%}
+            {%- endif -%}
+          {%- endif -%}
+          {%- assign font_picker_first = false -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+    {%- if font_library_mode == 'custom' or font_library_mode == 'both' -%}
+      {%- for font in custom_cover_font_lines -%}
+        {%- assign trimmed_font = font | strip -%}
+        {%- if trimmed_font != blank -%}
+          <div
+            class="custom-cover-font-picker__option{% if font_picker_first %} is-selected{% endif %}"
+            data-font-picker-option
+            data-value="{{ trimmed_font | escape }}"
+            role="option"
+            tabindex="0"
+            aria-selected="{% if font_picker_first %}true{% else %}false{% endif %}">
+            <span
+              class="custom-cover-font-picker__option-text"
+              data-font-value="{{ trimmed_font | escape }}"
+              style="font-family: '{{ trimmed_font | escape }}', {{ font_fallback_stack }};">{{ trimmed_font | escape }}</span>
+          </div>
+          {%- assign font_picker_first = false -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</div>
+{%- if font_google_import != '' -%}
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{ font_google_import }}&display=swap" class="custom-cover-customizer-google-fonts" id="custom-cover-customizer-google-fonts">
+{%- endif -%}

@@ -6,18 +6,12 @@
   style="{% render 'size-style', settings: block_settings %}"
   {{ block.shopify_attributes }}
 >
-  Submit Form
+  {{ block_settings.label }}
 </button>
 
 {% stylesheet %}
   .submit-button {
     min-width: max-content;
-    background-color: #EB891B;
-    border-radius: 50px;
-    height: 72px;
-    font-size: 20px;
-    font-weight: 500;
-    font-family: "lato";
   }
 {% endstylesheet %}
 
@@ -66,7 +60,7 @@
           "label": "t:options.custom"
         }
       ],
-      "default": "custom"
+      "default": "fit-content"
     },
     {
       "type": "range",
@@ -93,7 +87,7 @@
           "label": "t:options.custom"
         }
       ],
-      "default": "custom"
+      "default": "fit-content"
     },
     {
       "type": "range",
