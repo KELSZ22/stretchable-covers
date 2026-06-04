@@ -2807,8 +2807,10 @@ html.custom-cover-help-modal-open body {
 
 
 /* Native <select> cannot style each option — hide any legacy font-family control in the font row. */
+.custom-cover-customizer__text-font-row select:not([data-font-size-input]),
 .custom-cover-customizer__text-font-row > .custom-cover-customizer__group:first-child > select,
 .custom-cover-customizer select.custom-cover-font-picker__native,
+.custom-cover-customizer select[data-font-input],
 .custom-cover-customizer [data-font-picker] select {
   display: none !important;
   visibility: hidden !important;
@@ -2836,6 +2838,10 @@ html.custom-cover-help-modal-open body {
   width: 100%;
 }
 
+.custom-cover-font-picker__portal-host {
+  position: relative;
+}
+
 .custom-cover-font-picker__trigger {
   display: flex;
   align-items: center;
@@ -2845,6 +2851,7 @@ html.custom-cover-help-modal-open body {
   min-height: calc(var(--padding-lg) * 2.2);
   padding: var(--padding-xs) var(--padding-sm);
   padding-right: var(--padding-lg);
+  margin: 0;
   text-align: left;
   cursor: pointer;
   border: var(--style-border-width-inputs) solid var(--color-input-border);
@@ -2852,7 +2859,22 @@ html.custom-cover-help-modal-open body {
   color: var(--color-input-text);
   background: var(--color-input-background);
   box-sizing: border-box;
+  font: inherit;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+  appearance: none;
+  -webkit-appearance: none;
   /* Do NOT use .custom-cover-customizer__input here — it resets font-family */
+}
+
+.custom-cover-font-picker__trigger:focus {
+  outline: none;
+}
+
+.custom-cover-font-picker__trigger:focus-visible {
+  outline: 2px solid rgb(var(--color-button-rgb));
+  outline-offset: 2px;
 }
 
 .custom-cover-font-picker__label,
@@ -2863,7 +2885,7 @@ html.custom-cover-help-modal-open body {
 }
 
 /* Per-font preview classes (rules generated in custom-cover-font-picker snippet) */
-.custom-cover-font-picker [class*="cc-font-preview--"] {
+.custom-cover-font-picker [class*="cc-font--"] {
   font-synthesis: none;
 }
 
@@ -2895,6 +2917,22 @@ html.custom-cover-help-modal-open body {
   border: 1px solid var(--color-border-tertiary, #ddd);
   border-radius: var(--border-radius-md, 8px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.14);
+  pointer-events: auto;
+}
+
+/* Theme grid rules can break the [hidden] attribute — control visibility explicitly. */
+.custom-cover-font-picker__dropdown[hidden] {
+  display: none !important;
+}
+
+.custom-cover-font-picker__dropdown.is-open {
+  display: block !important;
+}
+
+/* Moved into panel/drawer while open — stays inside customizer chrome */
+.custom-cover-font-picker__dropdown.is-open.is-portaled {
+  position: absolute;
+  z-index: 100;
 }
 
 .custom-cover-font-picker__option {

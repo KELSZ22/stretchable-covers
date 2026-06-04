@@ -37,12 +37,12 @@
   <product-card-link
     data-product-id="{{ resource.id }}"
     data-featured-media-url="{{ featured_media_url }}"
-    data-product-transition="true"
-    on:click="/handleViewTransition"
+    data-product-transition="{{ settings.transition_to_main_product }}"
   >
 {%- endif -%}
 <div
   class="resource-card{% if style == 'overlay' %} resource-card--overlay{% endif %}"
+  href="{{ resource.url }}"
   data-resource-type="{{ resource_type }}"
 >
   <a
@@ -57,7 +57,6 @@
     class="resource-card__media"
     style="--resource-card-aspect-ratio: {{ ratio }};"
     {% if resource_type == 'product' and settings.transition_to_main_product %}
-      ref="cardGallery"
       data-view-transition-to-main-product
     {% endif %}
   >
@@ -76,12 +75,6 @@
         endif
       %}
       {%- if featured_image != blank -%}
-        {% liquid
-          assign ref_image_to_transition = ''
-          if settings.transition_to_main_product
-            assign ref_image_to_transition = 'imagesToTransition[]'
-          endif
-        %}
         {{
           featured_image
           | image_url: width: image_width
@@ -90,7 +83,7 @@
             class: 'resource-card__image',
             widths: widths,
             sizes: image_sizes,
-            ref: ref_image_to_transition,
+            transitionToProduct: settings.transition_to_main_product,
             data-media-id: featured_image.id,
             style: primary_focal_point_style
         }}
@@ -109,7 +102,7 @@
               class: 'resource-card__image resource-card__image--secondary',
               widths: widths,
               sizes: image_sizes,
-              ref: ref_image_to_transition,
+              transitionToProduct: settings.transition_to_main_product,
               data-media-id: resource.media[1].id,
               style: secondary_focal_point_style
           }}

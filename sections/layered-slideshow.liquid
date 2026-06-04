@@ -22,7 +22,6 @@
   class="section section--{{ section.settings.section_width }} spacing-style layered-slideshow-section color-{{ section.settings.color_scheme }}"
   style="{% render 'spacing-padding', settings: section.settings %}"
 >
-  <h2 class="visually-hidden">{{ 'accessibility.slideshow' | t }}</h2>
   <layered-slideshow-component style="--layered-panel-height-mobile: {{ layered_panel_height_mobile }}; --layered-min-height-desktop: {{ layered_min_height_desktop }}">
     <div
       class="layered-slideshow__container"
@@ -461,7 +460,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "t:html_defaults.new_arrivals_h3",
+                "text": "t:html_defaults.new_arrivals_h2",
                 "type_preset": "h2"
               }
             },
@@ -488,7 +487,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "t:html_defaults.bestseller_h3",
+                "text": "t:html_defaults.bestseller_h2",
                 "type_preset": "h2"
               }
             },
@@ -515,7 +514,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "t:html_defaults.featured_collection_h3",
+                "text": "t:html_defaults.featured_collection_h2",
                 "type_preset": "h2"
               }
             },

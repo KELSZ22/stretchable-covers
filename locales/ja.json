@@ -73,16 +73,8 @@
     "nested_product": "{{ parent_title }}向けの{{ product_title }}",
     "remove": "削除",
     "view_pricing_info": "価格情報を表示する",
-    "slideshow": "スライドショー",
-    "header_navigation_label": "プライマリー",
-    "home_logo_alt": "{{ store_name }} - ホーム",
-    "product_details": "商品詳細",
-    "show_product_details": "{{ product_name }} の商品詳細を表示",
-    "featured_product": "おすすめ商品",
-    "active_filters": "アクティブな絞り込み：",
-    "search_suggestions_available": "「{{ query }}」の検索候補が利用可能",
-    "price_filter_low": "低価格",
-    "price_filter_high": "高価格"
+    "open_hotspot": "ホットスポットを開く",
+    "slideshow": "スライドショー"
   },
   "actions": {
     "add_to_cart": "カートに追加",
@@ -122,9 +114,7 @@
     "sign_up": "サインアップする",
     "sort": "並び替え",
     "show_all_options": "すべてのオプションを表示する",
-    "open": "オープン",
-    "back_to": "{{ title }} に戻る",
-    "zoom_media": "ズームメディア {{ index }}"
+    "open": "オープン"
   },
   "content": {
     "reviews": "レビュー",
@@ -253,7 +243,7 @@
     "product_custom_property_character_count": "{{ used_chars }}/{{ max_chars }}文字使用",
     "terms_and_policies": "利用規約",
     "pagination": {
-      "nav_label": "ページネーション",
+      "nav_label": "ページネーションメニュー",
       "previous": "前へ",
       "next": "次へ",
       "page": "{{ page }}ページ"
@@ -280,8 +270,7 @@
     "items_added_to_cart": {
       "one": "1個のアイテムがカートに追加されました",
       "other": "{{ count }}個のアイテムがカートに追加されました"
-    },
-    "quick_order_list": "クイック注文リスト"
+    }
   },
   "gift_cards": {
     "issued": {

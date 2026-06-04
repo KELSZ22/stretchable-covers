@@ -1,17 +1,3 @@
-{% doc %}
-  Header Actions Component
-
-  Renders the header actions.
-
-  @param {object} [section] - The section object providing settings such as actions_font.
-  @param {block} [block] - The block object, used for Shopify editor attributes.
-  @param {string} [display_style] - Controls display mode for header actions: 'icon' or 'text'.
-  @param {string} [customer_account_menu] - The menu handle passed to the shopify-account component.
-
-  @example
-  {% render 'header-actions', section: section %}
-{% enddoc %}
-
 <script
   type="module"
   src="{{ 'cart-icon.js' | asset_url }}"
@@ -20,97 +6,75 @@
 
 {% capture cart_icon %}
   <cart-icon
-    class="header-actions__cart-icon{% if display_style == 'text' %} header-actions__cart-icon--text{% endif %}{% unless cart == empty %} header-actions__cart-icon--has-cart{% endunless %}"
+    class="
+      header-actions__cart-icon
+      {% unless cart == empty %} header-actions__cart-icon--has-cart{% endunless %}
+    "
     data-testid="cart-icon"
   >
-    <span class="{% if display_style == 'icon' %}hidden{% else %}mobile:hidden{% endif %}">
-      {{ 'content.cart_title' | t }}
-    </span>
-
     <span
-      class="svg-wrapper {% if display_style != 'icon' %}desktop:hidden{% endif %}"
+      class="svg-wrapper"
       aria-hidden="true"
     >
       {{ 'icon-cart.svg' | inline_asset_content }}
     </span>
 
-    {% render 'cart-bubble', limit: 100 %}
+    {% render 'cart-bubble', limit: 100, live_region: true %}
   </cart-icon>
 {% endcapture %}
 
-{% capture account_icon %}
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="17"
-    viewBox="0 0 15 17"
-    fill="none"
-    slot="signed-out-avatar"
-    class="account-button__icon"
-  >
-    <path
-      stroke="currentColor"
-      stroke-linejoin="round"
-      stroke-width="var(--icon-stroke-width)"
-      d="M10.375 3.813a3.063 3.063 0 1 1-6.125 0 3.063 3.063 0 0 1 6.125 0ZM7.313 9.5c-3.667 0-6.24 2.691-6.563 6.125h13.125C13.552 12.191 10.979 9.5 7.312 9.5Z"
-    />
-  </svg>
-{% endcapture %}
-
 <header-actions
-  {% if display_style == 'text' %}
-    class="header-actions--text"
-  {% endif %}
   {{- block.shopify_attributes -}}
 >
   {% if shop.customer_accounts_enabled %}
-    {% liquid
-      assign account_actions_style = ''
-      if display_style == 'text' and section
-        assign actions_font = section.settings.actions_font | default: 'body'
-        assign font_obj = settings.type_heading_font
-        case actions_font
-          when 'body'
-            assign font_obj = settings.type_body_font
-          when 'subheading'
-            assign font_obj = settings.type_subheading_font
-          when 'accent'
-            assign font_obj = settings.type_accent_font
-        endcase
-        assign font_family = font_obj.family | append: ', ' | append: font_obj.fallback_families
-        assign font_family_safe = font_family | replace: '"', "'"
-        assign account_actions_style = '--header-actions-font-family: ' | append: font_family_safe | append: '; --header-actions-font-weight: ' | append: font_obj.weight | append: ';'
-      endif
-    %}
-    <div
-      class="account-button header-actions__action{% if display_style == 'text' %} account-button--text{% endif %} color-{{ settings.popover_color_scheme }}"
-    >
-      <shopify-account
-        menu="{{ customer_account_menu }}"
-        {% if account_actions_style != blank %}
-          style="{{ account_actions_style }}"
-        {% endif %}
-      >
-        {% if customer %}
-          <div class="account-button__fallback"></div>
-        {% else %}
-          <span
-            slot="signed-out-avatar"
-            class="account-button__text header-actions__text-style {% if display_style == 'icon' %}hidden{% else %}mobile:hidden{% endif %}"
-          >
-            {{ 'content.account_title' | t }}
-          </span>
+    <script
+      src="{{ 'dialog.js' | asset_url }}"
+      type="module"
+    ></script>
 
+    <anchored-popover-component
+      data-close-on-resize="true"
+      class="account-popover mobile:hidden"
+    >
+      {% render 'account-button' with 'account-popover' as popover_id %}
+      <div
+        class="account-popover__panel details-content color-{{ settings.popover_color_scheme }}"
+        id="account-popover"
+        popover="auto"
+        ref="popover"
+      >
+        {% render 'account-actions' %}
+      </div>
+    </anchored-popover-component>
+
+    <dialog-component
+      class="account-drawer"
+      {{ block.shopify_attributes }}
+    >
+      {% render 'account-button', attributes: 'on:click="/showDialog"' %}
+      <dialog
+        ref="dialog"
+        class="color-{{ settings.popover_color_scheme }} dialog-modal dialog-drawer account-drawer__dialog"
+        scroll-lock
+        aria-labelledby="account-drawer-heading"
+      >
+        <button
+          ref="closeButton"
+          on:click="/closeDialog"
+          class="button button-unstyled close-button account-drawer__close-button"
+          aria-label="{{ 'actions.close_dialog' | t }}"
+          autofocus
+        >
           <span
-            slot="signed-out-avatar"
-            class="{% if display_style != 'icon' %}desktop:hidden{% endif %}"
+            class="svg-wrapper"
             aria-hidden="true"
           >
-            {{ account_icon }}
+            {{- 'icon-close.svg' | inline_asset_content -}}
           </span>
-        {% endif %}
-      </shopify-account>
-    </div>
+        </button>
+        {% render 'account-actions' %}
+      </dialog>
+    </dialog-component>
   {% endif %}
 
   {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
@@ -152,17 +116,15 @@
     {% endcapture %}
 
     <cart-drawer-component
-      class="cart-drawer{% if display_style == 'text' %} cart-drawer--text{% endif %}"
-      {{ block.shopify_attributes }}
-      {% if settings.auto_open_cart_drawer %}
-        auto-open
-      {% endif %}
-    >
+  class="cart-drawer"
+  {{ block.shopify_attributes }}
+  auto-open
+>
       <template id="empty-cart-template">
         {{ empty_cart_drawer_content }}
       </template>
       <button
-        class="header-actions__action button-unstyled{% if display_style == 'text' %} header-actions__text-style{% endif %}"
+        class="button header-actions__action button-unstyled"
         on:click="/open"
         aria-haspopup="dialog"
         aria-label="{{ 'accessibility.cart' | t }}"
@@ -175,21 +137,19 @@
       <dialog
         ref="dialog"
         class="cart-drawer__dialog dialog-modal dialog-drawer color-{{ settings.drawer_color_scheme }}{% if cart.empty? %} cart-drawer--empty{%endif%}"
-        data-testid="cart-drawer-dialog"
         aria-labelledby="{% if cart.empty? %}cart-drawer-heading-empty{% else %}cart-drawer-heading{% endif %}"
         scroll-lock
         cart-summary-sticky="true"
       >
-        <span
-          ref="liveRegion"
-          class="visually-hidden"
-          role="status"
-        ></span>
         <div
           class="cart-drawer__inner"
           data-hydration-key="cart-drawer-inner"
         >
-          {% capture cart_items_children %}
+          <cart-items-component
+            class="cart-items-component"
+            data-drawer
+            data-section-id="{{ section.id }}"
+          >
             {%- if cart.empty? -%}
               {{ empty_cart_drawer_content }}
             {%- else -%}
@@ -225,7 +185,7 @@
                 <scroll-hint
                   class="cart-drawer__items"
                 >
-                  {% render 'cart-products' %}
+                  {% render 'cart-products', drawer_context: 'drawer' %}
                 </scroll-hint>
 
                 <div
@@ -235,128 +195,175 @@
                 </div>
               </scroll-hint>
             {%- endif -%}
-          {% endcapture %}
-          {% render 'cart-items-component', children: cart_items_children, is_drawer: true, section_id: section.id %}
+          </cart-items-component>
         </div>
       </dialog>
     </cart-drawer-component>
   {% else %}
     <a
       href="{{ routes.cart_url }}"
-      class="header-actions__action action__cart{% if display_style == 'text' %} header-actions__text-style{% endif %}"
+      class="header-actions__action action__cart"
       aria-label="{{ 'accessibility.cart' | t }}"
       aria-describedby="cart-bubble-text"
     >
       {{ cart_icon }}
     </a>
   {% endif %}
-
-  <span
-    ref="liveRegion"
-    class="visually-hidden"
-    role="status"
-    data-testid="cart-count-live-region"
-  ></span>
 </header-actions>
 
-<script
-  type="module"
-  src="{{ 'header-actions.js' | asset_url }}"
-  fetchpriority="low"
-></script>
-
 {% stylesheet %}
-  .header {
-    --account-offset-top: calc(
-      var(--header-group-height) + (var(--header-height) * var(--transparent-header-offset-boolean))
-    );
+  .account-popover {
+    --account-popover-min-width: 22rem;
+    --account-actions-max-width: 22rem;
+  }
 
-    &[data-sticky-state='active'] {
-      --account-offset-top: calc(var(--header-height) - 1px);
+  .account-popover__summary {
+    padding: 0;
+
+    &:hover {
+      color: var(--color-foreground);
     }
   }
 
-  .account-button {
-    /* Remove the background color from the color scheme, we want to inherit the color of the header */
-    background: transparent;
-  }
+  .account-popover__panel {
+    --account-popover-opacity: 0;
+    --account-popover-y: 20px;
 
-  .account-button__icon,
-  .account-button__text {
-    color: var(--color-account-icon);
-    transition: color var(--header-content-transition-timing);
-    -webkit-font-smoothing: antialiased;
-  }
+    position-anchor: --account-button-trigger;
+    border-radius: var(--style-border-radius-popover);
+    margin: 0;
+    left: unset;
+    width: max-content;
+    min-width: var(--account-popover-min-width);
+    box-shadow: var(--shadow-popover);
+    border: var(--style-border-popover);
+    background-color: var(--color-background);
+    overflow-y: hidden;
+    opacity: var(--account-popover-opacity);
+    translate: 0 var(--account-popover-y);
+    transition-property: display, opacity, translate;
+    transition-duration: 0.3s;
+    transition-timing-function: var(--ease-out-quad);
+    transition-behavior: allow-discrete;
+    top: calc(anchor(bottom) + var(--header-padding));
+    right: anchor(right);
 
-  shopify-account {
-    --shopify-account-font-heading: var(--font-heading--family);
-    --shopify-account-font-heading-weight: var(--font-heading--weight);
-    --shopify-account-font-body: var(--font-body--family);
-    --shopify-account-font-body-weight: var(--font-body--weight);
-    --shopify-account-radius-base: var(--style-border-radius-popover);
-    --shopify-account-radius-button: var(--style-border-radius-buttons-primary);
-    --shopify-account-radius-button-small: var(--style-border-radius-buttons-primary);
-    --shopify-account-radius-input: var(--style-border-radius-buttons-primary);
-    --shopify-account-color-background: var(--color-background);
-    --shopify-account-color-text: var(--color-foreground);
-    --shopify-account-color-accent: var(--color-primary-button-background);
-    --shopify-account-color-accent-text: var(--color-primary-button-text);
-    --shopify-account-dialog-position-top: var(--account-offset-top);
+    &:popover-open {
+      --account-popover-opacity: 1;
+      --account-popover-y: 0px;
+    }
 
-    &:not(:defined) {
-      min-width: 44px;
-      height: 44px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      /* Match the line height of the other buttons */
-      line-height: normal;
+    @supports not (position-anchor: --account-button-trigger) {
+      top: calc(var(--anchor-top) * 1px + var(--minimum-touch-target) + var(--header-padding));
+      right: calc(var(--anchor-right) * 1px);
+    }
+
+    @supports not selector(:popover-open) {
+      &.\:popover-open {
+        --account-popover-opacity: 1;
+        --account-popover-y: 0px;
+      }
     }
   }
 
-  .account-button__fallback {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background-color: var(--shopify-account-color-accent, #0a142f);
+  @starting-style {
+    .account-popover__panel {
+      --account-popover-opacity: 0.7;
+      --account-popover-y: 20px;
+    }
+
+    .account-popover__panel:popover-open {
+      --account-popover-opacity: 0.7;
+      --account-popover-y: 20px;
+    }
   }
 
-  .account-button--text shopify-account {
-    color: inherit;
+  .account-drawer {
+    @media screen and (min-width: 750px) {
+      display: none;
+    }
+  }
+
+  .account-drawer__dialog {
+    --animation-speed: 0.24s;
+    --dialog-drawer-opening-animation: move-and-fade;
+    --dialog-drawer-closing-animation: move-and-fade;
+
+    height: fit-content;
+    margin: 0;
+    inset-block-end: 0;
+    inset-block-start: auto;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .dialog-drawer.account-drawer__dialog[open] {
+    --start-x: 0px;
+    --end-x: 0px;
+    --start-y: 100%;
+    --start-opacity: 1;
+  }
+
+  .dialog-drawer.account-drawer__dialog.dialog-closing {
+    --start-x: 0px;
+    --end-x: 0px;
+    --end-y: 100%;
+    --start-opacity: 1;
+  }
+
+  .account-drawer__close-button {
+    z-index: 1;
+    inset-block-start: var(--padding-xs);
+    inset-inline-end: var(--padding-xs);
+    color: var(--color-foreground);
+    background-color: transparent;
+  }
+
+  .account-drawer__close-button .svg-wrapper {
+    display: flex;
+    width: var(--button-size);
+    height: var(--button-size);
+    align-items: center;
+    justify-content: center;
+  }
+
+  @keyframes account-drawer-slide-in {
+    from {
+      transform: translateY(100%);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes account-drawer-slide-out {
+    from {
+      transform: translateY(0);
+    }
+
+    to {
+      transform: translateY(100%);
+    }
   }
 
   .cart-drawer {
-    --cart-drawer-padding: var(--padding-xl) var(--padding-xl);
+    --cart-drawer-padding: var(--padding-lg) var(--padding-xl);
     --cart-drawer-padding-desktop: var(--padding-xl) var(--padding-2xl);
-
-    @media screen and (min-width: 750px) {
-      margin-inline-end: calc(var(--gap-xs) * -1);
-    }
-  }
-
-  @media screen and (min-width: 750px) {
-    .cart-drawer--text {
-      display: flex;
-      align-items: center;
-    }
   }
 
   .cart-drawer__dialog {
     position: fixed;
     overflow: hidden;
     border-radius: 0;
-    width: 100%;
+    width: var(--sidebar-width);
+    max-width: 95vw;
     height: 100%;
     margin: 0 0 0 auto;
     padding: 0;
     border-left: var(--style-border-drawer);
     box-shadow: var(--shadow-drawer);
     background-color: var(--color-background);
-
-    @media screen and (min-width: 750px) {
-      width: var(--sidebar-width);
-      max-width: 95vw;
-    }
   }
 
   /* Needed to ensure the drawer is full height */
@@ -457,17 +464,6 @@
     min-height: var(--minimum-touch-target);
   }
 
-  .cart-drawer__summary .cart__summary-totals:not(:has(.cart__subtotal-container:empty)) {
-    border-block-start: var(--style-border-width) solid var(--color-border);
-    padding-block-start: var(--padding-2xl);
-  }
-
-  .cart-drawer__summary .cart-note {
-    @media screen and (min-width: 750px) {
-      margin-block-start: var(--margin-3xs);
-    }
-  }
-
   .cart-drawer__heading--empty {
     display: flex;
     justify-content: center;
@@ -522,7 +518,7 @@
     z-index: 1;
 
     @media screen and (min-width: 750px) {
-      padding-inline: var(--cart-drawer-padding-desktop);
+      padding: var(--cart-drawer-padding-desktop);
     }
   }
 
@@ -541,19 +537,6 @@
 
     @media screen and (max-width: 749px) {
       justify-self: flex-end;
-    }
-  }
-
-  @media screen and (min-width: 750px) {
-    .header-actions--text {
-      gap: var(--gap-xl);
-    }
-
-    .header-actions__text-style {
-      font-size: var(--header-actions-font-size);
-      font-family: var(--header-actions-font-family);
-      font-weight: var(--header-actions-font-weight);
-      text-transform: var(--header-actions-text-case);
     }
   }
 
@@ -578,13 +561,6 @@
     width: var(--cart-bubble-size, 20px);
     top: var(--cart-bubble-top);
     right: var(--cart-bubble-right);
-  }
-
-  @media screen and (min-width: 750px) {
-    .header-actions__cart-icon--text.header-actions__cart-icon .cart-bubble {
-      position: relative;
-      top: 0;
-    }
   }
 
   .cart-drawer__heading .cart-bubble {
@@ -615,7 +591,7 @@
     );
   }
 
-  .cart-drawer__heading .cart-bubble .cart-bubble__background {
+  .cart-drawer__heading .cart-bubble__background {
     background-color: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
   }
 
@@ -624,7 +600,7 @@
     font-size: clamp(var(--font-size--3xs), 0.75em, var(--font-size--xs));
   }
 
-  .cart-bubble.cart-bubble--animating .cart-bubble__background {
+  .cart-bubble--animating .cart-bubble__background {
     animation: grow var(--animation-speed) var(--animation-easing);
   }
 
@@ -648,16 +624,14 @@
     }
   }
 
-  @media screen and (min-width: 750px) {
-    cart-icon.header-actions__cart-icon--text:has(.cart-bubble__text-count:empty) {
-      --cart-bubble-right: 2.5px;
-    }
-  }
-
   @media screen and (prefers-reduced-motion: no-preference) {
     html:active-view-transition-type(empty-cart-drawer) {
       .cart-drawer__close-button {
         view-transition-name: cart-drawer-close-button;
+      }
+
+      .cart-items-component {
+        view-transition-name: cart-drawer-content;
       }
     }
   }
@@ -692,22 +666,6 @@
       translate: 0 128px;
       filter: blur(1px);
       opacity: 0;
-    }
-  }
-  .header-actions__text {
-    display: flex;
-    align-items: center;
-  }
-
-  @media screen and (min-width: 750px) {
-    .header-actions__cart-icon--text {
-      display: flex;
-      align-items: center;
-      gap: var(--gap-xs);
-    }
-
-    .header__column--right .header-actions--text {
-      margin-inline-start: 0;
     }
   }
 {% endstylesheet %}

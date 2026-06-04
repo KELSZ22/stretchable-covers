@@ -15,7 +15,7 @@
 {% assign product_card_size = product_card_size | strip %}
 
 {% style %}
-  @media screen and (min-width: 750px) {
+  @media (min-width: 750px) {
     {% case section.settings.layout_type %}
       {% when 'grid' %}
         .product-grid--{{ section.id }}:is(.product-grid--grid) {
@@ -51,7 +51,7 @@
       {% when 'extra-large' or 'large' %}
         @container product-grid (max-width: calc({{ product_card_size }} * 3 + {{ section.settings.columns_gap_horizontal }}px * 2)) {
           .product-grid--{{ section.id }}:is(.product-grid--grid) {
-            --product-grid-columns-desktop: repeat(2, 1fr);
+            --product-grid-columns-desktop: repeat(3, 1fr);
           }
         }
     {% endcase %}
@@ -108,6 +108,11 @@
         <p>
           {{ 'content.use_fewer_filters_html' | t: link: collection.url, class: 'main-collection-grid__empty-link' }}
         </p>
+        <a class="button main-collection-grid__empty-button" href="{{ routes.all_products_collection_url }}">
+          <span class="button-text">
+            {{ 'content.shop_all' | t }}
+          </span>
+        </a>
       </div>
     {% else %}
       {% if enable_infinite_scroll %}
@@ -198,11 +203,9 @@
   }
 
   .main-collection-grid {
-    grid-column: var(--grid-column--mobile);
     padding: var(--grid--margin--mobile);
 
     @media screen and (min-width: 750px) {
-      grid-column: var(--grid-column--desktop);
       padding: var(--padding-block-start) var(--padding-inline-end) var(--padding-block-end) var(--padding-inline-start);
     }
   }
@@ -219,5 +222,28 @@
 
   .main-collection-grid__empty-title {
     margin: 0;
+  }
+
+  .main-collection-grid__empty-button {
+    margin-top: var(--padding-xs);
+    display: flex;
+    width: 153px;
+    padding: 10px 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 9999px;
+    background: #eb891b;
+    color: #fff;
+    font-family: Lato;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+  }
+
+  .main-collection-grid__empty-button .button-text {
+    color: inherit;
+    font: inherit;
   }
 {% endstylesheet %}

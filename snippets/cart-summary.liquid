@@ -5,36 +5,35 @@
   @param {string} [section_id] - The section ID for cart discount component.
 {%- enddoc -%}
 
-<div class="cart-totals">
+<div class="cart__summary-totals">
   {% # We need to keep this node in place to allow morphing to work properly # %}
-  <div class="cart-totals__original-container cart-primary-typography">
+  <div class="cart__original-total-container cart-primary-typography">
     {%- if cart.cart_level_discount_applications.size > 0 -%}
-      <span class="cart-totals__item cart-totals__original">
-        <span class="cart-totals__original-label">{{ 'content.cart_subtotal' | t }}</span>
-        <span
-          class="cart-totals__original-value cart-secondary-typography"
-          data-testid="cart-subtotal-value"
-        >
-          {{- cart.items_subtotal_price | money -}}
+      <span class="cart__summary-item cart__original-total">
+        <span class="cart__original-total-label">{{ 'content.cart_subtotal' | t }}</span>
+        <span class="cart__original-total-value cart-secondary-typography">
+          {{- cart.original_total_price | money -}}
         </span>
       </span>
-      <ul
-        class="cart-discounts"
-        role="list"
-        aria-label="{{ 'content.discounts' | t }}"
-      >
-        {%- for discount in cart.cart_level_discount_applications -%}
-          <li class="cart-discounts__item">
-            <span class="cart-discounts__label">
-              {{- 'icon-discount.svg' | inline_asset_content -}}
-              {{ discount.title | escape }}
-            </span>
-            <span class="cart-discounts__value cart-secondary-typography"
-              >-{{ discount.total_allocated_amount | money -}}
-            </span>
-          </li>
-        {%- endfor -%}
-      </ul>
+      <div class="cart__summary-discounts">
+        <ul
+          class="discounts list-unstyled"
+          role="list"
+          aria-label="{{ 'content.discounts' | t }}"
+        >
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <li class="cart__summary-item cart__discount">
+              <span class="cart__discount-label">
+                {{- 'icon-discount.svg' | inline_asset_content -}}
+                {{ discount.title | escape }}
+              </span>
+              <span class="cart__discount-value cart-secondary-typography"
+                >-{{ discount.total_allocated_amount | money -}}
+              </span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
     {%- endif -%}
   </div>
 
@@ -47,7 +46,13 @@
         ></script>
 
         <cart-note style="display: flex;">
-          {% capture cart_note_accordion_children %}
+          <accordion-custom
+            class="cart-note"
+            {% if settings.cart_note_open_by_default %}
+              open-by-default-on-desktop
+              open-by-default-on-mobile
+            {% endif %}
+          >
             <details
               class="details"
               {% if settings.cart_note_open_by_default %}
@@ -59,7 +64,7 @@
                   {{ 'content.seller_note' | t }}
                 </span>
 
-                <span class="cart-totals__icon">
+                <span class="svg-wrapper icon-plus">
                   {{- 'icon-plus.svg' | inline_asset_content -}}
                 </span>
               </summary>
@@ -80,13 +85,7 @@
                 >{{ cart.note }}</textarea>
               </div>
             </details>
-          {% endcapture %}
-          {% render 'accordion-custom-component',
-            children: cart_note_accordion_children,
-            class: 'cart-note',
-            open_by_default_on_desktop: settings.cart_note_open_by_default,
-            open_by_default_on_mobile: settings.cart_note_open_by_default
-          %}
+          </accordion-custom>
         </cart-note>
       {% endif %}
       {% if settings.show_cart_note and settings.show_add_discount_code %}
@@ -113,7 +112,7 @@
           endif
         %}
 
-        {% capture cart_discount_accordion_children %}
+        <accordion-custom class="cart-discount">
           <details
             class="details"
             {% if disclosure_expanded %}
@@ -123,7 +122,7 @@
             <summary class="cart-discount__summary">
               <span class="cart-discount__label cart-primary-typography">{{ 'content.discount' | t }}</span>
 
-              <span class="cart-totals__icon">
+              <span class="svg-wrapper icon-plus">
                 {{- 'icon-plus.svg' | inline_asset_content -}}
               </span>
             </summary>
@@ -210,11 +209,7 @@
               </div>
             </div>
           </details>
-        {% endcapture %}
-        {% render 'accordion-custom-component',
-          children: cart_discount_accordion_children,
-          class: 'cart-discount'
-        %}
+        </accordion-custom>
       {% endif %}
     </div>
   {% endif %}
@@ -227,31 +222,30 @@
     endif
   -%}
 
-  <div class="cart-totals__container{% if settings.show_installments %} cart-totals__container--has-installments{% endif %}">
+  <div class="cart__total-container{% if settings.show_installments %} cart__total-container--has-installments{% endif %}">
     <span
-      class="cart-totals__item cart-totals__total"
+      class="cart__summary-item cart__total"
       role="status"
     >
-      <span class="cart-totals__total-label cart-primary-typography">{{ 'content.cart_estimated_total' | t }}</span>
+      <span class="cart__total-label cart-primary-typography">{{ 'content.cart_estimated_total' | t }}</span>
       <text-component
         ref="cartTotal"
         value="{{ total_price | strip_html }}"
-        class="cart-totals__total-value cart-secondary-typography"
+        class="cart__total-value cart-secondary-typography"
         {% comment %} Used by payment_terms web component {% endcomment %}
-        data-testid="cart-total-value"
         data-cart-subtotal
       >
         {{ total_price }}
       </text-component>
     </span>
     {% if settings.show_installments %}
-      <span class="cart-totals__item cart-totals__installments">
+      <span class="cart__summary-item cart__installments">
         {% form 'cart', cart %}
           {{ form | payment_terms }}
         {% endform %}
       </span>
     {% endif %}
-    <div class="cart-totals__item cart-totals__tax-note cart-primary-typography">
+    <div class="cart__summary-item tax-note cart-primary-typography">
       {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
     </div>
   </div>
@@ -299,76 +293,60 @@
     border-block-start: 1px solid var(--color-border);
   }
 
-  .cart-totals:not(:has(.cart-actions)) {
+  .cart__summary-totals:not(:has(.cart-actions)) {
     margin-block-start: var(--margin-3xs);
     border-block-start: 1px solid var(--color-border);
     padding-block-start: var(--margin-xl);
   }
 
-  .cart-totals__item {
+  .cart__summary-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
-  .cart-totals__tax-note {
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
-  }
-
-  .cart-totals__tax-note small {
+  .cart__summary-item.tax-note small {
     font-size: var(--font-size--2xs);
   }
 
-  .cart-discounts {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .cart-discounts__item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .cart-discounts__label {
+  .cart__discount-label {
     display: flex;
     align-items: center;
     gap: var(--gap-2xs);
   }
 
-  .cart-discounts__label svg {
+  .cart__discount-label svg {
     width: var(--icon-size-sm);
     height: var(--icon-size-sm);
     display: inline-block;
   }
 
-  .cart-totals__original-container,
-  .cart-totals__container {
+  .cart__original-total-container,
+  .cart__total-container {
     display: flex;
     flex-direction: column;
   }
 
-  .cart-totals__container {
+  .cart__total-container {
     row-gap: var(--gap-2xs);
 
-    &.cart-totals__container--has-installments {
+    &.cart__total-container--has-installments {
       row-gap: var(--gap-xs);
     }
   }
 
-  .cart-totals__original-container:empty {
+  .cart__original-total-container:empty {
     display: none;
   }
 
-  .cart-totals {
+  .cart__summary-totals {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xl);
     width: 100%;
     border-block-start: none;
 
-    &:has(> :first-child:not(.cart-totals__original-container, .cart-totals__container)) {
+    &:has(> :first-child:not(.cart__original-total-container, .cart__total-container)) {
       padding-block-start: 0;
       border-block-start: none;
     }
@@ -378,29 +356,28 @@
     }
   }
 
-  .cart-totals__original-container,
-  .cart-totals__original-container * {
-    font-size: var(--cart-font-size--sm);
+  .cart__original-total-container,
+  .cart__original-total-container * {
+    font-size: var(--font-size--sm);
   }
 
-  .cart-totals__total {
-    align-items: baseline;
+  .cart__total {
     font-weight: var(--font-weight-bold);
   }
 
-  .cart-totals__total-label {
-    font-size: var(--cart-font-size--sm);
+  .cart__total-label {
+    font-size: var(--font-size--sm);
   }
 
-  .cart-totals__total-value {
-    font-size: var(--cart-font-size--xl);
+  .cart__total-value {
+    font-size: var(--font-size--xl);
 
     @media screen and (max-width: 749px) {
       font-size: var(--font-size--lg);
     }
   }
 
-  .cart-totals__installments {
+  .cart__installments {
     color: var(--color-foreground);
     font-size: var(--font-size--2xs);
   }
@@ -453,10 +430,15 @@
     padding: max(4px, calc(var(--style-border-radius-inputs) * (1 - cos(45deg))));
   }
 
-  .cart-totals__icon {
+  .cart-note .svg-wrapper {
+    height: var(--icon-size-sm);
+    width: var(--icon-size-sm);
+    margin: 0;
+  }
+
+  .cart-note .icon-plus {
     height: var(--icon-size-xs);
     width: var(--icon-size-xs);
-    margin: 0;
   }
 
   .cart__ctas {
@@ -473,7 +455,7 @@
     padding-inline: var(--padding-4xl);
   }
 
-  .cart-drawer__summary .cart-totals:not(:has(.cart-totals__original-container:empty)) {
+  .cart-drawer__summary .cart__summary-totals:not(:has(.cart__original-total-container:empty)) {
     border-block-start: var(--style-border-width) solid var(--color-border);
     padding-block-start: var(--padding-2xl);
   }
@@ -582,6 +564,10 @@
     margin-block-start: var(--margin-3xs);
   }
 
+  .cart-discount {
+    width: 100%;
+  }
+
   .cart-discount__summary {
     display: flex;
     align-items: center;
@@ -598,11 +584,5 @@
     gap: var(--gap-2xs);
     font-size: var(--font-size--2xs);
     font-weight: 500;
-  }
-
-  @media screen and (min-width: 750px) {
-    .cart-summary--extend {
-      height: 100%;
-    }
   }
 {% endstylesheet %}

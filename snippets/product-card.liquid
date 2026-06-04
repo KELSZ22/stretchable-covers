@@ -13,7 +13,7 @@
 
 {% style %}
   {% if request.visual_preview_mode %}
-    product-card[data-product-transition] {
+    product-card-link {
       width: 100%;
       min-width: 250px;
     }
@@ -52,18 +52,31 @@
   if product.id == empty or product == blank
     assign onboarding = true
   endif
+
+  assign product_diameter = blank
+  assign variant_diameter = blank
+
+  if onboarding == false
+    assign product_diameter = product.metafields.custom.product_diameter.value
+    assign variant_diameter = variant_to_link.metafields.custom.product_variant_diameter.value
+  endif
 %}
 
+{%- if settings.transition_to_main_product -%}
+  <product-card-link
+    data-product-id="{{ product.id }}"
+    data-featured-media-url="{{ featured_media_url }}"
+    data-product-transition="{{ settings.transition_to_main_product }}"
+    {% if onboarding %}
+      data-placeholder="true"
+    {% endif %}
+  >
+{%- endif -%}
 <product-card
-  class="product-card size-style"
-  style="{% render 'size-style', settings: block_settings %}"
+  class="product-card"
   data-product-id="{{ product.id }}"
   id="product-card-{{ block.id }}"
-  {% if settings.transition_to_main_product %}
-    data-product-transition="true"
-    data-featured-media-url="{{ featured_media_url }}"
-    on:click="/handleViewTransition"
-  {% endif %}
+  data-product-transition="{{ settings.transition_to_main_product }}"
   {{ block.shopify_attributes }}
   {% if onboarding %}
     data-placeholder="true"
@@ -100,28 +113,66 @@
       --quick-add-display: {% if has_quick_add %}flex{% else %}none{% endif %};
       --quick-add-mobile-display: {% if has_mobile_quick_add %}flex{% else %}none{% endif %};
       --quick-add-mobile-opacity: {% if has_mobile_quick_add %}1{% else %}0{% endif %};
-      {% if block_settings.padding-inline-start > 0 %}--zoom-out-padding-inline-start: min(var(--padding-xs), {{ block_settings.padding-inline-start | times: 0.7}}px);{% endif %}
-      {% if block_settings.padding-inline-end > 0 %}--zoom-out-padding-inline-end: min(var(--padding-xs), {{ block_settings.padding-inline-end | times: 0.7}}px);{% endif %}
-      {% if block_settings.padding-block-start > 0 %}--zoom-out-padding-block-start: min(var(--padding-xs), {{ block_settings.padding-block-start | times: 0.7}}px);{% endif %}
-      {% if block_settings.padding-block-end > 0 %}--zoom-out-padding-block-end: min(var(--padding-xs), {{ block_settings.padding-block-end | times: 0.7}}px);{% endif %}
+      {% if block_settings.padding-inline-start > 0 %}--zoom-out-padding-inline-start: min(var(--padding-xs), {{ block_settings.padding-inline-start | times: 0.7 }}px);{% endif %}
+      {% if block_settings.padding-inline-end > 0 %}--zoom-out-padding-inline-end: min(var(--padding-xs), {{ block_settings.padding-inline-end | times: 0.7 }}px);{% endif %}
+      {% if block_settings.padding-block-start > 0 %}--zoom-out-padding-block-start: min(var(--padding-xs), {{ block_settings.padding-block-start | times: 0.7 }}px);{% endif %}
+      {% if block_settings.padding-block-end > 0 %}--zoom-out-padding-block-end: min(var(--padding-xs), {{ block_settings.padding-block-end | times: 0.7 }}px);{% endif %}
     "
   >
     {{ children }}
+        {% comment %} {% if variant_diameter != blank or product_diameter != blank %}
+      <p class="product-card__diameter">
+        <span class="product-card__diameter-label">Diameter</span>
+        <span class="product-card__diameter-value">
+          {% if variant_diameter != blank %}
+            {{ variant_diameter }}
+          {% else %}
+            {{ product_diameter }}
+          {% endif %}
+        </span>
+      </p>
+    {% endif %} {% endcomment %}
   </div>
 </product-card>
+{%- if settings.transition_to_main_product -%}
+  </product-card-link>
+{%- endif -%}
 
 {% stylesheet %}
+  product-card-link,
+  :not(product-card-link) product-card {
+    width: 100%;
+  }
+
   .product-card__placeholder-image svg {
     height: 100%;
   }
 
-  .product-card__content slideshow-component {
-    --cursor: pointer;
+  .product-card__diameter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    color: #5F5F5F;
+  }
+
+  .product-card__diameter-label {
+    color: #5F5F5F;
+  }
+
+  .product-card__diameter-value {
+    color: #5F5F5F;
   }
 
   @media screen and (max-width: 749px) {
     .product-card slideshow-arrows .slideshow-control {
       display: none;
+    }
+
+    .product-card__diameter {
+      font-size: 13px;
     }
   }
 {% endstylesheet %}

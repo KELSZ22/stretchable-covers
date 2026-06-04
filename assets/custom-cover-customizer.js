@@ -4,6 +4,25 @@ import {
   SHAPES_PAGE_SIZE,
 } from "./custom-cover-customizer-shapes-registry.js";
 
+/** Remove legacy native font <select> menus (cannot show per-option typefaces on Windows). */
+function ccPurgeLegacyFontSelects() {
+  document
+    .querySelectorAll(
+      ".custom-cover-customizer__text-font-row select:not([data-font-size-input])",
+    )
+    .forEach((sel) => {
+      const group = sel.closest(".custom-cover-customizer__group");
+      if (group?.querySelector(".custom-cover-font-picker[data-font-picker]")) {
+        sel.remove();
+      }
+    });
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", ccPurgeLegacyFontSelects);
+} else {
+  ccPurgeLegacyFontSelects();
+}
+
 const CUSTOMIZER_ROT_HANDLE_OFFSET = 28;
 const CUSTOMIZER_HANDLE_RADIUS_PX = 6;
 const CUSTOMIZER_ROT_HANDLE_RADIUS_PX = 6;
@@ -1233,7 +1252,7 @@ class CustomCoverCustomizer extends HTMLElement {
     const imprintTextProperty = this.form.querySelector(
       "[data-imprint-text-property]",
     );
-    const fontInput = this.querySelector("[data-font-input]");
+    let fontInput = this.querySelector("[data-font-input]");
     const fontSizeInput = this.querySelector("[data-font-size-input]");
     const textInput = this.querySelector("[data-text-input]");
     const textColorInput = this.querySelector("[data-text-color-input]");
@@ -2592,6 +2611,14 @@ class CustomCoverCustomizer extends HTMLElement {
     textInput?.addEventListener("click", scheduleCaretRedraw);
     textInput?.addEventListener("focus", () => this._startCaretBlinkLoop());
     textInput?.addEventListener("blur", () => this._stopCaretBlinkLoop());
+
+    if (
+      fontInput?.tagName === "SELECT" &&
+      !fontInput.closest("[data-font-picker]")
+    ) {
+      this.buildFontPickerUIFromSelect(fontInput);
+      fontInput = this.querySelector("[data-font-input]");
+    }
 
     this.initFontPicker(fontInput);
 
@@ -4726,6 +4753,25 @@ initFontPicker(fontInput) {
     return;
   }
 
+  /* Server-rendered picker: init.js wires the UI; only preload fonts here. */
+  if (wrapper.dataset.ccFontPickerVersion) {
+    fontInput.dataset.fontPickerInit = "true";
+    const families = [
+      ...dropdown.querySelectorAll("[data-font-picker-option]"),
+    ]
+      .map((row) => row.getAttribute("data-value"))
+      .filter(Boolean);
+    void Promise.all(
+      families.map((family) =>
+        this.ensureGoogleFontLoaded(family, { redraw: false }),
+      ),
+    );
+    if (fontInput.value) {
+      void this.ensureGoogleFontLoaded(fontInput.value, { redraw: false });
+    }
+    return;
+  }
+
   const fallback =
     wrapper.dataset.fontFallback ||
     this.dataset.fontFallback ||
@@ -4773,6 +4819,7 @@ initFontPicker(fontInput) {
       fontInput.value = family;
       syncTriggerFromSelect();
       dropdown.hidden = true;
+      dropdown.classList.remove("is-open");
       trigger.setAttribute("aria-expanded", "false");
       fontInput.dispatchEvent(new Event("change", { bubbles: true }));
       void this.ensureGoogleFontLoaded(family, { redraw: true });
@@ -4792,6 +4839,7 @@ initFontPicker(fontInput) {
       });
     }
     dropdown.hidden = !willOpen;
+    dropdown.classList.toggle("is-open", willOpen);
     trigger.setAttribute("aria-expanded", willOpen ? "true" : "false");
     if (willOpen) {
       const active = dropdown.querySelector(
@@ -4804,6 +4852,7 @@ initFontPicker(fontInput) {
   const onOutside = (e) => {
     if (!wrapper.contains(e.target)) {
       dropdown.hidden = true;
+      dropdown.classList.remove("is-open");
       trigger.setAttribute("aria-expanded", "false");
     }
   };
@@ -4812,6 +4861,7 @@ initFontPicker(fontInput) {
   wrapper.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       dropdown.hidden = true;
+      dropdown.classList.remove("is-open");
       trigger.setAttribute("aria-expanded", "false");
       trigger.focus();
     }
@@ -4905,8 +4955,7 @@ buildFontPickerUIFromSelect(fontInput) {
   options.forEach((opt) => {
     const family = opt.value;
 
-    const item = document.createElement("button");
-    item.type = "button";
+    const item = document.createElement("div");
     item.className = "custom-cover-font-picker__option";
     item.setAttribute("data-font-picker-option", "");
     item.dataset.value = family;

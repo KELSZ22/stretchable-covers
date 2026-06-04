@@ -1,13 +1,11 @@
 import { Component } from '@theme/component';
 import { VariantSelectedEvent, VariantUpdateEvent } from '@theme/events';
 import { morph, MORPH_OPTIONS } from '@theme/morph';
-import { OverflowList } from '@theme/overflow-list';
 import { yieldToMainThread, getViewParameterValue, ResizeNotifier } from '@theme/utilities';
 
 /**
  * @typedef {object} VariantPickerRefs
- * @property {HTMLFieldSetElement[]} fieldsets - The fieldset elements.
- * @property {HTMLElement} [overflowList] - The overflow list element.
+ * @property {HTMLFieldSetElement[]} fieldsets – The fieldset elements.
  */
 
 /**
@@ -67,9 +65,7 @@ export default class VariantPicker extends Component {
     if (!selectedOption) return;
 
     this.updateSelectedOption(event.target);
-    this.dispatchEvent(new VariantSelectedEvent({
-      id: selectedOption.dataset.optionValueId ?? '',
-    }));
+    this.dispatchEvent(new VariantSelectedEvent({ id: selectedOption.dataset.optionValueId ?? '' }));
 
     const isOnProductPage =
       this.dataset.templateProductMatch === 'true' &&
@@ -321,36 +317,23 @@ export default class VariantPicker extends Component {
         const textContent = html.querySelector(`variant-picker script[type="application/json"]`)?.textContent;
         if (!textContent) return;
 
-        let newProduct;
-
         if (morphElementSelector === 'main') {
           this.updateMain(html);
         } else if (morphElementSelector) {
           this.updateElement(html, morphElementSelector);
         } else {
-          const { overflowList } = this.refs;
-          const wasSwatchesExpanded =
-            overflowList instanceof OverflowList && overflowList.getAttribute('disabled') === 'true';
+          const newProduct = this.updateVariantPicker(html);
 
-          newProduct = this.updateVariantPicker(html);
-
-          if (wasSwatchesExpanded) {
-            const overflowListAfterMorph = overflowList;
-            if (overflowListAfterMorph instanceof OverflowList) {
-              overflowListAfterMorph.showAll();
-            }
+          // We grab the variant object from the response and dispatch an event with it.
+          if (this.selectedOptionId) {
+            this.dispatchEvent(
+              new VariantUpdateEvent(JSON.parse(textContent), this.selectedOptionId, {
+                html,
+                productId: this.dataset.productId ?? '',
+                newProduct,
+              })
+            );
           }
-        }
-
-        // Dispatch for all paths so product-form-component can reset #variantChangeInProgress
-        if (this.selectedOptionId) {
-          this.dispatchEvent(
-            new VariantUpdateEvent(JSON.parse(textContent), this.selectedOptionId, {
-              html,
-              productId: this.dataset.productId ?? '',
-              newProduct,
-            })
-          );
         }
       })
       .catch((error) => {

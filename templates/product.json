@@ -142,6 +142,7 @@
                   "name": "Product title",
                   "settings": {
                     "text": "<h1>{{ closest.product.title }}</h1>",
+                    "logo_image": "shopify://shop_images/fast_delivery.png",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",

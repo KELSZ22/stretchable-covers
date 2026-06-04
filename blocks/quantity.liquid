@@ -1,6 +1,338 @@
+{% assign quantity_product = closest.product | default: product %}
+{% assign current_variant = quantity_product.selected_or_first_available_variant %}
+{% assign base_unit_price = current_variant.price | default: quantity_product.price %}
+{% assign popup_id = block.id | default: section.id %}
+{% assign volume_pricing_table = quantity_product.metafields.custom.volume_pricing_table.value %}
+{% assign volume_tiers = '50:price_50,100:price_100,250:price_250,500:price_500,1000:price_1000,2500:price_2500,5000:price_5000,10000:price_10000' | split: ',' %}
+{% assign volume_price_script_enabled = true %}
+{% assign volume_popup_enabled = false %}
+{% if quantity_product.quantity_price_breaks_configured? %}
+  {% assign volume_popup_enabled = true %}
+{% elsif volume_pricing_table != blank %}
+  {% assign volume_popup_enabled = true %}
+{% endif %}
+{% assign use_shopify_volume_breaks = false %}
+{% if quantity_product.quantity_price_breaks_configured? and current_variant.quantity_price_breaks.size > 0 %}
+  {% assign use_shopify_volume_breaks = true %}
+{% endif %}
 
+<div
+  class="quantity-selector-container"
+  data-quantity-volume-root="{{ popup_id }}"
+  data-product-id="{{ quantity_product.id }}"
+  data-initial-price-cents="{{ current_variant.price }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
+>
+  {% render 'quantity-selector', product: quantity_product, hide_price_per_item: volume_popup_enabled %}
 
-{% render 'quantity-selector', product: closest.product %}
+  {% if volume_popup_enabled %}
+    <button
+      type="button"
+      popovertarget="quantity-volume-popup-{{ popup_id }}"
+      class="quantity-selector-toolkit new"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 8V12" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 16H12.01" stroke="#1F1F1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <p>Add more to save more</p>
+    </button>
+
+    <div
+      id="quantity-volume-popup-{{ popup_id }}"
+      class="quantity-volume-popup"
+      popover
+    >
+      <button
+        type="button"
+        class="quantity-volume-popup__close"
+        popovertarget="quantity-volume-popup-{{ popup_id }}"
+        popovertargetaction="hide"
+        aria-label="Close popup"
+      >
+        ×
+      </button>
+
+      <h3>Volume Pricing</h3>
+
+      <p class="quantity-volume-popup__subtitle">
+        Save more when you order more. Discounts applied automatically in cart.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Quantity</th>
+            <th>Price per Unit</th>
+            <th>You Save</th>
+          </tr>
+        </thead>
+
+        <tbody data-quantity-volume-popup-tbody>
+          {% if use_shopify_volume_breaks %}
+            {% for price_break in current_variant.quantity_price_breaks %}
+              {% assign save_cents = current_variant.price | minus: price_break.price %}
+              {% if save_cents < 0 %}
+                {% assign save_cents = 0 %}
+              {% endif %}
+
+              <tr data-tier-row data-tier-min="{{ price_break.minimum_quantity }}">
+                <td>{{ price_break.minimum_quantity }}+</td>
+                <td>{{ price_break.price | money }}</td>
+                <td>Save {{ save_cents | money }} each</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            {% for volume_tier in volume_tiers %}
+              {% assign tier_parts = volume_tier | split: ':' %}
+              {% assign volume_quantity = tier_parts[0] %}
+              {% assign tier_field_key = tier_parts[1] %}
+              {% assign tier_field = volume_pricing_table[tier_field_key] %}
+
+              {% if tier_field != blank and tier_field.value != blank %}
+                {% assign tier_price_cents = tier_field.value.amount | default: tier_field.value | plus: 0 %}
+                {% assign save_cents = base_unit_price | minus: tier_price_cents %}
+                {% if save_cents < 0 %}
+                  {% assign save_cents = 0 %}
+                {% endif %}
+
+                <tr data-tier-row data-tier-min="{{ volume_quantity }}">
+                  <td>{{ volume_quantity }}+</td>
+                  <td>{{ tier_price_cents | money }}</td>
+                  <td>Save {{ save_cents | money }} each</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </tbody>
+      </table>
+
+      <p class="quantity-volume-popup__note">
+        The discount will automatically apply when you reach the quantity threshold.
+      </p>
+    </div>
+
+    <script type="application/json" data-quantity-volume-variants>
+      [
+        {%- for variant in quantity_product.variants -%}
+          {%- unless forloop.first -%},{%- endunless -%}
+          {
+            "id": {{ variant.id }},
+            "price": {{ variant.price }},
+            "quantity_price_breaks": [
+              {%- for price_break in variant.quantity_price_breaks -%}
+                {%- unless forloop.first -%},{%- endunless -%}
+                {
+                  "minimum_quantity": {{ price_break.minimum_quantity }},
+                  "price": {{ price_break.price }}
+                }
+              {%- endfor -%}
+            ]
+          }
+        {%- endfor -%}
+      ]
+    </script>
+
+    {% unless use_shopify_volume_breaks %}
+      <script type="application/json" data-quantity-volume-metafield-tiers>
+        [
+          {%- assign tier_json_count = 0 -%}
+          {%- for volume_tier in volume_tiers -%}
+            {%- assign tier_parts = volume_tier | split: ':' -%}
+            {%- assign volume_quantity = tier_parts[0] -%}
+            {%- assign tier_field_key = tier_parts[1] -%}
+            {%- assign tier_field = volume_pricing_table[tier_field_key] -%}
+            {%- if tier_field != blank and tier_field.value != blank -%}
+              {%- assign tier_price_cents = tier_field.value.amount | default: tier_field.value | plus: 0 -%}
+              {%- if tier_json_count > 0 -%},{%- endif -%}
+              {"minimum_quantity":{{ volume_quantity }},"price":{{ tier_price_cents }}}
+              {%- assign tier_json_count = tier_json_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        ]
+      </script>
+    {% endunless %}
+  {% endif %}
+
+  <style>
+    button.quantity-selector-toolkit.new {
+      width: auto;
+    }
+
+    .quantity-selector-toolkit {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #1f1f1f;
+    }
+
+    .quantity-selector-toolkit p {
+      margin: 0;
+    }
+
+    product-price [data-volume-price-updatable] .custom-cart-item-price-compare {
+      margin-left: 6px;
+      font-size: 12px;
+      color: #777;
+      text-decoration: line-through;
+      white-space: nowrap;
+    }
+
+    .volume-price-preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .volume-price-preview__spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgb(0 0 0 / 0.12);
+      border-top-color: rgb(0 0 0 / 0.55);
+      border-radius: 50%;
+      animation: volume-price-preview-spin 0.65s linear infinite;
+      flex-shrink: 0;
+    }
+
+    .volume-price-preview.is-volume-price-loading .volume-price-preview__spinner {
+      display: block;
+    }
+
+    .volume-price-preview.is-volume-price-loading .volume-price-preview__values {
+      opacity: 0.45;
+    }
+
+    @keyframes volume-price-preview-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .quantity-volume-popup tbody tr[data-tier-row].is-active-tier td {
+      color: #0f2e53;
+      font-weight: 700;
+    }
+
+    .quantity-volume-popup {
+      width: min(660px, calc(100vw - 40px));
+      border: 0;
+      border-radius: 8px;
+      padding: 30px 30px 18px;
+      background: #fff;
+      color: #1f1f1f;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    .quantity-volume-popup::backdrop {
+      background: rgba(0, 0, 0, 0.82);
+    }
+
+    .quantity-volume-popup__close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      border: 0;
+      background: transparent;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      color: #1f1f1f;
+      width: auto !important;
+    }
+
+    .quantity-volume-popup h3 {
+      margin: 0 0 4px;
+      color: #0F2E53;
+      font-size: 18px;
+      line-height: 16px;
+      font-weight: 800;
+    }
+
+    .quantity-volume-popup__subtitle {
+      margin: 0 0 24px;
+      font-size: 14px;
+      line-height: 18px;
+      color: #5F5F5F;
+    }
+
+    .quantity-volume-popup table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .quantity-volume-popup th {
+      padding: 0 0 12px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .quantity-volume-popup td {
+      padding: 12px 0;
+      color: #5F5F5F;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .quantity-volume-popup tbody tr:nth-child(even) {
+      background: #F3F4F5;
+    }
+
+    .quantity-volume-popup__note {
+      padding: 12px 0;
+      color: #5F5F5F;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    @media screen and (max-width: 749px) {
+      .quantity-volume-popup {
+        width: calc(100vw - 32px);
+        padding: 26px 18px 16px;
+      }
+
+      .quantity-volume-popup h3 {
+        font-size: 18px;
+      }
+
+      .quantity-volume-popup table,
+      .quantity-volume-popup__subtitle {
+        font-size: 12px;
+      }
+    }
+  </style>
+
+  {% if volume_price_script_enabled %}
+    <script src="{{ 'custom-product-volume-price.js' | asset_url }}" defer></script>
+    <script>
+      (function () {
+        function bootVolumePrice() {
+          if (window.CustomProductVolumePrice && typeof window.CustomProductVolumePrice.initAll === 'function') {
+            window.CustomProductVolumePrice.initAll();
+          }
+        }
+        document.addEventListener('DOMContentLoaded', bootVolumePrice);
+        document.addEventListener('shopify:section:load', bootVolumePrice);
+        if (document.readyState !== 'loading') {
+          setTimeout(bootVolumePrice, 0);
+        }
+      })();
+    </script>
+  {% endif %}
+</div>
 
 {% schema %}
 {

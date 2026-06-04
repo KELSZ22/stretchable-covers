@@ -1,6 +1,6 @@
 /**
  * Font picker for custom cover customizer.
- * Builds or upgrades the UI and applies each font name in its own typeface.
+ * Custom list only — removes legacy native <select> font menus.
  */
 (function () {
   const ROOT = ".custom-cover-font-picker[data-font-picker]";
@@ -10,10 +10,21 @@
     return `"${String(name).replace(/"/g, '\\"')}", ${fallback || "sans-serif"}`;
   }
 
+  function fontClass(name) {
+    return (
+      "cc-font--" +
+      String(name)
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")
+    );
+  }
+
   function loadGoogleBatch(families) {
     const google = families.filter(Boolean);
     if (!google.length) return;
-    const chunk = 10;
+    const chunk = 8;
     for (let i = 0; i < google.length; i += chunk) {
       const slice = google.slice(i, i + chunk);
       const params = slice
@@ -27,12 +38,142 @@
     }
   }
 
+  const portalPlaceholders = new WeakMap();
+
+  function getPortalHost(picker) {
+    const sheet = picker.closest(".custom-cover-customizer__drawer-sheet");
+    if (sheet && getComputedStyle(sheet).display !== "contents") {
+      return sheet;
+    }
+
+    const panel = picker.closest(".custom-cover-customizer__panel");
+    if (panel && getComputedStyle(panel).display !== "contents") {
+      return panel;
+    }
+
+    return (
+      picker.closest(".custom-cover-customizer__left-column") ||
+      picker.closest(".custom-cover-customizer__layout") ||
+      null
+    );
+  }
+
+  function portalDropdown(picker, dropdown) {
+    if (dropdown.dataset.portaled === "true") {
+      return getPortalHost(picker);
+    }
+    const host = getPortalHost(picker);
+    if (!host) return null;
+
+    const placeholder = document.createComment("cc-font-dropdown-anchor");
+    dropdown.parentNode.insertBefore(placeholder, dropdown);
+    portalPlaceholders.set(picker, placeholder);
+
+    host.classList.add("custom-cover-font-picker__portal-host");
+    host.appendChild(dropdown);
+    dropdown.dataset.portaled = "true";
+    dropdown.classList.add("is-portaled");
+    return host;
+  }
+
+  function restoreDropdown(picker, dropdown) {
+    if (dropdown.dataset.portaled !== "true") return;
+
+    const placeholder = portalPlaceholders.get(picker);
+    if (placeholder?.parentNode) {
+      placeholder.parentNode.insertBefore(dropdown, placeholder);
+      placeholder.remove();
+    } else {
+      picker.appendChild(dropdown);
+    }
+    portalPlaceholders.delete(picker);
+
+    dropdown.dataset.portaled = "";
+    dropdown.classList.remove("is-portaled");
+    const host = getPortalHost(picker);
+    host?.classList.remove("custom-cover-font-picker__portal-host");
+  }
+
+  function positionPortaledDropdown(trigger, dropdown, host) {
+    const triggerRect = trigger.getBoundingClientRect();
+    const hostRect = host.getBoundingClientRect();
+    const left = Math.max(0, triggerRect.left - hostRect.left + host.scrollLeft);
+    const width = triggerRect.width;
+    const spaceBelow = hostRect.bottom - triggerRect.bottom - 8;
+    const spaceAbove = triggerRect.top - hostRect.top - 8;
+    const maxH = 280;
+
+    dropdown.style.position = "absolute";
+    dropdown.style.left = `${left}px`;
+    dropdown.style.width = `${width}px`;
+    dropdown.style.right = "auto";
+    dropdown.style.zIndex = "100";
+
+    if (spaceBelow >= 100 || spaceBelow >= spaceAbove) {
+      dropdown.style.top = `${triggerRect.bottom - hostRect.top + 4 + host.scrollTop}px`;
+      dropdown.style.bottom = "auto";
+      dropdown.style.maxHeight = `${Math.min(maxH, Math.max(96, spaceBelow))}px`;
+    } else {
+      const height = Math.min(maxH, Math.max(96, spaceAbove));
+      dropdown.style.top = `${Math.max(0, triggerRect.top - hostRect.top + host.scrollTop - height - 4)}px`;
+      dropdown.style.bottom = "auto";
+      dropdown.style.maxHeight = `${height}px`;
+    }
+  }
+
+  function resetDropdownPosition(dropdown) {
+    dropdown.style.position = "";
+    dropdown.style.left = "";
+    dropdown.style.top = "";
+    dropdown.style.bottom = "";
+    dropdown.style.width = "";
+    dropdown.style.right = "";
+    dropdown.style.maxHeight = "";
+    dropdown.style.zIndex = "";
+  }
+
+  function closeDropdown(picker, dropdown, trigger) {
+    dropdown.hidden = true;
+    dropdown.classList.remove("is-open");
+    resetDropdownPosition(dropdown);
+    restoreDropdown(picker, dropdown);
+    trigger.setAttribute("aria-expanded", "false");
+  }
+
   function applyFace(node, name, fallback) {
     if (!node || !name) return;
     const target =
-      node.querySelector(".custom-cover-font-picker__option-text") || node;
+      node.querySelector(".custom-cover-font-picker__option-text") ||
+      node.querySelector("[data-font-picker-label]") ||
+      node;
     target.dataset.fontValue = name;
+    target.classList.add(fontClass(name));
     target.style.setProperty("font-family", fontStack(name, fallback), "important");
+  }
+
+  function removeLegacyFontSelects() {
+    document.querySelectorAll(FONT_ROW).forEach((row) => {
+      row
+        .querySelectorAll("select:not([data-font-size-input])")
+        .forEach((sel) => {
+          const group = sel.closest(".custom-cover-customizer__group");
+          const picker = group?.querySelector(ROOT);
+          if (picker) {
+            sel.remove();
+            return;
+          }
+          const fallback =
+            document
+              .querySelector("custom-cover-customizer-component")
+              ?.getAttribute("data-font-fallback") || "sans-serif";
+          const built = buildPickerFromSelect(sel, fallback);
+          if (built) {
+            sel.replaceWith(built);
+          } else {
+            sel.remove();
+          }
+        });
+    });
   }
 
   function buildPickerFromSelect(select, fallback) {
@@ -46,6 +187,7 @@
     const wrapper = document.createElement("div");
     wrapper.className = "custom-cover-font-picker";
     wrapper.setAttribute("data-font-picker", "");
+    wrapper.setAttribute("data-cc-font-picker-version", "3");
     wrapper.setAttribute("data-font-fallback", fallback);
 
     const hidden = document.createElement("input");
@@ -63,7 +205,7 @@
     trigger.setAttribute("aria-expanded", "false");
 
     const label = document.createElement("span");
-    label.className = "custom-cover-font-picker__label";
+    label.className = `custom-cover-font-picker__label ${fontClass(defaultVal)}`;
     label.setAttribute("data-font-picker-label", "");
     label.textContent = defaultVal;
     applyFace(label, defaultVal, fallback);
@@ -92,7 +234,7 @@
       row.setAttribute("tabindex", "0");
 
       const text = document.createElement("span");
-      text.className = "custom-cover-font-picker__option-text";
+      text.className = `custom-cover-font-picker__option-text ${fontClass(family)}`;
       text.textContent = family;
       applyFace(text, family, fallback);
 
@@ -104,36 +246,14 @@
     return wrapper;
   }
 
-  function migrateLegacySelects() {
-    document.querySelectorAll(FONT_ROW).forEach((row) => {
-      const group = row.querySelector(".custom-cover-customizer__group");
-      if (!group) return;
-
-      const legacy = group.querySelector(
-        "select:not([data-font-size-input])",
-      );
-      const picker = group.querySelector(ROOT);
-
-      if (legacy && picker) {
-        legacy.remove();
-        return;
-      }
-
-      if (legacy && !picker) {
-        const fallback =
-          document
-            .querySelector("custom-cover-customizer-component")
-            ?.getAttribute("data-font-fallback") || "sans-serif";
-        const built = buildPickerFromSelect(legacy, fallback);
-        if (built) {
-          legacy.replaceWith(built);
-        }
-      }
-    });
-  }
-
   function initPicker(picker) {
-    if (!picker || picker.dataset.fontPickerReady === "true") return;
+    if (
+      !picker ||
+      picker.dataset.fontPickerReady === "true" ||
+      picker.dataset.ccFontPickerInlineInit === "true"
+    ) {
+      return;
+    }
     picker.dataset.fontPickerReady = "true";
 
     const fontInput = picker.querySelector("[data-font-input]");
@@ -150,7 +270,6 @@
       .forEach((sel) => sel.remove());
 
     const optionRows = [...dropdown.querySelectorAll("[data-font-picker-option]")];
-
     const families = optionRows
       .map((row) => row.getAttribute("data-value"))
       .filter(Boolean);
@@ -158,10 +277,9 @@
 
     function sync() {
       const family =
-        fontInput.value ||
-        optionRows[0]?.getAttribute("data-value") ||
-        "";
+        fontInput.value || optionRows[0]?.getAttribute("data-value") || "";
       triggerLabel.textContent = family;
+      triggerLabel.className = `custom-cover-font-picker__label ${fontClass(family)}`;
       applyFace(triggerLabel, family, fallback);
       optionRows.forEach((row) => {
         const isOn = row.getAttribute("data-value") === family;
@@ -178,9 +296,11 @@
       const pick = () => {
         fontInput.value = family;
         sync();
-        dropdown.hidden = true;
-        trigger.setAttribute("aria-expanded", "false");
+        closeDropdown(picker, dropdown, trigger);
         fontInput.dispatchEvent(new Event("change", { bubbles: true }));
+        if (document.fonts?.load) {
+          void document.fonts.load(`400 16px ${fontStack(family, fallback)}`);
+        }
       };
 
       row.addEventListener("click", pick);
@@ -192,13 +312,13 @@
       });
     });
 
-    trigger.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const willOpen = dropdown.hidden;
-      dropdown.hidden = !willOpen;
-      trigger.setAttribute("aria-expanded", willOpen ? "true" : "false");
-      if (willOpen) {
+    const setOpen = (open) => {
+      dropdown.hidden = !open;
+      dropdown.classList.toggle("is-open", open);
+      trigger.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) {
+        const host = portalDropdown(picker, dropdown) || picker;
+        positionPortaledDropdown(trigger, dropdown, host);
         const val = fontInput.value || "";
         const esc =
           typeof CSS !== "undefined" && CSS.escape
@@ -206,15 +326,52 @@
             : val.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
         const active = dropdown.querySelector(`[data-value="${esc}"]`);
         active?.scrollIntoView({ block: "nearest" });
+      } else {
+        resetDropdownPosition(dropdown);
+        restoreDropdown(picker, dropdown);
+      }
+    };
+
+    const toggle = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setOpen(dropdown.hidden);
+    };
+
+    const reposition = () => {
+      if (dropdown.hidden || !dropdown.classList.contains("is-open")) return;
+      const host =
+        dropdown.dataset.portaled === "true"
+          ? getPortalHost(picker)
+          : picker;
+      if (host) positionPortaledDropdown(trigger, dropdown, host);
+    };
+
+    trigger.addEventListener("click", toggle);
+    trigger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+        e.preventDefault();
+        if (dropdown.hidden) toggle(e);
+      }
+      if (e.key === "Escape" && !dropdown.hidden) {
+        closeDropdown(picker, dropdown, trigger);
       }
     });
+
+    if (!picker.dataset.fontPickerRepositionBound) {
+      picker.dataset.fontPickerRepositionBound = "true";
+      window.addEventListener("scroll", reposition, true);
+      window.addEventListener("resize", reposition);
+    }
 
     if (!picker.dataset.fontPickerOutsideBound) {
       picker.dataset.fontPickerOutsideBound = "true";
       document.addEventListener("pointerdown", (e) => {
-        if (!picker.contains(e.target)) {
-          dropdown.hidden = true;
-          trigger.setAttribute("aria-expanded", "false");
+        if (
+          !picker.contains(e.target) &&
+          !dropdown.contains(e.target)
+        ) {
+          closeDropdown(picker, dropdown, trigger);
         }
       });
     }
@@ -224,10 +381,14 @@
       fontInput.value = optionRows[0].getAttribute("data-value") || "";
     }
     sync();
+
+    if (document.fonts?.ready) {
+      void document.fonts.ready.then(() => sync());
+    }
   }
 
   function boot() {
-    migrateLegacySelects();
+    removeLegacyFontSelects();
     document.querySelectorAll(ROOT).forEach(initPicker);
   }
 
@@ -238,4 +399,10 @@
   }
 
   document.addEventListener("shopify:section:load", boot);
+
+  const observer = new MutationObserver(() => {
+    removeLegacyFontSelects();
+    document.querySelectorAll(`${ROOT}:not([data-font-picker-ready="true"])`).forEach(initPicker);
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
 })();

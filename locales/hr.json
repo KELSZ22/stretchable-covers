@@ -74,16 +74,8 @@
     "discount_menu": "Kodovi za popust",
     "remove": "Ukloni",
     "view_pricing_info": "Prikaži informacije o cijeni",
-    "slideshow": "Prezentacija",
-    "header_navigation_label": "Primarna",
-    "home_logo_alt": "{{ store_name }} – Početna stranica",
-    "active_filters": "Aktivni filtri:",
-    "product_details": "Pojedinosti o proizvodu",
-    "show_product_details": "Prikaži pojedinosti za proizvod {{ product_name }}",
-    "featured_product": "Istaknuti proizvod",
-    "search_suggestions_available": "Pretraživanje dostupnih prijedloga za „{{ query }}”",
-    "price_filter_low": "Niska cijena",
-    "price_filter_high": "Visoka cijena"
+    "open_hotspot": "Otvori hotspot",
+    "slideshow": "Prezentacija"
   },
   "actions": {
     "add_to_cart": "Dodaj u košaricu",
@@ -124,9 +116,7 @@
     "open_image_in_full_screen": "Otvori sliku preko cijelog zaslona",
     "sort": "Razvrstaj",
     "show_all_options": "Prikaži sve opcije",
-    "open": "Otvori",
-    "back_to": "Natrag na {{ title }}",
-    "zoom_media": "Zoom medijskog sadržaja {{ index }}"
+    "open": "Otvori"
   },
   "content": {
     "reviews": "recenzije",
@@ -258,7 +248,7 @@
     "product_custom_property_character_count": "Upotrijebljeno znakova: {{ used_chars }}/{{ max_chars }}",
     "terms_and_policies": "Uvjeti i pravila",
     "pagination": {
-      "nav_label": "Podjela na stranice",
+      "nav_label": "Kretanje po stranicama",
       "previous": "Prethodna",
       "next": "Sljedeća",
       "page": "Stranica {{ page }}"
@@ -286,8 +276,7 @@
       "one": "1 artikl dodan u košaricu",
       "other": "Artikala dodano u košaricu: {{ count }}",
       "few": "Artikala dodano u košaricu: {{ count }}"
-    },
-    "quick_order_list": "Brzi popis narudžbi"
+    }
   },
   "gift_cards": {
     "issued": {

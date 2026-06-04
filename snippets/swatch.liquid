@@ -4,10 +4,9 @@
   @param {object} swatch - a swatch object
   @param {object} [variant_image] - an alternate image when there is no swatch value
   @param {string} [mode] - one of 'unscaled', 'filter', 'pill'
-  @param {string} [label] - visually-hidden accessible label for the swatch (e.g. the color name)
 
   @example
-  {% render 'swatch', swatch: swatch, variant_image: variant_image, mode: 'unscaled', label: option_value.name %}
+  {% render 'swatch', swatch: swatch, variant_image: variant_image, mode: 'unscaled' %}
 {%- enddoc -%}
 
 {% liquid
@@ -47,6 +46,3 @@
   "
 >
 </span>
-{%- if label != blank -%}
-  <span class="visually-hidden">{{ label }}</span>
-{%- endif -%}

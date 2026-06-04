@@ -73,16 +73,8 @@
     "nested_product": "{{ product_title }} für {{ parent_title }}",
     "remove": "Entfernen",
     "view_pricing_info": "Preisinformationen anzeigen",
-    "slideshow": "Slideshow",
-    "header_navigation_label": "Haupt-",
-    "home_logo_alt": "{{ store_name }} – Home",
-    "active_filters": "Aktive Filter:",
-    "product_details": "Produktdetails",
-    "show_product_details": "Produktdetails für {{ product_name }} anzeigen",
-    "featured_product": "Vorgestelltes Produkt",
-    "search_suggestions_available": "Nach Vorschlägen für „{{ query }}“ suchen",
-    "price_filter_low": "Niedriger Preis",
-    "price_filter_high": "Hoher Preis"
+    "open_hotspot": "Hotspot öffnen",
+    "slideshow": "Slideshow"
   },
   "actions": {
     "add_to_cart": "In den Warenkorb legen",
@@ -122,9 +114,7 @@
     "open_image_in_full_screen": "Bild im Vollbildmodus öffnen",
     "sort": "Sortieren",
     "show_all_options": "Alle Optionen anzeigen",
-    "open": "Öffnen",
-    "back_to": "Zurück zu {{ title }}",
-    "zoom_media": "Medien {{ index }} zoomen"
+    "open": "Öffnen"
   },
   "content": {
     "reviews": "Reviews",
@@ -253,7 +243,7 @@
     "product_custom_property_character_count": "{{ used_chars }}/{{ max_chars }} Zeichen verwendet",
     "terms_and_policies": "Geschäftsbedingungen und Richtlinien",
     "pagination": {
-      "nav_label": "Seitennummerierung",
+      "nav_label": "Seitennavigation",
       "previous": "Zurück",
       "next": "Weiter",
       "page": "Seite {{ page }}"
@@ -280,8 +270,7 @@
     "items_added_to_cart": {
       "one": "1 Artikel zum Warenkorb hinzugefügt",
       "other": "{{ count }} Artikel zum Warenkorb hinzugefügt"
-    },
-    "quick_order_list": "Schnellbestellliste"
+    }
   },
   "gift_cards": {
     "issued": {

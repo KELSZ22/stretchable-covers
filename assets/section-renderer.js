@@ -48,7 +48,7 @@ class SectionRenderer {
     if (!abortController.signal.aborted) {
       this.#abortControllersBySectionId.delete(sectionId);
 
-      morphSection(sectionId, sectionHTML, { mode });
+      morphSection(sectionId, sectionHTML, mode);
     }
 
     return sectionHTML;
@@ -162,12 +162,9 @@ function containsShadowRoot(element) {
  *
  * @param {string} sectionId - The section ID
  * @param {string} html - The new markup the section should morph into
- * @param {Object} [options] - Additional options
- * @param {'hydration'|'full'} [options.mode] - Which parts of the section to morph into the DOM. 'hydration' will only morph nodes with `data-hydration-key` attributes.
- * @param {boolean} [options.injectStylesheet=false] - When true, extracts `style[data-section-stylesheet]` from the response and injects it into the section wrapper.
+ * @param {'hydration'|'full'} [mode] - Which parts of the section to morph into the DOM. 'hydration' will only morph nodes with `data-hydration-key` attributes.
  */
-export async function morphSection(sectionId, html, options = {}) {
-  const { mode = 'full', injectStylesheet = false } = options;
+export async function morphSection(sectionId, html, mode = 'full') {
   const fragment = new DOMParser().parseFromString(html, 'text/html');
   const existingElement = document.getElementById(buildSectionSelector(sectionId));
   const newElement = fragment.getElementById(buildSectionSelector(sectionId));
@@ -184,30 +181,6 @@ export async function morphSection(sectionId, html, options = {}) {
     ...MORPH_OPTIONS,
     hydrationMode: mode === 'hydration',
   });
-
-  if (injectStylesheet) {
-    injectSectionStylesheet(fragment, existingElement);
-  }
-}
-
-/**
- * Injects a `<style data-section-stylesheet>` from the parsed SFR response
- * into the live section wrapper. Replaces the existing stylesheet, if it exists.
- *
- * @param {Document} fragment - The parsed response document
- * @param {HTMLElement} sectionElement - The live section wrapper element
- */
-function injectSectionStylesheet(fragment, sectionElement) {
-  const newStylesheet = fragment.querySelector('style[data-section-stylesheet]');
-  if (!newStylesheet) return;
-
-  const existingStylesheet = sectionElement.querySelector('style[data-section-stylesheet]');
-
-  if (existingStylesheet) {
-    existingStylesheet.textContent = newStylesheet.textContent;
-  } else {
-    sectionElement.prepend(newStylesheet);
-  }
 }
 
 export const sectionRenderer = new SectionRenderer();

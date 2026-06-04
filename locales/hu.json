@@ -73,16 +73,8 @@
     "discount_menu": "Kedvezménykódok",
     "remove": "Eltávolítás",
     "view_pricing_info": "Árképzési adatok megtekintése",
-    "slideshow": "Diavetítés",
-    "header_navigation_label": "Elsődleges",
-    "home_logo_alt": "{{ store_name }} – Kezdőlap",
-    "active_filters": "Aktív szűrők:",
-    "product_details": "Termékadatok",
-    "show_product_details": "A(z) {{ product_name }} termékadatainak megjelenítése",
-    "featured_product": "Kiemelt termék",
-    "search_suggestions_available": "Keresési javaslatok a következőhöz: „{{ query }}”",
-    "price_filter_low": "Ár szerint növekvő",
-    "price_filter_high": "Ár szerint csökkenő"
+    "open_hotspot": "Hotspot megnyitása",
+    "slideshow": "Diavetítés"
   },
   "actions": {
     "add_to_cart": "Hozzáadás a kosárhoz",
@@ -122,9 +114,7 @@
     "open_image_in_full_screen": "Kép megnyitása teljes képernyőn",
     "sort": "Rendezés",
     "show_all_options": "Összes lehetőség megjelenítése",
-    "open": "Megnyitás",
-    "back_to": "Vissza ide: {{ title }}",
-    "zoom_media": "Médiaelem nagyítása ({{ index }})"
+    "open": "Megnyitás"
   },
   "content": {
     "reviews": "összegzés",
@@ -253,7 +243,7 @@
     "product_custom_property_character_count": "{{ used_chars }}/{{ max_chars }} karakter felhasználva",
     "terms_and_policies": "Feltételek és szabályzatok",
     "pagination": {
-      "nav_label": "Tördelés",
+      "nav_label": "Lapozás",
       "previous": "Előző",
       "next": "Következő",
       "page": "{{ page }}. oldal"
@@ -280,8 +270,7 @@
       "one": "1 tétel hozzáadva a kosárhoz",
       "other": "{{ count }} tétel hozzáadva a kosárhoz"
     },
-    "item_count_cutoff": "Több mint {{ count }} tétel",
-    "quick_order_list": "Gyorsrendelési lista"
+    "item_count_cutoff": "Több mint {{ count }} tétel"
   },
   "gift_cards": {
     "issued": {

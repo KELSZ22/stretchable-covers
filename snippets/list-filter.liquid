@@ -8,6 +8,10 @@
   @param {boolean} [should_render_clear] - Whether to render the clear button
   @param {boolean} [show_swatch_label] - Whether to show the swatch label
   @param {boolean} [in_drawer] - Whether the filter is in a drawer
+  @param {string} [typography_facets_label_preset] - Typography preset class for the facet label
+  @param {string} [typography_facets_label_color] - Color for the facet label
+  @param {string} [typography_checkbox_label_preset] - Typography preset class for checkbox labels
+  @param {string} [typography_checkbox_label_color] - Color for checkbox labels
 {%- enddoc -%}
 
 {% liquid
@@ -24,17 +28,20 @@
   endif
 %}
 
-{%- liquid
-  assign is_horizontal = false
-  assign is_vertical = false
-  if filter_style == 'horizontal'
-    assign is_horizontal = true
-  elsif filter_style == 'vertical'
-    assign is_vertical = true
-  endif
-  assign filter_param_name = filter.param_name | escape | replace: '.', '-'
--%}
-{% capture accordion_children %}
+<accordion-custom
+  class="facets__item"
+  {% if filter_style == 'horizontal' %}
+    data-disable-animation-on-desktop="true"
+    data-close-with-escape="true"
+  {% endif %}
+
+  {% if filter_style == 'vertical' %}
+    open
+    open-by-default-on-mobile
+    open-by-default-on-desktop
+  {% endif %}
+  data-filter-param-name="{{ filter.param_name | escape | replace: '.', '-' }}"
+>
   <details
     id="Facet-Details-{{ sectionId }}-{{ filter.param_name | escape | replace: '.', '-' }}"
     class="facets__panel"
@@ -46,7 +53,10 @@
     {% endif %}
   >
     <summary class="facets__summary">
-      <span class="facets__label">{{ filter.label }}</span>
+      <span
+        class="facets__label {{ typography_facets_label_preset }}"
+        style="{% if typography_facets_label_color %}--color: {{ typography_facets_label_color }};{% endif %}"
+      >{{ filter.label }}</span>
 
       <div class="facets__status-wrapper">
         {% if is_swatch %}
@@ -63,7 +73,7 @@
                   echo active_value_count
                 elsif active_value_count > 0 and active_value_count <= 3
                   for value in filter.active_values
-                    render 'swatch', swatch: value.swatch, mode: 'filter', label: value.label
+                    render 'swatch', swatch: value.swatch, mode: 'filter'
                   endfor
                 endif
               -%}
@@ -198,10 +208,15 @@
             {% endif %}
             name="{{ filter.label }}"
           >
+            {% assign rendered_manual_group_parents = '|' %}
             {%- for value in filter.values -%}
               {% liquid
                 assign input_id = 'Filter-' | append: filter.param_name | escape | append: '-' | append: forloop.index | replace: '.', '-' | append: '-' | append: filter_style | append: '-' | append: in_drawer
                 assign is_disabled = false
+                assign rendered_value_label = value.label
+                assign label_text_class = typography_checkbox_label_preset
+                assign is_grouped_category_child = false
+                assign grouped_parent_label = blank
                 if value.count == 0 and value.active == false
                   assign is_disabled = true
                 endif
@@ -212,13 +227,132 @@
                     assign hidden_class = 'mobile:hidden'
                   endif
                 endif
+
+                assign is_hierarchical_category = false
+                if value.label contains ' > ' or value.label contains '>'
+                  assign is_hierarchical_category = true
+                endif
+
+                case value.label
+                  when 'Auto Steering Wheel Cover'
+                    assign is_grouped_category_child = true
+                    assign grouped_parent_label = 'Steering Wheel Covers'
+                  when 'Auto Steering Wheel Covers'
+                    assign is_grouped_category_child = true
+                    assign grouped_parent_label = 'Steering Wheel Covers'
+                  when 'Boat Steering Wheel Covers'
+                    assign is_grouped_category_child = true
+                    assign grouped_parent_label = 'Steering Wheel Covers'
+                  when 'Sousaphone'
+                    assign is_grouped_category_child = true
+                    assign grouped_parent_label = 'Band Instrument Bell Covers'
+                  when 'Sousaphone Covers'
+                    assign is_grouped_category_child = true
+                    assign grouped_parent_label = 'Band Instrument Bell Covers'
+                endcase
+
+                if is_hierarchical_category or is_grouped_category_child
+                  if value.label contains ' > '
+                    assign rendered_value_label = value.label | split: ' > ' | last | strip
+                  elsif value.label contains '>'
+                    assign rendered_value_label = value.label | split: '>' | last | strip
+                  endif
+                  assign label_text_class = label_text_class | append: ' facets__category-label facets__category-label--child'
+                else
+                  assign label_text_class = label_text_class | append: ' facets__category-label'
+                endif
               %}
+              {% if is_grouped_category_child and grouped_parent_label != blank %}
+                {% assign grouped_parent_matches = filter.values | where: 'label', grouped_parent_label %}
+                {% if grouped_parent_matches.size == 0 %}
+                  {% assign rendered_parent_token = '|' | append: grouped_parent_label | append: '|' %}
+                  {% unless rendered_manual_group_parents contains rendered_parent_token %}
+                    {% assign rendered_manual_group_parents = rendered_manual_group_parents | append: grouped_parent_label | append: '|' %}
+                    <li class="facets__inputs-list-item facets__inputs-list-item--category-group-label" data-skip-node-update="true">
+                      <div class="checkbox checkbox--group-label">
+                        <input
+                          type="checkbox"
+                          id="group-label-{{ grouped_parent_label | handleize }}-{{ filter_style }}-{{ in_drawer }}"
+                          class="checkbox__input"
+                          checked
+                          tabindex="-1"
+                          aria-hidden="true"
+                        >
+                        <label
+                          class="checkbox__label"
+                          for="group-label-{{ grouped_parent_label | handleize }}-{{ filter_style }}-{{ in_drawer }}"
+                          aria-hidden="true"
+                        >
+                          {{ 'icon-checkmark.svg' | inline_asset_content }}
+                          <span class="checkbox__label-text facets__category-group-label {{ typography_checkbox_label_preset }}">
+                            {{ grouped_parent_label }}
+                          </span>
+                        </label>
+                      </div>
+                    </li>
+                    {% liquid
+                      assign grouped_children_for_parent = blank
+                      case grouped_parent_label
+                        when 'Steering Wheel Covers'
+                          assign grouped_children_for_parent = 'Auto Steering Wheel Cover|Auto Steering Wheel Covers|Boat Steering Wheel Covers'
+                        when 'Band Instrument Bell Covers'
+                          assign grouped_children_for_parent = 'Sousaphone|Sousaphone Covers'
+                      endcase
+                    %}
+                    {% if grouped_children_for_parent != blank %}
+                      {% assign grouped_children_list = grouped_children_for_parent | split: '|' %}
+                      {% for child_label in grouped_children_list %}
+                        {% assign child_value = filter.values | where: 'label', child_label | first %}
+                        {% if child_value != blank %}
+                          {% liquid
+                            assign child_input_id = 'Filter-' | append: filter.param_name | escape | append: '-manual-parent-' | append: grouped_parent_label | handleize | append: '-child-' | append: forloop.index | replace: '.', '-' | append: '-' | append: filter_style | append: '-' | append: in_drawer
+                            assign child_is_disabled = false
+                            if child_value.count == 0 and child_value.active == false
+                              assign child_is_disabled = true
+                            endif
+                            assign child_label_class = typography_checkbox_label_preset | append: ' facets__category-label facets__category-label--child'
+                          %}
+                          <li
+                            data-skip-node-update="true"
+                            class="
+                              facets__inputs-list-item
+                              facets__inputs-list-item--category-child
+                              {% if child_is_disabled %} facets__inputs-list-item--disabled{% endif %}
+                            "
+                          >
+                            {% if child_value.active %}
+                              {% assign has_active_values = true %}
+                            {% endif %}
+                            {% render 'checkbox',
+                              name: child_value.param_name,
+                              value: child_value.value,
+                              label: child_value.label,
+                              checked: child_value.active,
+                              id: child_input_id,
+                              disabled: child_is_disabled,
+                              inputRef: 'facetInputs[]',
+                              events: 'on:pointerenter="/prefetchPage" on:pointerleave="/cancelPrefetchPage"',
+                              label_text_class: child_label_class,
+                              label_text_color: typography_checkbox_label_color
+                            %}
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  {% endunless %}
+                  {% continue %}
+                {% endif %}
+              {% endif %}
+              {% if is_grouped_category_child %}
+                {% continue %}
+              {% endif %}
               <li
                 data-skip-node-update="true"
                 class="
                   facets__inputs-list-item
                   {% if hidden_class %} {{ hidden_class }}{% endif %}
                   {% if is_disabled %} facets__inputs-list-item--disabled{% endif %}
+                  {% if is_hierarchical_category or is_grouped_category_child %} facets__inputs-list-item--category-child{% endif %}
                 "
                 {% if hidden_class %}
                   ref="showMoreItems[]"
@@ -235,7 +369,7 @@
                   >
                     <div class="facets__image-wrapper">
                       {% if value.image %}
-                        {{ value.image | image_url: width: 300 | image_tag: alt: '' }}
+                        {{ value.image | image_url: width: 300 | image_tag: alt: value.alt }}
                       {% endif %}
                       {% if is_disabled %}
                         <svg
@@ -368,16 +502,71 @@
                     {% render 'checkbox',
                       name: value.param_name,
                       value: value.value,
-                      label: value.label,
+                      label: rendered_value_label,
                       checked: value.active,
                       id: input_id,
                       disabled: is_disabled,
                       inputRef: 'facetInputs[]',
-                      events: 'on:pointerenter="/prefetchPage" on:pointerleave="/cancelPrefetchPage"'
+                      events: 'on:pointerenter="/prefetchPage" on:pointerleave="/cancelPrefetchPage"',
+                      label_text_class: label_text_class,
+                      label_text_color: typography_checkbox_label_color
                     %}
                   {% endif %}
                 {% endif %}
               </li>
+              {% liquid
+                assign grouped_children_for_parent = blank
+                case value.label
+                  when 'Steering Wheel Covers'
+                    assign grouped_children_for_parent = 'Auto Steering Wheel Cover|Auto Steering Wheel Covers|Boat Steering Wheel Covers'
+                  when 'Band Instrument Bell Covers'
+                    assign grouped_children_for_parent = 'Sousaphone|Sousaphone Covers'
+                endcase
+              %}
+              {% if grouped_children_for_parent != blank %}
+                {% assign grouped_children_list = grouped_children_for_parent | split: '|' %}
+                {% for child_label in grouped_children_list %}
+                  {% assign child_value = filter.values | where: 'label', child_label | first %}
+                  {% if child_value != blank %}
+                    {% liquid
+                      assign child_input_id = 'Filter-' | append: filter.param_name | escape | append: '-' | append: forloop.parentloop.index | append: '-child-' | append: forloop.index | replace: '.', '-' | append: '-' | append: filter_style | append: '-' | append: in_drawer
+                      assign child_is_disabled = false
+                      if child_value.count == 0 and child_value.active == false
+                        assign child_is_disabled = true
+                      endif
+                      assign child_label_class = typography_checkbox_label_preset | append: ' facets__category-label facets__category-label--child'
+                    %}
+                    <li
+                      data-skip-node-update="true"
+                      class="
+                        facets__inputs-list-item
+                        facets__inputs-list-item--category-child
+                        {% if hidden_class %} {{ hidden_class }}{% endif %}
+                        {% if child_is_disabled %} facets__inputs-list-item--disabled{% endif %}
+                      "
+                      {% if hidden_class %}
+                        ref="showMoreItems[]"
+                      {% endif %}
+                    >
+                      {% if child_value.active %}
+                        {% assign has_active_values = true %}
+                      {% endif %}
+                      {% render 'checkbox',
+                        name: child_value.param_name,
+                        value: child_value.value,
+                        label: child_value.label,
+                        checked: child_value.active,
+                        id: child_input_id,
+                        disabled: child_is_disabled,
+                        inputRef: 'facetInputs[]',
+                        events: 'on:pointerenter="/prefetchPage" on:pointerleave="/cancelPrefetchPage"',
+                        label_text_class: child_label_class,
+                        label_text_color: typography_checkbox_label_color
+                      %}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
             {%- endfor -%}
           </ul>
         </div>
@@ -422,17 +611,7 @@
       </facet-inputs-component>
     </floating-panel-component>
   </details>
-{% endcapture %}
-{% render 'accordion-custom-component',
-  children: accordion_children,
-  class: 'facets__item',
-  open: is_vertical,
-  open_by_default_on_desktop: is_vertical,
-  open_by_default_on_mobile: is_vertical,
-  disable_animation_on_desktop: is_horizontal,
-  close_with_escape: is_horizontal,
-  data_filter_param_name: filter_param_name
-%}
+</accordion-custom>
 
 {% stylesheet %}
   .facets input:checked + label {
@@ -459,6 +638,49 @@
 
   .facets .checkbox .checkbox__label-text {
     transition: color 0.2s ease, font-weight 0.2s ease;
+  }
+
+  .facets .checkbox .facets__category-label {
+    display: inline-block;
+  }
+
+  .facets .checkbox .facets__category-label--child {
+    padding-inline-start: 0;
+  }
+
+  .facets__inputs-list-item--category-child .checkbox {
+    padding-inline-start: 20px;
+  }
+
+  .facets__inputs-list-item--category-child .checkbox__label {
+    column-gap: var(--gap-2xs);
+  }
+
+  .facets__inputs-list-item--category-child + .facets__inputs-list-item--category-child {
+    margin-top: var(--margin-4xs);
+  }
+
+  .facets__inputs-list-item--category-group-label {
+    margin-top: var(--margin-2xs);
+    margin-bottom: var(--margin-4xs);
+  }
+
+  .facets .checkbox--group-label {
+    pointer-events: none;
+  }
+
+  .facets .checkbox--group-label .checkbox__label {
+    cursor: default;
+  }
+
+  .facets__category-group-label {
+    display: inline-block;
+    color:#111111;
+    font-size: 16px;
+  }
+
+  .facets__category-group-label--plain {
+    padding-inline-start: var(--padding-2xs);
   }
 
   /* Pill style */

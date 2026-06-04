@@ -4,7 +4,20 @@
 -%}
 
 {{ 'custom-cover-customizer.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'custom-cover-font-picker-init.js' | asset_url }}"></script>
+<style>
+  /* Kill any legacy native font <select> in the font row (Windows cannot style <option> fonts). */
+  .custom-cover-customizer__text-font-row .custom-cover-customizer__group:first-child select,
+  .custom-cover-customizer__text-font-row select[data-font-input],
+  .custom-cover-customizer__text-font-row select.custom-cover-font-picker__native {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+  }
+</style>
 {%- liquid
   assign font_library_mode = section.settings.font_library | default: 'both'
 -%}
@@ -1186,6 +1199,7 @@
                             google_fonts_pipe: google_fonts_pipe,
                             custom_cover_font_lines: custom_cover_font_lines,
                             font_fallback: section.settings.font_fallback %}
+                          <script src="{{ 'custom-cover-font-picker-init.js' | asset_url }}"></script>
                         </div>
                         <div class="custom-cover-customizer__group">
                           <label class="custom-cover-customizer__label" for="CustomizerFontSize-{{ section.id }}">

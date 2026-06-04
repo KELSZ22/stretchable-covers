@@ -73,16 +73,8 @@
     "discount_menu": "Kode Diskon",
     "remove": "Hapus",
     "view_pricing_info": "Lihat informasi harga",
-    "slideshow": "Tayangan slide",
-    "header_navigation_label": "Utama",
-    "home_logo_alt": "{{ store_name }} – Beranda",
-    "active_filters": "Filter aktif:",
-    "featured_product": "Produk unggulan",
-    "product_details": "Detail produk",
-    "show_product_details": "Tampilkan detail produk untuk {{ product_name }}",
-    "search_suggestions_available": "Cari rekomendasi yang tersedia untuk \"{{ query }}\"",
-    "price_filter_low": "Harga rendah",
-    "price_filter_high": "Harga tinggi"
+    "open_hotspot": "Buka hotspot",
+    "slideshow": "Tayangan slide"
   },
   "actions": {
     "add_to_cart": "Tambahkan ke keranjang",
@@ -122,9 +114,7 @@
     "sign_up": "Daftar",
     "sort": "Urutkan",
     "show_all_options": "Tampilkan semua opsi",
-    "open": "Buka",
-    "back_to": "Kembali ke {{ title }}",
-    "zoom_media": "Perbesar media {{ index }}"
+    "open": "Buka"
   },
   "content": {
     "reviews": "ulasan",
@@ -253,7 +243,7 @@
     "product_custom_property_character_count": "{{ used_chars }}/{{ max_chars }} karakter digunakan",
     "terms_and_policies": "Ketentuan dan Kebijakan",
     "pagination": {
-      "nav_label": "Paginasi",
+      "nav_label": "Navigasi paginasi",
       "previous": "Sebelumnya",
       "next": "Berikutnya",
       "page": "Halaman {{ page }}"
@@ -280,8 +270,7 @@
     "items_added_to_cart": {
       "one": "1 item ditambahkan ke keranjang",
       "other": "{{ count }} item ditambahkan ke keranjang"
-    },
-    "quick_order_list": "Daftar pesanan cepat"
+    }
   },
   "gift_cards": {
     "issued": {

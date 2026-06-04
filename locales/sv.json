@@ -73,16 +73,8 @@
     "nested_product": "{{ product_title }} för {{ parent_title }}",
     "remove": "Ta bort",
     "view_pricing_info": "Visa prissättningsinformation",
-    "slideshow": "Bildspel",
-    "header_navigation_label": "Primär",
-    "home_logo_alt": "{{ store_name }} – Startsida",
-    "active_filters": "Aktiva filter:",
-    "product_details": "Produktdetaljer",
-    "show_product_details": "Visa produktdetaljer för {{ product_name }}",
-    "featured_product": "Utvald produkt",
-    "search_suggestions_available": "Sökförslag tillgängliga för \"{{ query }}\"",
-    "price_filter_low": "Lågt pris",
-    "price_filter_high": "Högt pris"
+    "open_hotspot": "Öppna hotspot",
+    "slideshow": "Bildspel"
   },
   "actions": {
     "add_to_cart": "Lägg till i varukorgen",
@@ -122,9 +114,7 @@
     "sign_up": "Registrera dig",
     "sort": "Sortera",
     "show_all_options": "Visa alla alternativ",
-    "open": "Öppna",
-    "back_to": "Tillbaka till {{ title }}",
-    "zoom_media": "Zooma media {{ index }}"
+    "open": "Öppna"
   },
   "content": {
     "reviews": "recensioner",
@@ -253,7 +243,7 @@
     "product_custom_property_character_count": "{{ used_chars }}/{{ max_chars }} tecken har använts",
     "terms_and_policies": "Villkor och policyer",
     "pagination": {
-      "nav_label": "Paginering",
+      "nav_label": "Navigering av paginering",
       "previous": "Föregående",
       "next": "Nästa",
       "page": "Sidan {{ page }}"
@@ -280,8 +270,7 @@
       "one": "1 artikel har lagts till i varukorgen",
       "other": "{{ count }} artiklar har lagts till i varukorgen"
     },
-    "item_count_cutoff": "Fler än {{ count }} artiklar",
-    "quick_order_list": "Snabborderlista"
+    "item_count_cutoff": "Fler än {{ count }} artiklar"
   },
   "gift_cards": {
     "issued": {
